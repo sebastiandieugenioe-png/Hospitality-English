@@ -1,0 +1,68 @@
+{
+  "summary": "Full end-to-end test of 'Inglés para Hostelería' MVP. Backend: created pytest suite (10 tests, 9 pass) covering categories, category detail, lesson availability, guest CRUD/progress persistence and 404/422 handling. Frontend: full flow validated on desktop (1920x1080) and mobile (390x844): Landing -> Onboarding (guest created in backend) -> Home -> Category -> Lesson (intro, phrases, dialogue+translation toggle, 5 flashcards, 3 exercises, 5 quiz questions) -> Completion. Persistence verified: guest doc had 5 flashcard_interactions and completed_lessons [{taking-an-order, 4, 5}]. Refresh on /home, mid-lesson refresh, direct deep links, and unavailable-lesson page all work. ONE CRITICAL CONTENT/LOGIC BUG: word_ordering questions can never be answered correctly (answer contains trailing '?' but words array does not), so max quiz score is 4/5.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET /api/lessons/taking-an-order (seed_content.py EXERCISES_TAKING_AN_ORDER / QUIZ_TAKING_AN_ORDER)",
+        "issue": "word_ordering items are unsolvable: ex_order_ready words=['ready','you','Are','to','order'] but answer='Are you ready to order?'; q_order_anything words=['else','anything','like','Would','you'] but answer='Would you like anything else?'. Frontend compares picked.join(' ') === q.answer strictly, so the correct order is always graded Incorrect. Verified in UI: exercise-2 and quiz-3 return 'Incorrecto' with the right word order; quiz max score is 4/5. Fix by either adding punctuation to the last word / removing '?' from answer, or normalizing punctuation in QuestionCard.evaluate().",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Lesson > QuestionCard (word_ordering)",
+        "issue": "Correct word order graded as incorrect (see backend critical item). Strict string equality against answer containing '?'.",
+        "selector": "[data-testid='exercise-2-check-btn'], [data-testid='quiz-3-check-btn']",
+        "priority": "CRITICAL"
+      },
+      {
+        "component": "Home > CategoryCard",
+        "issue": "Duplicate data-testid values on /home: category-card-general, category-card-restaurant, category-card-bar each appear twice (Recommended section + Explore grid). Breaks strict-mode selectors in automation; recommended cards should have a distinct prefix e.g. recommended-card-{slug}.",
+        "selector": "[data-testid='category-card-restaurant']",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "/category/restaurant (mobile 390x844)",
+        "issues": [
+          "Horizontal page overflow: document.scrollWidth=397 vs clientWidth=390. Situation rows (Category.js SituationRow) extend ~7px past viewport; long titles like 'Allergies & dietary requirements' don't shrink because the inner 'flex items-center gap-2 flex-wrap' wrapper lacks min-w-0, so truncate never applies. Add min-w-0 to that wrapper (and allow the title to wrap on small screens)."
+        ]
+      },
+      {
+        "screen": "Landing hero (desktop)",
+        "issues": [
+          "Low contrast for eyebrow 'INGLÉS REAL PARA HOSTELERÍA' and the 'Sin registro. Empiezas en segundos.' line over the photographic hero background; consider a stronger overlay or higher-opacity text."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "CRITICAL: Fix word_ordering data/grading so the correct order is accepted (seed_content.py answers include '?' not present in words, or normalize punctuation/whitespace in QuestionCard.evaluate).",
+    "Fix mobile horizontal overflow on /category/{slug} situation rows (add min-w-0 to inner title wrapper in Category.js).",
+    "Rename recommended category card test ids on Home to avoid duplicate data-testid values.",
+    "Optional: improve hero text contrast on landing."
+  ],
+  "critical_code_review_comments": [
+    "QuestionCard grading uses strict string equality for word_ordering; should normalize case/whitespace/punctuation to avoid content-authoring traps.",
+    "Lesson.js is ~730 lines with 8 components; consider splitting steps into separate files.",
+    "getLesson/getCategories failures are only handled via .finally() — a network error leaves an empty/'not available' state without any error UI or retry.",
+    "AppContext swallows guest-creation failures (console.error only); user silently loses progress tracking with no toast/feedback.",
+    "Backend guest endpoints have no rate/size limits and accept arbitrary learning_item_id/situation_slug (no validation against existing content)."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "90% (9/10 pytest)", "frontend": "90% (all flows pass; word_ordering grading + mobile overflow fail)"},
+  "seed_data_creation": "Created transient test guests via POST /api/guests (test flashcard id TEST_phrase_1) plus 2 guests from UI onboarding runs (e2b5fec4..., 17b8ddb2...). No content data modified.",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend suite at /app/backend/tests/backend_test.py (run: cd /app/backend && python -m pytest tests/backend_test.py). test_lesson_taking_an_order asserts word_ordering words match answer tokens — it will pass once the '?' mismatch is fixed. Frontend flow fully scripted: onboarding testids workplace-option-{id}/goal-option-{id}, lesson steps intro-start-btn -> phrases-next-btn -> dialogue-next-btn -> flashcard/flashcard-knew x5 -> exercise-{i}/quiz-{i} with -option-{i}/-input/-check-btn/-continue-btn -> completion-score. Note duplicate category-card testids on /home (use .first).",
+  "rca_of_the_issue": "word_ordering: seed answers are full sentences with terminal '?' while the words array contains only unpunctuated tokens; Lesson.js QuestionCard evaluates ok = picked.map(w).join(' ') === q.answer, so the built string can never equal the answer. Reproduce: /lesson/taking-an-order -> exercises -> question 3 -> tap Are/you/ready/to/order -> Comprobar -> 'Incorrecto'. Same for quiz question 4; completion score capped at 4/5."
+}

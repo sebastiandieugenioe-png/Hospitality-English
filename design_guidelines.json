@@ -1,0 +1,140 @@
+{
+  "project_name": "Inglés para Hostelería",
+  "theme_strategy": "Light Theme Priority (Clean, focused learning environment with premium hospitality aesthetics)",
+  "emotional_archetype": "Organic & Earthy + Old Money Tech (Sophisticated, calm, professional, focused on real-world hospitality)",
+  "typography": {
+    "strategy": "The 'Old Money Tech' Pairing (Classic Serif Head + Sterile Clean Body) to evoke a premium boutique hotel or high-end restaurant menu.",
+    "headings": {
+      "font_family": "Playfair Display",
+      "weights": ["400", "600"],
+      "styling": "tracking-tight, leading-none, elegant and sophisticated."
+    },
+    "body": {
+      "font_family": "Manrope",
+      "weights": ["400", "500", "600"],
+      "styling": "Highly legible, neutral, tracking-normal, leading-relaxed."
+    },
+    "hierarchy_rules": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl font-serif text-brand-espresso tracking-tight",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl font-serif text-brand-espresso tracking-tight",
+      "h3": "text-xl sm:text-2xl font-serif text-brand-espresso",
+      "body": "text-base text-brand-charcoal/80 font-sans",
+      "labels": "text-xs uppercase tracking-[0.2em] font-sans font-semibold text-brand-charcoal/60"
+    }
+  },
+  "colors": {
+    "background": {
+      "primary": "#F9F8F6",
+      "surface": "#FFFFFF",
+      "description": "Warm sand/oat for the main background to reduce eye strain, pure white for cards to create clean contrast."
+    },
+    "text": {
+      "primary": "#1A1A1A",
+      "secondary": "#4A4A4A",
+      "brand_espresso": "#2C1E16",
+      "description": "Never use pure black. Use charcoal or deep espresso to maintain the earthy, organic feel."
+    },
+    "accents": {
+      "primary": "#1C3329",
+      "primary_hover": "#13231C",
+      "terracotta": "#C86F53",
+      "terracotta_hover": "#A65A42",
+      "success_muted": "#E8F0EB",
+      "description": "Deep Forest Green (#1C3329) for primary buttons and success states (calm, growth). Terracotta (#C86F53) for highlights, alerts, or 'No lo sabía' actions."
+    },
+    "borders": {
+      "subtle": "rgba(44, 30, 22, 0.08)",
+      "focus": "#1C3329"
+    }
+  },
+  "visual_enhancers": {
+    "shadows": {
+      "card": "shadow-sm shadow-black/5",
+      "card_hover": "shadow-md shadow-black/10",
+      "floating": "shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
+    },
+    "radii": {
+      "container": "rounded-xl",
+      "button": "rounded-lg",
+      "card": "rounded-2xl",
+      "note": "Subtle roundness to keep it modern but not childish. Avoid fully pill-shaped cards; keep them rectangular with soft corners."
+    },
+    "textures": {
+      "noise": "Subtle grain texture overlay on the hero background to remove digital flatness and add a printed editorial feel."
+    }
+  },
+  "layouts_and_grids": {
+    "spacing_philosophy": "Generous Spacing (Tailwind p-6, p-8, p-12). Interface must feel like a premium printed magazine, not a cramped web app.",
+    "dashboard_grid": "Bento Grid Protocol. High density but organized. grid-cols-1 md:grid-cols-3 lg:grid-cols-4 with gap-6.",
+    "category_grid": "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6.",
+    "lesson_view": "Max-w-2xl mx-auto (Narrow container for reading comfort). Generous vertical padding (py-12 or py-16)."
+  },
+  "components": {
+    "cards": {
+      "style": "Neumorphism Tactile Variant. bg-white, 1px border-subtle, very soft shadow. On hover: slight lift (-translate-y-1) and shadow deepens.",
+      "usage": "Dashboard widgets, category selection, lesson flashcards."
+    },
+    "buttons": {
+      "primary": "bg-[#1C3329] text-white hover:bg-[#13231C] transition-all duration-200 rounded-lg px-6 py-3 font-sans font-medium",
+      "secondary": "bg-white text-[#1C3329] border border-[#1C3329]/20 hover:bg-[#F9F8F6] transition-all duration-200 rounded-lg px-6 py-3 font-sans font-medium",
+      "danger_warning": "bg-transparent text-[#C86F53] border border-[#C86F53]/20 hover:bg-[#C86F53]/5"
+    },
+    "navigation": {
+      "style": "Glassmorphism (Crystal Variant) for sticky top nav if content scrolls under. backdrop-blur-xl bg-[#F9F8F6]/80 border-b border-black/5."
+    },
+    "progress_bar": {
+      "style": "Extremely thin (h-1 or h-2), track: bg-black/5, indicator: bg-[#1C3329]. Minimalist and unobtrusive."
+    },
+    "flashcard": {
+      "style": "Aspect-video or square, front and back states. Requires framer-motion for a realistic 3D flip effect (rotateY). Clean typography centered."
+    }
+  },
+  "motion_and_interactions": {
+    "page_transitions": "Fade in and slight slide up (framer-motion opacity: 0 to 1, y: 10 to 0).",
+    "hover_states": "All interactive elements must have a clear hover state (color darken or slight transform).",
+    "flashcard_flip": "Smooth spring physics for the flip animation to make it feel tactile.",
+    "accessibility": "Respect prefers-reduced-motion. Ensure focus rings (ring-2 ring-[#1C3329] ring-offset-2) are visible for keyboard navigation."
+  },
+  "image_urls": {
+    "hero_background": {
+      "url": "https://images.unsplash.com/photo-1573052905904-34ad8c27f0cc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjh8MHwxfHNlYXJjaHwxfHxib3V0aXF1ZSUyMGhvdGVsJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzg3NDI0NTEzfDA&ixlib=rb-4.1.0&q=85",
+      "category": "Landing Page Hero",
+      "description": "Elegant boutique hotel interior, use with a subtle overlay (e.g., bg-[#F9F8F6]/80 or a gradient) so text is highly readable."
+    },
+    "category_coffee": {
+      "url": "https://images.unsplash.com/photo-1532713107108-dfb5d8d2fc42?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwxfHxiYXJpc3RhJTIwcG91cmluZyUyMGNvZmZlZXxlbnwwfHx8fDE3ODc0MjQ1MTN8MA&ixlib=rb-4.1.0&q=85",
+      "category": "Course Categories",
+      "description": "Barista pouring coffee, for the 'Coffee Shop Staff' category."
+    },
+    "category_restaurant": {
+      "url": "https://images.pexels.com/photos/3769740/pexels-photo-3769740.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "category": "Course Categories",
+      "description": "Confident modern waiter, for the 'Waiters / Restaurant' category."
+    }
+  },
+  "instructions_to_main_agent": [
+    "Prioritize Mobile-First design. All layouts must look exceptional on mobile screens (max-h-[80vh] for images, touch-friendly tap targets).",
+    "Use raw HTML/Tailwind for the Marketing Landing Page to achieve editorial asymmetry. Use Shadcn components for the Dashboard and Lesson elements (Forms, Cards, Progress). Note: The project uses .js/.jsx files, not .tsx. Adjust your component syntax accordingly (remove TypeScript types).",
+    "DO NOT use a childish Duolingo style. The app must feel like a premium tool for professionals.",
+    "Implement the lesson flow as a multi-step component (or separate routes) with a seamless transition between Intro -> Dialogue -> Flashcards -> Exercises -> Quiz -> Completion.",
+    "Flashcards MUST use framer-motion for the flip effect. Include 'Lo sabía' (Green action) and 'No lo sabía' (Terracotta action) buttons.",
+    "Ensure the UI language is entirely in Spanish, while the learning content (phrases, dialogues) is in English/Spanish as required.",
+    "Always apply a `data-testid` attribute to all interactive elements for testing purposes.",
+    "Include `lucide-react` for minimalist icons (e.g., Coffee, Utensils, Bed, CheckCircle).",
+    "Do not use generic 'Inter' for headings. Stick to 'Playfair Display' for Headings and 'Manrope' for body text to maintain the premium feel.",
+    "Ensure contrast ratios meet APCA/WCAG standards, especially for text over images."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Avoid generic, 'on distribution' outputs. Make creative, distinctive frontends that surprise and delight.",
+    "Create depth through layered design elements with z-index hierarchy and delicate shadows.",
+    "Use glass-morphism effects with backdrop filters where appropriate (e.g., sticky headers).",
+    "DO NOT apply universal transitions (e.g., `transition: all`). Target specific properties.",
+    "DO NOT center align the app container in CSS. Left-align dense content for reading flow.",
+    "Use modern button styles (rounded-lg) with clear interaction animations and brand-relevant colors.",
+    "NEVER use AI assistant emoji characters for icons. Use proper SVG libraries.",
+    "Every interaction needs micro-animations - hover states, focus states, and entrance animations.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Use the provided image URLs. NEVER use placeholder text for images.",
+    "Use 'sonner' for toast notifications."
+  ]
+}
