@@ -355,9 +355,9 @@ LESSONS = {
              "answer": "sorry", "explanation_es": "\"I'm sorry to hear that\" reconoce el problema con empatía."},
             {"id": "ex_sw_3", "type": "word_ordering",
              "prompt_es": "Ordena para ofrecer una solución:",
-             "words": ["fix", "me", "that", "Let"],
-             "answer": "Let me fix that",
-             "explanation_es": "\"Let me fix that\" transmite que vas a resolverlo."},
+             "words": ["fix", "me", "that", "for", "you", "Let"],
+             "answer": "Let me fix that for you",
+             "explanation_es": "\"Let me fix that for you\" transmite que vas a resolverlo."},
         ],
         "quiz": [
             {"id": "q_sw_1", "type": "multiple_choice",

@@ -125,7 +125,7 @@ export default function Lesson() {
         >
           {step === "intro" && <Intro lesson={lesson} onNext={next} />}
           {step === "phrases" && <Phrases lesson={lesson} onNext={next} onBack={prev} />}
-          {step === "dialogue" && <Dialogue lesson={lesson} onNext={next} onBack={prev} />}
+          {step === "dialogue" && <Dialogue lesson={lesson} situation={data.situation} onNext={next} onBack={prev} />}
           {step === "flashcards" && <Flashcards lesson={lesson} onNext={next} />}
           {step === "exercises" && <Exercises lesson={lesson} onNext={next} onSubmit={sendResponse} />}
           {step === "quiz" && (
@@ -286,8 +286,14 @@ function Phrases({ lesson, onNext, onBack }) {
 }
 
 /* ---------- Step 3: Dialogue ---------- */
-function Dialogue({ lesson, onNext, onBack }) {
+function Dialogue({ lesson, situation, onNext, onBack }) {
   const [showEs, setShowEs] = useState(true);
+  // Anyone who is not the guest/customer is treated as staff (future-proof for
+  // waiter, bartender, host, barista… without hardcoding each role).
+  const isStaffSpeaker = (speaker) => !["customer", "guest", "client"].includes(speaker);
+  const subtitle =
+    situation?.translations?.es?.description ||
+    "Escucha la conversación completa y fíjate en cómo responde el personal.";
   return (
     <div>
       <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -303,11 +309,11 @@ function Dialogue({ lesson, onNext, onBack }) {
         </button>
       </div>
       <p className="mt-2 text-sm text-brand-charcoal/60">
-        Un cliente listo para pedir en un restaurante.
+        {subtitle}
       </p>
       <div className="mt-6 space-y-4">
         {lesson.dialogue.map((line, i) => {
-          const isWaiter = line.speaker === "waiter";
+          const isWaiter = isStaffSpeaker(line.speaker);
           return (
             <div
               key={i}
@@ -357,7 +363,11 @@ function Flashcards({ lesson, onNext }) {
   const { logFlashcard } = useApp();
   const cards = useMemo(
     () =>
-      lesson.phrases.map((p, i) => {
+      lesson.phrases
+        // Negative pedagogical examples (inappropriate service) stay in Phrases with
+        // their ServiceNote, but must never become a flashcard to memorize.
+        .filter((p) => p.service_rating !== "inappropriate")
+        .map((p, i) => {
         const enToEs = i % 2 === 0;
         return {
           id: p.id,
