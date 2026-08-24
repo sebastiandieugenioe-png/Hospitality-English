@@ -1,0 +1,49 @@
+{
+  "summary": "Independent verification (iteration 7) of the FINAL i18n gaps micro-pack overlay. Ran the developer's targeted suite (test_final_gaps.py 7/7) plus my own independent suite (test_iter7_final_gaps_verify.py, 15 tests) and test_i18n_import.py -> 32/32 PASS, re-run AFTER a backend restart (idempotency confirmed). Frontend smoke on desktop 1920 and mobile 390 with a FR guest: Learn/Skill render French skill names+descriptions (no Spanish leak), lesson MC renders exactly 4 options with English-target options verbatim in English. No blocking issues found.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_claims": [
+    "GET /api/skills: 14 skills, unique ids, no _id; every skill resolves non-empty name+description in all 10 langs; for fr,pt,de,pl,ro,uk,nl,en values equal the EXACT pack text (not Spanish fallback); es/it intact; base name/roles/order/active present and active=true.",
+    "MC: exactly 94 active multiple_choice questions across the 20 active situations; all have 4 canonical options, integer answer_index in range, assessment_dimension present; for each of the 9 audit languages the localized options array is exactly length 4 with no empty values (no truncation/sparse compaction).",
+    "All 68 pack questions found in the active catalog; canonical options + answer_index match the pack canonical_snapshot byte-for-byte; all 223 gap indices x 9 languages match the exact supplied pack values.",
+    "policy=preserve_english_target_verbatim: every such index is byte-identical to the canonical English in all 9 langs; ex_bar_greet_1 FR and UK arrays == canonical options (also confirmed visually in the browser: 4 English options with a French prompt).",
+    "policy=localized_interface_answer: q_bar_greet_1 localized index matches pack FR and DE text and differs from the English canonical.",
+    "No regression of previously bundled option translations: every option translation from mvp_i18n_import_bundle_verified_v1.json outside the 223 gap indices is still present in the DB at the same question/index (guards the canonical re-init branch in apply_mc_option_gaps).",
+    "Grading: lesson quiz/exercise MC grading still keyed on answer_index (submitted every MC in 2 situations with the correct index -> all 200/correct=true). Practice path for FR guest on q_bar_greet_4: wrong (index 0) -> HTTP 200 correct=false; correct (index 1) -> HTTP 200 correct=true. No 500s, no false positives.",
+    "GET /api/categories: 7 categories all returned (visibility unchanged), no _id, all resolve names in 10 langs, situation_count = {general:0, restaurant:10, bar:10, hotel:0, coffee:0, kitchen:0, housekeeping:0} (active-only count fix works; DB has 43 total situations, 20 active).",
+    "Catalog: 20 active situations (bartender 10 / waiter 10), no duplicate slugs, 20 lessons, no duplicate question ids.",
+    "Idempotency: full DB collection counts and duplicate-key aggregations identical before/after `supervisorctl restart backend` (categories 7, learning_items 115, lessons 20, situations 43, skills 14; zero duplicates on situations.slug, lessons.situation_slug, skills.id, learning_items.id, categories.slug); all 32 tests still pass post-restart.",
+    "Frontend: /learn shows 10 role-filtered skills in French; /skill/greeting-guests h1 'Accueillir les clients' + FR description; lesson MC option count 4; no console errors; no horizontal overflow at 390px (scrollWidth 390)."
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_iter7_final_gaps_verify.py",
+    "/app/backend/tests/test_final_gaps.py",
+    "/app/backend/tests/dbsnap.py",
+    "/app/test_reports/pytest/iter7_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "seed_i18n.apply_mc_option_gaps: when an existing localized options array has a length != canonical it is REPLACED with list(canonical) and only the gap indices are re-filled - any already-translated non-gap index in that language would silently revert to English. Empirically no loss today (verified against the verified bundle), but prefer padding/merging to canonical length instead of wholesale replacement to make the overlay safe for future partial arrays.",
+    "server.py is 922 lines (>700 guideline) - consider splitting routers (catalog / attempts / review-items / i18n) into modules.",
+    "Minor testability: Skill page skill title/description have no data-testid (only skill-back-link / situation-card-*); Learn page skill name/description are inside skill-card-<id> only. Adding skill-name/skill-description testids would make i18n regression checks cheaper.",
+    "API section naming is inconsistent between read and write: GET /api/lessons/{slug} returns the section key 'exercises' while PUT /api/situation-attempts/{id}/response requires section='exercise' (422 'Section mismatch' otherwise). Not a new defect, but it is an easy client-side trap."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter7_final_gaps_verify.py (new)",
+    "/app/backend/tests/dbsnap.py (new diagnostic script)"
+  ],
+  "success_rate": {"backend": "100% (32/32 tests)", "frontend": "100% (targeted i18n/MC smoke, desktop + mobile)"},
+  "seed_data_creation": "Guests created via POST /api/guests for grading tests; one FR guest 1ea0a76c-429c-45bf-85de-61f7508e3caf (bartender / cocktail-bar / ireland / work_abroad) used for the frontend smoke. No seeded content modified.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": false,
+  "test_credentials": "None required (guest-only app; /app/memory/test_credentials.md not needed)",
+  "context_for_next_testing_agent": "Iteration 7 independently confirmed the final i18n gaps pack: skills 10-lang exact pack text, 94 MC x 4 options full-length in 9 langs, 223 gap indices exact, preserve_english verbatim, grading by answer_index (Practice 200 for wrong+correct), category counts active-only, 20 situations, idempotent after restart. Reusable suite: /app/backend/tests/test_iter7_final_gaps_verify.py (note: attempt response API expects section='exercise' not 'exercises'; valid slugs include taking-an-order, guest-arrives-at-the-bar; there is no 'guest-arrives-at-the-restaurant'). DB snapshot helper: python tests/dbsnap.py. Learn page role-filters skills (bartender profile sees 10 of 14) - absent waiter skill names there are expected, not a bug.",
+  "rca_of_the_issue": "No defects reproduced. The two initial failures in my own suite were test-side: a non-existent situation slug and the 'exercises' vs 'exercise' section naming in the attempt-response payload; both fixed in the test file (no application change)."
+}

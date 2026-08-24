@@ -363,7 +363,7 @@ async def get_categories():
     cats = await db.categories.find({}, {"_id": 0}).sort("order", 1).to_list(100)
     # attach situation count
     for c in cats:
-        c["situation_count"] = await db.situations.count_documents({"category": c["slug"]})
+        c["situation_count"] = await db.situations.count_documents({"category": c["slug"], "active": True})
     return cats
 
 

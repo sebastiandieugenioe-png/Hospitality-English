@@ -126,6 +126,13 @@ Backend es la fuente de verdad para corrección y para el scheduling SRS. Timest
 - **Gaps de datos del bundle (report-only, NO corregidos — prohibido inventar)**: cobertura de traducción de opciones MC ~40% (223/376 por idioma caen a ES → listas mixtas en ~26-28 preguntas/idioma); `skills` solo es/it (8 idiomas caen a ES); `categories.situation_count` incluye situations inactivas 'Pronto' (preexistente/intencional); interfaz EN duplica el target inglés como su traducción (por diseño); word_ordering chips sin data-testid (LOW, solo testabilidad).
 - **Build producción**: frontend `yarn build` OK; backend inicia OK. **No se hizo deploy.**
 
+### Cierre final de gaps i18n (micro-pack final, 2026-06)
+- Fuente de verdad: `backend/data/mvp_final_i18n_gaps_micro_pack_v1.json`.
+- **Skills**: `seed_i18n.apply_skills_i18n` añade fr/pt/de/pl/ro/uk/nl/en (grouped `translations.<lang>.{name,description}`, match por id); los 14 skills resuelven los 10 idiomas (ES fallback). Base name/roles/order/active y es/it intactos.
+- **Opciones MC**: `seed_i18n.apply_mc_option_gaps` rellena los 223 índices faltantes × 9 idiomas (2007 valores) por `question_id+index`, position-preserving (nunca compacta). `preserve_english_target_verbatim` (152) conserva el inglés canónico verbatim; `localized_interface_answer` (71) usa la traducción. Las 94 MC mantienen 4 opciones, orden, `answer_index` y `assessment_dimension` intactos.
+- **situation_count**: `GET /api/categories` ahora filtra `active:True` → counts 0/10/10/0/0/0/0 (visibilidad de categorías sin cambios).
+- Idempotente tras restart. **Tests**: `tests/test_final_gaps.py` (7) PASS + testing_agent iteración 7 (**100% backend 32/32 + 100% frontend**, sin issues). Sin deploy.
+
 ### Exportación i18n v1 (2026-06) — solo lectura, sin cambios de código/contenido
 - Herramienta reproducible `backend/tools/export_i18n.py` → genera `backend/data/mvp_i18n_export_v1.json` (copia descargable en `frontend/public/`).
 - Contiene: 7 situations legacy activas (completas: situation+lesson+learning_items, sin las 13 del pack), `ui_translations` (168 claves es+it), 9 strings visibles hardcodeados detectados, taxonomías (profiles 2, venues 6, countries 6, goals 5, skills 14), idiomas soportados (es/it) y descripción del fallback. Excluye guests/progress/attempts/SRS.

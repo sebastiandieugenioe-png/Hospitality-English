@@ -18,6 +18,7 @@ from pathlib import Path
 
 BUNDLE_PATH = Path(__file__).parent / "data" / "mvp_i18n_import_bundle_verified_v1.json"
 CATEGORIES_PACK_PATH = Path(__file__).parent / "data" / "mvp_categories_i18n_micro_pack_v1.json"
+FINAL_GAPS_PACK_PATH = Path(__file__).parent / "data" / "mvp_final_i18n_gaps_micro_pack_v1.json"
 
 LANGS = ["es", "it", "fr", "pt", "de", "pl", "ro", "uk", "nl", "en"]
 
@@ -25,6 +26,70 @@ LANGS = ["es", "it", "fr", "pt", "de", "pl", "ro", "uk", "nl", "en"]
 def _load_bundle():
     with open(BUNDLE_PATH, encoding="utf-8") as f:
         return json.load(f)
+
+
+async def apply_skills_i18n(db):
+    """Complete skill translations (fr, pt, de, pl, ro, uk, nl, en) from the final
+    gaps micro-pack. Matches by stable id only; preserves base name, roles, order,
+    active and the existing es/it translations. Adds grouped translations.<lang>.{name,
+    description} (getLocalizedField resolves, ES fallback). Idempotent."""
+    with open(FINAL_GAPS_PACK_PATH, encoding="utf-8") as f:
+        pack = json.load(f)
+    for sk in pack["skills"]:
+        doc = await db.skills.find_one({"id": sk["id"]})
+        if not doc:
+            continue
+        doc.setdefault("translations", {})
+        for lang, vals in sk["translations"].items():
+            doc["translations"].setdefault(lang, {})
+            doc["translations"][lang]["name"] = vals["name"]
+            doc["translations"][lang]["description"] = vals["description"]
+        doc_id = doc["_id"]
+        doc.pop("_id", None)
+        await db.skills.replace_one({"_id": doc_id}, doc)
+
+
+async def apply_mc_option_gaps(db):
+    """Fill the remaining MC option translation gaps from the final gaps micro-pack.
+    Matches by question_id + index only; NEVER compacts sparse arrays and NEVER
+    rebuilds from present translations alone. For each language the options array
+    keeps the canonical length/order; only the specified missing indices are set
+    (preserve_english_target_verbatim entries keep the English text verbatim, which
+    is intentional English learning content). answer_index/options are never touched.
+    Idempotent."""
+    with open(FINAL_GAPS_PACK_PATH, encoding="utf-8") as f:
+        pack = json.load(f)
+    langs = ["it", "fr", "pt", "de", "pl", "ro", "uk", "nl", "en"]
+    by_slug = {}
+    for e in pack["mc_option_gaps"]:
+        by_slug.setdefault(e["situation_slug"], []).append(e)
+
+    for slug, entries in by_slug.items():
+        lesson = await db.lessons.find_one({"situation_slug": slug})
+        if not lesson:
+            continue
+        for e in entries:
+            section = "exercises" if e["section"] in ("exercise", "exercises") else "quiz"
+            q = next((x for x in lesson.get(section, []) if x.get("id") == e["question_id"]), None)
+            if not q:
+                continue
+            canonical = q.get("options") or []
+            q.setdefault("translations", {})
+            for lang in langs:
+                q["translations"].setdefault(lang, {})
+                opts = q["translations"][lang].get("options")
+                if not opts or len(opts) != len(canonical):
+                    # start from canonical (English) so length/order stay exact and
+                    # any already-bundled translations for this lang are preserved.
+                    opts = list(canonical)
+                for mo in e["missing_options"]:
+                    idx = mo["index"]
+                    if 0 <= idx < len(opts):
+                        opts[idx] = mo["translations"][lang]
+                q["translations"][lang]["options"] = opts
+        lesson_id = lesson["_id"]
+        lesson.pop("_id", None)
+        await db.lessons.replace_one({"_id": lesson_id}, lesson)
 
 
 async def apply_categories_i18n(db):
@@ -220,3 +285,7 @@ async def apply_i18n_bundle(db):
 
     # ----- categories (verified micro-pack) -----
     await apply_categories_i18n(db)
+
+    # ----- final i18n gaps micro-pack: skills + remaining MC option translations -----
+    await apply_skills_i18n(db)
+    await apply_mc_option_gaps(db)
