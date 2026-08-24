@@ -215,8 +215,8 @@ function CategoryCard({ cat, highlight, index, testIdPrefix = "category-card", l
           </span>
           <ArrowRight className="w-5 h-5 text-brand-charcoal/30 group-hover:text-brand-forest group-hover:translate-x-1 transition-all" />
         </div>
-        <h3 className="mt-5 text-xl font-serif text-brand-espresso">{cat.name_en}</h3>
-        <p className="mt-1 text-sm text-brand-charcoal/60 leading-relaxed">
+        <h3 data-testid={`category-card-name-${cat.slug}`} className="mt-5 text-xl font-serif text-brand-espresso">{getLocalizedField(cat, "name", language) || cat.name_en}</h3>
+        <p data-testid={`category-card-desc-${cat.slug}`} className="mt-1 text-sm text-brand-charcoal/60 leading-relaxed">
           {getLocalizedField(cat, "description", language)}
         </p>
         <p className="mt-4 text-xs uppercase tracking-[0.15em] text-brand-charcoal/40">

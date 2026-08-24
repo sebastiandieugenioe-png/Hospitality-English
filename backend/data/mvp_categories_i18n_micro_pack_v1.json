@@ -1,0 +1,383 @@
+{
+  "name": "Hospitality English MVP Categories i18n Micro-Pack v1",
+  "version": 1,
+  "language_code_policy": {
+    "portuguese_code": "pt",
+    "portuguese_content_variant": "pt-PT",
+    "fallback_language": "es"
+  },
+  "categories_count": 7,
+  "interface_languages": [
+    "es",
+    "it",
+    "fr",
+    "pt",
+    "de",
+    "pl",
+    "ro",
+    "uk",
+    "nl",
+    "en"
+  ],
+  "rules": [
+    "Match categories by stable slug only.",
+    "Preserve _id, slug, icon and order.",
+    "Preserve current Spanish category values exactly.",
+    "Preserve current English category names exactly.",
+    "Add localized name and description values only.",
+    "Do not modify situations, lessons, learning_items, taxonomies outside categories, attempts, mastery, review_items, SRS or scoring.",
+    "No runtime translation."
+  ],
+  "categories": [
+    {
+      "slug": "general",
+      "current": {
+        "name_en": "General Hospitality",
+        "name_es": "Hostelería general",
+        "description_es": "Frases esenciales que sirven en cualquier trabajo de hostelería."
+      },
+      "translations": {
+        "es": {
+          "name": "Hostelería general",
+          "description": "Frases esenciales que sirven en cualquier trabajo de hostelería."
+        },
+        "en": {
+          "name": "General Hospitality",
+          "description": "Essential phrases you can use in any hospitality job."
+        },
+        "it": {
+          "name": "Ospitalità generale",
+          "description": "Frasi essenziali utili in qualsiasi lavoro nel settore dell'ospitalità."
+        },
+        "fr": {
+          "name": "Hôtellerie-restauration générale",
+          "description": "Phrases essentielles utiles dans n'importe quel emploi du secteur de l'hôtellerie-restauration."
+        },
+        "pt": {
+          "name": "Hotelaria e restauração geral",
+          "description": "Frases essenciais úteis em qualquer trabalho de hotelaria e restauração."
+        },
+        "de": {
+          "name": "Allgemeine Gastronomie und Hotellerie",
+          "description": "Wichtige Redewendungen für jede Tätigkeit in Gastronomie und Hotellerie."
+        },
+        "pl": {
+          "name": "Ogólna obsługa gości",
+          "description": "Podstawowe zwroty przydatne w każdej pracy w branży hotelarsko-gastronomicznej."
+        },
+        "ro": {
+          "name": "Ospitalitate generală",
+          "description": "Expresii esențiale utile în orice loc de muncă din domeniul ospitalității."
+        },
+        "uk": {
+          "name": "Загальна сфера гостинності",
+          "description": "Основні фрази, корисні для будь-якої роботи у сфері гостинності."
+        },
+        "nl": {
+          "name": "Algemene horeca",
+          "description": "Essentiële zinnen die je in elke horecabaan kunt gebruiken."
+        }
+      }
+    },
+    {
+      "slug": "restaurant",
+      "current": {
+        "name_en": "Restaurant",
+        "name_es": "Restaurante",
+        "description_es": "Atiende mesas, toma comandas y explica el menú con seguridad."
+      },
+      "translations": {
+        "es": {
+          "name": "Restaurante",
+          "description": "Atiende mesas, toma comandas y explica el menú con seguridad."
+        },
+        "en": {
+          "name": "Restaurant",
+          "description": "Serve tables, take orders, and explain the menu with confidence."
+        },
+        "it": {
+          "name": "Ristorante",
+          "description": "Servi ai tavoli, prendi le ordinazioni e spiega il menù con sicurezza."
+        },
+        "fr": {
+          "name": "Restaurant",
+          "description": "Servez les tables, prenez les commandes et expliquez le menu avec assurance."
+        },
+        "pt": {
+          "name": "Restaurante",
+          "description": "Atende às mesas, tira pedidos e explica o menu com confiança."
+        },
+        "de": {
+          "name": "Restaurant",
+          "description": "Bediene Tische, nimm Bestellungen auf und erkläre die Speisekarte sicher."
+        },
+        "pl": {
+          "name": "Restauracja",
+          "description": "Obsługuj stoliki, przyjmuj zamówienia i pewnie objaśniaj menu."
+        },
+        "ro": {
+          "name": "Restaurant",
+          "description": "Servește mesele, preia comenzile și explică meniul cu încredere."
+        },
+        "uk": {
+          "name": "Ресторан",
+          "description": "Обслуговуй столи, приймай замовлення та впевнено пояснюй меню."
+        },
+        "nl": {
+          "name": "Restaurant",
+          "description": "Bedien tafels, neem bestellingen op en leg het menu met vertrouwen uit."
+        }
+      }
+    },
+    {
+      "slug": "bar",
+      "current": {
+        "name_en": "Bar",
+        "name_es": "Bar",
+        "description_es": "Toma pedidos de bebidas, recomienda y sirve como un profesional."
+      },
+      "translations": {
+        "es": {
+          "name": "Bar",
+          "description": "Toma pedidos de bebidas, recomienda y sirve como un profesional."
+        },
+        "en": {
+          "name": "Bar",
+          "description": "Take drink orders, make recommendations, and serve professionally."
+        },
+        "it": {
+          "name": "Bar",
+          "description": "Prendi ordini di bevande, fai raccomandazioni e servi in modo professionale."
+        },
+        "fr": {
+          "name": "Bar",
+          "description": "Prenez les commandes de boissons, faites des recommandations et servez de manière professionnelle."
+        },
+        "pt": {
+          "name": "Bar",
+          "description": "Tira pedidos de bebidas, faz recomendações e serve de forma profissional."
+        },
+        "de": {
+          "name": "Bar",
+          "description": "Nimm Getränkebestellungen auf, gib Empfehlungen und serviere professionell."
+        },
+        "pl": {
+          "name": "Bar",
+          "description": "Przyjmuj zamówienia na napoje, doradzaj i obsługuj profesjonalnie."
+        },
+        "ro": {
+          "name": "Bar",
+          "description": "Preia comenzi de băuturi, fă recomandări și servește profesionist."
+        },
+        "uk": {
+          "name": "Бар",
+          "description": "Приймай замовлення на напої, давай рекомендації та обслуговуй професійно."
+        },
+        "nl": {
+          "name": "Bar",
+          "description": "Neem drankbestellingen op, geef aanbevelingen en serveer professioneel."
+        }
+      }
+    },
+    {
+      "slug": "hotel",
+      "current": {
+        "name_en": "Hotel / Reception",
+        "name_es": "Hotel / Recepción",
+        "description_es": "Recibe huéspedes, gestiona el check-in y resuelve dudas."
+      },
+      "translations": {
+        "es": {
+          "name": "Hotel / Recepción",
+          "description": "Recibe huéspedes, gestiona el check-in y resuelve dudas."
+        },
+        "en": {
+          "name": "Hotel / Reception",
+          "description": "Welcome guests, handle check-in, and answer their questions."
+        },
+        "it": {
+          "name": "Hotel / Reception",
+          "description": "Accogli gli ospiti, gestisci il check-in e rispondi alle loro domande."
+        },
+        "fr": {
+          "name": "Hôtel / Réception",
+          "description": "Accueillez les clients, gérez le check-in et répondez à leurs questions."
+        },
+        "pt": {
+          "name": "Hotel / Receção",
+          "description": "Recebe os hóspedes, gere o check-in e esclarece as suas dúvidas."
+        },
+        "de": {
+          "name": "Hotel / Rezeption",
+          "description": "Begrüße Gäste, führe den Check-in durch und beantworte ihre Fragen."
+        },
+        "pl": {
+          "name": "Hotel / Recepcja",
+          "description": "Witaj gości, obsługuj zameldowanie i odpowiadaj na ich pytania."
+        },
+        "ro": {
+          "name": "Hotel / Recepție",
+          "description": "Întâmpină oaspeții, gestionează check-in-ul și răspunde la întrebările lor."
+        },
+        "uk": {
+          "name": "Готель / Рецепція",
+          "description": "Зустрічай гостей, проводь реєстрацію та відповідай на їхні запитання."
+        },
+        "nl": {
+          "name": "Hotel / Receptie",
+          "description": "Ontvang gasten, verzorg het inchecken en beantwoord hun vragen."
+        }
+      }
+    },
+    {
+      "slug": "coffee",
+      "current": {
+        "name_en": "Coffee Shop",
+        "name_es": "Cafetería",
+        "description_es": "Prepara pedidos de café y atiende con rapidez y amabilidad."
+      },
+      "translations": {
+        "es": {
+          "name": "Cafetería",
+          "description": "Prepara pedidos de café y atiende con rapidez y amabilidad."
+        },
+        "en": {
+          "name": "Coffee Shop",
+          "description": "Prepare coffee orders and serve customers quickly and warmly."
+        },
+        "it": {
+          "name": "Caffetteria",
+          "description": "Prepara gli ordini di caffè e servi i clienti con rapidità e cortesia."
+        },
+        "fr": {
+          "name": "Café",
+          "description": "Préparez les commandes de café et servez les clients rapidement et avec amabilité."
+        },
+        "pt": {
+          "name": "Cafetaria",
+          "description": "Prepara pedidos de café e atende os clientes com rapidez e simpatia."
+        },
+        "de": {
+          "name": "Café",
+          "description": "Bereite Kaffeebestellungen zu und bediene Gäste schnell und freundlich."
+        },
+        "pl": {
+          "name": "Kawiarnia",
+          "description": "Przygotowuj zamówienia na kawę i obsługuj gości szybko i uprzejmie."
+        },
+        "ro": {
+          "name": "Cafenea",
+          "description": "Pregătește comenzile de cafea și servește clienții rapid și amabil."
+        },
+        "uk": {
+          "name": "Кав'ярня",
+          "description": "Готуй замовлення на каву та обслуговуй гостей швидко й привітно."
+        },
+        "nl": {
+          "name": "Koffiebar",
+          "description": "Bereid koffiebestellingen en help gasten snel en vriendelijk."
+        }
+      }
+    },
+    {
+      "slug": "kitchen",
+      "current": {
+        "name_en": "Kitchen",
+        "name_es": "Cocina",
+        "description_es": "Comunícate con claridad durante el servicio en cocina."
+      },
+      "translations": {
+        "es": {
+          "name": "Cocina",
+          "description": "Comunícate con claridad durante el servicio en cocina."
+        },
+        "en": {
+          "name": "Kitchen",
+          "description": "Communicate clearly during kitchen service."
+        },
+        "it": {
+          "name": "Cucina",
+          "description": "Comunica con chiarezza durante il servizio in cucina."
+        },
+        "fr": {
+          "name": "Cuisine",
+          "description": "Communiquez clairement pendant le service en cuisine."
+        },
+        "pt": {
+          "name": "Cozinha",
+          "description": "Comunica com clareza durante o serviço de cozinha."
+        },
+        "de": {
+          "name": "Küche",
+          "description": "Kommuniziere während des Küchenservices klar und deutlich."
+        },
+        "pl": {
+          "name": "Kuchnia",
+          "description": "Komunikuj się jasno podczas pracy w kuchni."
+        },
+        "ro": {
+          "name": "Bucătărie",
+          "description": "Comunică clar în timpul serviciului în bucătărie."
+        },
+        "uk": {
+          "name": "Кухня",
+          "description": "Спілкуйся чітко під час роботи на кухні."
+        },
+        "nl": {
+          "name": "Keuken",
+          "description": "Communiceer duidelijk tijdens de keukenservice."
+        }
+      }
+    },
+    {
+      "slug": "housekeeping",
+      "current": {
+        "name_en": "Housekeeping",
+        "name_es": "Housekeeping",
+        "description_es": "Prepara habitaciones y atiende peticiones de los huéspedes."
+      },
+      "translations": {
+        "es": {
+          "name": "Housekeeping",
+          "description": "Prepara habitaciones y atiende peticiones de los huéspedes."
+        },
+        "en": {
+          "name": "Housekeeping",
+          "description": "Prepare guest rooms and handle guest requests."
+        },
+        "it": {
+          "name": "Servizio ai piani",
+          "description": "Prepara le camere e gestisci le richieste degli ospiti."
+        },
+        "fr": {
+          "name": "Service des étages",
+          "description": "Préparez les chambres et répondez aux demandes des clients."
+        },
+        "pt": {
+          "name": "Andares / Housekeeping",
+          "description": "Prepara os quartos e responde aos pedidos dos hóspedes."
+        },
+        "de": {
+          "name": "Housekeeping",
+          "description": "Bereite Gästezimmer vor und kümmere dich um die Wünsche der Gäste."
+        },
+        "pl": {
+          "name": "Housekeeping",
+          "description": "Przygotowuj pokoje i realizuj prośby gości."
+        },
+        "ro": {
+          "name": "Housekeeping",
+          "description": "Pregătește camerele și răspunde solicitărilor oaspeților."
+        },
+        "uk": {
+          "name": "Хаускіпінг",
+          "description": "Готуй номери та виконуй прохання гостей."
+        },
+        "nl": {
+          "name": "Housekeeping",
+          "description": "Maak gastenkamers klaar en handel verzoeken van gasten af."
+        }
+      }
+    }
+  ]
+}

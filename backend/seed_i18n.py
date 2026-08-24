@@ -17,6 +17,7 @@ import json
 from pathlib import Path
 
 BUNDLE_PATH = Path(__file__).parent / "data" / "mvp_i18n_import_bundle_verified_v1.json"
+CATEGORIES_PACK_PATH = Path(__file__).parent / "data" / "mvp_categories_i18n_micro_pack_v1.json"
 
 LANGS = ["es", "it", "fr", "pt", "de", "pl", "ro", "uk", "nl", "en"]
 
@@ -24,6 +25,27 @@ LANGS = ["es", "it", "fr", "pt", "de", "pl", "ro", "uk", "nl", "en"]
 def _load_bundle():
     with open(BUNDLE_PATH, encoding="utf-8") as f:
         return json.load(f)
+
+
+async def apply_categories_i18n(db):
+    """Localize the categories collection from the verified micro-pack.
+    Matches by stable slug only; preserves _id, slug, icon, order and the current
+    name_en / name_es / description_es fields. Adds grouped translations.<lang>.{name,
+    description} (the shape getLocalizedField already resolves, ES fallback). Idempotent."""
+    with open(CATEGORIES_PACK_PATH, encoding="utf-8") as f:
+        pack = json.load(f)
+    for cat in pack["categories"]:
+        doc = await db.categories.find_one({"slug": cat["slug"]})
+        if not doc:
+            continue
+        doc.setdefault("translations", {})
+        for lang, vals in cat["translations"].items():
+            doc["translations"].setdefault(lang, {})
+            doc["translations"][lang]["name"] = vals["name"]
+            doc["translations"][lang]["description"] = vals["description"]
+        doc_id = doc["_id"]
+        doc.pop("_id", None)
+        await db.categories.replace_one({"_id": doc_id}, doc)
 
 
 def _build_lookup(bundle):
@@ -188,3 +210,6 @@ async def apply_i18n_bundle(db):
         doc_id = doc["_id"]
         doc.pop("_id", None)
         await db[tax].replace_one({"_id": doc_id}, doc)
+
+    # ----- categories (verified micro-pack) -----
+    await apply_categories_i18n(db)

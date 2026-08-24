@@ -1,0 +1,30 @@
+{
+  "summary": "Independently verified the categories i18n micro-pack overlay (backend + frontend). New pytest suite /app/backend/tests/test_categories_i18n_verify.py (19 tests) passes 100% against the public REACT_APP_BACKEND_URL: exactly 7 categories with expected slugs, icon/order preserved (general=sparkles/1 ... housekeeping=brush/7), name_en preserved (bar='Bar', hotel='Hotel / Reception', coffee='Coffee Shop'), no _id leakage, list sorted by order, /api/categories/{slug} matches list and returns 404 for unknown slug. All 7 docs carry translations for all 10 languages with non-empty name+description matching the source pack byte-for-byte for fr/de/uk/en. Portuguese key is 'pt' (no 'pt-PT') both in category translations and GET /api/languages. translations.es.name == name_es and description_es preserved; resolver mirror falls back to ES for an unsupported code (never null). Still exactly 20 active situations (10 bartender + 10 waiter) and situation FR titles still resolve, so no collateral change. Idempotency re-checked: restarted backend via supervisor and re-ran the suite -> 19/19 pass, no duplication/drift. Frontend Playwright: created guests with interface_language fr/de/uk/en/pt (+ completed profile via PUT /api/guests/{id}/profile, required because /home redirects to /onboarding without it) and verified Home category cards (bar, hotel, housekeeping name+description) and the /category/bar header name+description render the correct localized strings in every language. No console errors, no error elements.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_categories_i18n_verify.py",
+    "/app/test_reports/pytest/categories_i18n_verify.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "seed_i18n.apply_categories_i18n silently skips slugs that are absent from the DB (`if not doc: continue`). Consider logging a warning so a renamed/missing slug does not silently leave a category unlocalized.",
+    "Pre-existing (NOT caused by this change, observed on Home): category cards report inflated situation counts (Bar '15 situações', Restaurant '15', General '2') while only 20 active situations exist in total - situation_count appears to count non-active/locked situations. Worth confirming this is intended."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_categories_i18n_verify.py",
+    "/app/frontend/src/pages/Home.js",
+    "/app/frontend/src/pages/Category.js"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Created throwaway anonymous guests via POST /api/guests (fr, de, uk, en, pt) with a bartender/cocktail-bar/ireland/work_abroad profile. Read-only otherwise; no seeded content modified.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": false,
+  "test_credentials": "No auth required (anonymous guests). /app/memory/test_credentials.md not needed for this scope.",
+  "context_for_next_testing_agent": "Only added data-testid attributes (no logic change): Home.js category-card-name-{slug} / category-card-desc-{slug}, Category.js category-header-name / category-header-desc. Note: /home redirects to /onboarding unless the guest has a completed professional profile - to reach /home in tests, POST /api/guests then PUT /api/guests/{id}/profile with role=bartender, venue_type=cocktail-bar, target_country=ireland, goal=work_abroad, english_level=A2, then set localStorage iph_guest_id + iph_lang. Fetching APIs from inside page.evaluate works; direct urllib from the runner gets 403.",
+  "rca_of_the_issue": "No defects found in the categories i18n scope. Two test-authoring corrections were mine, not product bugs: situations expose the role via a 'roles' array (not 'role'), and the Home page requires a completed onboarding profile before it renders category cards."
+}

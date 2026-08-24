@@ -112,6 +112,12 @@ Backend es la fuente de verdad para corrección y para el scheduling SRS. Timest
 - **Fuera del bundle (reportado, no inventado)**: las `categories` (name/description) no vienen en el bundle → permanecen EN/ES en toda interfaz. El bundle sí cubre professional_profiles, venue_types, target_countries, learning_goals, skills.
 - **Tests**: `tests/test_i18n_import.py` (8) PASS + testing_agent iteración 3 (9 tests, sin defectos críticos, idempotente, progreso/review_items preservados, contenido inglés intacto). Sin deploy.
 
+### Localización de `categories` (micro-pack v1, 2026-06)
+- Fuente de verdad: `backend/data/mvp_categories_i18n_micro_pack_v1.json` (7 categorías × 10 idiomas name+description).
+- Overlay idempotente `seed_i18n.apply_categories_i18n(db)` (llamado al final de `apply_i18n_bundle`): match por slug; preserva `_id`, `slug`, `icon`, `order`, `name_en`, `name_es`, `description_es`; añade grouped `translations.<lang>.{name,description}` (shape que `getLocalizedField` ya resuelve, ES fallback). PT bajo código interno `pt` (contenido pt-PT).
+- Wiring frontend mínimo (usa resolver existente): `Home.js` nombre de categoría vía `getLocalizedField` (la descripción ya lo usaba); `Category.js` header name+description vía `getLocalizedField`.
+- **Tests**: `tests/test_categories_i18n.py` (7) PASS + testing_agent iteración 4 (**100% backend + 100% frontend**, sin issues, idempotente). Sin deploy.
+
 ### Exportación i18n v1 (2026-06) — solo lectura, sin cambios de código/contenido
 - Herramienta reproducible `backend/tools/export_i18n.py` → genera `backend/data/mvp_i18n_export_v1.json` (copia descargable en `frontend/public/`).
 - Contiene: 7 situations legacy activas (completas: situation+lesson+learning_items, sin las 13 del pack), `ui_translations` (168 claves es+it), 9 strings visibles hardcodeados detectados, taxonomías (profiles 2, venues 6, countries 6, goals 5, skills 14), idiomas soportados (es/it) y descripción del fallback. Excluye guests/progress/attempts/SRS.

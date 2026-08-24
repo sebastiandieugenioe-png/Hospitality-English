@@ -6,12 +6,13 @@ import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
 import { getCategory } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
+import { getLocalizedField } from "@/lib/i18n";
 
 const levelLabel = { a1: "A1", a2: "A2", b1: "B1", b2: "B2" };
 
 export default function Category() {
   const { slug } = useParams();
-  const { t } = useApp();
+  const { t, language } = useApp();
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -51,11 +52,11 @@ export default function Category() {
                 <CategoryIcon name={category.icon} className="w-7 h-7" />
               </span>
               <div>
-                <h1 className="text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">
-                  {category.name_en}
+                <h1 data-testid="category-header-name" className="text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">
+                  {getLocalizedField(category, "name", language) || category.name_en}
                 </h1>
-                <p className="text-sm text-brand-charcoal/60 mt-1">
-                  {category.description_es}
+                <p data-testid="category-header-desc" className="text-sm text-brand-charcoal/60 mt-1">
+                  {getLocalizedField(category, "description", language)}
                 </p>
               </div>
             </motion.header>
