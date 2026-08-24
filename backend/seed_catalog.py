@@ -607,12 +607,41 @@ LESSONS = {
 }
 
 
-async def seed_catalog(db):
-    """Insert pilot situations, their embedded lessons, and derived learning items.
+# Assessment dimension per question id (only service/comprehension listed; rest = english).
+# Added as metadata at seed time so the curated copy is never rewritten.
+ASSESSMENT_DIMENSIONS = {
+    # taking-an-order
+    "q_mc_reply": "comprehension", "q_mc_meaning": "comprehension",
+    # cocktail recommendation
+    "ex_rc_1": "service", "q_rc_2": "service", "q_rc_1": "comprehension",
+    # less sweet
+    "ex_ls_1": "service", "q_ls_3": "service", "q_ls_4": "comprehension",
+    # too sweet
+    "ex_sw_1": "service", "q_sw_1": "service", "q_sw_2": "service", "q_sw_4": "comprehension",
+    # food recommendation
+    "ex_fd_1": "service", "q_fd_4": "service", "q_fd_2": "comprehension",
+    # nut allergy
+    "ex_nt_1": "service", "q_nt_1": "service", "q_nt_4": "service", "q_nt_2": "comprehension",
+    # food delay
+    "ex_wt_1": "service", "q_wt_1": "service", "q_wt_3": "service", "q_wt_4": "comprehension",
+}
 
-    Runs AFTER seed_content (which clears situations/lessons/learning_items), so this
-    only appends. Existing content (e.g. taking-an-order) is untouched.
-    """
+
+def dimension_for(qid):
+    return ASSESSMENT_DIMENSIONS.get(qid, "english")
+
+
+def apply_lesson_metadata(lesson):
+    """Return a copy of the lesson with content_version + per-question assessment_dimension.
+    Does not alter any curated text."""
+    out = dict(lesson)
+    out["content_version"] = 1
+    for section in ("exercises", "quiz"):
+        out[section] = [{**q, "assessment_dimension": dimension_for(q["id"])} for q in lesson[section]]
+    return out
+
+
+async def seed_catalog(db):
     situations = [dict(s) for s in SITUATIONS]
     if situations:
         await db.situations.insert_many(situations)
@@ -620,7 +649,7 @@ async def seed_catalog(db):
     for sit in SITUATIONS:
         slug = sit["slug"]
         lesson = LESSONS[slug]
-        lesson_doc = {"situation_slug": slug, **lesson}
+        lesson_doc = {"situation_slug": slug, **apply_lesson_metadata(lesson)}
         await db.lessons.insert_one(dict(lesson_doc))
 
         # Persist each phrase as a learning item (stable id, forward-looking fields).

@@ -4,17 +4,19 @@ import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
-import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation } from "@/lib/api";
+import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats } from "@/lib/api";
 import { recommendationMap, roleToCategory, roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
 import { useApp } from "@/context/AppContext";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { loading: guestLoading, onboardingCompleted, profile } = useApp();
+  const { loading: guestLoading, onboardingCompleted, profile, guestId } = useApp();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [planLabel, setPlanLabel] = useState("");
   const [featured, setFeatured] = useState(null);
+  const [resume, setResume] = useState(null);
+  const [masteredCount, setMasteredCount] = useState(0);
 
   // Send users with an incomplete professional profile through onboarding first.
   useEffect(() => {
@@ -26,6 +28,18 @@ export default function Home() {
       .then(setCategories)
       .finally(() => setLoading(false));
   }, []);
+
+  // Resume in-progress attempt + mastered count for the progress teaser.
+  useEffect(() => {
+    if (!guestId) return;
+    getAttempts(guestId).then((atts) => {
+      const ip = atts.find((a) => a.status === "in_progress");
+      if (ip) getSituation(ip.situation_slug).then((s) => setResume(s)).catch(() => {});
+    }).catch(() => {});
+    getSituationStats(guestId).then((st) => {
+      setMasteredCount(Object.values(st).filter((s) => s.mastered).length);
+    }).catch(() => {});
+  }, [guestId]);
 
   // Featured "continue" situation, relevant to the user's role.
   useEffect(() => {
@@ -78,6 +92,41 @@ export default function Home() {
           )}
         </motion.div>
 
+
+        {/* Resume + progress teaser */}
+        {(resume || masteredCount > 0) && (
+          <section className="mt-8 grid gap-4 sm:grid-cols-2">
+            {resume && (
+              <button
+                data-testid="home-resume-card"
+                onClick={() => navigate(`/lesson/${resume.slug}`)}
+                className="text-left rounded-2xl bg-white border border-black/5 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+              >
+                <p className="text-xs uppercase tracking-[0.15em] text-brand-terracotta font-semibold">
+                  Continúa donde lo dejaste
+                </p>
+                <p className="mt-2 text-lg font-serif text-brand-espresso">
+                  {resume.translations?.es?.title || resume.title_en}
+                </p>
+              </button>
+            )}
+            {masteredCount > 0 && (
+              <button
+                data-testid="home-progress-teaser"
+                onClick={() => navigate("/progress")}
+                className="text-left rounded-2xl bg-white border border-black/5 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+              >
+                <p className="text-xs uppercase tracking-[0.15em] text-brand-charcoal/50 font-semibold">
+                  Tu progreso
+                </p>
+                <p className="mt-2 text-lg font-serif text-brand-espresso">
+                  {masteredCount} {masteredCount === 1 ? "situación dominada" : "situaciones dominadas"}
+                </p>
+                <span className="mt-1 inline-block text-sm text-brand-forest">Ver progreso →</span>
+              </button>
+            )}
+          </section>
+        )}
 
         {/* Continue learning */}
         <section className="mt-8">

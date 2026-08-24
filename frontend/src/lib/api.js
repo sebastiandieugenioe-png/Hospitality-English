@@ -20,6 +20,17 @@ export const getSkills = (params = {}) => client.get("/skills", { params }).then
 export const getSituations = (params = {}) => client.get("/situations", { params }).then((r) => r.data);
 export const getSituation = (slug) => client.get(`/situations/${slug}`).then((r) => r.data);
 
+// Situation attempts + progress
+export const startAttempt = (guest_id, situation_slug) =>
+  client.post("/situation-attempts/start", { guest_id, situation_slug }).then((r) => r.data);
+export const submitResponse = (attemptId, payload) =>
+  client.put(`/situation-attempts/${attemptId}/response`, payload).then((r) => r.data);
+export const completeAttempt = (attemptId) =>
+  client.post(`/situation-attempts/${attemptId}/complete`).then((r) => r.data);
+export const getAttempts = (guestId) => client.get(`/guests/${guestId}/attempts`).then((r) => r.data);
+export const getSituationStats = (guestId) =>
+  client.get(`/guests/${guestId}/situation-stats`).then((r) => r.data);
+
 export const createGuest = (payload = {}) => client.post("/guests", payload).then((r) => r.data);
 export const getGuest = (id) => client.get(`/guests/${id}`).then((r) => r.data);
 export const updateOnboarding = (id, payload) => client.put(`/guests/${id}/onboarding`, payload).then((r) => r.data);

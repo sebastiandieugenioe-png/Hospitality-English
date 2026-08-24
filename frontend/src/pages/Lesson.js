@@ -13,7 +13,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { toast } from "sonner";
-import { getLesson } from "@/lib/api";
+import { getLesson, startAttempt, submitResponse, completeAttempt } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
 import { ServiceNote } from "@/components/ServiceNote";
 
@@ -31,11 +31,13 @@ const STEP_LABEL = {
 export default function Lesson() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { logCompletion } = useApp();
+  const { logCompletion, ensureGuest } = useApp();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stepIdx, setStepIdx] = useState(0);
   const [score, setScore] = useState({ correct: 0, total: 0 });
+  const [attemptId, setAttemptId] = useState(null);
+  const [attemptResult, setAttemptResult] = useState(null);
   const recordedRef = useRef(false);
 
   useEffect(() => {
@@ -44,6 +46,28 @@ export default function Lesson() {
       .then(setData)
       .finally(() => setLoading(false));
   }, [slug]);
+
+  useEffect(() => {
+    if (!data?.available) return;
+    (async () => {
+      const gid = await ensureGuest();
+      try {
+        const a = await startAttempt(gid, slug);
+        setAttemptId(a.attempt_id);
+      } catch (e) {
+        console.error("startAttempt failed", e);
+      }
+    })();
+  }, [data, slug, ensureGuest]);
+
+  const sendResponse = async (question, section, submitted) => {
+    if (!attemptId) return;
+    try {
+      await submitResponse(attemptId, { question_id: question.id, section, submitted_answer: submitted });
+    } catch (e) {
+      console.error("submitResponse failed", e);
+    }
+  };
 
   const step = STEPS[stepIdx];
   const next = () => setStepIdx((i) => Math.min(i + 1, STEPS.length - 1));
@@ -103,18 +127,27 @@ export default function Lesson() {
           {step === "phrases" && <Phrases lesson={lesson} onNext={next} onBack={prev} />}
           {step === "dialogue" && <Dialogue lesson={lesson} onNext={next} onBack={prev} />}
           {step === "flashcards" && <Flashcards lesson={lesson} onNext={next} />}
-          {step === "exercises" && <Exercises lesson={lesson} onNext={next} />}
+          {step === "exercises" && <Exercises lesson={lesson} onNext={next} onSubmit={sendResponse} />}
           {step === "quiz" && (
             <Quiz
               lesson={lesson}
-              onNext={(correct, total) => {
+              onSubmit={sendResponse}
+              onNext={async (correct, total) => {
                 setScore({ correct, total });
+                if (attemptId) {
+                  try {
+                    const res = await completeAttempt(attemptId);
+                    setAttemptResult(res);
+                  } catch (e) {
+                    console.error("completeAttempt failed", e);
+                  }
+                }
                 next();
               }}
             />
           )}
           {step === "completion" && (
-            <Completion lesson={lesson} score={score} situation={data.situation} />
+            <Completion result={attemptResult} score={score} situation={data.situation} slug={slug} />
           )}
         </motion.div>
       </AnimatePresence>
@@ -421,7 +454,7 @@ function Flashcards({ lesson, onNext }) {
 }
 
 /* ---------- Steps 5 & 6: Exercises / Quiz (shared question flow) ---------- */
-function Exercises({ lesson, onNext }) {
+function Exercises({ lesson, onNext, onSubmit }) {
   return (
     <div>
       <h2 className="text-2xl sm:text-3xl font-serif text-brand-espresso tracking-tight mb-2">
@@ -432,6 +465,8 @@ function Exercises({ lesson, onNext }) {
       </p>
       <QuestionFlow
         questions={lesson.exercises}
+        section="exercise"
+        onSubmit={onSubmit}
         testPrefix="exercise"
         finishLabel="Ir al quiz"
         onComplete={() => onNext()}
@@ -440,7 +475,7 @@ function Exercises({ lesson, onNext }) {
   );
 }
 
-function Quiz({ lesson, onNext }) {
+function Quiz({ lesson, onNext, onSubmit }) {
   return (
     <div>
       <h2 className="text-2xl sm:text-3xl font-serif text-brand-espresso tracking-tight mb-2">
@@ -451,6 +486,8 @@ function Quiz({ lesson, onNext }) {
       </p>
       <QuestionFlow
         questions={lesson.quiz}
+        section="quiz"
+        onSubmit={onSubmit}
         testPrefix="quiz"
         finishLabel="Ver resultado"
         onComplete={(correct) => onNext(correct, lesson.quiz.length)}
@@ -459,7 +496,7 @@ function Quiz({ lesson, onNext }) {
   );
 }
 
-function QuestionFlow({ questions, onComplete, finishLabel, testPrefix }) {
+function QuestionFlow({ questions, onComplete, finishLabel, testPrefix, section, onSubmit }) {
   const [idx, setIdx] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const isLast = idx + 1 >= questions.length;
@@ -489,6 +526,8 @@ function QuestionFlow({ questions, onComplete, finishLabel, testPrefix }) {
       <QuestionCard
         key={idx}
         q={questions[idx]}
+        section={section}
+        onSubmit={onSubmit}
         testId={`${testPrefix}-${idx}`}
         isLast={isLast}
         finishLabel={finishLabel}
@@ -498,7 +537,7 @@ function QuestionFlow({ questions, onComplete, finishLabel, testPrefix }) {
   );
 }
 
-function QuestionCard({ q, onContinue, isLast, finishLabel, testId }) {
+function QuestionCard({ q, onContinue, isLast, finishLabel, testId, section, onSubmit }) {
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
 
@@ -517,18 +556,23 @@ function QuestionCard({ q, onContinue, isLast, finishLabel, testId }) {
 
   const evaluate = () => {
     let ok = false;
+    let submitted = null;
     if (q.type === "multiple_choice") {
       ok = selected === q.answer_index;
+      submitted = selected;
     } else if (q.type === "fill_gap") {
       ok = text.trim().toLowerCase() === q.answer.toLowerCase();
+      submitted = text;
     } else if (q.type === "word_ordering") {
       const norm = (s) =>
         s.toLowerCase().replace(/[^\w\s]/g, "").replace(/\s+/g, " ").trim();
       const built = picked.map((p) => p.w).join(" ");
       ok = norm(built) === norm(q.answer);
+      submitted = built;
     }
     setIsCorrect(ok);
     setAnswered(true);
+    if (onSubmit) onSubmit(q, section, submitted);
   };
 
   const canCheck =
@@ -676,9 +720,18 @@ function QuestionCard({ q, onContinue, isLast, finishLabel, testId }) {
 }
 
 /* ---------- Step 7: Completion ---------- */
-function Completion({ lesson, score, situation }) {
+function Completion({ result, score, situation, slug }) {
   const navigate = useNavigate();
   const title = situation?.translations?.es?.title || situation?.title_en || "Situación";
+  const scores = result?.scores;
+  const overall = scores?.overall ?? Math.round((score.correct / (score.total || 1)) * 100);
+  const mastered = result?.mastered;
+  const dims = [
+    { key: "english", label: "Inglés" },
+    { key: "comprehension", label: "Comprensión" },
+    { key: "service", label: "Servicio" },
+  ].filter((d) => scores && scores[d.key] != null);
+
   return (
     <div className="text-center py-6">
       <motion.div
@@ -690,40 +743,60 @@ function Completion({ lesson, score, situation }) {
         <Trophy className="w-9 h-9" />
       </motion.div>
       <h1 className="mt-6 text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">
-        ¡Lección completada!
+        Situación completada
       </h1>
       <p className="mt-2 text-brand-charcoal/60">{title}</p>
 
-      <div className="mt-8 grid grid-cols-2 gap-4">
-        <div className="rounded-2xl bg-white border border-black/5 p-6 shadow-sm">
-          <p className="text-4xl font-serif text-brand-forest" data-testid="completion-score">
-            {score.correct}/{score.total}
-          </p>
-          <p className="mt-1 text-xs uppercase tracking-[0.15em] text-brand-charcoal/50">
-            Respuestas correctas
-          </p>
-        </div>
-        <div className="rounded-2xl bg-white border border-black/5 p-6 shadow-sm">
-          <p className="text-4xl font-serif text-brand-forest">{lesson.phrases.length}</p>
-          <p className="mt-1 text-xs uppercase tracking-[0.15em] text-brand-charcoal/50">
-            Frases practicadas
-          </p>
-        </div>
+      <div className="mt-8 rounded-2xl bg-white border border-black/5 p-6 shadow-sm">
+        <p className="text-5xl font-serif text-brand-forest" data-testid="completion-score">
+          {overall}%
+        </p>
+        <p className="mt-1 text-xs uppercase tracking-[0.15em] text-brand-charcoal/50">
+          Puntuación general
+        </p>
+        {dims.length > 0 && (
+          <div className="mt-5 grid grid-cols-3 gap-3">
+            {dims.map((d) => (
+              <div key={d.key} data-testid={`score-${d.key}`}>
+                <p className="text-2xl font-serif text-brand-espresso">{scores[d.key]}%</p>
+                <p className="text-[10px] uppercase tracking-[0.12em] text-brand-charcoal/45">
+                  {d.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      <div className="mt-10 space-y-3">
+      <p
+        data-testid="mastery-message"
+        className={`mt-6 font-medium ${mastered ? "text-brand-forest" : "text-brand-charcoal/70"}`}
+      >
+        {mastered
+          ? "Has dominado esta situación."
+          : "Buena práctica. Puedes repetirla para mejorar."}
+      </p>
+
+      <div className="mt-8 space-y-3">
         <PrimaryBtn
-          testId="completion-continue-btn"
-          onClick={() => navigate("/learn")}
+          testId="completion-retry-btn"
+          onClick={() => navigate(0)}
         >
-          <BookOpen className="w-4 h-4" /> Continuar aprendiendo
+          <RotateCw className="w-4 h-4" /> Practicar de nuevo
         </PrimaryBtn>
         <button
-          data-testid="completion-home-btn"
-          onClick={() => navigate("/home")}
+          data-testid="completion-skill-btn"
+          onClick={() => navigate(situation?.primary_skill ? `/skill/${situation.primary_skill}` : "/learn")}
           className="inline-flex items-center justify-center gap-2 w-full bg-white text-brand-forest border border-brand-forest/20 hover:bg-brand-sand transition-colors rounded-lg px-6 py-4 font-medium"
         >
-          Volver al inicio
+          <BookOpen className="w-4 h-4" /> Volver a la habilidad
+        </button>
+        <button
+          data-testid="completion-progress-btn"
+          onClick={() => navigate("/progress")}
+          className="text-sm font-medium text-brand-charcoal/60 hover:text-brand-forest transition-colors"
+        >
+          Ver progreso
         </button>
       </div>
     </div>

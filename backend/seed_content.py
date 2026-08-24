@@ -356,8 +356,9 @@ async def seed(db):
     if items:
         await db.learning_items.insert_many(items)
 
+    from seed_catalog import apply_lesson_metadata
     for slug, lesson in LESSONS.items():
-        doc = dict(lesson)
+        doc = apply_lesson_metadata(lesson)
         doc["situation_slug"] = slug
-        await db.lessons.insert_one(doc)
+        await db.lessons.insert_one(dict(doc))
 

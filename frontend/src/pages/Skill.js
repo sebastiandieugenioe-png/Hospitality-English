@@ -3,17 +3,23 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft, Clock } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { getSkills, getSituations } from "@/lib/api";
+import { getSkills, getSituations, getSituationStats } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
 
 const LEVEL_LABEL = { a1: "A1", a2: "A2", b1: "B1", b2: "B2" };
+const STATUS = {
+  in_progress: { label: "En curso", cls: "bg-brand-sand text-brand-terracotta-hover" },
+  completed: { label: "Completada", cls: "bg-brand-success-muted text-brand-forest" },
+  mastered: { label: "Dominada ✓", cls: "bg-brand-forest text-white" },
+};
 
 export default function Skill() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { loading: guestLoading, onboardingCompleted, profile } = useApp();
+  const { loading: guestLoading, onboardingCompleted, guestId, profile } = useApp();
   const [skill, setSkill] = useState(null);
   const [situations, setSituations] = useState([]);
+  const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,13 +30,18 @@ export default function Skill() {
     if (!profile?.role) return;
     const params = { role: profile.role, skill: slug };
     if (profile.venue_type) params.venue_type = profile.venue_type;
-    Promise.all([getSkills({ role: profile.role }), getSituations(params)])
-      .then(([skills, sits]) => {
+    Promise.all([
+      getSkills({ role: profile.role }),
+      getSituations(params),
+      guestId ? getSituationStats(guestId) : Promise.resolve({}),
+    ])
+      .then(([skills, sits, st]) => {
         setSkill(skills.find((s) => s.id === slug) || null);
         setSituations(sits);
+        setStats(st || {});
       })
       .finally(() => setLoading(false));
-  }, [profile, slug]);
+  }, [profile, slug, guestId]);
 
   return (
     <div className="min-h-screen bg-brand-sand">
@@ -97,6 +108,14 @@ export default function Skill() {
                       <span className="inline-flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" /> {sit.estimated_minutes} min
                       </span>
+                      {STATUS[stats[sit.slug]?.status] && (
+                        <span
+                          data-testid={`situation-status-${sit.slug}`}
+                          className={`ml-auto px-2 py-0.5 rounded-full ${STATUS[stats[sit.slug].status].cls}`}
+                        >
+                          {STATUS[stats[sit.slug].status].label}
+                        </span>
+                      )}
                     </div>
                   </Link>
                 </motion.div>
