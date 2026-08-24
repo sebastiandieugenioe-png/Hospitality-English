@@ -168,7 +168,7 @@ EXERCISES_TAKING_AN_ORDER = [
         "type": "word_ordering",
         "prompt_es": "Ordena las palabras para formar la pregunta correcta:",
         "words": ["ready", "you", "Are", "to", "order"],
-        "answer": "Are you ready to order?",
+        "answer": "Are you ready to order",
         "explanation_es": "El orden correcto es: Are you ready to order?",
     },
 ]
@@ -213,7 +213,7 @@ QUIZ_TAKING_AN_ORDER = [
         "type": "word_ordering",
         "prompt_es": "Ordena las palabras:",
         "words": ["else", "anything", "like", "Would", "you"],
-        "answer": "Would you like anything else?",
+        "answer": "Would you like anything else",
         "explanation_es": "El orden correcto es: Would you like anything else?",
     },
     {
@@ -251,6 +251,48 @@ LESSONS = {
 }
 
 
+# ---------------------------------------------------------------------------
+# Forward-looking, OPTIONAL metadata (additive, backwards compatible).
+# Maps a situation slug -> extra fields used by the future conversation-training
+# product (professional roles, hospitality skills, venue types, country variants).
+# Situations not listed here simply get empty defaults; existing consumers that
+# ignore these fields keep working unchanged.
+# ---------------------------------------------------------------------------
+SITUATION_META = {
+    "welcoming-guests": {"roles": ["waiter"], "skills": ["greeting-guests", "small-talk"], "venue_types": ["casual-restaurant", "fine-dining"]},
+    "taking-an-order": {"roles": ["waiter"], "skills": ["taking-orders", "greeting-guests"], "venue_types": ["casual-restaurant", "fine-dining", "hotel-restaurant"], "country_variants": ["US", "UK"]},
+    "explaining-the-menu": {"roles": ["waiter"], "skills": ["explaining-menu", "upselling"], "venue_types": ["casual-restaurant", "fine-dining"]},
+    "allergies-and-dietary-requirements": {"roles": ["waiter"], "skills": ["explaining-menu", "handling-complaints"]},
+    "checking-on-the-table": {"roles": ["waiter"], "skills": ["small-talk"]},
+    "bringing-the-bill": {"roles": ["waiter"], "skills": ["processing-payment"], "country_variants": ["US", "UK"]},
+    "taking-a-drinks-order": {"roles": ["bartender"], "skills": ["taking-orders"], "venue_types": ["cocktail-bar", "pub"]},
+    "recommending-drinks": {"roles": ["bartender"], "skills": ["upselling"], "venue_types": ["cocktail-bar", "pub"]},
+    "explaining-cocktails": {"roles": ["bartender"], "skills": ["explaining-menu"], "venue_types": ["cocktail-bar"]},
+    "serving-beer": {"roles": ["bartender"], "skills": ["taking-orders"], "venue_types": ["pub"]},
+    "handling-a-complaint-bar": {"roles": ["bartender"], "skills": ["handling-complaints"], "venue_types": ["cocktail-bar", "pub"]},
+}
+
+# Optional per-learning-item metadata: country-specific vocabulary variants and skills.
+# Structure demonstrates how future variants will be authored without duplicating items.
+LEARNING_ITEM_META = {
+    "li_take_order_ready": {"skills": ["taking-orders", "greeting-guests"]},
+    "li_take_order_what_like": {"skills": ["taking-orders"]},
+    "li_take_order_steak_cooked": {"skills": ["taking-orders"]},
+    "li_take_order_anything_else": {"skills": ["upselling"]},
+    "li_take_order_put_through": {"skills": ["taking-orders"]},
+}
+
+
+def _situation_extra(slug):
+    meta = SITUATION_META.get(slug, {})
+    return {
+        "roles": meta.get("roles", []),
+        "skills": meta.get("skills", []),
+        "venue_types": meta.get("venue_types", []),
+        "country_variants": meta.get("country_variants", []),
+    }
+
+
 async def seed(db):
     """Idempotently (re)load static content collections. Guest progress is never touched."""
     await db.categories.delete_many({})
@@ -259,11 +301,19 @@ async def seed(db):
     await db.lessons.delete_many({})
 
     await db.categories.insert_many([dict(c) for c in CATEGORIES])
-    await db.situations.insert_many([dict(s) for s in SITUATIONS])
 
-    # Persist learning items with their category/situation context.
+    # Situations get additive optional metadata (defaults empty) for forward compatibility.
+    situations = []
+    for s in SITUATIONS:
+        doc = dict(s)
+        doc.update(_situation_extra(s["slug"]))
+        situations.append(doc)
+    await db.situations.insert_many(situations)
+
+    # Persist learning items with their category/situation context + optional metadata.
     items = []
     for phrase in PHRASES_TAKING_AN_ORDER:
+        meta = LEARNING_ITEM_META.get(phrase["id"], {})
         items.append({
             "id": phrase["id"],
             "category_slug": "restaurant",
@@ -272,6 +322,9 @@ async def seed(db):
             "difficulty": "beginner",
             "english_content": phrase["english_content"],
             "translations": phrase["translations"],
+            # Forward-looking optional fields (additive):
+            "skills": meta.get("skills", []),
+            "country_variants": meta.get("country_variants", {}),
         })
     if items:
         await db.learning_items.insert_many(items)
@@ -280,3 +333,4 @@ async def seed(db):
         doc = dict(lesson)
         doc["situation_slug"] = slug
         await db.lessons.insert_one(doc)
+

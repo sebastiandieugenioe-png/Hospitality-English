@@ -40,3 +40,25 @@ login obligatorio, Google/Apple login, ads, subscriptions, payments, analytics a
 
 ## Next Tasks
 - Autorizar contenido para más situaciones (mismo esquema que `taking-an-order`).
+
+---
+
+## Architecture Evolution Prep (2026-08-22) — backwards compatible
+Objetivo futuro: "Entrenar las conversaciones reales que un trabajador de hostelería necesita en inglés". Roles iniciales: **bartender**, **waiter**.
+
+### Añadido (aditivo, sin romper nada)
+- Nuevas colecciones de referencia (read-only) + seed idempotente (`seed_reference.py`): `professional_profiles`, `venue_types`, `target_countries` (con `english_variant`), `skills`.
+- Endpoints read-only: `GET /api/professional-profiles`, `/api/venue-types`, `/api/target-countries`, `/api/skills`.
+- Campos opcionales en `situations`: `roles`, `skills`, `venue_types`, `country_variants` (default `[]`), mapeados en `SITUATION_META`.
+- Campos opcionales en `learning_items`: `skills` (`[]`), `country_variants` (`{}`) — estructura para variantes por país sin duplicar el item.
+- `guests` ampliado en creación: `professional_profile {role,venue_type,country,skills}` + placeholders `situation_attempts`, `mistake_bank`, `srs` (aún no usados por ninguna feature).
+- Endpoint `PUT /api/guests/{id}/profile` para fijar el perfil profesional.
+- Índices Mongo forward-looking (guests.id, slugs).
+- Fix latente: los `word_ordering` answers ya no incluyen `?` (el frontend ya normalizaba puntuación) → datos consistentes.
+
+### NO tocado
+Rutas existentes, diseño visual, autenticación (no hay), colecciones de contenido/guests existentes, UI en español, frontend (ignora los campos nuevos). 19/19 tests backend pasan.
+
+### Próximo a implementar (roadmap, NO hecho aún)
+professional profiles UI + onboarding por rol; situation attempts + service-language scoring; job-readiness progress; mistake bank; spaced repetition; shift practice; on-shift phrase search; country-specific vocabulary variants.
+

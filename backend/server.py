@@ -11,6 +11,7 @@ import uuid
 from datetime import datetime, timezone
 
 import seed_content
+import seed_reference
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -39,6 +40,17 @@ class Onboarding(BaseModel):
 class GuestCreate(BaseModel):
     workplace: Optional[str] = None
     goal: Optional[str] = None
+    # Forward-looking optional fields for the professional-profile evolution.
+    role: Optional[str] = None
+    venue_type: Optional[str] = None
+    country: Optional[str] = None
+
+
+class ProfileUpdate(BaseModel):
+    role: Optional[str] = None
+    venue_type: Optional[str] = None
+    country: Optional[str] = None
+    skills: Optional[List[str]] = None
 
 
 class FlashcardInteraction(BaseModel):
@@ -89,6 +101,27 @@ async def get_lesson(situation_slug: str):
     return {"situation": situation, "available": True, "lesson": lesson}
 
 
+# ---------- Reference / taxonomy endpoints (read-only, additive) ----------
+@api_router.get("/professional-profiles")
+async def get_professional_profiles():
+    return await db.professional_profiles.find({}, {"_id": 0}).sort("order", 1).to_list(100)
+
+
+@api_router.get("/venue-types")
+async def get_venue_types():
+    return await db.venue_types.find({}, {"_id": 0}).sort("order", 1).to_list(100)
+
+
+@api_router.get("/target-countries")
+async def get_target_countries():
+    return await db.target_countries.find({}, {"_id": 0}).sort("order", 1).to_list(100)
+
+
+@api_router.get("/skills")
+async def get_skills():
+    return await db.skills.find({}, {"_id": 0}).to_list(100)
+
+
 # ---------- Guest / progress endpoints ----------
 @api_router.post("/guests")
 async def create_guest(payload: GuestCreate):
@@ -96,11 +129,34 @@ async def create_guest(payload: GuestCreate):
         "id": str(uuid.uuid4()),
         "created_at": now_iso(),
         "onboarding": {"workplace": payload.workplace, "goal": payload.goal},
+        # Forward-looking professional profile (additive; empty until set).
+        "professional_profile": {
+            "role": payload.role,
+            "venue_type": payload.venue_type,
+            "country": payload.country,
+            "skills": [],
+        },
         "flashcard_interactions": [],
         "completed_lessons": [],
+        # Placeholders for the conversation-training roadmap (not yet used by any feature):
+        "situation_attempts": [],
+        "mistake_bank": [],
+        "srs": {},
     }
     await db.guests.insert_one(dict(guest))
     guest.pop("_id", None)
+    return guest
+
+
+@api_router.put("/guests/{guest_id}/profile")
+async def update_profile(guest_id: str, payload: ProfileUpdate):
+    updates = {f"professional_profile.{k}": v for k, v in payload.model_dump(exclude_none=True).items()}
+    if not updates:
+        raise HTTPException(status_code=422, detail="No profile fields provided")
+    result = await db.guests.update_one({"id": guest_id}, {"$set": updates})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
     return guest
 
 
@@ -171,7 +227,18 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_seed():
     await seed_content.seed(db)
-    logger.info("Content seeded.")
+    await seed_reference.seed_reference(db)
+    # Forward-looking indexes (safe / additive).
+    try:
+        await db.guests.create_index("id")
+        await db.categories.create_index("slug")
+        await db.situations.create_index("slug")
+        await db.situations.create_index("category")
+        await db.learning_items.create_index("id")
+        await db.learning_items.create_index("situation_slug")
+    except Exception as e:
+        logger.warning(f"Index creation skipped: {e}")
+    logger.info("Content + reference data seeded.")
 
 
 @app.on_event("shutdown")
