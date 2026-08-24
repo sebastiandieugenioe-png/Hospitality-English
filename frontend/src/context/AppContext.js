@@ -1,9 +1,11 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import * as api from "@/lib/api";
+import { makeT, detectBrowserLanguage, DEFAULT_LANGUAGE, SUPPORTED_CODES } from "@/lib/i18n";
 
 const AppContext = createContext(null);
 
 const GUEST_KEY = "iph_guest_id";
+const LANG_KEY = "iph_lang";
 // Temporary onboarding draft (allowed in localStorage). MongoDB is the source of truth
 // for the *completed* profile.
 export const DRAFT_KEY = "iph_onboarding_draft";
@@ -11,9 +13,21 @@ export const DRAFT_KEY = "iph_onboarding_draft";
 export function AppProvider({ children }) {
   const [guestId, setGuestId] = useState(() => localStorage.getItem(GUEST_KEY) || null);
   const [guest, setGuest] = useState(null);
+  // Language: localStorage is only a cache to avoid a flash; MongoDB (guest) is the
+  // source of truth once a guest exists.
+  const [language, setLanguageState] = useState(
+    () => localStorage.getItem(LANG_KEY) || detectBrowserLanguage()
+  );
   // `loading` is true until the initial guest fetch settles (only if a guestId exists).
   const [loading, setLoading] = useState(() => !!localStorage.getItem(GUEST_KEY));
   const creatingRef = useRef(null);
+
+  const t = useMemo(() => makeT(language), [language]);
+
+  useEffect(() => {
+    localStorage.setItem(LANG_KEY, language);
+    document.documentElement.lang = language;
+  }, [language]);
 
   useEffect(() => {
     let active = true;
@@ -24,7 +38,14 @@ export function AppProvider({ children }) {
     setLoading(true);
     api
       .getGuest(guestId)
-      .then((g) => active && setGuest(g))
+      .then((g) => {
+        if (!active) return;
+        setGuest(g);
+        // MongoDB is the source of truth for a returning guest.
+        if (g.interface_language && g.interface_language !== language) {
+          setLanguageState(g.interface_language);
+        }
+      })
       .catch(() => {
         // Stale/unknown id (e.g. DB reset): drop it so the user can start fresh.
         localStorage.removeItem(GUEST_KEY);
@@ -34,19 +55,34 @@ export function AppProvider({ children }) {
     return () => {
       active = false;
     };
-  }, [guestId]);
+  }, [guestId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Returns an existing guest id or creates one. Never creates duplicates.
   const ensureGuest = async () => {
     if (guestId) return guestId;
     if (creatingRef.current) return creatingRef.current;
-    creatingRef.current = api.createGuest().then((g) => {
+    creatingRef.current = api.createGuest({ interface_language: language }).then((g) => {
       localStorage.setItem(GUEST_KEY, g.id);
       setGuestId(g.id);
       setGuest(g);
       return g.id;
     });
     return creatingRef.current;
+  };
+
+  // Change interface language: update UI immediately + persist to backend (no reload,
+  // no progress loss). Works before a guest exists (persists at guest creation).
+  const setLanguage = async (code) => {
+    if (!SUPPORTED_CODES.includes(code)) return;
+    setLanguageState(code);
+    if (guestId) {
+      try {
+        const g = await api.updateLanguage(guestId, code);
+        setGuest(g);
+      } catch (e) {
+        console.error("Language sync failed", e);
+      }
+    }
   };
 
   const refreshGuest = async () => {
@@ -93,6 +129,9 @@ export function AppProvider({ children }) {
     profile,
     legacyOnboarding,
     onboardingCompleted: !!guest?.onboarding_completed,
+    language,
+    t,
+    setLanguage,
     ensureGuest,
     refreshGuest,
     completeProfile,

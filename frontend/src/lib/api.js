@@ -43,6 +43,9 @@ export const rateReviewItem = (itemId, rating) =>
 
 export const createGuest = (payload = {}) => client.post("/guests", payload).then((r) => r.data);
 export const getGuest = (id) => client.get(`/guests/${id}`).then((r) => r.data);
+export const updateLanguage = (id, interface_language) =>
+  client.put(`/guests/${id}/language`, { interface_language }).then((r) => r.data);
+export const getLanguages = () => client.get("/languages").then((r) => r.data);
 export const updateOnboarding = (id, payload) => client.put(`/guests/${id}/onboarding`, payload).then((r) => r.data);
 export const updateProfile = (id, payload) => client.put(`/guests/${id}/profile`, payload).then((r) => r.data);
 export const recordFlashcard = (id, payload) => client.post(`/guests/${id}/flashcard`, payload).then((r) => r.data);

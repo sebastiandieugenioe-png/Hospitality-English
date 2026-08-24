@@ -82,8 +82,16 @@ Backend es la fuente de verdad para corrección y para el scheduling SRS. Timest
 - Sesión de repaso: pregunta (MC/fill_gap/word_ordering) → Comprobar → feedback (correcto/incorrecto + respuesta correcta + explicación) → valorar dificultad → siguiente → "Repaso completado".
 - Redirige a `/onboarding` si el perfil no está completo; `load()` con try/catch (guest inválido no rompe la página).
 
+### i18n (multilingüe es/it) — implementado (2026-06)
+- **Idioma de interfaz** por huésped: `guests.interface_language` ("es"|"it"). `PUT /api/guests/{id}/language` lo actualiza.
+- **Helper `_loc_field(obj, base, lang)`**: resuelve campo localizado con doble forma soportada — agrupada `translations.<lang>.<base>` (usado en situaciones) y sufijo `<base>_<lang>` (usado en ejercicios/quiz). Fallback silencioso: lang → es → None. `_loc_options` localiza opciones MC solo si existe traducción; las respuestas objetivo en inglés NUNCA se traducen.
+- **Endpoints localizados**: `/review-items` resuelve `content.prompt`, `content.options`, `situation_title` y `explanation` según `interface_language` del huésped. `title_en` (inglés objetivo) preservado.
+- **Contrato de tests actualizado** (i18n): `content.prompt_es`→`content.prompt`, `situation_title_es`→`situation_title`. Sin cambio en lógica SRS/scoring ni exposición de `answer`/`answer_index` antes del POST.
+- **Frontend**: `locales/es.json`, `locales/it.json`, `lib/i18n.js` (`t()`), strings reemplazados en Navbar/Onboarding/Lesson/Practice/ServiceNote.
+- **Seed**: taxonomías + 2 lecciones piloto (incl. `guest-says-cocktail-is-too-sweet`) con `it`.
+
 ### Tests
-- `tests/test_srs.py` (19 tests) + verificación del testing agent en `test_srs_verification.py` (11). Suite completa: **93 passed, 0 regresiones**. Frontend verificado E2E (desktop + mobile 390px).
+- `tests/test_srs.py` + `test_srs_verification.py`: **30 passed** tras adaptar aserciones al contrato i18n. Validación manual curl: guest conserva `interface_language=it`, título/prompt en italiano, opciones/`title_en` en inglés objetivo intactos.
 
 ### Fuera de alcance (confirmado por el usuario, NO hecho)
 Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shift Practice; IA.

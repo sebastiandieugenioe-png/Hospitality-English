@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, Check } from "lucide-react";
@@ -10,10 +10,20 @@ import {
   getTargetCountries,
   getLearningGoals,
 } from "@/lib/api";
-import { onboardingSteps, legacyWorkplaceToRole } from "@/lib/content";
+import { legacyWorkplaceToRole } from "@/lib/content";
+import { getLocalizedField, SUPPORTED_LANGUAGES } from "@/lib/i18n";
 import { useApp, DRAFT_KEY } from "@/context/AppContext";
 
-const emptySelections = { role: "", venue_type: "", target_country: "", goal: "" };
+const emptySelections = { interface_language: "", role: "", venue_type: "", target_country: "", goal: "" };
+
+// 5 functional steps: language first, then the professional profile.
+const STEPS = [
+  { id: "language", field: "interface_language" },
+  { id: "role", field: "role" },
+  { id: "venue", field: "venue_type" },
+  { id: "country", field: "target_country" },
+  { id: "goal", field: "goal" },
+];
 
 function loadDraft() {
   try {
@@ -25,15 +35,16 @@ function loadDraft() {
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { loading, onboardingCompleted, legacyOnboarding, completeProfile } = useApp();
+  const { loading, onboardingCompleted, legacyOnboarding, completeProfile, language, setLanguage, t } = useApp();
 
-  const [options, setOptions] = useState(null); // {role, venue_type, target_country, goal}
+  const [taxonomies, setTaxonomies] = useState(null);
   const [optionsError, setOptionsError] = useState(false);
   const [step, setStep] = useState(() => loadDraft()?.step || 0);
-  const [selections, setSelections] = useState(() => loadDraft()?.selections || emptySelections);
+  const [selections, setSelections] = useState(
+    () => loadDraft()?.selections || { ...emptySelections, interface_language: language }
+  );
   const [saving, setSaving] = useState(false);
 
-  // Load taxonomies from backend (single source of truth, no duplicated strings).
   useEffect(() => {
     Promise.all([
       getProfessionalProfiles(),
@@ -41,39 +52,48 @@ export default function Onboarding() {
       getTargetCountries(),
       getLearningGoals(),
     ])
-      .then(([roles, venues, countries, goals]) => {
-        setOptions({
-          role: roles.map((r) => ({ value: r.slug, label: r.name_es, icon: r.icon })),
-          venue_type: venues.map((v) => ({ value: v.slug, label: v.name_es })),
-          target_country: countries.map((c) => ({ value: c.id, label: c.name_es, flag: c.flag })),
-          goal: goals.map((g) => ({ value: g.id, label: g.name_es })),
-        });
-      })
+      .then(([roles, venues, countries, goals]) => setTaxonomies({ role: roles, venue_type: venues, target_country: countries, goal: goals }))
       .catch(() => setOptionsError(true));
   }, []);
 
-  // Already-completed users should not see onboarding again.
   useEffect(() => {
     if (!loading && onboardingCompleted) navigate("/home", { replace: true });
   }, [loading, onboardingCompleted, navigate]);
 
-  // Safe prefill: map a legacy guest's old workplace to the new role (only if unset).
   useEffect(() => {
     const role = legacyWorkplaceToRole[legacyOnboarding?.workplace];
     if (role) setSelections((s) => (s.role ? s : { ...s, role }));
   }, [legacyOnboarding]);
 
-  // Persist temporary draft so refresh mid-onboarding does not lose progress.
   useEffect(() => {
     localStorage.setItem(DRAFT_KEY, JSON.stringify({ step, selections }));
   }, [step, selections]);
 
-  const current = onboardingSteps[step];
-  const currentValue = selections[current.field];
-  const isLast = step === onboardingSteps.length - 1;
-  const currentOptions = options?.[current.field] || [];
+  const current = STEPS[step];
+  const currentValue = current.field === "interface_language" ? language : selections[current.field];
+  const isLast = step === STEPS.length - 1;
 
-  const select = (value) => setSelections((s) => ({ ...s, [current.field]: value }));
+  // Build localized options for the current step.
+  let currentOptions = [];
+  if (current.id === "language") {
+    currentOptions = SUPPORTED_LANGUAGES.map((l) => ({ value: l.code, label: l.native_name, flag: l.flag }));
+  } else if (taxonomies) {
+    currentOptions = (taxonomies[current.field] || []).map((item) => ({
+      value: item.slug || item.id,
+      label: getLocalizedField(item, "name", language),
+      icon: item.icon,
+      flag: item.flag,
+    }));
+  }
+
+  const select = (value) => {
+    if (current.field === "interface_language") {
+      setLanguage(value); // updates UI immediately + persists (once a guest exists)
+      setSelections((s) => ({ ...s, interface_language: value }));
+    } else {
+      setSelections((s) => ({ ...s, [current.field]: value }));
+    }
+  };
 
   const goBack = () => {
     if (step === 0) navigate("/");
@@ -87,7 +107,12 @@ export default function Onboarding() {
     }
     setSaving(true);
     try {
-      await completeProfile(selections);
+      await completeProfile({
+        role: selections.role,
+        venue_type: selections.venue_type,
+        target_country: selections.target_country,
+        goal: selections.goal,
+      });
       navigate("/home", { replace: true });
     } catch (e) {
       setSaving(false);
@@ -98,23 +123,19 @@ export default function Onboarding() {
     <div className="min-h-screen bg-brand-sand flex flex-col">
       <Navbar />
       <div className="flex-1 flex flex-col w-full max-w-xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
-        {/* Step indicator + progress */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-3">
             <span
               data-testid="onboarding-step-indicator"
               className="text-xs uppercase tracking-[0.2em] font-semibold text-brand-charcoal/50"
             >
-              Paso {step + 1} de {onboardingSteps.length}
+              {t("onboarding.step", { n: step + 1, total: STEPS.length })}
             </span>
           </div>
-          <div
-            data-testid="onboarding-progress"
-            className="h-1 w-full rounded-full bg-black/5 overflow-hidden"
-          >
+          <div data-testid="onboarding-progress" className="h-1 w-full rounded-full bg-black/5 overflow-hidden">
             <div
               className="h-full bg-brand-forest transition-all duration-300"
-              style={{ width: `${((step + 1) / onboardingSteps.length) * 100}%` }}
+              style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
             />
           </div>
         </div>
@@ -129,18 +150,18 @@ export default function Onboarding() {
             className="flex-1 flex flex-col"
           >
             <h1 className="text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">
-              {current.question}
+              {t(`onboarding.${current.id}.q`)}
             </h1>
             <p className="mt-3 text-base text-brand-charcoal/70 leading-relaxed">
-              {current.subtitle}
+              {t(`onboarding.${current.id}.sub`)}
             </p>
 
             <div className="mt-8 grid gap-3" data-testid={`onboarding-options-${current.field}`}>
-              {optionsError && (
-                <p className="text-brand-terracotta">No se pudieron cargar las opciones. Reintenta.</p>
+              {optionsError && current.id !== "language" && (
+                <p className="text-brand-terracotta">{t("onboarding.optionsError")}</p>
               )}
-              {!options && !optionsError && (
-                <p className="text-brand-charcoal/50">Cargando opciones…</p>
+              {current.id !== "language" && !taxonomies && !optionsError && (
+                <p className="text-brand-charcoal/50">{t("onboarding.optionsLoading")}</p>
               )}
               {currentOptions.map((opt) => {
                 const selected = currentValue === opt.value;
@@ -164,7 +185,7 @@ export default function Onboarding() {
                         <CategoryIcon name={opt.icon} className="w-5 h-5" />
                       </span>
                     )}
-                    {current.field === "target_country" && (
+                    {(current.field === "target_country" || current.field === "interface_language") && (
                       <span className="text-2xl shrink-0" aria-hidden="true">
                         {opt.flag}
                       </span>
@@ -178,13 +199,12 @@ export default function Onboarding() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Nav buttons */}
         <div className="mt-8 flex gap-3">
           <button
             data-testid="onboarding-back-btn"
             onClick={goBack}
             className="inline-flex items-center justify-center gap-2 bg-white text-brand-forest border border-brand-forest/20 hover:bg-brand-sand transition-colors rounded-lg px-5 py-4 font-medium shrink-0"
-            aria-label="Atrás"
+            aria-label="Back"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -194,7 +214,7 @@ export default function Onboarding() {
             onClick={goNext}
             className="flex-1 inline-flex items-center justify-center gap-2 bg-brand-forest text-white hover:bg-brand-forest-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-lg px-6 py-4 font-medium"
           >
-            {isLast ? (saving ? "Preparando…" : "Empezar a aprender") : "Continuar"}
+            {isLast ? (saving ? t("onboarding.preparing") : t("onboarding.finish")) : t("common.continue")}
             {!saving && <ArrowRight className="w-4 h-4" />}
           </button>
         </div>

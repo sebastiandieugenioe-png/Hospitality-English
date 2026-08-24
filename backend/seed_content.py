@@ -108,37 +108,37 @@ PHRASES_TAKING_AN_ORDER = [
     {
         "id": "li_take_order_ready",
         "english_content": "Are you ready to order?",
-        "translations": {"es": "¿Están listos para pedir?"},
+        "translations": {"es": "¿Están listos para pedir?", "it": "Siete pronti per ordinare?"},
     },
     {
         "id": "li_take_order_what_like",
         "english_content": "What would you like to have?",
-        "translations": {"es": "¿Qué les gustaría tomar?"},
+        "translations": {"es": "¿Qué les gustaría tomar?", "it": "Cosa desiderate?"},
     },
     {
         "id": "li_take_order_steak_cooked",
         "english_content": "How would you like your steak cooked?",
-        "translations": {"es": "¿Cómo quiere el punto de la carne?"},
+        "translations": {"es": "¿Cómo quiere el punto de la carne?", "it": "Come desidera la cottura della carne?"},
     },
     {
         "id": "li_take_order_anything_else",
         "english_content": "Would you like anything else?",
-        "translations": {"es": "¿Desean algo más?"},
+        "translations": {"es": "¿Desean algo más?", "it": "Desiderate altro?"},
     },
     {
         "id": "li_take_order_put_through",
         "english_content": "I'll put your order through now.",
-        "translations": {"es": "Voy a enviar su comanda ahora."},
+        "translations": {"es": "Voy a enviar su comanda ahora.", "it": "Invio subito il vostro ordine."},
     },
 ]
 
 DIALOGUE_TAKING_AN_ORDER = [
-    {"speaker": "customer", "speaker_label_es": "Cliente", "english": "Excuse me, we're ready to order.", "spanish": "Disculpe, estamos listos para pedir."},
-    {"speaker": "waiter", "speaker_label_es": "Camarero", "english": "Of course. What would you like to have?", "spanish": "Por supuesto. ¿Qué les gustaría tomar?"},
-    {"speaker": "customer", "speaker_label_es": "Cliente", "english": "I'll have the steak, please.", "spanish": "Yo tomaré el filete, por favor."},
-    {"speaker": "waiter", "speaker_label_es": "Camarero", "english": "How would you like it cooked?", "spanish": "¿Cómo lo quiere de punto?"},
-    {"speaker": "customer", "speaker_label_es": "Cliente", "english": "Medium, please.", "spanish": "Al punto, por favor."},
-    {"speaker": "waiter", "speaker_label_es": "Camarero", "english": "Perfect. Would you like anything else?", "spanish": "Perfecto. ¿Desean algo más?"},
+    {"speaker": "customer", "speaker_label_es": "Cliente", "english": "Excuse me, we're ready to order.", "spanish": "Disculpe, estamos listos para pedir.", "translations": {"it": "Scusi, siamo pronti per ordinare."}},
+    {"speaker": "waiter", "speaker_label_es": "Camarero", "english": "Of course. What would you like to have?", "spanish": "Por supuesto. ¿Qué les gustaría tomar?", "translations": {"it": "Certo. Cosa desiderate?"}},
+    {"speaker": "customer", "speaker_label_es": "Cliente", "english": "I'll have the steak, please.", "spanish": "Yo tomaré el filete, por favor.", "translations": {"it": "Prendo la bistecca, per favore."}},
+    {"speaker": "waiter", "speaker_label_es": "Camarero", "english": "How would you like it cooked?", "spanish": "¿Cómo lo quiere de punto?", "translations": {"it": "Come la desidera di cottura?"}},
+    {"speaker": "customer", "speaker_label_es": "Cliente", "english": "Medium, please.", "spanish": "Al punto, por favor.", "translations": {"it": "Media, per favore."}},
+    {"speaker": "waiter", "speaker_label_es": "Camarero", "english": "Perfect. Would you like anything else?", "spanish": "Perfecto. ¿Desean algo más?", "translations": {"it": "Perfetto. Desiderate altro?"}},
 ]
 
 EXERCISES_TAKING_AN_ORDER = [
@@ -146,6 +146,7 @@ EXERCISES_TAKING_AN_ORDER = [
         "id": "ex_mc_ready",
         "type": "multiple_choice",
         "prompt_es": "¿Cuál es la forma correcta de preguntar si están listos para pedir?",
+        "prompt_it": "Qual è il modo corretto di chiedere se sono pronti per ordinare?",
         "options": [
             "Are you ready to order?",
             "Do you ready order?",
@@ -154,22 +155,27 @@ EXERCISES_TAKING_AN_ORDER = [
         ],
         "answer_index": 0,
         "explanation_es": "\"Are you ready to order?\" es la fórmula estándar y educada para preguntar si el cliente quiere pedir.",
+        "explanation_it": "\"Are you ready to order?\" è la formula standard e cortese per chiedere se il cliente vuole ordinare.",
     },
     {
         "id": "ex_gap_anything",
         "type": "fill_gap",
         "prompt_es": "Completa la frase para preguntar si desean algo más:",
+        "prompt_it": "Completa la frase per chiedere se desiderano altro:",
         "sentence": "Would you like ______ else?",
         "answer": "anything",
         "explanation_es": "Usamos \"anything\" en preguntas: \"Would you like anything else?\".",
+        "explanation_it": "Usiamo \"anything\" nelle domande: \"Would you like anything else?\".",
     },
     {
         "id": "ex_order_ready",
         "type": "word_ordering",
         "prompt_es": "Ordena las palabras para formar la pregunta correcta:",
+        "prompt_it": "Ordina le parole per formare la domanda corretta:",
         "words": ["ready", "you", "Are", "to", "order"],
         "answer": "Are you ready to order",
         "explanation_es": "El orden correcto es: Are you ready to order?",
+        "explanation_it": "L'ordine corretto è: Are you ready to order?",
     },
 ]
 
@@ -178,6 +184,7 @@ QUIZ_TAKING_AN_ORDER = [
         "id": "q_steak",
         "type": "multiple_choice",
         "prompt_es": "¿Cómo preguntas el punto de la carne en inglés?",
+        "prompt_it": "Come chiedi la cottura della carne in inglese?",
         "options": [
             "How would you like your steak cooked?",
             "How you want the meat?",
@@ -186,19 +193,23 @@ QUIZ_TAKING_AN_ORDER = [
         ],
         "answer_index": 0,
         "explanation_es": "\"How would you like your steak cooked?\" pregunta el punto de cocción de la carne.",
+        "explanation_it": "\"How would you like your steak cooked?\" chiede il grado di cottura della carne.",
     },
     {
         "id": "q_gap_through",
         "type": "fill_gap",
         "prompt_es": "Completa: vas a enviar la comanda a cocina.",
+        "prompt_it": "Completa: stai per inviare l'ordine in cucina.",
         "sentence": "I'll put your order ______ now.",
         "answer": "through",
         "explanation_es": "\"Put an order through\" significa enviar/tramitar la comanda.",
+        "explanation_it": "\"Put an order through\" significa inviare/inoltrare l'ordine.",
     },
     {
         "id": "q_mc_reply",
         "type": "multiple_choice",
         "prompt_es": "Un cliente dice: \"We're ready to order\". ¿Qué respondes?",
+        "prompt_it": "Un cliente dice: \"We're ready to order\". Cosa rispondi?",
         "options": [
             "Of course. What would you like to have?",
             "No, you can't.",
@@ -207,27 +218,38 @@ QUIZ_TAKING_AN_ORDER = [
         ],
         "answer_index": 0,
         "explanation_es": "Respondes con amabilidad e invitas a pedir: \"Of course. What would you like to have?\".",
+        "explanation_it": "Rispondi con gentilezza e inviti a ordinare: \"Of course. What would you like to have?\".",
     },
     {
         "id": "q_order_anything",
         "type": "word_ordering",
         "prompt_es": "Ordena las palabras:",
+        "prompt_it": "Ordina le parole:",
         "words": ["else", "anything", "like", "Would", "you"],
         "answer": "Would you like anything else",
         "explanation_es": "El orden correcto es: Would you like anything else?",
+        "explanation_it": "L'ordine corretto è: Would you like anything else?",
     },
     {
         "id": "q_mc_meaning",
         "type": "multiple_choice",
         "prompt_es": "¿Qué significa \"Would you like anything else?\"",
+        "prompt_it": "Cosa significa \"Would you like anything else?\"",
         "options": [
             "¿Desean algo más?",
             "¿Están listos para pedir?",
             "¿Cómo lo quiere?",
             "¿Dónde se sientan?",
         ],
+        "options_it": [
+            "Desiderate altro?",
+            "Siete pronti per ordinare?",
+            "Come la desidera?",
+            "Dove vi sedete?",
+        ],
         "answer_index": 0,
         "explanation_es": "Significa \"¿Desean algo más?\".",
+        "explanation_it": "Significa \"Desiderate altro?\".",
     },
 ]
 
@@ -237,10 +259,16 @@ LESSONS = {
         "situation_slug": "taking-an-order",
         "intro": {
             "summary_es": "Aprenderás las frases más comunes para tomar una comanda en un restaurante en inglés.",
+            "summary_it": "Imparerai le frasi più comuni per prendere un'ordinazione al ristorante in inglese.",
             "objectives_es": [
                 "Preguntar de forma educada si el cliente quiere pedir.",
                 "Tomar la comanda y preguntar el punto de la carne.",
                 "Ofrecer algo más y confirmar el pedido.",
+            ],
+            "objectives_it": [
+                "Chiedere in modo cortese se il cliente vuole ordinare.",
+                "Prendere l'ordinazione e chiedere la cottura della carne.",
+                "Proporre altro e confermare l'ordine.",
             ],
         },
         "phrases": PHRASES_TAKING_AN_ORDER,
@@ -302,6 +330,9 @@ CURATED_SITUATIONS = {
         "translations": {"es": {
             "title": "Tomar una comanda",
             "description": "Aprende a tomar una comanda en un restaurante en inglés.",
+        }, "it": {
+            "title": "Prendere un'ordinazione",
+            "description": "Impara a prendere un'ordinazione al ristorante in inglese.",
         }},
     },
 }

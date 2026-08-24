@@ -6,11 +6,12 @@ import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
 import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats } from "@/lib/api";
 import { recommendationMap, roleToCategory, roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
+import { getLocalizedField } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { loading: guestLoading, onboardingCompleted, profile, guestId } = useApp();
+  const { loading: guestLoading, onboardingCompleted, profile, guestId, language, t } = useApp();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [planLabel, setPlanLabel] = useState("");
@@ -52,12 +53,12 @@ export default function Home() {
     if (!profile?.role && !profile?.target_country) return;
     Promise.all([getProfessionalProfiles(), getTargetCountries()])
       .then(([roles, countries]) => {
-        const roleName = roles.find((r) => r.slug === profile.role)?.name_es;
-        const countryName = countries.find((c) => c.id === profile.target_country)?.name_es;
+        const roleName = getLocalizedField(roles.find((r) => r.slug === profile.role), "name", language);
+        const countryName = getLocalizedField(countries.find((c) => c.id === profile.target_country), "name", language);
         setPlanLabel([roleName, countryName].filter(Boolean).join(" · "));
       })
       .catch(() => {});
-  }, [profile]);
+  }, [profile, language]);
 
   const primaryCategory = roleToCategory[profile?.role] || "general";
   const recSlugs = recommendationMap[primaryCategory] || recommendationMap.other;
@@ -74,10 +75,10 @@ export default function Home() {
           transition={{ duration: 0.4 }}
         >
           <p className="text-xs uppercase tracking-[0.2em] font-semibold text-brand-charcoal/50">
-            Tu aprendizaje
+            {t("home.eyebrow")}
           </p>
           <h1 className="mt-2 text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">
-            ¿Seguimos practicando?
+            {t("home.title")}
           </h1>
           {planLabel && (
             <p
@@ -85,7 +86,7 @@ export default function Home() {
               className="mt-3 inline-flex items-center gap-2 text-sm text-brand-charcoal/70 bg-white border border-black/5 rounded-full px-4 py-1.5"
             >
               <span className="text-xs uppercase tracking-[0.15em] text-brand-charcoal/40">
-                Tu plan
+                {t("home.plan")}
               </span>
               <span className="font-medium text-brand-espresso">{planLabel}</span>
             </p>
@@ -103,10 +104,10 @@ export default function Home() {
                 className="text-left rounded-2xl bg-white border border-black/5 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
               >
                 <p className="text-xs uppercase tracking-[0.15em] text-brand-terracotta font-semibold">
-                  Continúa donde lo dejaste
+                  {t("home.resume")}
                 </p>
                 <p className="mt-2 text-lg font-serif text-brand-espresso">
-                  {resume.translations?.es?.title || resume.title_en}
+                  {getLocalizedField(resume, "title", language) || resume.title_en}
                 </p>
               </button>
             )}
@@ -117,12 +118,12 @@ export default function Home() {
                 className="text-left rounded-2xl bg-white border border-black/5 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
               >
                 <p className="text-xs uppercase tracking-[0.15em] text-brand-charcoal/50 font-semibold">
-                  Tu progreso
+                  {t("home.progress")}
                 </p>
                 <p className="mt-2 text-lg font-serif text-brand-espresso">
-                  {masteredCount} {masteredCount === 1 ? "situación dominada" : "situaciones dominadas"}
+                  {masteredCount} {masteredCount === 1 ? t("home.masteredOne") : t("home.masteredOther")}
                 </p>
-                <span className="mt-1 inline-block text-sm text-brand-forest">Ver progreso →</span>
+                <span className="mt-1 inline-block text-sm text-brand-forest">{t("home.viewProgress")}</span>
               </button>
             )}
           </section>
@@ -131,7 +132,7 @@ export default function Home() {
         {/* Continue learning */}
         <section className="mt-8">
           <h2 className="text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50 mb-4">
-            Continúa aprendiendo
+            {t("home.continueLearning")}
           </h2>
           <motion.button
             data-testid="continue-learning-card"
@@ -143,14 +144,13 @@ export default function Home() {
           >
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-white/60 mb-2">
-                Situación recomendada para tu turno
+                {t("home.recommendedSituation")}
               </p>
               <h3 className="text-2xl sm:text-3xl font-serif tracking-tight">
-                {featured?.translations?.es?.title || "Tomar una comanda"}
+                {getLocalizedField(featured, "title", language) || t("home.defaultFeaturedTitle")}
               </h3>
               <p className="mt-2 text-sm text-white/70 max-w-md">
-                {featured?.translations?.es?.description ||
-                  "Aprende frases reales, diálogo, flashcards y quiz."}
+                {getLocalizedField(featured, "description", language) || t("home.defaultFeaturedDesc")}
               </p>
             </div>
             <span className="shrink-0 grid place-items-center w-14 h-14 rounded-full bg-white text-brand-forest group-hover:scale-105 transition-transform">
@@ -162,11 +162,11 @@ export default function Home() {
         {/* Recommended for you */}
         <section className="mt-12">
           <h2 className="text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50 mb-4">
-            Recomendado para ti
+            {t("home.recommendedForYou")}
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {recommended.map((cat, i) => (
-              <CategoryCard key={cat.slug} cat={cat} highlight index={i} testIdPrefix="recommended-card" />
+              <CategoryCard key={cat.slug} cat={cat} highlight index={i} testIdPrefix="recommended-card" language={language} t={t} />
             ))}
           </div>
         </section>
@@ -174,14 +174,14 @@ export default function Home() {
         {/* Explore categories */}
         <section className="mt-12">
           <h2 className="text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50 mb-4">
-            Explora todas las categorías
+            {t("home.exploreCategories")}
           </h2>
           {loading ? (
-            <p className="text-brand-charcoal/50">Cargando categorías…</p>
+            <p className="text-brand-charcoal/50">{t("home.loadingCategories")}</p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {categories.map((cat, i) => (
-                <CategoryCard key={cat.slug} cat={cat} index={i} />
+                <CategoryCard key={cat.slug} cat={cat} index={i} language={language} t={t} />
               ))}
             </div>
           )}
@@ -191,7 +191,7 @@ export default function Home() {
   );
 }
 
-function CategoryCard({ cat, highlight, index, testIdPrefix = "category-card" }) {
+function CategoryCard({ cat, highlight, index, testIdPrefix = "category-card", language, t }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -217,10 +217,10 @@ function CategoryCard({ cat, highlight, index, testIdPrefix = "category-card" })
         </div>
         <h3 className="mt-5 text-xl font-serif text-brand-espresso">{cat.name_en}</h3>
         <p className="mt-1 text-sm text-brand-charcoal/60 leading-relaxed">
-          {cat.description_es}
+          {getLocalizedField(cat, "description", language)}
         </p>
         <p className="mt-4 text-xs uppercase tracking-[0.15em] text-brand-charcoal/40">
-          {cat.situation_count} situaciones
+          {t("home.situations", { n: cat.situation_count })}
         </p>
       </Link>
     </motion.div>

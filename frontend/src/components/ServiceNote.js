@@ -1,25 +1,21 @@
 import { AlertTriangle, Sparkles, MessageSquareQuote } from "lucide-react";
+import { useApp } from "@/context/AppContext";
+import { getLocalizedField, getText } from "@/lib/i18n";
 
-// Maps a service_rating to a discreet ES label + tone.
-const RATING = {
-  inappropriate: { label: "Inapropiado en servicio", warn: true },
-  too_direct: { label: "Correcto, pero demasiado directo", warn: true },
-  acceptable: { label: "Aceptable", warn: false },
-  professional: { label: "Profesional", warn: false },
-  excellent: { label: "Excelente", warn: false },
-};
+const WARN_RATINGS = new Set(["inappropriate", "too_direct"]);
 
 // Renders a small contextual "Service English" block, only when metadata exists.
 export function ServiceNote({ item }) {
-  const hasContent =
-    item.service_rating ||
-    item.service_note_es ||
-    item.common_mistake_es ||
-    (item.natural_alternatives && item.natural_alternatives.length);
+  const { t, language } = useApp();
+  const note = getLocalizedField(item, "service_note", language);
+  const mistake = getLocalizedField(item, "common_mistake", language);
+  const alternatives = getText(item.natural_alternatives_translations, language) || item.natural_alternatives;
+
+  const hasContent = item.service_rating || note || mistake || (alternatives && alternatives.length);
   if (!hasContent) return null;
 
-  const rating = RATING[item.service_rating] || null;
-  const warn = rating?.warn;
+  const warn = WARN_RATINGS.has(item.service_rating);
+  const ratingLabel = item.service_rating ? t(`serviceRating.${item.service_rating}`) : null;
 
   return (
     <div
@@ -30,7 +26,7 @@ export function ServiceNote({ item }) {
           : "border-brand-forest bg-brand-success-muted/60"
       }`}
     >
-      {rating && (
+      {ratingLabel && (
         <p
           className={`flex items-center gap-1.5 font-medium ${
             warn ? "text-brand-terracotta-hover" : "text-brand-forest"
@@ -41,21 +37,17 @@ export function ServiceNote({ item }) {
           ) : (
             <Sparkles className="w-4 h-4 shrink-0" strokeWidth={2} />
           )}
-          {rating.label}
+          {ratingLabel}
         </p>
       )}
-      {item.service_note_es && (
-        <p className="mt-1 text-brand-charcoal/75 leading-relaxed">{item.service_note_es}</p>
-      )}
-      {item.common_mistake_es && (
-        <p className="mt-1 text-brand-charcoal/60 leading-relaxed">{item.common_mistake_es}</p>
-      )}
-      {item.natural_alternatives?.length > 0 && (
+      {note && <p className="mt-1 text-brand-charcoal/75 leading-relaxed">{note}</p>}
+      {mistake && <p className="mt-1 text-brand-charcoal/60 leading-relaxed">{mistake}</p>}
+      {alternatives?.length > 0 && (
         <div className="mt-2">
           <p className="text-xs uppercase tracking-[0.12em] text-brand-charcoal/45 mb-1">
-            Alternativa más profesional
+            {t("serviceRating.alternative")}
           </p>
-          {item.natural_alternatives.map((alt, i) => (
+          {alternatives.map((alt, i) => (
             <p key={i} className="flex items-start gap-1.5 text-brand-espresso">
               <MessageSquareQuote className="w-4 h-4 mt-0.5 shrink-0 text-brand-forest" />
               <span>{alt}</span>

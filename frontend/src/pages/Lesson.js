@@ -15,23 +15,15 @@ import {
 import { toast } from "sonner";
 import { getLesson, startAttempt, submitResponse, completeAttempt } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
+import { getLocalizedField, getText, getLocalizedOptions } from "@/lib/i18n";
 import { ServiceNote } from "@/components/ServiceNote";
 
 const STEPS = ["intro", "phrases", "dialogue", "flashcards", "exercises", "quiz", "completion"];
-const STEP_LABEL = {
-  intro: "Introducción",
-  phrases: "Frases útiles",
-  dialogue: "Situación real",
-  flashcards: "Flashcards",
-  exercises: "Ejercicios",
-  quiz: "Quiz final",
-  completion: "Completado",
-};
 
 export default function Lesson() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { logCompletion, ensureGuest } = useApp();
+  const { logCompletion, ensureGuest, t } = useApp();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stepIdx, setStepIdx] = useState(0);
@@ -83,7 +75,7 @@ export default function Lesson() {
   if (loading) {
     return (
       <Shell onClose={() => navigate(-1)} progress={0} label="">
-        <p className="text-brand-charcoal/50">Cargando lección…</p>
+        <p className="text-brand-charcoal/50">{t("lesson.loading")}</p>
       </Shell>
     );
   }
@@ -93,17 +85,17 @@ export default function Lesson() {
       <Shell onClose={() => navigate("/home")} progress={0} label="">
         <div className="text-center py-16">
           <h1 className="text-2xl font-serif text-brand-espresso">
-            Esta lección estará disponible pronto
+            {t("lesson.soonTitle")}
           </h1>
           <p className="mt-3 text-brand-charcoal/60">
-            Todavía estamos preparando el contenido de esta situación.
+            {t("lesson.soonBody")}
           </p>
           <button
             data-testid="lesson-back-home-btn"
             onClick={() => navigate("/home")}
             className="mt-8 inline-flex items-center gap-2 bg-brand-forest text-white rounded-lg px-6 py-3 font-medium hover:bg-brand-forest-hover transition-colors"
           >
-            Volver al inicio
+            {t("lesson.backHome")}
           </button>
         </div>
       </Shell>
@@ -114,7 +106,7 @@ export default function Lesson() {
   const progress = (stepIdx / (STEPS.length - 1)) * 100;
 
   return (
-    <Shell onClose={() => navigate("/home")} progress={progress} label={STEP_LABEL[step]}>
+    <Shell onClose={() => navigate("/home")} progress={progress} label={t(`lesson.step.${step}`)}>
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -203,35 +195,40 @@ function PrimaryBtn({ children, testId, ...props }) {
 
 /* ---------- Step 1: Intro ---------- */
 function Intro({ lesson, onNext }) {
+  const { t, language } = useApp();
   const intro = lesson.intro;
+  const contextEs = getLocalizedField(intro, "context", language);
+  const guestOpeningEs = getLocalizedField(intro, "guest_opening", language);
+  const summary = getLocalizedField(intro, "summary", language);
+  const objectives = getLocalizedField(intro, "objectives", language) || [];
   return (
     <div>
       <p className="text-xs uppercase tracking-[0.2em] font-semibold text-brand-terracotta mb-3">
-        Tu turno
+        {t("intro.eyebrow")}
       </p>
       {/* Turn context (shift framing) */}
-      {intro.context_es && (
+      {contextEs && (
         <div className="rounded-2xl bg-white border border-black/5 p-5 shadow-sm">
-          <p className="text-brand-charcoal/70 leading-relaxed">{intro.context_es}</p>
+          <p className="text-brand-charcoal/70 leading-relaxed">{contextEs}</p>
           {intro.guest_opening_en && (
             <div className="mt-3 rounded-xl bg-brand-sand border border-black/5 px-4 py-3">
               <p className="text-[10px] uppercase tracking-[0.15em] text-brand-charcoal/40 mb-1">
-                Cliente
+                {t("intro.guest")}
               </p>
               <p className="text-lg text-brand-espresso font-medium">“{intro.guest_opening_en}”</p>
-              {intro.guest_opening_es && (
-                <p className="mt-0.5 text-sm text-brand-charcoal/60">{intro.guest_opening_es}</p>
+              {guestOpeningEs && (
+                <p className="mt-0.5 text-sm text-brand-charcoal/60">{guestOpeningEs}</p>
               )}
             </div>
           )}
         </div>
       )}
-      <p className="mt-6 text-base text-brand-charcoal/70 leading-relaxed">{intro.summary_es}</p>
+      <p className="mt-6 text-base text-brand-charcoal/70 leading-relaxed">{summary}</p>
       <div className="mt-8 space-y-3">
         <p className="text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50">
-          En esta situación aprenderás a
+          {t("intro.objectivesTitle")}
         </p>
-        {intro.objectives_es.map((obj, i) => (
+        {objectives.map((obj, i) => (
           <div
             key={i}
             className="flex items-start gap-3 rounded-xl bg-white border border-black/5 p-4"
@@ -245,7 +242,7 @@ function Intro({ lesson, onNext }) {
       </div>
       <div className="mt-10">
         <PrimaryBtn testId="intro-start-btn" onClick={onNext}>
-          Empezar <ArrowRight className="w-4 h-4" />
+          {t("intro.start")} <ArrowRight className="w-4 h-4" />
         </PrimaryBtn>
       </div>
     </div>
@@ -254,13 +251,14 @@ function Intro({ lesson, onNext }) {
 
 /* ---------- Step 2: Phrases ---------- */
 function Phrases({ lesson, onNext, onBack }) {
+  const { t, language } = useApp();
   return (
     <div>
       <h2 className="text-2xl sm:text-3xl font-serif text-brand-espresso tracking-tight">
-        Frases útiles
+        {t("phrases.title")}
       </h2>
       <p className="mt-2 text-sm text-brand-charcoal/60">
-        Estas son las frases clave que usarás. Léelas en voz baja.
+        {t("phrases.sub")}
       </p>
       <div className="mt-6 space-y-3">
         {lesson.phrases.map((p) => (
@@ -270,7 +268,7 @@ function Phrases({ lesson, onNext, onBack }) {
             className="rounded-xl bg-white border border-black/5 p-5 shadow-sm"
           >
             <p className="text-lg text-brand-espresso font-medium">{p.english_content}</p>
-            <p className="mt-1 text-sm text-brand-charcoal/60">{p.translations.es}</p>
+            <p className="mt-1 text-sm text-brand-charcoal/60">{getText(p.translations, language)}</p>
             <ServiceNote item={p} />
           </div>
         ))}
@@ -278,7 +276,7 @@ function Phrases({ lesson, onNext, onBack }) {
       <div className="mt-10 flex gap-3">
         <BackBtn onClick={onBack} />
         <PrimaryBtn testId="phrases-next-btn" onClick={onNext}>
-          Continuar <ArrowRight className="w-4 h-4" />
+          {t("common.continue")} <ArrowRight className="w-4 h-4" />
         </PrimaryBtn>
       </div>
     </div>
@@ -287,25 +285,24 @@ function Phrases({ lesson, onNext, onBack }) {
 
 /* ---------- Step 3: Dialogue ---------- */
 function Dialogue({ lesson, situation, onNext, onBack }) {
+  const { t, language } = useApp();
   const [showEs, setShowEs] = useState(true);
   // Anyone who is not the guest/customer is treated as staff (future-proof for
   // waiter, bartender, host, barista… without hardcoding each role).
   const isStaffSpeaker = (speaker) => !["customer", "guest", "client"].includes(speaker);
-  const subtitle =
-    situation?.translations?.es?.description ||
-    "Escucha la conversación completa y fíjate en cómo responde el personal.";
+  const subtitle = getLocalizedField(situation, "description", language) || t("dialogue.fallbackSub");
   return (
     <div>
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <h2 className="text-2xl sm:text-3xl font-serif text-brand-espresso tracking-tight">
-          Situación real
+          {t("dialogue.title")}
         </h2>
         <button
           data-testid="dialogue-toggle-translation"
           onClick={() => setShowEs((v) => !v)}
           className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors"
         >
-          {showEs ? "Ocultar traducción" : "Mostrar traducción"}
+          {showEs ? t("dialogue.hideTranslation") : t("dialogue.showTranslation")}
         </button>
       </div>
       <p className="mt-2 text-sm text-brand-charcoal/60">
@@ -314,6 +311,7 @@ function Dialogue({ lesson, situation, onNext, onBack }) {
       <div className="mt-6 space-y-4">
         {lesson.dialogue.map((line, i) => {
           const isWaiter = isStaffSpeaker(line.speaker);
+          const translation = getText(line.translations, language) ?? line.spanish;
           return (
             <div
               key={i}
@@ -340,7 +338,7 @@ function Dialogue({ lesson, situation, onNext, onBack }) {
                       isWaiter ? "text-white/70" : "text-brand-charcoal/60"
                     }`}
                   >
-                    {line.spanish}
+                    {translation}
                   </p>
                 )}
               </div>
@@ -351,7 +349,7 @@ function Dialogue({ lesson, situation, onNext, onBack }) {
       <div className="mt-10 flex gap-3">
         <BackBtn onClick={onBack} />
         <PrimaryBtn testId="dialogue-next-btn" onClick={onNext}>
-          Continuar <ArrowRight className="w-4 h-4" />
+          {t("common.continue")} <ArrowRight className="w-4 h-4" />
         </PrimaryBtn>
       </div>
     </div>
@@ -360,7 +358,8 @@ function Dialogue({ lesson, situation, onNext, onBack }) {
 
 /* ---------- Step 4: Flashcards ---------- */
 function Flashcards({ lesson, onNext }) {
-  const { logFlashcard } = useApp();
+  const { logFlashcard, t, language } = useApp();
+  const langCode = language.toUpperCase();
   const cards = useMemo(
     () =>
       lesson.phrases
@@ -369,14 +368,15 @@ function Flashcards({ lesson, onNext }) {
         .filter((p) => p.service_rating !== "inappropriate")
         .map((p, i) => {
         const enToEs = i % 2 === 0;
+        const translated = getText(p.translations, language);
         return {
           id: p.id,
-          direction: enToEs ? "EN → ES" : "ES → EN",
-          front: enToEs ? p.english_content : p.translations.es,
-          back: enToEs ? p.translations.es : p.english_content,
+          direction: enToEs ? `EN → ${langCode}` : `${langCode} → EN`,
+          front: enToEs ? p.english_content : translated,
+          back: enToEs ? translated : p.english_content,
         };
       }),
-    [lesson]
+    [lesson, language, langCode]
   );
 
   const [idx, setIdx] = useState(0);
@@ -397,14 +397,14 @@ function Flashcards({ lesson, onNext }) {
     <div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl sm:text-3xl font-serif text-brand-espresso tracking-tight">
-          Flashcards
+          {t("flashcards.title")}
         </h2>
         <span className="text-sm text-brand-charcoal/50 tabular-nums">
           {idx + 1} / {cards.length}
         </span>
       </div>
       <p className="mt-2 text-sm text-brand-charcoal/60">
-        Toca la tarjeta para ver la respuesta.
+        {t("flashcards.sub")}
       </p>
 
       <div className="mt-8 flashcard-perspective">
@@ -428,7 +428,7 @@ function Flashcards({ lesson, onNext }) {
                 {card.front}
               </p>
               <span className="absolute bottom-4 flex items-center gap-1 text-xs text-brand-charcoal/40">
-                <RotateCw className="w-3 h-3" /> Toca para revelar
+                <RotateCw className="w-3 h-3" /> {t("flashcards.reveal")}
               </span>
             </div>
             <div
@@ -449,14 +449,14 @@ function Flashcards({ lesson, onNext }) {
           onClick={() => answer(false)}
           className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-4 font-medium border border-brand-terracotta/30 text-brand-terracotta hover:bg-brand-terracotta/5 transition-colors"
         >
-          <CircleX className="w-4 h-4" /> No lo sabía
+          <CircleX className="w-4 h-4" /> {t("flashcards.didntKnow")}
         </button>
         <button
           data-testid="flashcard-knew"
           onClick={() => answer(true)}
           className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-4 font-medium bg-brand-forest text-white hover:bg-brand-forest-hover transition-colors"
         >
-          <CircleCheck className="w-4 h-4" /> Lo sabía
+          <CircleCheck className="w-4 h-4" /> {t("flashcards.knew")}
         </button>
       </div>
     </div>
@@ -465,20 +465,21 @@ function Flashcards({ lesson, onNext }) {
 
 /* ---------- Steps 5 & 6: Exercises / Quiz (shared question flow) ---------- */
 function Exercises({ lesson, onNext, onSubmit }) {
+  const { t } = useApp();
   return (
     <div>
       <h2 className="text-2xl sm:text-3xl font-serif text-brand-espresso tracking-tight mb-2">
-        Ejercicios
+        {t("exercises.title")}
       </h2>
       <p className="text-sm text-brand-charcoal/60 mb-6">
-        Practica lo que has aprendido. Recibirás feedback inmediato.
+        {t("exercises.sub")}
       </p>
       <QuestionFlow
         questions={lesson.exercises}
         section="exercise"
         onSubmit={onSubmit}
         testPrefix="exercise"
-        finishLabel="Ir al quiz"
+        finishLabel={t("exercises.toQuiz")}
         onComplete={() => onNext()}
       />
     </div>
@@ -486,20 +487,21 @@ function Exercises({ lesson, onNext, onSubmit }) {
 }
 
 function Quiz({ lesson, onNext, onSubmit }) {
+  const { t } = useApp();
   return (
     <div>
       <h2 className="text-2xl sm:text-3xl font-serif text-brand-espresso tracking-tight mb-2">
-        Quiz final
+        {t("quiz.title")}
       </h2>
       <p className="text-sm text-brand-charcoal/60 mb-6">
-        {lesson.quiz.length} preguntas para consolidar la lección.
+        {t("quiz.sub", { n: lesson.quiz.length })}
       </p>
       <QuestionFlow
         questions={lesson.quiz}
         section="quiz"
         onSubmit={onSubmit}
         testPrefix="quiz"
-        finishLabel="Ver resultado"
+        finishLabel={t("quiz.result")}
         onComplete={(correct) => onNext(correct, lesson.quiz.length)}
       />
     </div>
@@ -548,8 +550,12 @@ function QuestionFlow({ questions, onComplete, finishLabel, testPrefix, section,
 }
 
 function QuestionCard({ q, onContinue, isLast, finishLabel, testId, section, onSubmit }) {
+  const { t, language } = useApp();
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const options = getLocalizedOptions(q, language);
+  const prompt = getLocalizedField(q, "prompt", language);
+  const explanation = getLocalizedField(q, "explanation", language);
 
   // multiple choice
   const [selected, setSelected] = useState(null);
@@ -592,12 +598,12 @@ function QuestionCard({ q, onContinue, isLast, finishLabel, testId, section, onS
 
   return (
     <div data-testid={testId}>
-      <p className="text-lg text-brand-espresso font-medium">{q.prompt_es}</p>
+      <p className="text-lg text-brand-espresso font-medium">{prompt}</p>
 
       {/* Multiple choice */}
       {q.type === "multiple_choice" && (
         <div className="mt-5 space-y-3">
-          {q.options.map((opt, i) => {
+          {options.map((opt, i) => {
             const chosen = selected === i;
             let cls = "border-black/5 bg-white hover:border-brand-forest/30";
             if (answered) {
@@ -640,7 +646,7 @@ function QuestionCard({ q, onContinue, isLast, finishLabel, testId, section, onS
             disabled={answered}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && canCheck && !answered && evaluate()}
-            placeholder="Escribe la palabra que falta"
+            placeholder={t("question.gapPlaceholder")}
             className="mt-3 w-full rounded-xl border border-black/10 bg-white px-5 py-4 text-brand-espresso focus:outline-none focus:ring-2 focus:ring-brand-forest"
           />
         </div>
@@ -655,7 +661,7 @@ function QuestionCard({ q, onContinue, isLast, finishLabel, testId, section, onS
           >
             {picked.length === 0 && (
               <span className="text-sm text-brand-charcoal/40">
-                Toca las palabras en orden…
+                {t("question.orderPlaceholder")}
               </span>
             )}
             {picked.map((p) => (
@@ -703,25 +709,25 @@ function QuestionCard({ q, onContinue, isLast, finishLabel, testId, section, onS
         >
           <p className="font-semibold flex items-center gap-2">
             {isCorrect ? <CircleCheck className="w-5 h-5" /> : <CircleX className="w-5 h-5" />}
-            {isCorrect ? "¡Correcto!" : "Incorrecto"}
+            {isCorrect ? t("question.correct") : t("question.incorrect")}
           </p>
           {!isCorrect && (
             <p className="mt-1 text-sm text-brand-charcoal/70">
-              Respuesta correcta: <span className="font-medium">{q.answer || q.options?.[q.answer_index]}</span>
+              {t("question.correctAnswer")} <span className="font-medium">{q.answer || options?.[q.answer_index]}</span>
             </p>
           )}
-          <p className="mt-1 text-sm text-brand-charcoal/70">{q.explanation_es}</p>
+          <p className="mt-1 text-sm text-brand-charcoal/70">{explanation}</p>
         </div>
       )}
 
       <div className="mt-8">
         {!answered ? (
           <PrimaryBtn testId={`${testId}-check-btn`} disabled={!canCheck} onClick={evaluate}>
-            Comprobar
+            {t("question.check")}
           </PrimaryBtn>
         ) : (
           <PrimaryBtn testId={`${testId}-continue-btn`} onClick={() => onContinue(isCorrect)}>
-            {isLast ? finishLabel : "Siguiente"} <ArrowRight className="w-4 h-4" />
+            {isLast ? finishLabel : t("question.next")} <ArrowRight className="w-4 h-4" />
           </PrimaryBtn>
         )}
       </div>
@@ -732,14 +738,15 @@ function QuestionCard({ q, onContinue, isLast, finishLabel, testId, section, onS
 /* ---------- Step 7: Completion ---------- */
 function Completion({ result, score, situation, slug }) {
   const navigate = useNavigate();
-  const title = situation?.translations?.es?.title || situation?.title_en || "Situación";
+  const { t, language } = useApp();
+  const title = getLocalizedField(situation, "title", language) || situation?.title_en || "";
   const scores = result?.scores;
   const overall = scores?.overall ?? Math.round((score.correct / (score.total || 1)) * 100);
-  const mastered = result?.mastered;
+  const mastered = result?.met_mastery_threshold ?? result?.mastered;
   const dims = [
-    { key: "english", label: "Inglés" },
-    { key: "comprehension", label: "Comprensión" },
-    { key: "service", label: "Servicio" },
+    { key: "english", label: t("score.english") },
+    { key: "comprehension", label: t("score.comprehension") },
+    { key: "service", label: t("score.service") },
   ].filter((d) => scores && scores[d.key] != null);
 
   return (
@@ -753,7 +760,7 @@ function Completion({ result, score, situation, slug }) {
         <Trophy className="w-9 h-9" />
       </motion.div>
       <h1 className="mt-6 text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">
-        Situación completada
+        {t("completion.title")}
       </h1>
       <p className="mt-2 text-brand-charcoal/60">{title}</p>
 
@@ -762,7 +769,7 @@ function Completion({ result, score, situation, slug }) {
           {overall}%
         </p>
         <p className="mt-1 text-xs uppercase tracking-[0.15em] text-brand-charcoal/50">
-          Puntuación general
+          {t("completion.score")}
         </p>
         {dims.length > 0 && (
           <div className="mt-5 grid grid-cols-3 gap-3">
@@ -782,9 +789,7 @@ function Completion({ result, score, situation, slug }) {
         data-testid="mastery-message"
         className={`mt-6 font-medium ${mastered ? "text-brand-forest" : "text-brand-charcoal/70"}`}
       >
-        {mastered
-          ? "Has dominado esta situación."
-          : "Buena práctica. Puedes repetirla para mejorar."}
+        {mastered ? t("completion.mastered") : t("completion.goodPractice")}
       </p>
 
       <div className="mt-8 space-y-3">
@@ -792,21 +797,21 @@ function Completion({ result, score, situation, slug }) {
           testId="completion-retry-btn"
           onClick={() => navigate(0)}
         >
-          <RotateCw className="w-4 h-4" /> Practicar de nuevo
+          <RotateCw className="w-4 h-4" /> {t("completion.retry")}
         </PrimaryBtn>
         <button
           data-testid="completion-skill-btn"
           onClick={() => navigate(situation?.primary_skill ? `/skill/${situation.primary_skill}` : "/learn")}
           className="inline-flex items-center justify-center gap-2 w-full bg-white text-brand-forest border border-brand-forest/20 hover:bg-brand-sand transition-colors rounded-lg px-6 py-4 font-medium"
         >
-          <BookOpen className="w-4 h-4" /> Volver a la habilidad
+          <BookOpen className="w-4 h-4" /> {t("completion.backSkill")}
         </button>
         <button
           data-testid="completion-progress-btn"
           onClick={() => navigate("/progress")}
           className="text-sm font-medium text-brand-charcoal/60 hover:text-brand-forest transition-colors"
         >
-          Ver progreso
+          {t("completion.viewProgress")}
         </button>
       </div>
     </div>

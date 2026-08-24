@@ -17,25 +17,20 @@ import {
   answerReviewItem,
   rateReviewItem,
 } from "@/lib/api";
+import { getLocalizedField } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
 
-const DIM_LABEL = { english: "Inglés", comprehension: "Comprensión", service: "Servicio" };
-const FILTERS = [
-  { key: "all", label: "Todos" },
-  { key: "english", label: "Inglés" },
-  { key: "comprehension", label: "Comprensión" },
-  { key: "service", label: "Servicio" },
-];
-const RATINGS = [
-  { key: "again", label: "Otra vez", tone: "terracotta" },
-  { key: "hard", label: "Difícil", tone: "muted" },
-  { key: "good", label: "Bien", tone: "forest" },
-  { key: "easy", label: "Fácil", tone: "forest" },
+const FILTER_KEYS = ["all", "english", "comprehension", "service"];
+const RATING_DEFS = [
+  { key: "again", tone: "terracotta" },
+  { key: "hard", tone: "muted" },
+  { key: "good", tone: "forest" },
+  { key: "easy", tone: "forest" },
 ];
 
 export default function Practice() {
   const navigate = useNavigate();
-  const { loading: guestLoading, onboardingCompleted, guestId } = useApp();
+  const { loading: guestLoading, onboardingCompleted, guestId, language, t } = useApp();
   const [summary, setSummary] = useState(null);
   const [items, setItems] = useState([]);
   const [skillsMap, setSkillsMap] = useState({});
@@ -60,7 +55,7 @@ export default function Practice() {
       ]);
       setSummary(sum);
       setItems(all);
-      setSkillsMap(Object.fromEntries(sk.map((s) => [s.id, s.translations?.es?.name || s.name])));
+      setSkillsMap(Object.fromEntries(sk.map((s) => [s.id, getLocalizedField(s, "name", language) || s.name])));
     } catch (e) {
       console.error("Practice load failed", e);
       setError(true);
@@ -72,7 +67,7 @@ export default function Practice() {
   useEffect(() => {
     if (guestId && onboardingCompleted) load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [guestId, onboardingCompleted]);
+  }, [guestId, onboardingCompleted, language]);
 
   const startSession = async () => {
     const due = await getReviewItems(guestId, { due: true, limit: 10 });
@@ -98,7 +93,7 @@ export default function Practice() {
 
   if (session) {
     return (
-      <ReviewSession session={session} setSession={setSession} onEnd={endSession} />
+      <ReviewSession session={session} setSession={setSession} onEnd={endSession} t={t} />
     );
   }
 
@@ -108,33 +103,33 @@ export default function Practice() {
       <main className="max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
         <motion.header initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <p className="text-xs uppercase tracking-[0.2em] font-semibold text-brand-terracotta mb-3">
-            Repaso inteligente
+            {t("practice.eyebrow")}
           </p>
-          <h1 className="text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">Practicar</h1>
+          <h1 className="text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">{t("practice.title")}</h1>
           <p className="mt-3 text-base text-brand-charcoal/70">
-            Repasa tus errores en el momento justo para que se te queden.
+            {t("practice.subtitle")}
           </p>
         </motion.header>
 
         {loading ? (
-          <p className="mt-8 text-brand-charcoal/50">Cargando…</p>
+          <p className="mt-8 text-brand-charcoal/50">{t("common.loading")}</p>
         ) : error ? (
           <div
             data-testid="practice-error-state"
             className="mt-10 rounded-3xl bg-white border border-black/5 p-10 text-center shadow-sm"
           >
-            <h2 className="text-2xl font-serif text-brand-espresso">No pudimos cargar tu repaso</h2>
-            <p className="mt-2 text-brand-charcoal/60">Revisa tu conexión e inténtalo de nuevo.</p>
+            <h2 className="text-2xl font-serif text-brand-espresso">{t("practice.errorTitle")}</h2>
+            <p className="mt-2 text-brand-charcoal/60">{t("practice.errorBody")}</p>
             <button
               data-testid="practice-retry-btn"
               onClick={load}
               className="mt-8 inline-flex items-center justify-center gap-2 bg-brand-forest text-white rounded-lg px-6 py-3.5 font-medium hover:bg-brand-forest-hover transition-colors"
             >
-              <RotateCw className="w-4 h-4" /> Reintentar
+              <RotateCw className="w-4 h-4" /> {t("common.retry")}
             </button>
           </div>
         ) : items.length === 0 ? (
-          <EmptyState navigate={navigate} />
+          <EmptyState navigate={navigate} t={t} />
         ) : (
           <>
             {/* Due queue — primary visual priority */}
@@ -147,15 +142,13 @@ export default function Practice() {
             >
               <div className="flex items-center gap-2 text-white/70">
                 <Brain className="w-5 h-5" strokeWidth={1.75} />
-                <span className="text-xs uppercase tracking-[0.15em]">Pendientes de repaso</span>
+                <span className="text-xs uppercase tracking-[0.15em]">{t("practice.dueLabel")}</span>
               </div>
               <p className="mt-3 text-6xl font-serif" data-testid="practice-due-count">
                 {summary?.due ?? 0}
               </p>
               <p className="mt-1 text-white/70 text-sm">
-                {summary?.due
-                  ? "Ítems listos para repasar ahora."
-                  : "Nada pendiente por ahora. ¡Buen trabajo!"}
+                {summary?.due ? t("practice.dueReady") : t("practice.dueNone")}
               </p>
               <button
                 data-testid="practice-start-btn"
@@ -163,7 +156,7 @@ export default function Practice() {
                 onClick={startSession}
                 className="mt-6 inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3.5 font-medium bg-white text-brand-forest hover:bg-brand-sand disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                Empezar repaso <ArrowRight className="w-4 h-4" />
+                {t("practice.startBtn")} <ArrowRight className="w-4 h-4" />
               </button>
             </motion.div>
 
@@ -171,7 +164,7 @@ export default function Practice() {
             {skillGroups.length > 0 && (
               <>
                 <h2 className="mt-12 text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50 mb-4">
-                  Errores por habilidad
+                  {t("practice.errorsBySkill")}
                 </h2>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {skillGroups.map(([skill, count]) => (
@@ -181,7 +174,7 @@ export default function Practice() {
                       className="rounded-2xl bg-white border border-black/5 p-5 shadow-sm flex items-center justify-between gap-4"
                     >
                       <span className="font-serif text-lg text-brand-espresso">
-                        {skillsMap[skill] || "Otros"}
+                        {skillsMap[skill] || skill}
                       </span>
                       <span className="shrink-0 grid place-items-center min-w-8 h-8 px-2 rounded-full bg-brand-terracotta/10 text-brand-terracotta text-sm font-semibold">
                         {count}
@@ -195,21 +188,21 @@ export default function Practice() {
             {/* Mistake Bank — all active mistakes, with filters */}
             <div className="mt-12 flex items-center justify-between gap-4 flex-wrap">
               <h2 className="text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50">
-                Banco de errores
+                {t("practice.mistakeBank")}
               </h2>
               <div className="flex items-center gap-1.5 flex-wrap" data-testid="practice-filters">
-                {FILTERS.map((f) => (
+                {FILTER_KEYS.map((key) => (
                   <button
-                    key={f.key}
-                    data-testid={`practice-filter-${f.key}`}
-                    onClick={() => setFilter(f.key)}
+                    key={key}
+                    data-testid={`practice-filter-${key}`}
+                    onClick={() => setFilter(key)}
                     className={`text-xs font-medium rounded-full px-3.5 py-1.5 transition-colors ${
-                      filter === f.key
+                      filter === key
                         ? "bg-brand-forest text-white"
                         : "bg-white border border-black/5 text-brand-charcoal/60 hover:text-brand-forest"
                     }`}
                   >
-                    {f.label}
+                    {t(`filter.${key}`)}
                   </button>
                 ))}
               </div>
@@ -218,7 +211,7 @@ export default function Practice() {
             <div className="mt-4 grid gap-3" data-testid="practice-mistake-list">
               {filtered.length === 0 ? (
                 <p className="text-sm text-brand-charcoal/50 py-4">
-                  No hay errores en esta categoría.
+                  {t("practice.emptyCategory")}
                 </p>
               ) : (
                 filtered.map((it) => {
@@ -231,7 +224,7 @@ export default function Practice() {
                     >
                       <div className="flex items-start justify-between gap-3">
                         <p className="text-brand-espresso font-medium leading-snug">
-                          {it.content?.prompt_es}
+                          {it.content?.prompt}
                         </p>
                         <span
                           className={`shrink-0 text-[10px] uppercase tracking-[0.12em] px-2 py-1 rounded-full ${
@@ -240,19 +233,19 @@ export default function Practice() {
                               : "bg-black/5 text-brand-charcoal/50"
                           }`}
                         >
-                          {isDue ? "Pendiente" : "Programado"}
+                          {isDue ? t("practice.pending") : t("practice.scheduled")}
                         </span>
                       </div>
                       <div className="mt-2 flex items-center gap-2 text-xs text-brand-charcoal/50">
                         <span className="text-brand-forest">
-                          {DIM_LABEL[it.assessment_dimension] || it.assessment_dimension}
+                          {t(`score.${it.assessment_dimension}`)}
                         </span>
                         <span>·</span>
-                        <span>{it.situation_title_es}</span>
+                        <span>{it.situation_title}</span>
                         {it.times_wrong > 1 && (
                           <>
                             <span>·</span>
-                            <span>{it.times_wrong} fallos</span>
+                            <span>{t("practice.fails", { n: it.times_wrong })}</span>
                           </>
                         )}
                       </div>
@@ -268,7 +261,7 @@ export default function Practice() {
   );
 }
 
-function EmptyState({ navigate }) {
+function EmptyState({ navigate, t }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -280,24 +273,23 @@ function EmptyState({ navigate }) {
       <span className="grid place-items-center w-16 h-16 mx-auto rounded-full bg-brand-success-muted text-brand-forest">
         <Sparkles className="w-8 h-8" strokeWidth={1.5} />
       </span>
-      <h2 className="mt-6 text-2xl font-serif text-brand-espresso">Aún no hay nada que repasar</h2>
+      <h2 className="mt-6 text-2xl font-serif text-brand-espresso">{t("practice.emptyTitle")}</h2>
       <p className="mt-2 text-brand-charcoal/60 max-w-md mx-auto">
-        Cuando falles una pregunta en una situación, la guardaremos aquí para que la repases más
-        adelante y no se te olvide.
+        {t("practice.emptyBody")}
       </p>
       <button
         data-testid="practice-go-learn-btn"
         onClick={() => navigate("/learn")}
         className="mt-8 inline-flex items-center justify-center gap-2 bg-brand-forest text-white rounded-lg px-6 py-3.5 font-medium hover:bg-brand-forest-hover transition-colors"
       >
-        Empezar a practicar situaciones <ArrowRight className="w-4 h-4" />
+        {t("practice.goLearn")} <ArrowRight className="w-4 h-4" />
       </button>
     </motion.div>
   );
 }
 
 /* ---------- Review session ---------- */
-function ReviewSession({ session, setSession, onEnd }) {
+function ReviewSession({ session, setSession, onEnd, t }) {
   const { queue, index } = session;
   const item = queue[index];
   const [phase, setPhase] = useState("question"); // question | feedback
@@ -350,15 +342,17 @@ function ReviewSession({ session, setSession, onEnd }) {
             <CircleCheck className="w-9 h-9" />
           </motion.div>
           <h1 className="mt-6 text-3xl sm:text-4xl font-serif text-brand-espresso" data-testid="session-complete">
-            Repaso completado
+            {t("session.completeTitle")}
           </h1>
-          <p className="mt-2 text-brand-charcoal/60">Has repasado {total} {total === 1 ? "ítem" : "ítems"}.</p>
+          <p className="mt-2 text-brand-charcoal/60">
+            {t(total === 1 ? "session.reviewedOne" : "session.reviewedOther", { n: total })}
+          </p>
           <button
             data-testid="session-done-btn"
             onClick={onEnd}
             className="mt-8 inline-flex items-center justify-center gap-2 bg-brand-forest text-white rounded-lg px-6 py-3.5 font-medium hover:bg-brand-forest-hover transition-colors"
           >
-            Volver a Practicar <ArrowRight className="w-4 h-4" />
+            {t("session.done")} <ArrowRight className="w-4 h-4" />
           </button>
         </main>
       </div>
@@ -397,7 +391,7 @@ function ReviewSession({ session, setSession, onEnd }) {
             transition={{ duration: 0.25 }}
           >
             <p className="text-xs uppercase tracking-[0.15em] text-brand-forest mb-4">
-              {DIM_LABEL[item.assessment_dimension] || item.assessment_dimension} · {item.situation_title_es}
+              {t(`score.${item.assessment_dimension}`)} · {item.situation_title}
             </p>
             <QuestionRenderer
               content={item.content}
@@ -405,9 +399,10 @@ function ReviewSession({ session, setSession, onEnd }) {
               submitted={submitted}
               busy={busy}
               onAnswer={onAnswer}
+              t={t}
             />
             {phase === "feedback" && result && (
-              <Feedback result={result} busy={busy} onRate={onRate} />
+              <Feedback result={result} busy={busy} onRate={onRate} t={t} />
             )}
           </motion.div>
         </AnimatePresence>
@@ -416,7 +411,7 @@ function ReviewSession({ session, setSession, onEnd }) {
   );
 }
 
-function QuestionRenderer({ content, phase, submitted, busy, onAnswer }) {
+function QuestionRenderer({ content, phase, submitted, busy, onAnswer, t }) {
   const [selected, setSelected] = useState(null);
   const [text, setText] = useState("");
   const shuffled = useMemo(() => {
@@ -440,7 +435,7 @@ function QuestionRenderer({ content, phase, submitted, busy, onAnswer }) {
 
   return (
     <div>
-      <p className="text-lg text-brand-espresso font-medium">{content.prompt_es}</p>
+      <p className="text-lg text-brand-espresso font-medium">{content.prompt}</p>
 
       {content.type === "multiple_choice" && (
         <div className="mt-5 space-y-3">
@@ -474,7 +469,7 @@ function QuestionRenderer({ content, phase, submitted, busy, onAnswer }) {
             disabled={answered}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && canCheck && !answered && submit()}
-            placeholder="Escribe la palabra que falta"
+            placeholder={t("question.gapPlaceholder")}
             className="mt-3 w-full rounded-xl border border-black/10 bg-white px-5 py-4 text-brand-espresso focus:outline-none focus:ring-2 focus:ring-brand-forest"
           />
         </div>
@@ -487,7 +482,7 @@ function QuestionRenderer({ content, phase, submitted, busy, onAnswer }) {
             className="min-h-[56px] rounded-xl border border-dashed border-black/15 bg-white px-4 py-3 flex flex-wrap gap-2 items-center"
           >
             {picked.length === 0 && (
-              <span className="text-sm text-brand-charcoal/40">Toca las palabras en orden…</span>
+              <span className="text-sm text-brand-charcoal/40">{t("question.orderPlaceholder")}</span>
             )}
             {picked.map((p) => (
               <button
@@ -527,14 +522,14 @@ function QuestionRenderer({ content, phase, submitted, busy, onAnswer }) {
           onClick={submit}
           className="mt-8 inline-flex items-center justify-center gap-2 w-full bg-brand-forest text-white hover:bg-brand-forest-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-lg px-6 py-4 font-medium"
         >
-          Comprobar
+          {t("question.check")}
         </button>
       )}
     </div>
   );
 }
 
-function Feedback({ result, busy, onRate }) {
+function Feedback({ result, busy, onRate, t }) {
   return (
     <div className="mt-6">
       <div
@@ -545,11 +540,11 @@ function Feedback({ result, busy, onRate }) {
       >
         <p className="font-semibold flex items-center gap-2">
           {result.correct ? <CircleCheck className="w-5 h-5" /> : <CircleX className="w-5 h-5" />}
-          {result.correct ? "¡Correcto!" : "Incorrecto"}
+          {result.correct ? t("question.correct") : t("question.incorrect")}
         </p>
         {!result.correct && result.correct_answer != null && (
           <p className="mt-1 text-sm text-brand-charcoal/70">
-            Respuesta correcta: <span className="font-medium">{result.correct_answer}</span>
+            {t("question.correctAnswer")} <span className="font-medium">{result.correct_answer}</span>
           </p>
         )}
         {result.explanation && (
@@ -558,10 +553,10 @@ function Feedback({ result, busy, onRate }) {
       </div>
 
       <p className="mt-6 flex items-center gap-2 text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50">
-        <RotateCw className="w-4 h-4" /> ¿Qué tal lo recordabas?
+        <RotateCw className="w-4 h-4" /> {t("practice.rateQuestion")}
       </p>
       <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2" data-testid="review-ratings">
-        {RATINGS.map((r) => (
+        {RATING_DEFS.map((r) => (
           <button
             key={r.key}
             data-testid={`review-rate-${r.key}`}
@@ -575,7 +570,7 @@ function Feedback({ result, busy, onRate }) {
                 : "border border-black/10 text-brand-charcoal hover:bg-black/[0.03]"
             }`}
           >
-            {r.label}
+            {t(`rate.${r.key}`)}
           </button>
         ))}
       </div>

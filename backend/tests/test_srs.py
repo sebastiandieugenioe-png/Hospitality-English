@@ -55,7 +55,7 @@ class TestMistakeCreation:
         assert it["times_wrong"] == 1
         assert it["assessment_dimension"] in {"english", "comprehension", "service"}
         assert it["ease_factor"] == 2.5 and it["review_state"] == "learning"
-        assert "content" in it and it["content"]["prompt_es"]
+        assert "content" in it and it["content"]["prompt"]
         # answer must not be leaked before responding
         assert "answer" not in it["content"] and "answer_index" not in it["content"]
 

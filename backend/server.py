@@ -43,6 +43,11 @@ class GuestCreate(BaseModel):
     # Legacy optional fields (kept for backwards compatibility with old clients).
     workplace: Optional[str] = None
     goal: Optional[str] = None
+    interface_language: Optional[str] = None
+
+
+class LanguageUpdate(BaseModel):
+    interface_language: str
 
 
 class ProfileUpdate(BaseModel):
@@ -91,6 +96,43 @@ DEFAULT_EASE = 2.5
 MIN_EASE = 1.3
 AGAIN_DELAY_MINUTES = 10
 VALID_RATINGS = {"again", "hard", "good", "easy"}
+
+# ---------- i18n ----------
+# Central language registry. Add a new language here (+ data/locale files) to
+# support it everywhere; components never hardcode the list.
+SUPPORTED_LANGUAGES = [
+    {"code": "es", "name": "Spanish", "native_name": "Español"},
+    {"code": "it", "name": "Italian", "native_name": "Italiano"},
+]
+SUPPORTED_LANG_CODES = {lang["code"] for lang in SUPPORTED_LANGUAGES}
+DEFAULT_LANGUAGE = "es"
+
+
+def _loc_field(obj, base, lang):
+    """Resolve a localized field with silent fallback to Spanish.
+    Supports both grouped (translations.<lang>.<base>) and suffix (<base>_<lang>) shapes.
+    Never returns undefined for a missing translation; falls back es → None."""
+    tr = obj.get("translations") or {}
+    if isinstance(tr.get(lang), dict) and tr[lang].get(base) is not None:
+        return tr[lang][base]
+    if obj.get(f"{base}_{lang}") is not None:
+        return obj[f"{base}_{lang}"]
+    if isinstance(tr.get("es"), dict) and tr["es"].get(base) is not None:
+        return tr["es"][base]
+    if obj.get(f"{base}_es") is not None:
+        return obj[f"{base}_es"]
+    return None
+
+
+def _loc_options(q, lang):
+    """Localized MC options if a translation exists; otherwise the canonical
+    options untouched (English target answers must never be translated)."""
+    tr = q.get("translations") or {}
+    if isinstance(tr.get(lang), dict) and tr[lang].get("options"):
+        return tr[lang]["options"]
+    if q.get(f"options_{lang}"):
+        return q[f"options_{lang}"]
+    return q.get("options")
 
 
 # ---------- Scoring helpers ----------
@@ -267,11 +309,11 @@ async def _resolve_review_content(items):
     return resolved
 
 
-def _public_question(q):
+def _public_question(q, lang=DEFAULT_LANGUAGE):
     """Question fields safe to render (never leak the answer before responding)."""
-    out = {"id": q["id"], "type": q["type"], "prompt_es": q.get("prompt_es")}
+    out = {"id": q["id"], "type": q["type"], "prompt": _loc_field(q, "prompt", lang)}
     if q["type"] == "multiple_choice":
-        out["options"] = q.get("options", [])
+        out["options"] = _loc_options(q, lang)
     elif q["type"] == "fill_gap":
         out["sentence"] = q.get("sentence")
     elif q["type"] == "word_ordering":
@@ -279,9 +321,9 @@ def _public_question(q):
     return out
 
 
-def _correct_answer_text(q):
+def _correct_answer_text(q, lang=DEFAULT_LANGUAGE):
     if q["type"] == "multiple_choice":
-        return q.get("options", [None])[q.get("answer_index", 0)]
+        return _loc_options(q, lang)[q.get("answer_index", 0)]
     return q.get("answer")
 
 
@@ -289,6 +331,11 @@ def _correct_answer_text(q):
 @api_router.get("/")
 async def root():
     return {"message": "Inglés para Hostelería API"}
+
+
+@api_router.get("/languages")
+async def get_languages():
+    return SUPPORTED_LANGUAGES
 
 
 @api_router.get("/categories")
@@ -410,9 +457,11 @@ async def get_learning_goals():
 # ---------- Guest / progress endpoints ----------
 @api_router.post("/guests")
 async def create_guest(payload: GuestCreate):
+    lang = payload.interface_language if payload.interface_language in SUPPORTED_LANG_CODES else DEFAULT_LANGUAGE
     guest = {
         "id": str(uuid.uuid4()),
         "created_at": now_iso(),
+        "interface_language": lang,
         # Legacy onboarding kept for backwards compatibility; not the source of truth.
         "onboarding": {"workplace": payload.workplace, "goal": payload.goal},
         # Professional profile: who the user is and where they want to use English.
@@ -471,7 +520,27 @@ async def get_guest(guest_id: str):
     guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
     if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
+    # Existing guests default to Spanish without mutating stored data.
+    guest.setdefault("interface_language", DEFAULT_LANGUAGE)
     return guest
+
+
+@api_router.put("/guests/{guest_id}/language")
+async def update_language(guest_id: str, payload: LanguageUpdate):
+    if payload.interface_language not in SUPPORTED_LANG_CODES:
+        raise HTTPException(status_code=422, detail="Unsupported language")
+    result = await db.guests.update_one(
+        {"id": guest_id}, {"$set": {"interface_language": payload.interface_language}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    return guest
+
+
+async def _guest_language(guest_id):
+    g = await db.guests.find_one({"id": guest_id}, {"interface_language": 1})
+    return (g or {}).get("interface_language", DEFAULT_LANGUAGE)
 
 
 @api_router.put("/guests/{guest_id}/onboarding")
@@ -697,8 +766,10 @@ async def get_review_items(
     - due=false → all active review items (the Mistake Bank / history).
     Orphan items (content no longer exists) are skipped from the response.
     """
-    if not await db.guests.find_one({"id": guest_id}):
+    guest = await db.guests.find_one({"id": guest_id}, {"interface_language": 1})
+    if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
 
     query = {"guest_id": guest_id}
     if due:
@@ -714,9 +785,8 @@ async def get_review_items(
         section, q, sit = rc
         out.append({
             **it,
-            "situation_title_es": (sit or {}).get("translations", {}).get("es", {}).get("title")
-            or (sit or {}).get("title_en"),
-            "content": _public_question(q),
+            "situation_title": _loc_field(sit or {}, "title", lang) or (sit or {}).get("title_en"),
+            "content": _public_question(q, lang),
         })
     return out[:limit]
 
@@ -755,6 +825,7 @@ async def answer_review_item(item_id: str, payload: ReviewAnswer):
     if not entry:
         raise HTTPException(status_code=404, detail="Question content no longer exists")
     _, q = entry
+    lang = await _guest_language(item["guest_id"])
     correct = _check_answer(q, payload.submitted_answer)
     inc = {"times_seen": 1}
     if correct:
@@ -764,8 +835,8 @@ async def answer_review_item(item_id: str, payload: ReviewAnswer):
     )
     return {
         "correct": correct,
-        "correct_answer": _correct_answer_text(q),
-        "explanation": q.get("explanation_es"),
+        "correct_answer": _correct_answer_text(q, lang),
+        "explanation": _loc_field(q, "explanation", lang),
         "assessment_dimension": q.get("assessment_dimension", "english"),
     }
 

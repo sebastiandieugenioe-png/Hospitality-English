@@ -63,10 +63,10 @@ class TestReviewItemsContract:
         assert len(items) >= 3
         for it in items:
             c = it["content"]
-            assert set(c.keys()) <= {"id", "type", "prompt_es", "options", "sentence", "words"}
+            assert set(c.keys()) <= {"id", "type", "prompt", "options", "sentence", "words"}
             assert "answer" not in c and "answer_index" not in c
-            assert c["prompt_es"]
-            assert it["situation_title_es"]
+            assert c["prompt"]
+            assert it["situation_title"]
         limited = requests.get(f"{API}/guests/{gid}/review-items", params={"limit": 2}).json()
         assert len(limited) == 2
 

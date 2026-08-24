@@ -4,13 +4,14 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { getSkills, getSituations, getSituationStats } from "@/lib/api";
+import { getLocalizedField } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
 
 const venueOk = (sit, venue) => !sit.venue_types?.length || (venue && sit.venue_types.includes(venue));
 
 export default function Progress() {
   const navigate = useNavigate();
-  const { loading: guestLoading, onboardingCompleted, guestId, profile } = useApp();
+  const { loading: guestLoading, onboardingCompleted, guestId, profile, language, t } = useApp();
   const [skills, setSkills] = useState([]);
   const [situations, setSituations] = useState([]);
   const [stats, setStats] = useState({});
@@ -48,14 +49,14 @@ export default function Progress() {
       <Navbar />
       <main className="max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
         <motion.header initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-          <h1 className="text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">Tu progreso</h1>
+          <h1 className="text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">{t("progress.title")}</h1>
           <p className="mt-3 text-base text-brand-charcoal/70">
-            Tu dominio de las situaciones que has practicado.
+            {t("progress.subtitle")}
           </p>
         </motion.header>
 
         {loading ? (
-          <p className="mt-8 text-brand-charcoal/50">Cargando…</p>
+          <p className="mt-8 text-brand-charcoal/50">{t("common.loading")}</p>
         ) : (
           <>
             <div className="mt-8 grid grid-cols-2 gap-4">
@@ -64,7 +65,7 @@ export default function Progress() {
                   {masteredTotal} / {totalAvailable}
                 </p>
                 <p className="mt-1 text-xs uppercase tracking-[0.15em] text-brand-charcoal/50">
-                  Situaciones dominadas
+                  {t("progress.masteredStat")}
                 </p>
               </div>
               <div className="rounded-2xl bg-white border border-black/5 p-6 shadow-sm">
@@ -72,13 +73,13 @@ export default function Progress() {
                   {practiced}
                 </p>
                 <p className="mt-1 text-xs uppercase tracking-[0.15em] text-brand-charcoal/50">
-                  Situaciones practicadas
+                  {t("progress.practicedStat")}
                 </p>
               </div>
             </div>
 
             <h2 className="mt-12 text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50 mb-4">
-              Tus habilidades
+              {t("progress.yourSkills")}
             </h2>
             <div className="grid gap-3">
               {skillRows.map(({ sk, total, mastered }) => (
@@ -91,10 +92,11 @@ export default function Progress() {
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <h3 className="text-lg font-serif text-brand-espresso">
-                        {sk.translations?.es?.name || sk.name}
+                        {getLocalizedField(sk, "name", language) || sk.name}
                       </h3>
                       <p className="mt-1 text-sm text-brand-charcoal/60">
-                        {mastered} de {total} {total === 1 ? "situación dominada" : "situaciones dominadas"}
+                        {t("progress.ofMastered", { m: mastered, t: total })}{" "}
+                        {total === 1 ? t("progress.masteredOne") : t("progress.masteredOther")}
                       </p>
                       <div className="mt-3 h-1.5 rounded-full bg-black/5 overflow-hidden">
                         <div
