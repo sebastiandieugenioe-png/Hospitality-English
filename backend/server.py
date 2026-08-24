@@ -75,6 +75,24 @@ class AttemptResponse(BaseModel):
     submitted_answer: object
 
 
+class ReviewAnswer(BaseModel):
+    submitted_answer: object
+
+
+class ReviewRate(BaseModel):
+    rating: str  # again | hard | good | easy
+
+
+# ---------- Mastery + SRS constants ----------
+MASTERY_OVERALL_THRESHOLD = 80
+MASTERY_SERVICE_THRESHOLD = 70
+
+DEFAULT_EASE = 2.5
+MIN_EASE = 1.3
+AGAIN_DELAY_MINUTES = 10
+VALID_RATINGS = {"again", "hard", "good", "easy"}
+
+
 # ---------- Scoring helpers ----------
 def _norm(s):
     return re.sub(r"\s+", " ", re.sub(r"[^\w\s]", "", str(s).lower())).strip()
@@ -139,11 +157,132 @@ def _compute_scores(responses, index):
 
 
 def _is_mastered(scores):
-    if scores["overall"] < 80:
+    if scores["overall"] < MASTERY_OVERALL_THRESHOLD:
         return False
-    if scores["service"] is not None and scores["service"] < 70:
+    if scores["service"] is not None and scores["service"] < MASTERY_SERVICE_THRESHOLD:
         return False
     return True
+
+
+def _attempt_mastered(attempt):
+    """Backwards-compatible mastery read: prefer new canonical field, fall back to legacy."""
+    if "met_mastery_threshold" in attempt:
+        return bool(attempt["met_mastery_threshold"])
+    return bool(attempt.get("mastered"))
+
+
+# ---------- SRS (spaced repetition) helpers ----------
+def _minutes_from_now_iso(minutes):
+    return (datetime.now(timezone.utc) + timedelta(minutes=minutes)).isoformat()
+
+
+def _days_from_now_iso(days):
+    return (datetime.now(timezone.utc) + timedelta(days=days)).isoformat()
+
+
+def _new_review_item(guest_id, source_id, situation, section, dim, attempt_id):
+    now = now_iso()
+    return {
+        "id": str(uuid.uuid4()),
+        "guest_id": guest_id,
+        "source_type": "question",
+        "source_id": source_id,
+        "origin": "mistake",
+        "situation_slug": situation["slug"],
+        "primary_skill": situation.get("primary_skill"),
+        "assessment_dimension": dim,
+        "section": section,
+        "interval_days": 0,
+        "ease_factor": DEFAULT_EASE,
+        "consecutive_successes": 0,
+        "review_state": "learning",
+        "times_seen": 0,
+        "times_correct": 0,
+        "times_wrong": 1,
+        "last_mistake_attempt_id": attempt_id,
+        "created_at": now,
+        "updated_at": now,
+        "last_reviewed_at": None,
+        "next_review_at": now,  # due immediately
+    }
+
+
+def _compute_schedule(item, rating):
+    """Pure SRS scheduler. Returns fields to $set. Rating is independent of correctness."""
+    ease = item.get("ease_factor", DEFAULT_EASE)
+    streak = item.get("consecutive_successes", 0)
+
+    if rating == "again":
+        return {
+            "ease_factor": max(MIN_EASE, ease - 0.20),
+            "consecutive_successes": 0,
+            "interval_days": 0,
+            "review_state": "learning",
+            "next_review_at": _minutes_from_now_iso(AGAIN_DELAY_MINUTES),
+        }
+
+    if rating == "hard":
+        ease = max(MIN_EASE, ease - 0.15)
+    elif rating == "easy":
+        ease = ease + 0.15
+    # "good" leaves ease unchanged
+
+    streak += 1
+    if streak == 1:
+        interval = {"hard": 1, "good": 1, "easy": 3}[rating]
+    elif streak == 2:
+        interval = {"hard": 3, "good": 3, "easy": 7}[rating]
+    else:
+        prev = item.get("interval_days") or 1
+        mult = {"hard": 1.2, "good": ease, "easy": ease * 1.3}[rating]
+        interval = round(prev * mult, 2)
+
+    return {
+        "ease_factor": round(ease, 2),
+        "consecutive_successes": streak,
+        "interval_days": interval,
+        "review_state": "review",
+        "next_review_at": _days_from_now_iso(interval),
+    }
+
+
+async def _resolve_review_content(items):
+    """Resolve canonical question content for a list of review items without N+1 queries.
+
+    Returns a dict {(situation_slug, question_id): (section, question, situation)}.
+    """
+    slugs = list({it["situation_slug"] for it in items})
+    if not slugs:
+        return {}
+    lessons = await db.lessons.find({"situation_slug": {"$in": slugs}}, {"_id": 0}).to_list(1000)
+    situations = await db.situations.find({"slug": {"$in": slugs}}, {"_id": 0}).to_list(1000)
+    sit_by_slug = {s["slug"]: s for s in situations}
+    resolved = {}
+    for lesson in lessons:
+        slug = lesson["situation_slug"]
+        sit = sit_by_slug.get(slug)
+        for section, key in (("exercise", "exercises"), ("quiz", "quiz")):
+            for q in lesson.get(key, []):
+                resolved[(slug, q["id"])] = (section, q, sit)
+    return resolved
+
+
+def _public_question(q):
+    """Question fields safe to render (never leak the answer before responding)."""
+    out = {"id": q["id"], "type": q["type"], "prompt_es": q.get("prompt_es")}
+    if q["type"] == "multiple_choice":
+        out["options"] = q.get("options", [])
+    elif q["type"] == "fill_gap":
+        out["sentence"] = q.get("sentence")
+    elif q["type"] == "word_ordering":
+        out["words"] = q.get("words", [])
+    return out
+
+
+def _correct_answer_text(q):
+    if q["type"] == "multiple_choice":
+        return q.get("options", [None])[q.get("answer_index", 0)]
+    return q.get("answer")
 
 
 # ---------- Content endpoints ----------
