@@ -204,7 +204,7 @@ export default function Onboarding() {
             data-testid="onboarding-back-btn"
             onClick={goBack}
             className="inline-flex items-center justify-center gap-2 bg-white text-brand-forest border border-brand-forest/20 hover:bg-brand-sand transition-colors rounded-lg px-5 py-4 font-medium shrink-0"
-            aria-label="Back"
+            aria-label={t("common.back")}
           >
             <ArrowLeft className="w-4 h-4" />
           </button>

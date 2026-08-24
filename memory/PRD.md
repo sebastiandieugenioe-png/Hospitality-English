@@ -102,6 +102,16 @@ Backend es la fuente de verdad para corrección y para el scheduling SRS. Timest
 - **Flashcards**: derivadas de phrases; las de `service_rating="inappropriate"` se excluyen (verificado en vivo: 6 frases → 5 flashcards en `guest-has-had-too-much-to-drink`).
 - **Tests**: `backend/tests/test_pack_import.py` (9 tests) → PASS. Regresión relevante: test_catalog/test_attempts/test_architecture (41) + test_srs/test_srs_verification (30) → PASS. No deploy.
 
+### Importación multilingüe verificada v1 (2026-06) — 10 idiomas de interfaz
+- Fuente de verdad: `backend/data/mvp_i18n_import_bundle_verified_v1.json` (1035 IDs × 10 idiomas).
+- **Idiomas soportados (10)**: es, it, fr, pt(pt-PT), de, pl, ro, uk, nl, en. ES = fallback; EN = idioma aprendido Y también idioma de interfaz seleccionable. Registro centralizado en `server.py SUPPORTED_LANGUAGES` y `frontend/src/lib/i18n.js`.
+- **Overlay idempotente** `backend/seed_i18n.py` (`apply_i18n_bundle`, corre al startup tras seed_pack): inyecta traducciones sobre docs ya sembrados usando los shapes que los resolvers ya soportan — grouped `translations.<lang>.<base>` (situation title/desc, intro, exercise/quiz prompt/explanation/options), string-map `translations.<lang>` (phrase & dialogue text), suffix `<base>_<lang>` (phrase metadata, dialogue speaker_label). Etiquetas de speaker del pack reutilizan las traducciones legacy verbatim del bundle (mismas cadenas ES). NUNCA modifica: english_content, dialogue english, sentence/words, options canónicas, answer, answer_index, assessment_dimension, scoring, attempts, mastery, review_items, SRS, slugs, IDs.
+- **Locales frontend**: 10 archivos `locales/{lang}.json` (174 claves) generados desde el bundle (`tools/gen_locales.py`). `makeT` cae a ES.
+- **9 hardcoded UI wired** a `t()`: Category.js ×5 (lesson.backHome, common.loading, category.notFound, category.available, category.comingSoon), Lesson.js ×3 aria-labels (lesson.closeAria, lesson.flipCardAria, common.back), Onboarding.js ×1 (common.back). `speaker_label` de diálogo localizado vía `getLocalizedField`.
+- **Fix menor**: `PUT /situation-attempts/{id}/response` ahora devuelve `feedback` localizado (`_loc_field(q,"explanation",lang)`).
+- **Fuera del bundle (reportado, no inventado)**: las `categories` (name/description) no vienen en el bundle → permanecen EN/ES en toda interfaz. El bundle sí cubre professional_profiles, venue_types, target_countries, learning_goals, skills.
+- **Tests**: `tests/test_i18n_import.py` (8) PASS + testing_agent iteración 3 (9 tests, sin defectos críticos, idempotente, progreso/review_items preservados, contenido inglés intacto). Sin deploy.
+
 ### Exportación i18n v1 (2026-06) — solo lectura, sin cambios de código/contenido
 - Herramienta reproducible `backend/tools/export_i18n.py` → genera `backend/data/mvp_i18n_export_v1.json` (copia descargable en `frontend/public/`).
 - Contiene: 7 situations legacy activas (completas: situation+lesson+learning_items, sin las 13 del pack), `ui_translations` (168 claves es+it), 9 strings visibles hardcodeados detectados, taxonomías (profiles 2, venues 6, countries 6, goals 5, skills 14), idiomas soportados (es/it) y descripción del fallback. Excluye guests/progress/attempts/SRS.

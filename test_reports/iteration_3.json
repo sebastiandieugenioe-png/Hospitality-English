@@ -1,0 +1,38 @@
+{
+  "summary": "Independent targeted verification of the multilingual i18n overlay (10 interface languages) on backend APIs + French/German/Ukrainian frontend flows. Created /app/backend/tests/test_i18n_verify.py (9 tests) - ALL PASS, and re-passed after a backend restart (overlay is idempotent, 20 active situations, no duplicates, guests/review_items preserved). Frontend: French lesson flow (intro -> phrases -> dialogue -> flashcards -> exercises), localized aria-labels, Category page localized strings, navbar language switch to Ukrainian with backend persistence - all working. English learning content verified untouched everywhere. Found no critical defects; 3 i18n coverage/consistency gaps and 1 minor backend inconsistency reported below.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "PUT /api/situation-attempts/{id}/response", "issue": "Returns feedback via q.get('explanation_es') which does not exist on pack/i18n content (explanation now lives in translations.<lang>.explanation) -> feedback is always null for the 13 pack lessons, and is never localized for non-ES guests. UI is unaffected (Lesson.js resolves explanation locally), but the API contract is misleading. Suggested: feedback = _loc_field(q, 'explanation', guest_language)."},
+      {"endpoint": "GET /api/lessons/{slug} (dialogue)", "issue": "13 of 20 lessons (guest-arrives-at-the-bar, guest-orders-a-round-with-changes, guest-asks-about-spirits, guest-asks-what-a-cocktail-tastes-like, guest-asks-about-cocktail-allergens, guest-wants-to-split-the-bar-tab, guest-has-had-too-much-to-drink, guests-arrive-without-a-reservation, guest-is-not-ready-to-order, guest-asks-whats-in-a-dish, guest-asks-how-a-dish-is-prepared, guest-finishes-main-course, guest-wants-to-split-the-bill) only have speaker_label_es; no speaker_label_fr/de/... so non-ES users see Spanish speaker labels (verified in the FR UI: 'CLIENTE' / 'BARTENDER'). The 7 legacy lessons DO have all 10 labels."},
+      {"endpoint": "GET /api/categories, /api/categories/{slug}", "issue": "Categories carry no translations block (only name_en/name_es/description_es), so category name + description stay English/Spanish in every interface language (visible on Home and Category pages, e.g. 'Bar' + 'Toma pedidos de bebidas...' inside the FR/UK UI)."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home / Category (non-ES interface language)", "issues": ["Category titles use name_en and descriptions use description_es -> mixed English/Spanish text inside a French/Ukrainian UI (Category.js lines 55/58 and category cards).", "Situation rows on the Category page use sit.title_en while Home uses the localized title -> inconsistent language for the same situation (e.g. 'A guest arrives at the bar' on /category/bar vs 'Un client arrive au bar' on /home).", "Plan chip shows the raw role slug label ('Bartender · Ірландія') mixing scripts; professional_profiles translations exist but the UK name is still 'Bartender'.", "UK bundle strings leave the English word 'cocktail' untranslated in situation title/description ('Клієнт просить порадити cocktail') - bundle content-quality nit."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_i18n_verify.py", "/app/test_reports/pytest/i18n_verify.xml"],
+  "action_items": [
+    "Decide whether to extend the overlay with speaker_label_<lang> for the 13 pack lessons (currently Spanish labels leak into all non-ES UIs).",
+    "Localize categories (name/description) or hide them behind localized situation data.",
+    "Use getLocalizedField for category name/description and situation titles in Category.js for consistency with Home.",
+    "Optional: make PUT /situation-attempts/{id}/response return the localized explanation instead of the non-existent explanation_es."
+  ],
+  "critical_code_review_comments": [
+    "server.py submit_response hardcodes explanation_es while every other resolver uses _loc_field with ES fallback - inconsistent and now dead for pack content.",
+    "Category.js is the only page still reading *_en / *_es fields directly instead of the i18n helpers.",
+    "Locale files verified: all 10 files have exactly the same 174 keys, no empty values, no missing/extra keys. No hardcoded aria-labels or Spanish literals remain in src (grep clean)."
+  ],
+  "updated_files": ["/app/backend/tests/test_i18n_verify.py"],
+  "success_rate": {"backend": "100% (9/9 targeted tests)", "frontend": "100% of targeted i18n flows (4 flows) - only cosmetic/coverage gaps"},
+  "seed_data_creation": "Test guests: c23781f3-cfed-45fc-ad3c-56f48da3a986 (created fr, now uk after switcher test, bartender profile, 1 attempt) and 01555cd1-aa99-47fd-8281-95628932241a (de, 1 review_item from a wrong answer). Plus 2 throwaway guests from pytest (language-validation).",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "No auth (anonymous guests). /app/memory/test_credentials.md confirms none required.",
+  "context_for_next_testing_agent": "Verified: GET /api/languages == [es,it,fr,pt,de,pl,ro,uk,nl,en] with native_name; exactly 20 active situations (10 bartender / 10 waiter); situation.translations title present for fr/de/en/pl/uk on all 20; lesson intro translations.context+objectives(list) for fr/de/en; phrase[0].english_content == 'Hi there. What can I get you?' with fr/de string translations; exercise[0].answer_index == 1 and options canonical English (no translations block overrides options) for all lessons/languages checked; legacy taking-an-order dialogue[0].english intact with speaker_label_fr/de; language switch preserves guest id, role and review_items count; PUT /guests/{id}/language accepts all 10 codes and 422 for 'zz'; review-items resolve prompt + canonical English options for de/en/fr. Frontend verified in fr (lesson intro 'À VOUS'/'Commencer', English guest quote 'Hi, can I order here?', aria-labels 'Fermer la leçon'/'Retour'/'Retourner la carte', Category badges DISPONIBLE/Prochainement, 'Catégorie introuvable.', 'Retour à l’accueil'), de (Practice/Mistake Bank fully German with English target answer intact) and uk (navbar switcher -> persists to backend and survives reload). NOTE for scripts: when forcing localStorage, wait ~2s after first load before setting iph_lang, otherwise AppContext's mount effect overwrites it with the browser-detected language; also the attempt response 'section' value is 'exercise' (singular), not 'exercises'.",
+  "rca_of_the_issue": "No functional defect found in the i18n integration. The reported gaps are scope gaps of the imported bundle (no category translations, no pack-lesson speaker labels) plus one stale field reference (explanation_es) in submit_response."
+}

@@ -15,6 +15,7 @@ import seed_content
 import seed_reference
 import seed_catalog
 import seed_pack
+import seed_i18n
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -104,6 +105,14 @@ VALID_RATINGS = {"again", "hard", "good", "easy"}
 SUPPORTED_LANGUAGES = [
     {"code": "es", "name": "Spanish", "native_name": "Español"},
     {"code": "it", "name": "Italian", "native_name": "Italiano"},
+    {"code": "fr", "name": "French", "native_name": "Français"},
+    {"code": "pt", "name": "Portuguese", "native_name": "Português"},
+    {"code": "de", "name": "German", "native_name": "Deutsch"},
+    {"code": "pl", "name": "Polish", "native_name": "Polski"},
+    {"code": "ro", "name": "Romanian", "native_name": "Română"},
+    {"code": "uk", "name": "Ukrainian", "native_name": "Українська"},
+    {"code": "nl", "name": "Dutch", "native_name": "Nederlands"},
+    {"code": "en", "name": "English", "native_name": "English"},
 ]
 SUPPORTED_LANG_CODES = {lang["code"] for lang in SUPPORTED_LANGUAGES}
 DEFAULT_LANGUAGE = "es"
@@ -664,7 +673,8 @@ async def submit_response(attempt_id: str, payload: AttemptResponse):
     if not correct:
         await _upsert_mistake(attempt, payload.question_id, section, dim)
 
-    return {"correct": correct, "feedback": q.get("explanation_es"), "assessment_dimension": dim}
+    lang = await _guest_language(attempt["guest_id"])
+    return {"correct": correct, "feedback": _loc_field(q, "explanation", lang), "assessment_dimension": dim}
 
 
 async def _upsert_mistake(attempt, question_id, section, dim):
@@ -872,6 +882,7 @@ async def startup_seed():
     await seed_reference.seed_reference(db)
     await seed_catalog.seed_catalog(db)
     await seed_pack.seed_pack(db)
+    await seed_i18n.apply_i18n_bundle(db)
     # Forward-looking indexes (safe / additive).
     try:
         await db.guests.create_index("id")

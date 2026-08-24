@@ -149,6 +149,7 @@ export default function Lesson() {
 
 /* ---------- Layout ---------- */
 function Shell({ children, onClose, progress, label }) {
+  const { t } = useApp();
   return (
     <div className="min-h-screen bg-brand-sand flex flex-col">
       <header className="sticky top-0 z-40 backdrop-blur-xl bg-brand-sand/80 border-b border-black/5">
@@ -157,7 +158,7 @@ function Shell({ children, onClose, progress, label }) {
             data-testid="lesson-close-btn"
             onClick={onClose}
             className="text-brand-charcoal/50 hover:text-brand-espresso transition-colors"
-            aria-label="Cerrar lección"
+            aria-label={t("lesson.closeAria")}
           >
             <X className="w-5 h-5" />
           </button>
@@ -329,7 +330,7 @@ function Dialogue({ lesson, situation, onNext, onBack }) {
                     isWaiter ? "text-white/60" : "text-brand-charcoal/40"
                   }`}
                 >
-                  {line.speaker_label_es}
+                  {getLocalizedField(line, "speaker_label", language) || line.speaker_label_es}
                 </p>
                 <p className="text-base font-medium">{line.english}</p>
                 {showEs && (
@@ -412,7 +413,7 @@ function Flashcards({ lesson, onNext }) {
           data-testid="flashcard"
           onClick={() => setFlipped((f) => !f)}
           className="relative block w-full h-64 sm:h-72 text-left"
-          aria-label="Voltear tarjeta"
+          aria-label={t("lesson.flipCardAria")}
         >
           <motion.div
             animate={{ rotateY: flipped ? 180 : 0 }}
@@ -820,12 +821,13 @@ function Completion({ result, score, situation, slug }) {
 
 /* ---------- shared ---------- */
 function BackBtn({ onClick }) {
+  const { t } = useApp();
   return (
     <button
       data-testid="lesson-back-btn"
       onClick={onClick}
       className="inline-flex items-center justify-center gap-2 bg-white text-brand-forest border border-brand-forest/20 hover:bg-brand-sand transition-colors rounded-lg px-5 py-4 font-medium shrink-0"
-      aria-label="Atrás"
+      aria-label={t("common.back")}
     >
       <ArrowLeft className="w-4 h-4" />
     </button>

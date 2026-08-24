@@ -5,11 +5,13 @@ import { ArrowRight, ArrowLeft, Lock, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
 import { getCategory } from "@/lib/api";
+import { useApp } from "@/context/AppContext";
 
 const levelLabel = { a1: "A1", a2: "A2", b1: "B1", b2: "B2" };
 
 export default function Category() {
   const { slug } = useParams();
+  const { t } = useApp();
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -31,11 +33,11 @@ export default function Category() {
           data-testid="category-back-link"
           className="inline-flex items-center gap-2 text-sm text-brand-charcoal/60 hover:text-brand-forest transition-colors mb-8"
         >
-          <ArrowLeft className="w-4 h-4" /> Volver al inicio
+          <ArrowLeft className="w-4 h-4" /> {t("lesson.backHome")}
         </Link>
 
-        {loading && <p className="text-brand-charcoal/50">Cargando…</p>}
-        {error && <p className="text-brand-charcoal/50">No se encontró la categoría.</p>}
+        {loading && <p className="text-brand-charcoal/50">{t("common.loading")}</p>}
+        {error && <p className="text-brand-charcoal/50">{t("category.notFound")}</p>}
 
         {category && (
           <>
@@ -71,6 +73,7 @@ export default function Category() {
 }
 
 function SituationRow({ sit, index }) {
+  const { t } = useApp();
   const content = (
     <div
       className={`flex items-center justify-between gap-4 rounded-xl border px-5 py-4 transition-all ${
@@ -84,7 +87,7 @@ function SituationRow({ sit, index }) {
           <h3 className="text-lg font-serif text-brand-espresso">{sit.title_en}</h3>
           {sit.is_full && (
             <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-brand-forest bg-brand-success-muted px-2 py-0.5 rounded-full">
-              <Sparkles className="w-3 h-3" /> Disponible
+              <Sparkles className="w-3 h-3" /> {t("category.available")}
             </span>
           )}
         </div>
@@ -96,7 +99,7 @@ function SituationRow({ sit, index }) {
         <ArrowRight className="w-5 h-5 text-brand-forest shrink-0" />
       ) : (
         <span className="inline-flex items-center gap-1 text-xs text-brand-charcoal/40 shrink-0">
-          <Lock className="w-4 h-4" /> Pronto
+          <Lock className="w-4 h-4" /> {t("category.comingSoon")}
         </span>
       )}
     </div>
