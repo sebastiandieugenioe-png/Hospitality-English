@@ -90,8 +90,17 @@ Backend es la fuente de verdad para corrección y para el scheduling SRS. Timest
 - **Frontend**: `locales/es.json`, `locales/it.json`, `lib/i18n.js` (`t()`), strings reemplazados en Navbar/Onboarding/Lesson/Practice/ServiceNote.
 - **Seed**: taxonomías + 2 lecciones piloto (incl. `guest-says-cocktail-is-too-sweet`) con `it`.
 
-### Tests
-- `tests/test_srs.py` + `test_srs_verification.py`: **30 passed** tras adaptar aserciones al contrato i18n. Validación manual curl: guest conserva `interface_language=it`, título/prompt en italiano, opciones/`title_en` en inglés objetivo intactos.
+### Importación MVP Content Pack v1 (2026-06)
+- **13 situations** importadas (7 bartender + 6 waiter) → catálogo activo total **20** (10 bartender, 10 waiter). Las 7 situations previas intactas.
+- **Fuente reproducible**: `backend/data/mvp_content_pack_v1.json` (pack aprobado, sin reescribir contenido). Importador: `backend/seed_pack.py` → `seed_pack(db)` llamado en startup tras `seed_catalog`. Idempotente (seed_content limpia colecciones al arrancar; un restart no duplica).
+- **Adaptación puramente estructural** al schema existente (situations/lessons/learning_items), sin nuevas colecciones ni segunda arquitectura:
+  - phrase `text_en`→`english_content`; `translations.es.text`→`translations.es` (string); `translations.es.{service_note,common_mistake,context}`→sufijos `_es`; `natural_alternatives_en`→`natural_alternatives`.
+  - dialogue `text_en`→`english`, `translations.es.text`→`spanish`, `speaker_label_es` derivado del speaker.
+  - exercises/quiz: se conserva el shape agrupado `translations.es.{prompt,explanation}` (lo resuelven `getLocalizedField`/`_loc_field`); `sentence_en`→`sentence`. Se preservan stable ids, options, answer/answer_index, assessment_dimension y content_version.
+- **Mapping venue_type_targets → IDs taxonomía existente**: cocktail bar→cocktail-bar, pub→pub, hotel 4-5 star→hotel-restaurant, casual restaurant→casual-restaurant, fine dining→fine-dining. `venue_type_targets` no se persiste como modelo final.
+- **i18n**: pack trae EN (target, intacto) + ES. Sin italiano → IT hace fallback silencioso a ES vía helpers existentes.
+- **Flashcards**: derivadas de phrases; las de `service_rating="inappropriate"` se excluyen (verificado en vivo: 6 frases → 5 flashcards en `guest-has-had-too-much-to-drink`).
+- **Tests**: `backend/tests/test_pack_import.py` (9 tests) → PASS. Regresión relevante: test_catalog/test_attempts/test_architecture (41) + test_srs/test_srs_verification (30) → PASS. No deploy.
 
 ### Fuera de alcance (confirmado por el usuario, NO hecho)
 Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shift Practice; IA.

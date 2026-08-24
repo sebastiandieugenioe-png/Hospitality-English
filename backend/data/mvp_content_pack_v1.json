@@ -1,0 +1,4455 @@
+{
+  "pack_name": "Hospitality English MVP Content Pack v1",
+  "pack_version": 1,
+  "target_catalog_total_after_import": 20,
+  "new_situations_count": 13,
+  "source_language": "en",
+  "included_interface_translations": [
+    "es"
+  ],
+  "i18n_ready": true,
+  "notes": [
+    "English target content must remain unchanged across interface languages.",
+    "Spanish is included as the reference translation for this pack.",
+    "venue_type_targets are semantic labels only. Before import, map them to the existing venue_types taxonomy IDs; do not invent new taxonomy IDs.",
+    "Flashcards are derived from phrases by the current Lesson.js behavior. Items with service_rating=inappropriate must be excluded.",
+    "Stable IDs, slugs, canonical answers and content_version must be preserved during import."
+  ],
+  "situations": [
+    {
+      "slug": "guest-arrives-at-the-bar",
+      "title_en": "A guest arrives at the bar",
+      "translations": {
+        "es": {
+          "title": "Un cliente llega a la barra",
+          "description": "Saluda, confirma que puede pedir y dale tiempo si todavía no sabe qué quiere."
+        }
+      },
+      "roles": [
+        "bartender"
+      ],
+      "primary_skill": "greeting-guests",
+      "skills": [
+        "greeting-guests"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "cocktail bar",
+        "pub",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "a2",
+      "difficulty": 1,
+      "estimated_minutes": 5,
+      "service_registers": [
+        "casual",
+        "neutral",
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Estás detrás de la barra. Un cliente se acerca y mira alrededor buscando dónde pedir.",
+              "guest_opening": "Hola, ¿puedo pedir aquí?",
+              "summary": "Aprende a iniciar una interacción natural, profesional y sin presionar al cliente.",
+              "objectives": [
+                "Saludar de forma natural.",
+                "Confirmar que puedes atender al cliente.",
+                "Darle tiempo si todavía no está preparado para pedir."
+              ]
+            }
+          },
+          "guest_opening_en": "Hi, can I order here?"
+        },
+        "phrases": [
+          {
+            "id": "li_bar_greet_1",
+            "text_en": "Hi there. What can I get you?",
+            "translations": {
+              "es": {
+                "text": "Hola. ¿Qué te pongo?",
+                "service_note": "Natural para un pub o cocktail bar. No hace falta utilizar lenguaje excesivamente formal para dar un buen servicio."
+              }
+            },
+            "service_register": "casual",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bar_greet_2",
+            "text_en": "Of course. What would you like?",
+            "translations": {
+              "es": {
+                "text": "Claro. ¿Qué te gustaría?"
+              }
+            },
+            "service_register": "neutral",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bar_greet_3",
+            "text_en": "Take your time. I'll be right here when you're ready.",
+            "translations": {
+              "es": {
+                "text": "Tómate tu tiempo. Estaré aquí cuando estés listo.",
+                "service_note": "Darle tiempo al cliente evita presionarlo y mantiene la interacción natural."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_bar_greet_4",
+            "text_en": "Would you like to see the cocktail menu?",
+            "translations": {
+              "es": {
+                "text": "¿Te gustaría ver la carta de cocktails?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bar_greet_bad",
+            "text_en": "What do you want?",
+            "translations": {
+              "es": {
+                "text": "¿Qué quieres?",
+                "service_note": "Es inglés correcto, pero puede sonar brusco al dirigirte a un cliente."
+              }
+            },
+            "service_register": "casual",
+            "service_rating": "inappropriate",
+            "natural_alternatives_en": [
+              "What can I get you?"
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "customer",
+            "text_en": "Hi, can I order here?",
+            "translations": {
+              "es": {
+                "text": "Hola, ¿puedo pedir aquí?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Of course. What can I get you?",
+            "translations": {
+              "es": {
+                "text": "Claro. ¿Qué te pongo?"
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "I'm not sure yet. Can I have a quick look at the menu?",
+            "translations": {
+              "es": {
+                "text": "Todavía no estoy seguro. ¿Puedo mirar un momento la carta?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Absolutely. Take your time.",
+            "translations": {
+              "es": {
+                "text": "Por supuesto. Tómate tu tiempo."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "Thanks. I won't be long.",
+            "translations": {
+              "es": {
+                "text": "Gracias. No tardaré."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "No problem. I'll be right here when you're ready.",
+            "translations": {
+              "es": {
+                "text": "Sin problema. Estaré aquí cuando estés listo."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_bar_greet_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente dice: \"I'm not sure what I want yet.\" ¿Cuál es la mejor respuesta?",
+                "explanation": "Darle tiempo al cliente mantiene un tono amable y profesional sin presionarlo."
+              }
+            },
+            "options": [
+              "Hurry up, please.",
+              "Take your time. I'll be right here when you're ready.",
+              "What do you want?",
+              "Come back later."
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "ex_bar_greet_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa la frase natural de barra:",
+                "explanation": "\"What can I get you?\" es una forma muy natural de tomar un pedido en una barra."
+              }
+            },
+            "sentence_en": "What can I ______ you?",
+            "answer": "get",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "ex_bar_greet_3",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena para ofrecer la carta:",
+                "explanation": "Es una forma educada y natural de ofrecer la carta."
+              }
+            },
+            "words": [
+              "Would",
+              "you",
+              "like",
+              "to",
+              "see",
+              "the",
+              "cocktail",
+              "menu"
+            ],
+            "answer": "Would you like to see the cocktail menu",
+            "assessment_dimension": "english"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_bar_greet_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente pregunta: \"Can I order here?\" ¿Qué quiere saber?",
+                "explanation": "Está comprobando si ese es el lugar correcto para hacer el pedido."
+              }
+            },
+            "options": [
+              "Si puede hacer su pedido en esa barra.",
+              "Si puede sentarse allí.",
+              "Si puede pagar ya.",
+              "Si el bar está cerrado."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_bar_greet_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Cuál es correcta en inglés pero demasiado brusca para el servicio?",
+                "explanation": "\"What do you want?\" puede sonar demasiado directo con un cliente."
+              }
+            },
+            "options": [
+              "What do you want?",
+              "What can I get you?",
+              "Would you like to see the menu?",
+              "Take your time."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_bar_greet_3",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La expresión es “Take your time.”"
+              }
+            },
+            "sentence_en": "Take your ______.",
+            "answer": "time",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_bar_greet_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente todavía no sabe qué pedir. ¿Qué deberías hacer primero?",
+                "explanation": "El objetivo es ayudar sin presionar."
+              }
+            },
+            "options": [
+              "Recomendar inmediatamente la bebida más cara.",
+              "Darle tiempo o preguntarle si quiere ver la carta.",
+              "Ignorarlo.",
+              "Pedirle que decida."
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_bar_greet_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena la frase:",
+                "explanation": "Comunica que seguirás disponible cuando el cliente esté preparado."
+              }
+            },
+            "words": [
+              "I'll",
+              "be",
+              "here",
+              "when",
+              "you're",
+              "ready"
+            ],
+            "answer": "I'll be here when you're ready",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-orders-a-round-with-changes",
+      "title_en": "A guest orders a round with changes",
+      "translations": {
+        "es": {
+          "title": "Un cliente pide una ronda con modificaciones",
+          "description": "Entiende un pedido de varias bebidas, confirma cambios y repite la comanda para evitar errores."
+        }
+      },
+      "roles": [
+        "bartender"
+      ],
+      "primary_skill": "taking-orders",
+      "skills": [
+        "taking-orders"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "cocktail bar",
+        "pub",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "a2",
+      "difficulty": 2,
+      "estimated_minutes": 6,
+      "service_registers": [
+        "casual",
+        "neutral",
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Un cliente está pidiendo varias bebidas para su grupo y algunas tienen pequeñas modificaciones.",
+              "guest_opening": "¿Me pones dos pintas de Guinness, un gin tonic sin limón y un vodka soda?",
+              "summary": "Practica cómo escuchar, aclarar y confirmar una comanda larga de barra.",
+              "objectives": [
+                "Entender pedidos de varias bebidas.",
+                "Confirmar modificaciones.",
+                "Repetir pedidos largos para reducir errores."
+              ]
+            }
+          },
+          "guest_opening_en": "Can I get two pints of Guinness, a gin and tonic with no lemon, and a vodka soda?"
+        },
+        "phrases": [
+          {
+            "id": "li_round_1",
+            "text_en": "Sure. Anything else?",
+            "translations": {
+              "es": {
+                "text": "Claro. ¿Algo más?"
+              }
+            },
+            "service_register": "casual",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_round_2",
+            "text_en": "Was that with no lemon?",
+            "translations": {
+              "es": {
+                "text": "¿Era sin limón?",
+                "service_note": "Repetir una modificación concreta ayuda a confirmar que la has entendido bien."
+              }
+            },
+            "service_register": "neutral",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_round_3",
+            "text_en": "So that's two Guinness, one gin and tonic with no lemon, and one vodka soda.",
+            "translations": {
+              "es": {
+                "text": "Entonces son dos Guinness, un gin tonic sin limón y un vodka soda.",
+                "service_note": "Repetir pedidos largos ayuda a confirmar que has entendido correctamente."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_round_4",
+            "text_en": "What gin would you like?",
+            "translations": {
+              "es": {
+                "text": "¿Qué gin te gustaría?"
+              }
+            },
+            "service_register": "neutral",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_round_5",
+            "text_en": "Would you like ice with that?",
+            "translations": {
+              "es": {
+                "text": "¿Quieres hielo?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_round_6",
+            "text_en": "I'll get those started for you.",
+            "translations": {
+              "es": {
+                "text": "Empiezo a prepararlos."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "customer",
+            "text_en": "Can I get two pints of Guinness, a gin and tonic with no lemon, and a vodka soda?",
+            "translations": {
+              "es": {
+                "text": "¿Me pones dos pintas de Guinness, un gin tonic sin limón y un vodka soda?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Sure. What gin would you like?",
+            "translations": {
+              "es": {
+                "text": "Claro. ¿Qué gin te gustaría?"
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "Hendrick's, please.",
+            "translations": {
+              "es": {
+                "text": "Hendrick's, por favor."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "No problem. And was that with no lemon?",
+            "translations": {
+              "es": {
+                "text": "Sin problema. ¿Y era sin limón?"
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "Yeah, no lemon.",
+            "translations": {
+              "es": {
+                "text": "Sí, sin limón."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Perfect. So that's two Guinness, one Hendrick's and tonic with no lemon, and one vodka soda.",
+            "translations": {
+              "es": {
+                "text": "Perfecto. Entonces son dos Guinness, un Hendrick's con tónica sin limón y un vodka soda."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "That's right.",
+            "translations": {
+              "es": {
+                "text": "Eso es."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Great. I'll get those started for you.",
+            "translations": {
+              "es": {
+                "text": "Genial. Empiezo a prepararlos."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_round_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Qué modificación pide el cliente para el gin tonic?",
+                "explanation": "El cliente pide el gin tonic sin limón."
+              }
+            },
+            "options": [
+              "No ice",
+              "No lemon",
+              "Extra tonic",
+              "No gin"
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_round_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Por qué repetirías un pedido largo?",
+                "explanation": "Confirmar pedidos largos ayuda a reducir errores."
+              }
+            },
+            "options": [
+              "Para hacer que el cliente espere.",
+              "Para confirmar que lo has entendido correctamente.",
+              "Porque tienes que traducirlo.",
+              "Para vender otra bebida."
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "ex_round_3",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena para confirmar una modificación:",
+                "explanation": "Es una forma natural de confirmar el cambio."
+              }
+            },
+            "words": [
+              "Was",
+              "that",
+              "with",
+              "no",
+              "lemon"
+            ],
+            "answer": "Was that with no lemon",
+            "assessment_dimension": "english"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_round_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Anything else?\" significa:",
+                "explanation": "Es una pregunta breve para comprobar si falta algo en el pedido."
+              }
+            },
+            "options": [
+              "¿Algo más?",
+              "¿Quién paga?",
+              "¿Con hielo?",
+              "¿Dónde te sientas?"
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_round_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Cómo confirmarías la modificación?",
+                "explanation": "La primera opción confirma el detalle de forma natural."
+              }
+            },
+            "options": [
+              "Was that with no lemon?",
+              "You said lemon.",
+              "No lemon, right now.",
+              "Why no lemon?"
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_round_3",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La estructura es “What gin would you like?”"
+              }
+            },
+            "sentence_en": "What gin would you ______?",
+            "answer": "like",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_round_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Qué consigue repetir un pedido largo al final?",
+                "explanation": "Es una técnica de confirmación, no de venta."
+              }
+            },
+            "options": [
+              "Reducir posibles errores.",
+              "Hacer upselling.",
+              "Cambiar el pedido.",
+              "Cobrar antes."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_round_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Indica que vas a empezar a preparar la ronda."
+              }
+            },
+            "words": [
+              "I'll",
+              "get",
+              "those",
+              "started",
+              "for",
+              "you"
+            ],
+            "answer": "I'll get those started for you",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-asks-about-spirits",
+      "title_en": "A guest asks about spirits",
+      "translations": {
+        "es": {
+          "title": "Un cliente pregunta por dos destilados",
+          "description": "Explica diferencias de sabor de forma sencilla y recomienda según las preferencias del cliente."
+        }
+      },
+      "roles": [
+        "bartender"
+      ],
+      "primary_skill": "drink-knowledge",
+      "skills": [
+        "drink-knowledge",
+        "recommendations"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "cocktail bar",
+        "pub",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "b1",
+      "difficulty": 2,
+      "estimated_minutes": 6,
+      "service_registers": [
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Un cliente quiere pedir whiskey pero no conoce bien las opciones y te pide que expliques una diferencia de forma sencilla.",
+              "guest_opening": "¿Cuál es la diferencia entre el whiskey irlandés y el bourbon?",
+              "summary": "Aprende a describir dos opciones concretas sin convertir la respuesta en una explicación demasiado técnica.",
+              "objectives": [
+                "Responder preguntas sobre bebidas de forma clara.",
+                "Usar vocabulario sencillo de sabor.",
+                "Descubrir preferencias antes de recomendar."
+              ]
+            }
+          },
+          "guest_opening_en": "What's the difference between the Irish whiskey and the bourbon?"
+        },
+        "phrases": [
+          {
+            "id": "li_spirits_1",
+            "text_en": "They have quite different flavour profiles.",
+            "translations": {
+              "es": {
+                "text": "Tienen perfiles de sabor bastante diferentes."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_spirits_2",
+            "text_en": "The bourbon is a little sweeter and fuller-bodied.",
+            "translations": {
+              "es": {
+                "text": "El bourbon es un poco más dulce y con más cuerpo.",
+                "context": "Esta descripción se refiere a las dos opciones concretas del escenario, no a todos los bourbons e Irish whiskeys."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_spirits_3",
+            "text_en": "The Irish whiskey is lighter and smoother.",
+            "translations": {
+              "es": {
+                "text": "El whiskey irlandés es más ligero y suave.",
+                "context": "Esta descripción se refiere a las dos opciones concretas del escenario, no a una regla universal."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_spirits_4",
+            "text_en": "What kind of flavours do you normally like?",
+            "translations": {
+              "es": {
+                "text": "¿Qué tipo de sabores te suelen gustar?",
+                "service_note": "Antes de recomendar, descubrir las preferencias del cliente suele ser más útil que darle una explicación larga."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_spirits_5",
+            "text_en": "If you prefer something richer, I'd go for the bourbon.",
+            "translations": {
+              "es": {
+                "text": "Si prefieres algo con más cuerpo, elegiría el bourbon."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_spirits_6",
+            "text_en": "Would you like to try it neat or with ice?",
+            "translations": {
+              "es": {
+                "text": "¿Te gustaría probarlo solo o con hielo?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "customer",
+            "text_en": "What's the difference between the Irish whiskey and the bourbon?",
+            "translations": {
+              "es": {
+                "text": "¿Cuál es la diferencia entre el whiskey irlandés y el bourbon?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "They have quite different flavour profiles. What kind of flavours do you normally like?",
+            "translations": {
+              "es": {
+                "text": "Tienen perfiles de sabor bastante diferentes. ¿Qué tipo de sabores te suelen gustar?"
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "I usually like something a little sweeter.",
+            "translations": {
+              "es": {
+                "text": "Normalmente me gusta algo un poco más dulce."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "In that case, I'd probably recommend the bourbon. This one is a little sweeter and fuller-bodied.",
+            "translations": {
+              "es": {
+                "text": "En ese caso, probablemente te recomendaría el bourbon. Este es un poco más dulce y con más cuerpo."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "That sounds good.",
+            "translations": {
+              "es": {
+                "text": "Suena bien."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Would you like to try it neat or with ice?",
+            "translations": {
+              "es": {
+                "text": "¿Te gustaría probarlo solo o con hielo?"
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "Neat, please.",
+            "translations": {
+              "es": {
+                "text": "Solo, por favor."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Absolutely.",
+            "translations": {
+              "es": {
+                "text": "Por supuesto."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_spirits_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente dice: \"I usually like something a little sweeter.\" ¿Qué información te está dando?",
+                "explanation": "Está explicando qué perfil de sabor suele preferir."
+              }
+            },
+            "options": [
+              "Su método de pago.",
+              "Su preferencia de sabor.",
+              "Que quiere cerveza.",
+              "Que no bebe alcohol."
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_spirits_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "Preguntar por sabores ayuda a personalizar la recomendación."
+              }
+            },
+            "sentence_en": "What kind of ______ do you normally like?",
+            "answer": "flavours",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "ex_spirits_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "Un cliente pide que le recomiendes entre dos whiskies. ¿Cuál es la mejor forma de empezar?",
+                "explanation": "Primero descubre las preferencias del cliente."
+              }
+            },
+            "options": [
+              "Recomendar automáticamente el más caro.",
+              "Preguntarle qué sabores suele preferir.",
+              "Dar una explicación de cinco minutos sobre producción.",
+              "Decirle que son prácticamente iguales."
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "service"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_spirits_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Fuller-bodied\" se utiliza aquí para expresar:",
+                "explanation": "Aquí describe sensación y cuerpo, no una medida legal o técnica."
+              }
+            },
+            "options": [
+              "Una sensación de mayor cuerpo o intensidad.",
+              "Que tiene más alcohol legalmente.",
+              "Que la botella es más grande.",
+              "Que está más frío."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_spirits_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La estructura es “If you prefer...”"
+              }
+            },
+            "sentence_en": "If you ______ something richer, I'd go for the bourbon.",
+            "answer": "prefer",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_spirits_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Por qué preguntar primero por preferencias?",
+                "explanation": "Permite hacer una recomendación más relevante."
+              }
+            },
+            "options": [
+              "Para adaptar la recomendación al cliente.",
+              "Para retrasar el pedido.",
+              "Para evitar explicar nada.",
+              "Para vender siempre lo más caro."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_spirits_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Neat, please.\" significa:",
+                "explanation": "“Neat” significa servido solo."
+              }
+            },
+            "options": [
+              "Servido solo, sin hielo ni mixer.",
+              "Con mucho hielo.",
+              "Con tónica.",
+              "En una copa grande."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_spirits_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Es una pregunta natural para conocer preferencias."
+              }
+            },
+            "words": [
+              "What",
+              "kind",
+              "of",
+              "flavours",
+              "do",
+              "you",
+              "normally",
+              "like"
+            ],
+            "answer": "What kind of flavours do you normally like",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-asks-what-a-cocktail-tastes-like",
+      "title_en": "A guest asks what a cocktail tastes like",
+      "translations": {
+        "es": {
+          "title": "Un cliente pregunta a qué sabe un cocktail",
+          "description": "Describe un cocktail de forma clara y comprueba si ese perfil encaja con el cliente."
+        }
+      },
+      "roles": [
+        "bartender"
+      ],
+      "primary_skill": "cocktail-descriptions",
+      "skills": [
+        "cocktail-descriptions",
+        "recommendations"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "cocktail bar",
+        "hotel 4-5 star",
+        "pub"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "b1",
+      "difficulty": 2,
+      "estimated_minutes": 6,
+      "service_registers": [
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Un cliente está mirando la carta de cocktails y pregunta por uno que no conoce.",
+              "guest_opening": "¿A qué sabe el Negroni?",
+              "summary": "Aprende a describir un cocktail por su perfil de sabor y a ofrecer una alternativa si no encaja.",
+              "objectives": [
+                "Describir un cocktail de forma breve.",
+                "Usar vocabulario como bitter, citrusy y spirit-forward.",
+                "Comprobar las preferencias del cliente."
+              ]
+            }
+          },
+          "guest_opening_en": "What does the Negroni taste like?"
+        },
+        "phrases": [
+          {
+            "id": "li_cocktail_desc_1",
+            "text_en": "It's quite bitter, with some sweetness and citrus.",
+            "translations": {
+              "es": {
+                "text": "Es bastante amargo, con algo de dulzor y notas cítricas."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_cocktail_desc_2",
+            "text_en": "It's a strong, spirit-forward cocktail.",
+            "translations": {
+              "es": {
+                "text": "Es un cocktail intenso, en el que destaca el alcohol.",
+                "service_note": "“Spirit-forward” es habitual en coctelería para describir cocktails donde el destilado tiene bastante presencia."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_cocktail_desc_3",
+            "text_en": "Do you normally enjoy bitter flavours?",
+            "translations": {
+              "es": {
+                "text": "¿Te suelen gustar los sabores amargos?",
+                "service_note": "Comprobar las preferencias ayuda a evitar recomendar algo que probablemente no le guste al cliente."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_cocktail_desc_4",
+            "text_en": "If you prefer something fresher, I can recommend something else.",
+            "translations": {
+              "es": {
+                "text": "Si prefieres algo más fresco, puedo recomendarte otra cosa."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_cocktail_desc_5",
+            "text_en": "It's balanced, but definitely on the bitter side.",
+            "translations": {
+              "es": {
+                "text": "Es equilibrado, pero definitivamente tira hacia lo amargo."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_cocktail_desc_bad",
+            "text_en": "It's good.",
+            "translations": {
+              "es": {
+                "text": "Está bueno.",
+                "service_note": "No es incorrecto, pero no ayuda al cliente a entender cómo sabe la bebida."
+              }
+            },
+            "service_register": "casual",
+            "service_rating": "acceptable",
+            "natural_alternatives_en": [
+              "It's bitter, citrusy and quite spirit-forward."
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "customer",
+            "text_en": "What does the Negroni taste like?",
+            "translations": {
+              "es": {
+                "text": "¿A qué sabe el Negroni?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "It's quite bitter, with some sweetness and citrus. It's also pretty spirit-forward.",
+            "translations": {
+              "es": {
+                "text": "Es bastante amargo, con algo de dulzor y notas cítricas. También tiene bastante presencia del destilado."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "I'm not sure I like bitter drinks.",
+            "translations": {
+              "es": {
+                "text": "No estoy seguro de que me gusten las bebidas amargas."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "In that case, it might not be the best choice for you.",
+            "translations": {
+              "es": {
+                "text": "En ese caso, quizá no sea la mejor opción para ti."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "Do you have something a bit fresher?",
+            "translations": {
+              "es": {
+                "text": "¿Tenéis algo un poco más fresco?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Absolutely. If you prefer something fresher, I can recommend something more citrusy and refreshing.",
+            "translations": {
+              "es": {
+                "text": "Por supuesto. Si prefieres algo más fresco, puedo recomendarte algo más cítrico y refrescante."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "Yeah, that sounds more like me.",
+            "translations": {
+              "es": {
+                "text": "Sí, eso suena más a lo que me gusta."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Perfect. Let me show you a couple of options.",
+            "translations": {
+              "es": {
+                "text": "Perfecto. Déjame enseñarte un par de opciones."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_cocktail_desc_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente dice: \"I'm not sure I like bitter drinks.\" ¿Qué información importante te está dando?",
+                "explanation": "Está expresando una preferencia de sabor."
+              }
+            },
+            "options": [
+              "Que probablemente no disfruta perfiles muy amargos.",
+              "Que quiere pagar.",
+              "Que quiere whiskey.",
+              "Que es alérgico."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_cocktail_desc_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "“Bitter” significa amargo."
+              }
+            },
+            "sentence_en": "Do you normally enjoy ______ flavours?",
+            "answer": "bitter",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "ex_cocktail_desc_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Cuál ayuda más al cliente a entender el cocktail?",
+                "explanation": "Una descripción concreta permite anticipar el perfil de sabor."
+              }
+            },
+            "options": [
+              "It's good.",
+              "Everybody likes it.",
+              "It's quite bitter, with some sweetness and citrus.",
+              "Just try it."
+            ],
+            "answer_index": 2,
+            "assessment_dimension": "service"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_cocktail_desc_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Spirit-forward\" describe:",
+                "explanation": "Describe un estilo en el que el componente alcohólico/base spirit tiene presencia notable."
+              }
+            },
+            "options": [
+              "Un cocktail donde el destilado tiene bastante presencia.",
+              "Un cocktail sin alcohol.",
+              "Un cocktail siempre dulce.",
+              "Una copa grande."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_cocktail_desc_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La expresión describe hacia qué perfil se inclina."
+              }
+            },
+            "sentence_en": "It's definitely on the ______ side.",
+            "answer": "bitter",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_cocktail_desc_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente dice que no disfruta sabores amargos. ¿Qué haces?",
+                "explanation": "Adapta la recomendación a la preferencia del cliente."
+              }
+            },
+            "options": [
+              "Insistir en el Negroni.",
+              "Reconocerlo y ofrecer otra opción.",
+              "Decir que todos lo toman.",
+              "Ignorarlo."
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_cocktail_desc_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Cuál describe mejor en lugar de limitarse a valorar?",
+                "explanation": "Describe características concretas en vez de decir solo que es bueno."
+              }
+            },
+            "options": [
+              "It's good.",
+              "It's bitter, citrusy and quite strong.",
+              "You'll like it.",
+              "It's famous."
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_cocktail_desc_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Es una pregunta natural para comprobar preferencias."
+              }
+            },
+            "words": [
+              "Do",
+              "you",
+              "normally",
+              "enjoy",
+              "bitter",
+              "flavours"
+            ],
+            "answer": "Do you normally enjoy bitter flavours",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-asks-about-cocktail-allergens",
+      "title_en": "A guest asks about cocktail allergens",
+      "translations": {
+        "es": {
+          "title": "Un cliente pregunta por alérgenos en un cocktail",
+          "description": "Responde de forma segura a una pregunta sobre alérgenos sin asumir ni garantizar información que no has comprobado."
+        }
+      },
+      "roles": [
+        "bartender"
+      ],
+      "primary_skill": "allergies",
+      "skills": [
+        "allergies",
+        "drink-knowledge"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "cocktail bar",
+        "pub",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "b1",
+      "difficulty": 3,
+      "estimated_minutes": 6,
+      "service_registers": [
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Un cliente quiere pedir un cocktail pero pregunta si contiene un ingrediente al que es alérgico.",
+              "guest_opening": "¿Este cocktail contiene frutos secos?",
+              "summary": "Aprende a comprobar la información de alérgenos antes de confirmar y a seguir el procedimiento del establecimiento.",
+              "objectives": [
+                "Entender preguntas sobre alergias.",
+                "Evitar suposiciones.",
+                "Comprobar ingredientes y contaminación cruzada cuando corresponda."
+              ]
+            }
+          },
+          "guest_opening_en": "Does this cocktail contain any nuts?"
+        },
+        "phrases": [
+          {
+            "id": "li_bar_allergy_1",
+            "text_en": "Let me double-check that for you.",
+            "translations": {
+              "es": {
+                "text": "Déjame comprobarlo para ti."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_bar_allergy_2",
+            "text_en": "I'll check the ingredients before I confirm.",
+            "translations": {
+              "es": {
+                "text": "Comprobaré los ingredientes antes de confirmártelo."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_bar_allergy_3",
+            "text_en": "Do you have a nut allergy?",
+            "translations": {
+              "es": {
+                "text": "¿Tienes alergia a los frutos secos?",
+                "context": "Si el cliente menciona una alergia, sigue siempre el procedimiento de alérgenos de tu establecimiento."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bar_allergy_4",
+            "text_en": "We do handle nuts here, so I'll also check the cross-contamination information.",
+            "translations": {
+              "es": {
+                "text": "Aquí sí manipulamos frutos secos, así que también comprobaré la información sobre contaminación cruzada.",
+                "context": "Esta frase pertenece al escenario concreto. No implica que todos los bares manipulen frutos secos."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_bar_allergy_5",
+            "text_en": "Thanks for letting me know.",
+            "translations": {
+              "es": {
+                "text": "Gracias por avisarme."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bar_allergy_bad",
+            "text_en": "I'm pretty sure it's fine.",
+            "translations": {
+              "es": {
+                "text": "Estoy bastante seguro de que no hay problema.",
+                "service_note": "Con una alergia no debes basarte en suposiciones. Comprueba la información antes de confirmar.",
+                "common_mistake": "Evita expresiones como “I think”, “probably” o “I'm pretty sure” para confirmar seguridad ante una alergia."
+              }
+            },
+            "service_register": "casual",
+            "service_rating": "inappropriate",
+            "natural_alternatives_en": [
+              "Let me double-check the ingredients for you."
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "customer",
+            "text_en": "Does this cocktail contain any nuts?",
+            "translations": {
+              "es": {
+                "text": "¿Este cocktail contiene frutos secos?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Do you have a nut allergy?",
+            "translations": {
+              "es": {
+                "text": "¿Tienes alergia a los frutos secos?"
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "Yes, I do.",
+            "translations": {
+              "es": {
+                "text": "Sí."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Thanks for letting me know. Let me double-check the ingredients before I confirm.",
+            "translations": {
+              "es": {
+                "text": "Gracias por avisarme. Déjame comprobar los ingredientes antes de confirmártelo."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "Thank you.",
+            "translations": {
+              "es": {
+                "text": "Gracias."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "We do handle nuts here, so I'll also check the cross-contamination information for you.",
+            "translations": {
+              "es": {
+                "text": "Aquí sí manipulamos frutos secos, así que también comprobaré la información sobre contaminación cruzada."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "I appreciate that.",
+            "translations": {
+              "es": {
+                "text": "Te lo agradezco."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Of course. I'll be right back.",
+            "translations": {
+              "es": {
+                "text": "Por supuesto. Vuelvo enseguida."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_bar_allergy_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "No recuerdas si el cocktail contiene frutos secos. ¿Qué dices?",
+                "explanation": "Ante una alergia, comprueba la información antes de confirmar."
+              }
+            },
+            "options": [
+              "I'm pretty sure it's fine.",
+              "It should be okay.",
+              "Let me double-check the ingredients for you.",
+              "There's probably no nuts."
+            ],
+            "answer_index": 2,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "ex_bar_allergy_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente dice: \"I have a severe nut allergy.\" ¿Qué información esencial comunica?",
+                "explanation": "Una alergia requiere aplicar el procedimiento de seguridad del establecimiento."
+              }
+            },
+            "options": [
+              "Que no le gustan los frutos secos.",
+              "Que existe una alergia y debe seguirse el procedimiento correspondiente.",
+              "Que quiere otro cocktail.",
+              "Que quiere pagar."
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_bar_allergy_3",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "“Check” expresa que vas a comprobar la información."
+              }
+            },
+            "sentence_en": "I'll ______ the ingredients before I confirm.",
+            "answer": "check",
+            "assessment_dimension": "english"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_bar_allergy_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Qué respuesta debe evitarse?",
+                "explanation": "No confirmes seguridad basándote en una suposición."
+              }
+            },
+            "options": [
+              "I'm pretty sure it's fine.",
+              "Let me double-check that for you.",
+              "I'll check the ingredients.",
+              "Thanks for letting me know."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_bar_allergy_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La expresión es “Thanks for letting me know.”"
+              }
+            },
+            "sentence_en": "Thanks for ______ me know.",
+            "answer": "letting",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_bar_allergy_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Cross-contamination\" significa:",
+                "explanation": "Es el término usado para contaminación cruzada."
+              }
+            },
+            "options": [
+              "Contaminación cruzada.",
+              "Una bebida mezclada.",
+              "Un error de pago.",
+              "Una reserva duplicada."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_bar_allergy_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "Antes de confirmar información sobre una alergia deberías:",
+                "explanation": "No se debe improvisar información sobre alérgenos."
+              }
+            },
+            "options": [
+              "Comprobar la información/procedimiento del establecimiento.",
+              "Adivinar por los ingredientes visibles.",
+              "Decir que probablemente está bien.",
+              "Preguntar a otro cliente."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_bar_allergy_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Es una forma profesional de indicar que vas a verificar la información."
+              }
+            },
+            "words": [
+              "Let",
+              "me",
+              "double-check",
+              "that",
+              "for",
+              "you"
+            ],
+            "answer": "Let me double-check that for you",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-wants-to-split-the-bar-tab",
+      "title_en": "A guest wants to split the bar tab",
+      "translations": {
+        "es": {
+          "title": "Un cliente quiere dividir la cuenta del bar",
+          "description": "Pregunta cómo quieren dividir el pago y confirma una división de cuenta con claridad."
+        }
+      },
+      "roles": [
+        "bartender"
+      ],
+      "primary_skill": "payments",
+      "skills": [
+        "payments"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "cocktail bar",
+        "pub",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "a2",
+      "difficulty": 2,
+      "estimated_minutes": 5,
+      "service_registers": [
+        "neutral",
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Un grupo ha pedido varias bebidas y quiere dividir el pago.",
+              "guest_opening": "¿Podemos dividir la cuenta entre los cuatro?",
+              "summary": "Practica cómo gestionar pagos separados de forma clara y natural.",
+              "objectives": [
+                "Entender split the bill/tab.",
+                "Preguntar cómo quieren dividirlo.",
+                "Confirmar pagos separados."
+              ]
+            }
+          },
+          "guest_opening_en": "Can we split the bill between four of us?"
+        },
+        "phrases": [
+          {
+            "id": "li_bar_pay_1",
+            "text_en": "Of course. How would you like to split it?",
+            "translations": {
+              "es": {
+                "text": "Claro. ¿Cómo os gustaría dividirlo?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bar_pay_2",
+            "text_en": "Would you like to split it evenly?",
+            "translations": {
+              "es": {
+                "text": "¿Queréis dividirlo a partes iguales?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bar_pay_3",
+            "text_en": "Would you prefer to pay for your drinks separately?",
+            "translations": {
+              "es": {
+                "text": "¿Preferís pagar vuestras bebidas por separado?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bar_pay_4",
+            "text_en": "That's €18.50 each.",
+            "translations": {
+              "es": {
+                "text": "Son 18,50 € por persona."
+              }
+            },
+            "service_register": "neutral",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bar_pay_5",
+            "text_en": "You can pay separately, no problem.",
+            "translations": {
+              "es": {
+                "text": "Podéis pagar por separado, sin problema."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "customer",
+            "text_en": "Can we split the bill between four of us?",
+            "translations": {
+              "es": {
+                "text": "¿Podemos dividir la cuenta entre los cuatro?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Of course. Would you like to split it evenly?",
+            "translations": {
+              "es": {
+                "text": "Claro. ¿Queréis dividirla a partes iguales?"
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "Actually, can we each pay for our own drinks?",
+            "translations": {
+              "es": {
+                "text": "En realidad, ¿podemos pagar cada uno sus propias bebidas?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "No problem. Who'd like to go first?",
+            "translations": {
+              "es": {
+                "text": "Sin problema. ¿Quién quiere ir primero?"
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "I'll go first. I had the two beers and the whiskey.",
+            "translations": {
+              "es": {
+                "text": "Empiezo yo. Tomé las dos cervezas y el whiskey."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Perfect. That's €18.50.",
+            "translations": {
+              "es": {
+                "text": "Perfecto. Son 18,50 €."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "Can I pay by card?",
+            "translations": {
+              "es": {
+                "text": "¿Puedo pagar con tarjeta?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Absolutely.",
+            "translations": {
+              "es": {
+                "text": "Por supuesto."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_bar_pay_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Can we split the bill?\" significa:",
+                "explanation": "“Split the bill” significa dividir la cuenta."
+              }
+            },
+            "options": [
+              "¿Podemos dividir la cuenta?",
+              "¿Podemos pedir otra ronda?",
+              "¿Podemos movernos de mesa?",
+              "¿Podemos pagar mañana?"
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_bar_pay_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La palabra es “split”."
+              }
+            },
+            "sentence_en": "How would you like to ______ it?",
+            "answer": "split",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "ex_bar_pay_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El grupo quiere pagar por separado. ¿Cuál es la mejor respuesta?",
+                "explanation": "Primero aclara cómo desean dividir el pago."
+              }
+            },
+            "options": [
+              "Of course. How would you like to split it?",
+              "No, one payment only.",
+              "You decide.",
+              "Pay now."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_bar_pay_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Evenly\" significa:",
+                "explanation": "Aquí significa dividir en partes iguales."
+              }
+            },
+            "options": [
+              "A partes iguales.",
+              "En efectivo.",
+              "Con tarjeta.",
+              "Por adelantado."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_bar_pay_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "“Our own drinks” = nuestras propias bebidas."
+              }
+            },
+            "sentence_en": "Can we each pay for our ______ drinks?",
+            "answer": "own",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_bar_pay_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Qué pregunta aclara cómo desean pagar?",
+                "explanation": "Es la pregunta más directa y útil para aclarar la división."
+              }
+            },
+            "options": [
+              "How would you like to split it?",
+              "What did you drink?",
+              "Do you want another?",
+              "Where are you going?"
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_bar_pay_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Who'd like to go first?\" significa:",
+                "explanation": "Se refiere al orden del pago."
+              }
+            },
+            "options": [
+              "¿Quién quiere pagar primero?",
+              "¿Quién pidió primero?",
+              "¿Quién se va?",
+              "¿Quién reservó?"
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_bar_pay_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Confirma que los pagos separados son posibles."
+              }
+            },
+            "words": [
+              "You",
+              "can",
+              "pay",
+              "separately"
+            ],
+            "answer": "You can pay separately",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-has-had-too-much-to-drink",
+      "title_en": "A guest has had too much to drink",
+      "translations": {
+        "es": {
+          "title": "Un cliente ha bebido demasiado",
+          "description": "Comunica que no servirás más alcohol de forma calmada y ofrece alternativas siguiendo el procedimiento del establecimiento."
+        }
+      },
+      "roles": [
+        "bartender"
+      ],
+      "primary_skill": "difficult-guests",
+      "skills": [
+        "difficult-guests",
+        "service-recovery"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "cocktail bar",
+        "pub",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "b1",
+      "difficulty": 3,
+      "estimated_minutes": 7,
+      "service_registers": [
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Un cliente que parece haber bebido demasiado pide otra bebida. Según la decisión o procedimiento del establecimiento, no vas a servirle más alcohol.",
+              "guest_opening": "¿Me pones otro whiskey?",
+              "summary": "Practica lenguaje de servicio para rechazar otra bebida sin humillar al cliente ni convertir la interacción en una discusión.",
+              "objectives": [
+                "Comunicar una negativa con calma.",
+                "Evitar lenguaje confrontacional.",
+                "Ofrecer alternativas sin alcohol.",
+                "Escalar al manager cuando corresponda."
+              ]
+            }
+          },
+          "guest_opening_en": "Can I get another whiskey?"
+        },
+        "phrases": [
+          {
+            "id": "li_refuse_1",
+            "text_en": "I'm sorry, but I can't serve you another alcoholic drink right now.",
+            "translations": {
+              "es": {
+                "text": "Lo siento, pero ahora mismo no puedo servirte otra bebida alcohólica."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_refuse_2",
+            "text_en": "I can get you some water or a soft drink instead.",
+            "translations": {
+              "es": {
+                "text": "Puedo ofrecerte agua o un refresco en su lugar."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_refuse_3",
+            "text_en": "I understand, but I'm not able to serve you another one.",
+            "translations": {
+              "es": {
+                "text": "Lo entiendo, pero no puedo servirte otra.",
+                "service_note": "Repetir la decisión con calma suele ser mejor que entrar en una discusión larga."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_refuse_4",
+            "text_en": "Let me get my manager for you.",
+            "translations": {
+              "es": {
+                "text": "Déjame llamar a mi manager."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_refuse_5",
+            "text_en": "I'd be happy to get you some water.",
+            "translations": {
+              "es": {
+                "text": "Con gusto te traigo agua."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_refuse_bad",
+            "text_en": "You're too drunk.",
+            "translations": {
+              "es": {
+                "text": "Estás demasiado borracho.",
+                "service_note": "Puede provocar confrontación y no es necesario etiquetar o humillar al cliente para comunicar que no se servirá más alcohol."
+              }
+            },
+            "service_register": "casual",
+            "service_rating": "inappropriate",
+            "natural_alternatives_en": [
+              "I'm sorry, but I can't serve you another alcoholic drink right now."
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "customer",
+            "text_en": "Can I get another whiskey?",
+            "translations": {
+              "es": {
+                "text": "¿Me pones otro whiskey?"
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "I'm sorry, but I can't serve you another alcoholic drink right now.",
+            "translations": {
+              "es": {
+                "text": "Lo siento, pero ahora mismo no puedo servirte otra bebida alcohólica."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "What? I'm completely fine.",
+            "translations": {
+              "es": {
+                "text": "¿Qué? Estoy perfectamente."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "I understand, but I'm not able to serve you another one.",
+            "translations": {
+              "es": {
+                "text": "Lo entiendo, pero no puedo servirte otra."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "That's ridiculous.",
+            "translations": {
+              "es": {
+                "text": "Eso es ridículo."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "I understand you're frustrated. I can get you some water or a soft drink instead.",
+            "translations": {
+              "es": {
+                "text": "Entiendo que estés molesto. Puedo ofrecerte agua o un refresco en su lugar."
+              }
+            }
+          },
+          {
+            "speaker": "customer",
+            "text_en": "I want to speak to your manager.",
+            "translations": {
+              "es": {
+                "text": "Quiero hablar con tu manager."
+              }
+            }
+          },
+          {
+            "speaker": "bartender",
+            "text_en": "Of course. Let me get my manager for you.",
+            "translations": {
+              "es": {
+                "text": "Por supuesto. Déjame llamar a mi manager."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_refuse_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Cuál es la mejor forma de comunicar la decisión?",
+                "explanation": "Comunica la decisión de manera clara sin etiquetar ni provocar al cliente."
+              }
+            },
+            "options": [
+              "You're too drunk.",
+              "Stop drinking.",
+              "I'm sorry, but I can't serve you another alcoholic drink right now.",
+              "Go home."
+            ],
+            "answer_index": 2,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "ex_refuse_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente responde: \"I'm completely fine.\" ¿Qué está haciendo?",
+                "explanation": "Está rechazando la valoración o decisión del bartender."
+              }
+            },
+            "options": [
+              "Aceptando la decisión.",
+              "Cuestionando la decisión del bartender.",
+              "Pidiendo agua.",
+              "Pidiendo la cuenta."
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_refuse_3",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "“Instead” introduce una alternativa."
+              }
+            },
+            "sentence_en": "I can get you some water ______.",
+            "answer": "instead",
+            "assessment_dimension": "english"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_refuse_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente comienza a discutir. ¿Qué estrategia lingüística es mejor?",
+                "explanation": "La lección entrena comunicación calmada y escalado según procedimiento."
+              }
+            },
+            "options": [
+              "Mantener la calma, repetir la decisión y evitar una discusión larga.",
+              "Subir el tono.",
+              "Insultarlo.",
+              "Seguir sirviendo para evitar problemas."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_refuse_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La estructura es “I'm not able to...”."
+              }
+            },
+            "sentence_en": "I'm not ______ to serve you another one.",
+            "answer": "able",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_refuse_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Qué alternativa puedes ofrecer?",
+                "explanation": "Ofrecer una alternativa puede ayudar a mantener la interacción calmada."
+              }
+            },
+            "options": [
+              "Agua o una bebida sin alcohol.",
+              "Más alcohol.",
+              "Una bebida doble.",
+              "Nada, siempre."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_refuse_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"I want to speak to your manager.\" ¿Qué solicita?",
+                "explanation": "Está pidiendo hablar con el manager."
+              }
+            },
+            "options": [
+              "Hablar con el responsable.",
+              "Pagar.",
+              "Otra bebida.",
+              "Una mesa."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_refuse_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Es una forma natural de aceptar la petición de hablar con un responsable."
+              }
+            },
+            "words": [
+              "Let",
+              "me",
+              "get",
+              "my",
+              "manager",
+              "for",
+              "you"
+            ],
+            "answer": "Let me get my manager for you",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guests-arrive-without-a-reservation",
+      "title_en": "Guests arrive without a reservation",
+      "translations": {
+        "es": {
+          "title": "Unos clientes llegan sin reserva",
+          "description": "Recibe a unos clientes sin reserva, comprueba disponibilidad y gestiona una pequeña espera sin prometer tiempos desconocidos."
+        }
+      },
+      "roles": [
+        "waiter"
+      ],
+      "primary_skill": "seating-guests",
+      "skills": [
+        "seating-guests",
+        "greeting-guests"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "casual restaurant",
+        "fine dining",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "a2",
+      "difficulty": 2,
+      "estimated_minutes": 5,
+      "service_registers": [
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Una pareja entra al restaurante sin reserva y pregunta si hay una mesa disponible.",
+              "guest_opening": "Hola, no tenemos reserva. ¿Tenéis una mesa para dos?",
+              "summary": "Aprende a gestionar un walk-in de forma clara y profesional.",
+              "objectives": [
+                "Recibir al cliente.",
+                "Comprobar disponibilidad.",
+                "Gestionar una espera sin inventar tiempos."
+              ]
+            }
+          },
+          "guest_opening_en": "Hi, we don't have a reservation. Do you have a table for two?"
+        },
+        "phrases": [
+          {
+            "id": "li_walkin_1",
+            "text_en": "Of course. How many people is it for?",
+            "translations": {
+              "es": {
+                "text": "Claro. ¿Para cuántas personas?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_walkin_2",
+            "text_en": "Let me check what we have available.",
+            "translations": {
+              "es": {
+                "text": "Déjame comprobar qué tenemos disponible."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_walkin_3",
+            "text_en": "We should have a table available shortly.",
+            "translations": {
+              "es": {
+                "text": "Deberíamos tener una mesa disponible en breve.",
+                "service_note": "Utiliza un tiempo concreto solo si realmente puedes confirmarlo."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_walkin_4",
+            "text_en": "Would you mind waiting here for a moment?",
+            "translations": {
+              "es": {
+                "text": "¿Os importaría esperar aquí un momento?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_walkin_5",
+            "text_en": "Your table is ready. Please follow me.",
+            "translations": {
+              "es": {
+                "text": "Vuestra mesa está lista. Seguidme, por favor."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_walkin_bad",
+            "text_en": "You need to wait.",
+            "translations": {
+              "es": {
+                "text": "Tenéis que esperar.",
+                "service_note": "Es comprensible, pero una petición más cortés suena mucho mejor en servicio."
+              }
+            },
+            "service_register": "casual",
+            "service_rating": "inappropriate",
+            "natural_alternatives_en": [
+              "Would you mind waiting here for a moment?"
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "guest",
+            "text_en": "Hi, we don't have a reservation. Do you have a table for two?",
+            "translations": {
+              "es": {
+                "text": "Hola, no tenemos reserva. ¿Tenéis una mesa para dos?"
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Of course. Let me check what we have available.",
+            "translations": {
+              "es": {
+                "text": "Claro. Déjame comprobar qué tenemos disponible."
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Sure.",
+            "translations": {
+              "es": {
+                "text": "Claro."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "We should have a table available shortly. Would you mind waiting here for a moment?",
+            "translations": {
+              "es": {
+                "text": "Deberíamos tener una mesa disponible en breve. ¿Os importaría esperar aquí un momento?"
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "No problem.",
+            "translations": {
+              "es": {
+                "text": "Sin problema."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Thank you. I'll let you know as soon as it's ready.",
+            "translations": {
+              "es": {
+                "text": "Gracias. Os aviso en cuanto esté lista."
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Perfect.",
+            "translations": {
+              "es": {
+                "text": "Perfecto."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Your table is ready now. Please follow me.",
+            "translations": {
+              "es": {
+                "text": "Vuestra mesa ya está lista. Seguidme, por favor."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_walkin_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"We don't have a reservation.\" significa:",
+                "explanation": "Son clientes walk-in, sin reserva previa."
+              }
+            },
+            "options": [
+              "Han llegado sin una reserva previa.",
+              "Han perdido la cuenta.",
+              "Quieren cancelar.",
+              "Quieren pedir bebidas."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_walkin_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "No sabes exactamente cuánto tardará una mesa. ¿Qué dices?",
+                "explanation": "Primero comprueba disponibilidad y evita prometer un tiempo que no conoces."
+              }
+            },
+            "options": [
+              "It'll be exactly five minutes.",
+              "Let me check what we have available.",
+              "Just wait.",
+              "Come back later."
+            ],
+            "answer_index": 1,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "ex_walkin_3",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Es una petición cortés para pedir que esperen."
+              }
+            },
+            "words": [
+              "Would",
+              "you",
+              "mind",
+              "waiting",
+              "here",
+              "for",
+              "a",
+              "moment"
+            ],
+            "answer": "Would you mind waiting here for a moment",
+            "assessment_dimension": "english"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_walkin_1",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La pregunta es “How many people is it for?”"
+              }
+            },
+            "sentence_en": "How many people is it ______?",
+            "answer": "for",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_walkin_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Shortly\" significa:",
+                "explanation": "Indica un periodo breve sin fijar necesariamente un minuto exacto."
+              }
+            },
+            "options": [
+              "En breve.",
+              "Mañana.",
+              "Nunca.",
+              "Exactamente cinco minutos."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_walkin_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Qué respuesta es demasiado directa?",
+                "explanation": "“You need to wait” puede sonar brusco."
+              }
+            },
+            "options": [
+              "You need to wait.",
+              "Would you mind waiting here for a moment?",
+              "Let me check what we have available.",
+              "Please follow me."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_walkin_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "Cuando la mesa está preparada, ¿qué puedes decir?",
+                "explanation": "Es una forma clara de invitarles a acompañarte."
+              }
+            },
+            "options": [
+              "Your table is ready. Please follow me.",
+              "Wait more.",
+              "No table.",
+              "Come tomorrow."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_walkin_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Sirve para indicar que vas a comprobar disponibilidad."
+              }
+            },
+            "words": [
+              "Let",
+              "me",
+              "check",
+              "what",
+              "we",
+              "have",
+              "available"
+            ],
+            "answer": "Let me check what we have available",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-is-not-ready-to-order",
+      "title_en": "A guest is not ready to order",
+      "translations": {
+        "es": {
+          "title": "Un cliente todavía no está listo para pedir",
+          "description": "Responde sin presionar cuando una mesa necesita más tiempo antes de hacer la comanda."
+        }
+      },
+      "roles": [
+        "waiter"
+      ],
+      "primary_skill": "taking-orders",
+      "skills": [
+        "taking-orders"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "casual restaurant",
+        "fine dining",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "a2",
+      "difficulty": 1,
+      "estimated_minutes": 5,
+      "service_registers": [
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Te acercas a una mesa para tomar la comanda, pero los clientes todavía están mirando la carta.",
+              "guest_opening": "Perdona, necesitamos unos minutos más.",
+              "summary": "Aprende a dar espacio al cliente y mantenerte disponible para ayudar.",
+              "objectives": [
+                "Entender que necesitan más tiempo.",
+                "Responder sin presionar.",
+                "Ofrecer ayuda con la carta."
+              ]
+            }
+          },
+          "guest_opening_en": "Sorry, we need a few more minutes."
+        },
+        "phrases": [
+          {
+            "id": "li_notready_1",
+            "text_en": "Of course. Take your time.",
+            "translations": {
+              "es": {
+                "text": "Por supuesto. Tomaos vuestro tiempo."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_notready_2",
+            "text_en": "I'll come back in a few minutes.",
+            "translations": {
+              "es": {
+                "text": "Volveré en unos minutos."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_notready_3",
+            "text_en": "Let me know if you have any questions.",
+            "translations": {
+              "es": {
+                "text": "Decidme si tenéis alguna pregunta."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_notready_4",
+            "text_en": "Would you like a little more time?",
+            "translations": {
+              "es": {
+                "text": "¿Os gustaría tener un poco más de tiempo?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_notready_5",
+            "text_en": "Are you ready to order, or would you like another minute?",
+            "translations": {
+              "es": {
+                "text": "¿Estáis listos para pedir o preferís otro minuto?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_notready_bad",
+            "text_en": "Are you ready now?",
+            "translations": {
+              "es": {
+                "text": "¿Ya estáis listos?",
+                "service_note": "Puede sonar impaciente dependiendo del tono. Dar una opción al cliente suele sonar más natural."
+              }
+            },
+            "service_register": "casual",
+            "service_rating": "acceptable",
+            "natural_alternatives_en": [
+              "Are you ready to order, or would you like another minute?"
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "waiter",
+            "text_en": "Are you ready to order?",
+            "translations": {
+              "es": {
+                "text": "¿Estáis listos para pedir?"
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Sorry, we need a few more minutes.",
+            "translations": {
+              "es": {
+                "text": "Perdona, necesitamos unos minutos más."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Of course. Take your time.",
+            "translations": {
+              "es": {
+                "text": "Por supuesto. Tomaos vuestro tiempo."
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Thanks. We're just deciding between a couple of things.",
+            "translations": {
+              "es": {
+                "text": "Gracias. Estamos decidiendo entre un par de cosas."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "No problem. Let me know if you have any questions.",
+            "translations": {
+              "es": {
+                "text": "Sin problema. Decidme si tenéis alguna pregunta."
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "We will, thanks.",
+            "translations": {
+              "es": {
+                "text": "Lo haremos, gracias."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "I'll come back in a few minutes.",
+            "translations": {
+              "es": {
+                "text": "Volveré en unos minutos."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_notready_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"We need a few more minutes.\" significa:",
+                "explanation": "Necesitan más tiempo para decidir."
+              }
+            },
+            "options": [
+              "Todavía no están preparados para pedir.",
+              "Quieren pagar.",
+              "Quieren irse.",
+              "Quieren otra mesa."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_notready_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La expresión es “Take your time.”"
+              }
+            },
+            "sentence_en": "Take your ______.",
+            "answer": "time",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "ex_notready_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Cuál evita presionar al cliente?",
+                "explanation": "Dar tiempo transmite paciencia y buen servicio."
+              }
+            },
+            "options": [
+              "Of course. Take your time.",
+              "Order now, please.",
+              "Are you done?",
+              "You need to choose."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_notready_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"A few more minutes\" significa:",
+                "explanation": "Expresa una pequeña cantidad de tiempo adicional."
+              }
+            },
+            "options": [
+              "Unos minutos más.",
+              "Una hora.",
+              "Mañana.",
+              "Ahora mismo."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_notready_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La expresión es “come back”."
+              }
+            },
+            "sentence_en": "I'll come ______ in a few minutes.",
+            "answer": "back",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_notready_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Qué puedes ofrecer mientras esperan?",
+                "explanation": "Puedes mantenerte disponible sin presionar."
+              }
+            },
+            "options": [
+              "Responder preguntas sobre la carta.",
+              "Cobrarles.",
+              "Retirar la mesa.",
+              "Traer la cuenta."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_notready_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Cuál es la opción más natural?",
+                "explanation": "Dar una alternativa reduce la presión."
+              }
+            },
+            "options": [
+              "Are you ready to order, or would you like another minute?",
+              "Are you ready now?",
+              "Choose something.",
+              "You must order."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_notready_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Es una forma natural de ofrecer ayuda."
+              }
+            },
+            "words": [
+              "Let",
+              "me",
+              "know",
+              "if",
+              "you",
+              "have",
+              "any",
+              "questions"
+            ],
+            "answer": "Let me know if you have any questions",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-asks-whats-in-a-dish",
+      "title_en": "A guest asks what's in a dish",
+      "translations": {
+        "es": {
+          "title": "Un cliente pregunta qué lleva un plato",
+          "description": "Explica ingredientes de forma sencilla y comprueba con cocina cuando la pregunta está relacionada con una alergia."
+        }
+      },
+      "roles": [
+        "waiter"
+      ],
+      "primary_skill": "menu-knowledge",
+      "skills": [
+        "menu-knowledge",
+        "allergies"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "casual restaurant",
+        "fine dining",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "b1",
+      "difficulty": 2,
+      "estimated_minutes": 6,
+      "service_registers": [
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Un cliente quiere saber qué ingredientes lleva uno de los platos.",
+              "guest_opening": "¿Qué lleva el risotto?",
+              "summary": "Practica cómo explicar ingredientes y cuándo debes dejar de suponer y comprobar información.",
+              "objectives": [
+                "Explicar ingredientes.",
+                "Usar made with y comes with.",
+                "Detectar cuándo una pregunta puede implicar una alergia."
+              ]
+            }
+          },
+          "guest_opening_en": "What's in the risotto?"
+        },
+        "phrases": [
+          {
+            "id": "li_dishingredients_1",
+            "text_en": "It's made with mushrooms, Parmesan and vegetable stock.",
+            "translations": {
+              "es": {
+                "text": "Está hecho con champiñones, parmesano y caldo de verduras.",
+                "context": "Los ingredientes pertenecen al plato ficticio de este escenario."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_dishingredients_2",
+            "text_en": "It comes with roasted vegetables on the side.",
+            "translations": {
+              "es": {
+                "text": "Viene acompañado de verduras asadas."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_dishingredients_3",
+            "text_en": "Are you asking because of an allergy?",
+            "translations": {
+              "es": {
+                "text": "¿Lo preguntas por alguna alergia?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_dishingredients_4",
+            "text_en": "Let me check that with the kitchen.",
+            "translations": {
+              "es": {
+                "text": "Déjame comprobarlo con cocina."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_dishingredients_5",
+            "text_en": "I'll confirm the ingredients for you.",
+            "translations": {
+              "es": {
+                "text": "Te confirmaré los ingredientes."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_dishingredients_bad",
+            "text_en": "I think it's dairy-free.",
+            "translations": {
+              "es": {
+                "text": "Creo que no contiene lácteos.",
+                "service_note": "Si la pregunta está relacionada con una alergia, no confirmes información basándote en una suposición."
+              }
+            },
+            "service_register": "casual",
+            "service_rating": "inappropriate",
+            "natural_alternatives_en": [
+              "Let me confirm that with the kitchen."
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "guest",
+            "text_en": "What's in the risotto?",
+            "translations": {
+              "es": {
+                "text": "¿Qué lleva el risotto?"
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "It's made with mushrooms, Parmesan and vegetable stock.",
+            "translations": {
+              "es": {
+                "text": "Está hecho con champiñones, parmesano y caldo de verduras."
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Does it contain any cream?",
+            "translations": {
+              "es": {
+                "text": "¿Contiene nata?"
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Are you asking because of an allergy?",
+            "translations": {
+              "es": {
+                "text": "¿Lo preguntas por alguna alergia?"
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Yes, I have a dairy allergy.",
+            "translations": {
+              "es": {
+                "text": "Sí, tengo alergia a los lácteos."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Thanks for letting me know. Let me check that with the kitchen before I confirm anything.",
+            "translations": {
+              "es": {
+                "text": "Gracias por avisarme. Déjame comprobarlo con cocina antes de confirmar nada."
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Thank you.",
+            "translations": {
+              "es": {
+                "text": "Gracias."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Of course. I'll be right back.",
+            "translations": {
+              "es": {
+                "text": "Por supuesto. Vuelvo enseguida."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_dishingredients_1",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "“Made with” se usa para decir con qué está hecho un plato."
+              }
+            },
+            "sentence_en": "It's ______ with mushrooms and Parmesan.",
+            "answer": "made",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "ex_dishingredients_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente menciona una alergia y no estás seguro. ¿Qué dices?",
+                "explanation": "Si hay una alergia, comprueba la información antes de confirmar."
+              }
+            },
+            "options": [
+              "Let me check that with the kitchen.",
+              "I think it's fine.",
+              "Probably no dairy.",
+              "It should be okay."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "ex_dishingredients_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Does it contain any cream?\" ¿Qué quiere saber?",
+                "explanation": "Está preguntando por un ingrediente concreto."
+              }
+            },
+            "options": [
+              "Si la nata forma parte del plato.",
+              "Si está caliente.",
+              "Si es caro.",
+              "Si viene con pan."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_dishingredients_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Made with\" significa:",
+                "explanation": "Indica ingredientes o componentes."
+              }
+            },
+            "options": [
+              "Hecho con.",
+              "Servido después.",
+              "Pagado con.",
+              "Cocinado mañana."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_dishingredients_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Comes with\" significa:",
+                "explanation": "Se usa para acompañamientos o elementos incluidos."
+              }
+            },
+            "options": [
+              "Viene acompañado de.",
+              "No contiene.",
+              "Se paga aparte.",
+              "Está agotado."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_dishingredients_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "La pregunta pasa a ser de seguridad cuando:",
+                "explanation": "Una alergia requiere comprobar información según el procedimiento del establecimiento."
+              }
+            },
+            "options": [
+              "El cliente menciona una alergia.",
+              "Pregunta el precio.",
+              "Mira la carta.",
+              "Pide agua."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_dishingredients_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Qué respuesta debes evitar si no estás seguro?",
+                "explanation": "No uses una suposición para confirmar información de alergias."
+              }
+            },
+            "options": [
+              "I think it's dairy-free.",
+              "Let me check with the kitchen.",
+              "I'll confirm the ingredients.",
+              "Thanks for letting me know."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_dishingredients_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Es una forma clara de indicar que comprobarás la información."
+              }
+            },
+            "words": [
+              "I'll",
+              "confirm",
+              "the",
+              "ingredients",
+              "for",
+              "you"
+            ],
+            "answer": "I'll confirm the ingredients for you",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-asks-how-a-dish-is-prepared",
+      "title_en": "A guest asks how a dish is prepared",
+      "translations": {
+        "es": {
+          "title": "Un cliente pregunta cómo está preparado un plato",
+          "description": "Describe de forma breve cómo se prepara un plato y cómo sabe, sin limitarte a decir que está bueno."
+        }
+      },
+      "roles": [
+        "waiter"
+      ],
+      "primary_skill": "food-descriptions",
+      "skills": [
+        "food-descriptions",
+        "menu-knowledge"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "casual restaurant",
+        "fine dining",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "b1",
+      "difficulty": 2,
+      "estimated_minutes": 6,
+      "service_registers": [
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Un cliente está interesado en un plato de pescado y quiere saber cómo está preparado.",
+              "guest_opening": "¿Cómo está preparada la lubina?",
+              "summary": "Aprende vocabulario sencillo para explicar preparación y perfil general de un plato.",
+              "objectives": [
+                "Explicar métodos básicos de cocción.",
+                "Describir un plato de manera breve.",
+                "Distinguir método, acompañamiento y perfil."
+              ]
+            }
+          },
+          "guest_opening_en": "How is the sea bass prepared?"
+        },
+        "phrases": [
+          {
+            "id": "li_fooddesc_1",
+            "text_en": "It's pan-seared and served with seasonal vegetables.",
+            "translations": {
+              "es": {
+                "text": "Está marcado a la plancha y se sirve con verduras de temporada."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_fooddesc_2",
+            "text_en": "It's finished with a light lemon and herb sauce.",
+            "translations": {
+              "es": {
+                "text": "Se termina con una salsa ligera de limón y hierbas."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_fooddesc_3",
+            "text_en": "It's quite light and fresh.",
+            "translations": {
+              "es": {
+                "text": "Es bastante ligero y fresco."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_fooddesc_4",
+            "text_en": "The fish is cooked until it's tender.",
+            "translations": {
+              "es": {
+                "text": "El pescado se cocina hasta que queda tierno."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_fooddesc_5",
+            "text_en": "Would you like me to explain any of the other dishes?",
+            "translations": {
+              "es": {
+                "text": "¿Quieres que te explique algún otro plato?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "guest",
+            "text_en": "How is the sea bass prepared?",
+            "translations": {
+              "es": {
+                "text": "¿Cómo está preparada la lubina?"
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "It's pan-seared and served with seasonal vegetables.",
+            "translations": {
+              "es": {
+                "text": "Está marcada a la plancha y se sirve con verduras de temporada."
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Is it quite heavy?",
+            "translations": {
+              "es": {
+                "text": "¿Es un plato bastante pesado?"
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Not really. It's quite light and fresh, and it's finished with a lemon and herb sauce.",
+            "translations": {
+              "es": {
+                "text": "No demasiado. Es bastante ligero y fresco, y se termina con una salsa de limón y hierbas."
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "That sounds nice.",
+            "translations": {
+              "es": {
+                "text": "Suena bien."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "It's a good option if you're looking for something lighter.",
+            "translations": {
+              "es": {
+                "text": "Es una buena opción si buscas algo más ligero."
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "I think I'll go for that.",
+            "translations": {
+              "es": {
+                "text": "Creo que pediré eso."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Perfect.",
+            "translations": {
+              "es": {
+                "text": "Perfecto."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_fooddesc_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Pan-seared\" describe aquí:",
+                "explanation": "Es un método de preparación/cocción."
+              }
+            },
+            "options": [
+              "Un método de cocción.",
+              "Una alergia.",
+              "Un precio.",
+              "Una bebida."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_fooddesc_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La expresión es “served with”."
+              }
+            },
+            "sentence_en": "It's ______ with seasonal vegetables.",
+            "answer": "served",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "ex_fooddesc_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "El cliente pregunta cómo está preparado el plato. ¿Cuál es la mejor respuesta?",
+                "explanation": "Una descripción útil da información concreta y breve."
+              }
+            },
+            "options": [
+              "It's fish.",
+              "It's good.",
+              "It's pan-seared and served with seasonal vegetables.",
+              "Everybody orders it."
+            ],
+            "answer_index": 2,
+            "assessment_dimension": "service"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_fooddesc_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Served with\" significa:",
+                "explanation": "Introduce el acompañamiento."
+              }
+            },
+            "options": [
+              "Servido acompañado de.",
+              "Cocinado sin.",
+              "Pagado con.",
+              "Disponible mañana."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_fooddesc_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Light and fresh\" describe:",
+                "explanation": "Describe cómo se percibe el plato, no su precio ni tamaño."
+              }
+            },
+            "options": [
+              "El perfil general del plato.",
+              "El tamaño del plato.",
+              "El precio.",
+              "El tiempo de espera."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_fooddesc_3",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La estructura es “finished with”."
+              }
+            },
+            "sentence_en": "It's finished ______ a lemon and herb sauce.",
+            "answer": "with",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_fooddesc_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "Una descripción útil debería:",
+                "explanation": "La información concreta ayuda al cliente a decidir."
+              }
+            },
+            "options": [
+              "Dar información concreta y breve.",
+              "Decir solo que está bueno.",
+              "Prometer que le encantará.",
+              "Ser muy técnica."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_fooddesc_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Describe el perfil del plato de forma sencilla."
+              }
+            },
+            "words": [
+              "It's",
+              "quite",
+              "light",
+              "and",
+              "fresh"
+            ],
+            "answer": "It's quite light and fresh",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-finishes-main-course",
+      "title_en": "A guest finishes the main course",
+      "translations": {
+        "es": {
+          "title": "El cliente termina el plato principal",
+          "description": "Ofrece postre, café u otra opción de forma natural sin presionar al cliente."
+        }
+      },
+      "roles": [
+        "waiter"
+      ],
+      "primary_skill": "upselling",
+      "skills": [
+        "upselling",
+        "recommendations"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "casual restaurant",
+        "fine dining",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "b1",
+      "difficulty": 2,
+      "estimated_minutes": 5,
+      "service_registers": [
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "El cliente acaba de terminar el plato principal. Es un buen momento para comprobar cómo fue todo y ofrecer postre o café.",
+              "guest_opening": "¿Qué tal estaba todo?",
+              "summary": "Practica upselling profesional: ofrecer una opción útil sin hacer sentir al cliente que tiene que comprarla.",
+              "objectives": [
+                "Comprobar satisfacción.",
+                "Ofrecer postre o café.",
+                "Hacer una recomendación breve.",
+                "Aceptar un no sin presionar."
+              ]
+            }
+          },
+          "guest_opening_en": "How was everything?"
+        },
+        "phrases": [
+          {
+            "id": "li_upsell_1",
+            "text_en": "How was everything?",
+            "translations": {
+              "es": {
+                "text": "¿Qué tal estaba todo?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_upsell_2",
+            "text_en": "Would you like to see the dessert menu?",
+            "translations": {
+              "es": {
+                "text": "¿Os gustaría ver la carta de postres?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_upsell_3",
+            "text_en": "Can I get you any coffee or tea?",
+            "translations": {
+              "es": {
+                "text": "¿Os puedo traer café o té?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_upsell_4",
+            "text_en": "If you have room, the cheesecake is very popular.",
+            "translations": {
+              "es": {
+                "text": "Si os queda sitio, la tarta de queso es muy popular.",
+                "service_note": "Una recomendación ligera puede ayudar a vender sin presionar."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_upsell_5",
+            "text_en": "No problem at all.",
+            "translations": {
+              "es": {
+                "text": "Ningún problema."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_upsell_bad",
+            "text_en": "You should get dessert.",
+            "translations": {
+              "es": {
+                "text": "Deberíais pedir postre.",
+                "service_note": "Un upsell efectivo ofrece una opción; no hace sentir al cliente que tiene que comprarla."
+              }
+            },
+            "service_register": "casual",
+            "service_rating": "inappropriate",
+            "natural_alternatives_en": [
+              "Would you like to see the dessert menu?"
+            ]
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "waiter",
+            "text_en": "How was everything?",
+            "translations": {
+              "es": {
+                "text": "¿Qué tal estaba todo?"
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Really good, thanks.",
+            "translations": {
+              "es": {
+                "text": "Muy bien, gracias."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "I'm glad to hear that. Would you like to see the dessert menu?",
+            "translations": {
+              "es": {
+                "text": "Me alegro. ¿Os gustaría ver la carta de postres?"
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "I'm not sure. We're quite full.",
+            "translations": {
+              "es": {
+                "text": "No estoy seguro. Estamos bastante llenos."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "No problem. If you have room, the cheesecake is very popular.",
+            "translations": {
+              "es": {
+                "text": "Sin problema. Si os queda sitio, la tarta de queso es muy popular."
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Maybe we'll share one.",
+            "translations": {
+              "es": {
+                "text": "Quizá compartamos una."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Absolutely. Would you like any coffee or tea with that?",
+            "translations": {
+              "es": {
+                "text": "Por supuesto. ¿Queréis café o té con eso?"
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Two coffees, please.",
+            "translations": {
+              "es": {
+                "text": "Dos cafés, por favor."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_upsell_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Cuál hace upselling sin presionar?",
+                "explanation": "Ofrece una opción y deja que el cliente decida."
+              }
+            },
+            "options": [
+              "Would you like to see the dessert menu?",
+              "You should get dessert.",
+              "You need dessert.",
+              "Order the cheesecake."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "ex_upsell_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"We're quite full.\" significa:",
+                "explanation": "“Full” aquí significa satisfecho/lleno después de comer."
+              }
+            },
+            "options": [
+              "Han comido suficiente y quizá no quieran postre.",
+              "Tienen una reserva.",
+              "Quieren otra mesa.",
+              "Quieren pagar en efectivo."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_upsell_3",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La expresión es “Would you like to see...?”"
+              }
+            },
+            "sentence_en": "Would you like to ______ the dessert menu?",
+            "answer": "see",
+            "assessment_dimension": "english"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_upsell_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Qué haces antes del upsell?",
+                "explanation": "Primero comprueba satisfacción y el momento de la mesa."
+              }
+            },
+            "options": [
+              "Comprobar cómo fue la comida.",
+              "Traer la cuenta sin hablar.",
+              "Retirar el café.",
+              "Insistir en el postre."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_upsell_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Qué respuesta es demasiado directa?",
+                "explanation": "“You should...” puede sonar como presión."
+              }
+            },
+            "options": [
+              "You should get dessert.",
+              "Would you like to see the dessert menu?",
+              "No problem at all.",
+              "Can I get you any coffee?"
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_upsell_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"If you have room\" significa aquí:",
+                "explanation": "Es una forma ligera de reconocer que quizá ya están llenos."
+              }
+            },
+            "options": [
+              "Si todavía os apetece o podéis comer algo más.",
+              "Si tenéis una habitación.",
+              "Si hay otra mesa.",
+              "Si queda espacio en el restaurante."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_upsell_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "Si el cliente dice que no quiere postre, ¿qué haces?",
+                "explanation": "Un buen upsell respeta la decisión del cliente."
+              }
+            },
+            "options": [
+              "Aceptar sin presionar.",
+              "Insistir.",
+              "Decir que se lo perderá.",
+              "Traerlo igualmente."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_upsell_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Es una oferta natural al finalizar la comida."
+              }
+            },
+            "words": [
+              "Can",
+              "I",
+              "get",
+              "you",
+              "any",
+              "coffee",
+              "or",
+              "tea"
+            ],
+            "answer": "Can I get you any coffee or tea",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "guest-wants-to-split-the-bill",
+      "title_en": "A guest wants to split the bill",
+      "translations": {
+        "es": {
+          "title": "Un cliente quiere dividir la cuenta",
+          "description": "Aclara una división de cuenta compleja y confirma quién paga junto y quién por separado."
+        }
+      },
+      "roles": [
+        "waiter"
+      ],
+      "primary_skill": "payments",
+      "skills": [
+        "payments"
+      ],
+      "venue_types": [],
+      "venue_type_targets": [
+        "casual restaurant",
+        "fine dining",
+        "hotel 4-5 star"
+      ],
+      "venue_types_resolution_required": true,
+      "level": "b1",
+      "difficulty": 2,
+      "estimated_minutes": 6,
+      "service_registers": [
+        "professional"
+      ],
+      "country_variants": {},
+      "active": true,
+      "is_full": true,
+      "lesson": {
+        "content_version": 1,
+        "intro": {
+          "translations": {
+            "es": {
+              "context": "Cuatro clientes piden la cuenta. Dos quieren pagar juntos y los otros dos por separado.",
+              "guest_opening": "¿Podemos dividir la cuenta, por favor?",
+              "summary": "Practica cómo entender y confirmar diferentes formas de dividir una cuenta.",
+              "objectives": [
+                "Entender diferentes formas de dividir la cuenta.",
+                "Preguntar cómo quieren hacerlo.",
+                "Confirmar una división compleja."
+              ]
+            }
+          },
+          "guest_opening_en": "Could we split the bill, please?"
+        },
+        "phrases": [
+          {
+            "id": "li_bill_1",
+            "text_en": "Of course. How would you like to split it?",
+            "translations": {
+              "es": {
+                "text": "Claro. ¿Cómo os gustaría dividirla?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bill_2",
+            "text_en": "Would you like to split it evenly?",
+            "translations": {
+              "es": {
+                "text": "¿Queréis dividirla a partes iguales?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bill_3",
+            "text_en": "Would you like to pay separately?",
+            "translations": {
+              "es": {
+                "text": "¿Queréis pagar por separado?"
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          },
+          {
+            "id": "li_bill_4",
+            "text_en": "So these two are together, and the other two are separate?",
+            "translations": {
+              "es": {
+                "text": "Entonces, ¿estos dos van juntos y los otros dos por separado?",
+                "service_note": "Repetir una división compleja ayuda a evitar errores en el pago."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "excellent"
+          },
+          {
+            "id": "li_bill_5",
+            "text_en": "I'll bring the card machine over.",
+            "translations": {
+              "es": {
+                "text": "Os traeré el datáfono.",
+                "context": "En Irlanda/UK es habitual “card machine”. Otras variantes de país podrán añadirse después."
+              }
+            },
+            "service_register": "professional",
+            "service_rating": "professional"
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "guest",
+            "text_en": "Could we split the bill, please?",
+            "translations": {
+              "es": {
+                "text": "¿Podemos dividir la cuenta, por favor?"
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Of course. How would you like to split it?",
+            "translations": {
+              "es": {
+                "text": "Claro. ¿Cómo os gustaría dividirla?"
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "The two of us are together, and they want to pay separately.",
+            "translations": {
+              "es": {
+                "text": "Nosotros dos pagamos juntos y ellos quieren pagar por separado."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "No problem. So these two are together, and the other two are separate?",
+            "translations": {
+              "es": {
+                "text": "Sin problema. Entonces, ¿estos dos van juntos y los otros dos por separado?"
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "Exactly.",
+            "translations": {
+              "es": {
+                "text": "Exacto."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Perfect. Who would like to pay first?",
+            "translations": {
+              "es": {
+                "text": "Perfecto. ¿Quién quiere pagar primero?"
+              }
+            }
+          },
+          {
+            "speaker": "guest",
+            "text_en": "We can.",
+            "translations": {
+              "es": {
+                "text": "Nosotros."
+              }
+            }
+          },
+          {
+            "speaker": "waiter",
+            "text_en": "Great. I'll bring the card machine over.",
+            "translations": {
+              "es": {
+                "text": "Genial. Os traeré el datáfono."
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "derived_from_phrases": true,
+          "exclude_service_ratings": [
+            "inappropriate"
+          ]
+        },
+        "exercises": [
+          {
+            "id": "ex_bill_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"The two of us are together.\" significa en este contexto:",
+                "explanation": "Se refiere a cómo se agrupará el pago."
+              }
+            },
+            "options": [
+              "Esas dos personas quieren pagar conjuntamente.",
+              "Quieren sentarse juntas.",
+              "Quieren otra mesa.",
+              "Van a compartir postre."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "ex_bill_2",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La palabra es “split”."
+              }
+            },
+            "sentence_en": "How would you like to ______ it?",
+            "answer": "split",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "ex_bill_3",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "La división de la cuenta es compleja. ¿Qué ayuda a evitar errores?",
+                "explanation": "Confirmar la estructura del pago reduce errores."
+              }
+            },
+            "options": [
+              "Repetir y confirmar cómo quieren dividirla.",
+              "Adivinar.",
+              "Cobrar todo junto.",
+              "Pedir que vuelvan mañana."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_bill_1",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Split evenly\" significa:",
+                "explanation": "“Evenly” significa en partes iguales."
+              }
+            },
+            "options": [
+              "Dividir a partes iguales.",
+              "Pagar todo una persona.",
+              "Pagar solo en efectivo.",
+              "Pagar después."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_bill_2",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "\"Pay separately\" significa:",
+                "explanation": "Cada persona o grupo realiza su propio pago."
+              }
+            },
+            "options": [
+              "Pagar por separado.",
+              "Pagar juntos.",
+              "Pagar mañana.",
+              "No pagar."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "comprehension"
+          },
+          {
+            "id": "q_bill_3",
+            "type": "fill_gap",
+            "translations": {
+              "es": {
+                "prompt": "Completa:",
+                "explanation": "La frase es “Who would like to pay first?”"
+              }
+            },
+            "sentence_en": "Who would like to pay ______?",
+            "answer": "first",
+            "assessment_dimension": "english"
+          },
+          {
+            "id": "q_bill_4",
+            "type": "multiple_choice",
+            "translations": {
+              "es": {
+                "prompt": "¿Cuál es la mejor forma de confirmar la división?",
+                "explanation": "Repite la estructura para comprobar que la has entendido bien."
+              }
+            },
+            "options": [
+              "So these two are together, and the other two are separate?",
+              "You pay.",
+              "Who ordered dessert?",
+              "One bill only."
+            ],
+            "answer_index": 0,
+            "assessment_dimension": "service"
+          },
+          {
+            "id": "q_bill_5",
+            "type": "word_ordering",
+            "translations": {
+              "es": {
+                "prompt": "Ordena:",
+                "explanation": "Es una frase habitual en Irlanda/UK hospitality."
+              }
+            },
+            "words": [
+              "I'll",
+              "bring",
+              "the",
+              "card",
+              "machine",
+              "over"
+            ],
+            "answer": "I'll bring the card machine over",
+            "assessment_dimension": "english"
+          }
+        ]
+      }
+    }
+  ]
+}

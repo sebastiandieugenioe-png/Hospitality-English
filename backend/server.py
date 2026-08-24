@@ -14,6 +14,7 @@ from datetime import datetime, timezone, timedelta
 import seed_content
 import seed_reference
 import seed_catalog
+import seed_pack
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -870,6 +871,7 @@ async def startup_seed():
     await seed_content.seed(db)
     await seed_reference.seed_reference(db)
     await seed_catalog.seed_catalog(db)
+    await seed_pack.seed_pack(db)
     # Forward-looking indexes (safe / additive).
     try:
         await db.guests.create_index("id")
