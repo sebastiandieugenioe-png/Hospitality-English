@@ -1,0 +1,6172 @@
+{
+  "meta": {
+    "export_name": "mvp_i18n_gaps_export_v1",
+    "generated_at": "2026-08-24T21:35:05.470007+00:00",
+    "audit_languages": [
+      "it",
+      "fr",
+      "pt",
+      "de",
+      "pl",
+      "ro",
+      "uk",
+      "nl",
+      "en"
+    ],
+    "note": "Read-only. Option coverage derived from verified bundle; canonical options + answer_index from live lesson docs. Original indices preserved."
+  },
+  "skills": [
+    {
+      "id": "greeting-guests",
+      "name": "Greeting guests",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "order": 1,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Recibir a los clientes",
+          "description": "Saluda y da la bienvenida con naturalidad y calidez."
+        },
+        "it": {
+          "name": "Accogliere i clienti",
+          "description": "Saluta e dai il benvenuto con naturalezza e calore."
+        }
+      }
+    },
+    {
+      "id": "seating-guests",
+      "name": "Seating guests",
+      "roles": [
+        "waiter"
+      ],
+      "order": 2,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Acomodar a los clientes",
+          "description": "Acompaña y sienta a los clientes correctamente."
+        },
+        "it": {
+          "name": "Far accomodare i clienti",
+          "description": "Accompagna e fai sedere i clienti correttamente."
+        }
+      }
+    },
+    {
+      "id": "taking-orders",
+      "name": "Taking orders",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "order": 3,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Tomar pedidos",
+          "description": "Anota comandas de comida y bebida con precisión."
+        },
+        "it": {
+          "name": "Prendere le ordinazioni",
+          "description": "Registra ordini di cibo e bevande con precisione."
+        }
+      }
+    },
+    {
+      "id": "menu-knowledge",
+      "name": "Menu knowledge",
+      "roles": [
+        "waiter"
+      ],
+      "order": 4,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Conocer la carta",
+          "description": "Domina la carta para responder con seguridad."
+        },
+        "it": {
+          "name": "Conoscere il menù",
+          "description": "Padroneggia il menù per rispondere con sicurezza."
+        }
+      }
+    },
+    {
+      "id": "drink-knowledge",
+      "name": "Drink knowledge",
+      "roles": [
+        "bartender"
+      ],
+      "order": 5,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Conocer las bebidas",
+          "description": "Domina la carta de bebidas y sus características."
+        },
+        "it": {
+          "name": "Conoscere le bevande",
+          "description": "Padroneggia la carta delle bevande e le loro caratteristiche."
+        }
+      }
+    },
+    {
+      "id": "cocktail-descriptions",
+      "name": "Cocktail descriptions",
+      "roles": [
+        "bartender"
+      ],
+      "order": 6,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Describir cocktails",
+          "description": "Explica cómo es un cocktail de forma clara y atractiva."
+        },
+        "it": {
+          "name": "Descrivere i cocktail",
+          "description": "Spiega com'è un cocktail in modo chiaro e invitante."
+        }
+      }
+    },
+    {
+      "id": "food-descriptions",
+      "name": "Food descriptions",
+      "roles": [
+        "waiter"
+      ],
+      "order": 7,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Describir platos",
+          "description": "Describe los platos de forma breve y apetecible."
+        },
+        "it": {
+          "name": "Descrivere i piatti",
+          "description": "Descrivi i piatti in modo breve e appetitoso."
+        }
+      }
+    },
+    {
+      "id": "recommendations",
+      "name": "Recommendations",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "order": 8,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Recomendaciones",
+          "description": "Descubre qué busca el cliente y sugiere una opción con confianza."
+        },
+        "it": {
+          "name": "Consigli",
+          "description": "Scopri cosa cerca il cliente e suggerisci un'opzione con sicurezza."
+        }
+      }
+    },
+    {
+      "id": "upselling",
+      "name": "Upselling",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "order": 9,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Sugerir extras",
+          "description": "Propón extras y mejoras de forma natural, sin presionar."
+        },
+        "it": {
+          "name": "Proporre extra",
+          "description": "Proponi extra e migliorie in modo naturale, senza forzare."
+        }
+      }
+    },
+    {
+      "id": "allergies",
+      "name": "Allergies",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "order": 10,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Alergias",
+          "description": "Gestiona alergias e intolerancias de forma segura y profesional."
+        },
+        "it": {
+          "name": "Allergie",
+          "description": "Gestisci allergie e intolleranze in modo sicuro e professionale."
+        }
+      }
+    },
+    {
+      "id": "complaints",
+      "name": "Complaints",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "order": 11,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Quejas",
+          "description": "Responde a las quejas con calma y profesionalidad."
+        },
+        "it": {
+          "name": "Reclami",
+          "description": "Rispondi ai reclami con calma e professionalità."
+        }
+      }
+    },
+    {
+      "id": "service-recovery",
+      "name": "Service recovery",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "order": 12,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Recuperar el servicio",
+          "description": "Resuelve incidencias y recupera la confianza del cliente."
+        },
+        "it": {
+          "name": "Recupero del servizio",
+          "description": "Risolvi gli imprevisti e recupera la fiducia del cliente."
+        }
+      }
+    },
+    {
+      "id": "payments",
+      "name": "Payments",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "order": 13,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Cobros y cuenta",
+          "description": "Gestiona la cuenta, la propina y el pago."
+        },
+        "it": {
+          "name": "Pagamenti e conto",
+          "description": "Gestisci il conto, la mancia e il pagamento."
+        }
+      }
+    },
+    {
+      "id": "difficult-guests",
+      "name": "Difficult guests",
+      "roles": [
+        "bartender"
+      ],
+      "order": 14,
+      "active": true,
+      "translations": {
+        "es": {
+          "name": "Clientes difíciles",
+          "description": "Maneja situaciones tensas con clientes exigentes."
+        },
+        "it": {
+          "name": "Clienti difficili",
+          "description": "Gestisci situazioni tese con clienti esigenti."
+        }
+      }
+    }
+  ],
+  "mc_option_gaps": {
+    "summary": {
+      "total_active_mc_questions": 94,
+      "fully_localized": 26,
+      "incomplete": 68,
+      "missing_option_strings_per_language": {
+        "it": 223,
+        "fr": 223,
+        "pt": 223,
+        "de": 223,
+        "pl": 223,
+        "ro": 223,
+        "uk": 223,
+        "nl": 223,
+        "en": 223
+      },
+      "total_missing_option_strings": 2007
+    },
+    "incomplete_questions": [
+      {
+        "question_id": "ex_wt_1",
+        "situation_slug": "food-is-taking-longer-than-expected",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest asks about food that is taking a long time. What is the best response?",
+        "canonical_options_en": {
+          "0": "It'll be ready in two minutes.",
+          "1": "I'm sorry for the wait. Let me check with the kitchen.",
+          "2": "Not my problem.",
+          "3": "The kitchen is slow today."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_bar_greet_1",
+        "situation_slug": "guest-arrives-at-the-bar",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest says: \"I'm not sure what I want yet.\" What is the best response?",
+        "canonical_options_en": {
+          "0": "Hurry up, please.",
+          "1": "Take your time. I'll be right here when you're ready.",
+          "2": "What do you want?",
+          "3": "Come back later."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_bar_greet_1",
+        "situation_slug": "guest-arrives-at-the-bar",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "The guest asks: \"Can I order here?\" What do they want to know?",
+        "canonical_options_en": {
+          "0": "Si puede hacer su pedido en esa barra.",
+          "1": "Si puede sentarse allí.",
+          "2": "Si puede pagar ya.",
+          "3": "Si el bar está cerrado."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "1": "Se può sedersi lì.",
+            "3": "Se il bar è chiuso."
+          },
+          "fr": {
+            "1": "S’il peut s’asseoir là.",
+            "3": "Si le bar est fermé."
+          },
+          "pt": {
+            "1": "Se pode sentar-se ali.",
+            "3": "Se o bar está fechado."
+          },
+          "de": {
+            "1": "Ob er sich dort hinsetzen kann.",
+            "3": "Ob die Bar geschlossen ist."
+          },
+          "pl": {
+            "1": "Czy może tam usiąść.",
+            "3": "Czy bar jest zamknięty."
+          },
+          "ro": {
+            "1": "Dacă se poate așeza acolo.",
+            "3": "Dacă barul este închis."
+          },
+          "uk": {
+            "1": "Чи можна тут сісти.",
+            "3": "Чи бар зачинений."
+          },
+          "nl": {
+            "1": "Of hij daar kan zitten.",
+            "3": "Of de bar gesloten is."
+          },
+          "en": {
+            "1": "Whether they can sit there.",
+            "3": "Whether the bar is closed."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            2
+          ],
+          "fr": [
+            0,
+            2
+          ],
+          "pt": [
+            0,
+            2
+          ],
+          "de": [
+            0,
+            2
+          ],
+          "pl": [
+            0,
+            2
+          ],
+          "ro": [
+            0,
+            2
+          ],
+          "uk": [
+            0,
+            2
+          ],
+          "nl": [
+            0,
+            2
+          ],
+          "en": [
+            0,
+            2
+          ]
+        }
+      },
+      {
+        "question_id": "q_bar_greet_2",
+        "situation_slug": "guest-arrives-at-the-bar",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which sentence is correct English but too abrupt for good service?",
+        "canonical_options_en": {
+          "0": "What do you want?",
+          "1": "What can I get you?",
+          "2": "Would you like to see the menu?",
+          "3": "Take your time."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_bar_greet_4",
+        "situation_slug": "guest-arrives-at-the-bar",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest still does not know what to order. What should you do first?",
+        "canonical_options_en": {
+          "0": "Recomendar inmediatamente la bebida más cara.",
+          "1": "Darle tiempo o preguntarle si quiere ver la carta.",
+          "2": "Ignorarlo.",
+          "3": "Pedirle que decida."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {
+            "0": "Consigliare subito la bevanda più costosa."
+          },
+          "fr": {
+            "0": "Recommander immédiatement la boisson la plus chère."
+          },
+          "pt": {
+            "0": "Recomendar imediatamente a bebida mais cara."
+          },
+          "de": {
+            "0": "Sofort das teuerste Getränk empfehlen."
+          },
+          "pl": {
+            "0": "Od razu polecić najdroższy napój."
+          },
+          "ro": {
+            "0": "Să recomanzi imediat cea mai scumpă băutură."
+          },
+          "uk": {
+            "0": "Одразу порадити найдорожчий напій."
+          },
+          "nl": {
+            "0": "Meteen het duurste drankje aanraden."
+          },
+          "en": {
+            "0": "Immediately recommend the most expensive drink."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            1,
+            2,
+            3
+          ],
+          "de": [
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            1,
+            2,
+            3
+          ],
+          "en": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_bar_allergy_1",
+        "situation_slug": "guest-asks-about-cocktail-allergens",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "You cannot remember whether the cocktail contains nuts. What do you say?",
+        "canonical_options_en": {
+          "0": "I'm pretty sure it's fine.",
+          "1": "It should be okay.",
+          "2": "Let me double-check the ingredients for you.",
+          "3": "There's probably no nuts."
+        },
+        "answer_index": 2,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_bar_allergy_1",
+        "situation_slug": "guest-asks-about-cocktail-allergens",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which response should be avoided?",
+        "canonical_options_en": {
+          "0": "I'm pretty sure it's fine.",
+          "1": "Let me double-check that for you.",
+          "2": "I'll check the ingredients.",
+          "3": "Thanks for letting me know."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_bar_allergy_4",
+        "situation_slug": "guest-asks-about-cocktail-allergens",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Before confirming information about an allergy, you should:",
+        "canonical_options_en": {
+          "0": "Comprobar la información/procedimiento del establecimiento.",
+          "1": "Adivinar por los ingredientes visibles.",
+          "2": "Decir que probablemente está bien.",
+          "3": "Preguntar a otro cliente."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Verificare le informazioni o la procedura del locale.",
+            "2": "Dire che probabilmente va bene."
+          },
+          "fr": {
+            "0": "Vérifier les informations/la procédure de l’établissement.",
+            "2": "Dire que cela va probablement bien."
+          },
+          "pt": {
+            "0": "Verificar a informação/o procedimento do estabelecimento.",
+            "2": "Dizer que provavelmente não há problema."
+          },
+          "de": {
+            "0": "Die Informationen bzw. das Verfahren des Betriebs prüfen.",
+            "2": "Sagen, dass es wahrscheinlich in Ordnung ist."
+          },
+          "pl": {
+            "0": "Sprawdzić informacje/procedurę obowiązującą w lokalu.",
+            "2": "Powiedzieć, że prawdopodobnie wszystko jest w porządku."
+          },
+          "ro": {
+            "0": "Să verifici informația/procedura localului.",
+            "2": "Să spui că probabil este în regulă."
+          },
+          "uk": {
+            "0": "Перевірити інформацію або процедуру закладу.",
+            "2": "Сказати, що, ймовірно, все гаразд."
+          },
+          "nl": {
+            "0": "De informatie/procedure van de zaak controleren.",
+            "2": "Zeggen dat het waarschijnlijk wel goed zit."
+          },
+          "en": {
+            "0": "Check the venue's information/procedure.",
+            "2": "Say that it is probably fine."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            3
+          ],
+          "fr": [
+            1,
+            3
+          ],
+          "pt": [
+            1,
+            3
+          ],
+          "de": [
+            1,
+            3
+          ],
+          "pl": [
+            1,
+            3
+          ],
+          "ro": [
+            1,
+            3
+          ],
+          "uk": [
+            1,
+            3
+          ],
+          "nl": [
+            1,
+            3
+          ],
+          "en": [
+            1,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_spirits_1",
+        "situation_slug": "guest-asks-about-spirits",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "The guest says: \"I usually like something a little sweeter.\" What information are they giving you?",
+        "canonical_options_en": {
+          "0": "Su método de pago.",
+          "1": "Su preferencia de sabor.",
+          "2": "Que quiere cerveza.",
+          "3": "Que no bebe alcohol."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {
+            "0": "Il suo metodo di pagamento.",
+            "2": "Che vuole una birra.",
+            "3": "Che non beve alcol."
+          },
+          "fr": {
+            "0": "Son mode de paiement.",
+            "2": "Qu’il veut une bière.",
+            "3": "Qu’il ne boit pas d’alcool."
+          },
+          "pt": {
+            "0": "O seu método de pagamento.",
+            "2": "Que quer cerveja.",
+            "3": "Que não bebe álcool."
+          },
+          "de": {
+            "0": "Seine Zahlungsmethode.",
+            "2": "Dass er Bier möchte.",
+            "3": "Dass er keinen Alkohol trinkt."
+          },
+          "pl": {
+            "0": "Sposób płatności.",
+            "2": "Że chce piwo.",
+            "3": "Że nie pije alkoholu."
+          },
+          "ro": {
+            "0": "Metoda sa de plată.",
+            "2": "Că vrea bere.",
+            "3": "Că nu consumă alcool."
+          },
+          "uk": {
+            "0": "Свій спосіб оплати.",
+            "2": "Що він хоче пиво.",
+            "3": "Що він не вживає алкоголь."
+          },
+          "nl": {
+            "0": "Zijn betaalmethode.",
+            "2": "Dat hij bier wil.",
+            "3": "Dat hij geen alcohol drinkt."
+          },
+          "en": {
+            "0": "Their payment method.",
+            "2": "That they want beer.",
+            "3": "That they do not drink alcohol."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1
+          ],
+          "fr": [
+            1
+          ],
+          "pt": [
+            1
+          ],
+          "de": [
+            1
+          ],
+          "pl": [
+            1
+          ],
+          "ro": [
+            1
+          ],
+          "uk": [
+            1
+          ],
+          "nl": [
+            1
+          ],
+          "en": [
+            1
+          ]
+        }
+      },
+      {
+        "question_id": "q_spirits_4",
+        "situation_slug": "guest-asks-about-spirits",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"Neat, please.\" means:",
+        "canonical_options_en": {
+          "0": "Servido solo, sin hielo ni mixer.",
+          "1": "Con mucho hielo.",
+          "2": "Con tónica.",
+          "3": "En una copa grande."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Servito liscio, senza ghiaccio né mixer.",
+            "2": "Con tonica."
+          },
+          "fr": {
+            "0": "Servi sec, sans glaçons ni mixer.",
+            "2": "Avec du tonic."
+          },
+          "pt": {
+            "0": "Servido puro, sem gelo nem mixer.",
+            "2": "Com tónica."
+          },
+          "de": {
+            "0": "Pur serviert, ohne Eis oder Mixer.",
+            "2": "Mit Tonic."
+          },
+          "pl": {
+            "0": "Podane bez lodu i bez mixera.",
+            "2": "Z tonikiem."
+          },
+          "ro": {
+            "0": "Servit simplu, fără gheață sau mixer.",
+            "2": "Cu tonic."
+          },
+          "uk": {
+            "0": "Поданий чистим, без льоду чи mixer.",
+            "2": "З тоніком."
+          },
+          "nl": {
+            "0": "Puur geserveerd, zonder ijs of mixer.",
+            "2": "Met tonic."
+          },
+          "en": {
+            "0": "Served on its own, without ice or a mixer.",
+            "2": "With tonic."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            3
+          ],
+          "fr": [
+            1,
+            3
+          ],
+          "pt": [
+            1,
+            3
+          ],
+          "de": [
+            1,
+            3
+          ],
+          "pl": [
+            1,
+            3
+          ],
+          "ro": [
+            1,
+            3
+          ],
+          "uk": [
+            1,
+            3
+          ],
+          "nl": [
+            1,
+            3
+          ],
+          "en": [
+            1,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_rc_1",
+        "situation_slug": "guest-asks-for-cocktail-recommendation",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest says: \"I don't really like sweet drinks.\" What would be the best response?",
+        "canonical_options_en": {
+          "0": "Then don't order a cocktail.",
+          "1": "What kind of flavours do you usually enjoy?",
+          "2": "All cocktails are sweet.",
+          "3": "I don't know."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_rc_2",
+        "situation_slug": "guest-asks-for-cocktail-recommendation",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which sentence is grammatically correct but too direct for professional service?",
+        "canonical_options_en": {
+          "0": "What do you want?",
+          "1": "What can I get you?",
+          "2": "What would you like?",
+          "3": "How can I help you?"
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_fd_1",
+        "situation_slug": "guest-asks-for-food-recommendation",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest asks: “What would you recommend?” What is the best first response?",
+        "canonical_options_en": {
+          "0": "Everything is good.",
+          "1": "Are you in the mood for meat, fish or something vegetarian?",
+          "2": "I don't eat here.",
+          "3": "The most expensive one."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_fd_2",
+        "situation_slug": "guest-asks-for-food-recommendation",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "The guest asks \"What does it come with?\" What is the best response?",
+        "canonical_options_en": {
+          "0": "It's served with seasonal vegetables.",
+          "1": "I don't know.",
+          "2": "Food.",
+          "3": "Ask the chef."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_fd_4",
+        "situation_slug": "guest-asks-for-food-recommendation",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which response is too long or not very useful?",
+        "canonical_options_en": {
+          "0": "A detailed 2-minute history of the dish",
+          "1": "It's grilled salmon with vegetables.",
+          "2": "It's one of our most popular dishes.",
+          "3": "It's served with a lemon sauce."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_fooddesc_3",
+        "situation_slug": "guest-asks-how-a-dish-is-prepared",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest asks how the dish is prepared. What is the best response?",
+        "canonical_options_en": {
+          "0": "It's fish.",
+          "1": "It's good.",
+          "2": "It's pan-seared and served with seasonal vegetables.",
+          "3": "Everybody orders it."
+        },
+        "answer_index": 2,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_fooddesc_1",
+        "situation_slug": "guest-asks-how-a-dish-is-prepared",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"Served with\" means:",
+        "canonical_options_en": {
+          "0": "Servido acompañado de.",
+          "1": "Cocinado sin.",
+          "2": "Pagado con.",
+          "3": "Disponible mañana."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Servito con.",
+            "3": "Disponibile domani."
+          },
+          "fr": {
+            "0": "Servi avec.",
+            "3": "Disponible demain."
+          },
+          "pt": {
+            "0": "Servido acompanhado de.",
+            "3": "Disponível amanhã."
+          },
+          "de": {
+            "0": "Serviert mit.",
+            "3": "Morgen verfügbar."
+          },
+          "pl": {
+            "0": "Podawane z.",
+            "3": "Dostępne jutro."
+          },
+          "ro": {
+            "0": "Servit împreună cu.",
+            "3": "Disponibil mâine."
+          },
+          "uk": {
+            "0": "Подається разом із.",
+            "3": "Доступно завтра."
+          },
+          "nl": {
+            "0": "Geserveerd met.",
+            "3": "Morgen beschikbaar."
+          },
+          "en": {
+            "0": "Served with.",
+            "3": "Available tomorrow."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            2
+          ],
+          "fr": [
+            1,
+            2
+          ],
+          "pt": [
+            1,
+            2
+          ],
+          "de": [
+            1,
+            2
+          ],
+          "pl": [
+            1,
+            2
+          ],
+          "ro": [
+            1,
+            2
+          ],
+          "uk": [
+            1,
+            2
+          ],
+          "nl": [
+            1,
+            2
+          ],
+          "en": [
+            1,
+            2
+          ]
+        }
+      },
+      {
+        "question_id": "ex_cocktail_desc_3",
+        "situation_slug": "guest-asks-what-a-cocktail-tastes-like",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which option helps the guest understand the cocktail best?",
+        "canonical_options_en": {
+          "0": "It's good.",
+          "1": "Everybody likes it.",
+          "2": "It's quite bitter, with some sweetness and citrus.",
+          "3": "Just try it."
+        },
+        "answer_index": 2,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_cocktail_desc_3",
+        "situation_slug": "guest-asks-what-a-cocktail-tastes-like",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest says they do not enjoy bitter flavours. What do you do?",
+        "canonical_options_en": {
+          "0": "Insistir en el Negroni.",
+          "1": "Reconocerlo y ofrecer otra opción.",
+          "2": "Decir que todos lo toman.",
+          "3": "Ignorarlo."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {
+            "1": "Riconoscerlo e offrire un'altra opzione."
+          },
+          "fr": {
+            "1": "Le reconnaître et proposer une autre option."
+          },
+          "pt": {
+            "1": "Reconhecer isso e oferecer outra opção."
+          },
+          "de": {
+            "1": "Es anerkennen und eine andere Option anbieten."
+          },
+          "pl": {
+            "1": "Przyjąć to do wiadomości i zaproponować inną opcję."
+          },
+          "ro": {
+            "1": "Recunoaște preferința și oferă o altă opțiune."
+          },
+          "uk": {
+            "1": "Визнати це й запропонувати інший варіант."
+          },
+          "nl": {
+            "1": "Erkennen en een andere optie aanbieden."
+          },
+          "en": {
+            "1": "Acknowledge it and offer another option."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_cocktail_desc_4",
+        "situation_slug": "guest-asks-what-a-cocktail-tastes-like",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which option describes it better instead of simply judging it?",
+        "canonical_options_en": {
+          "0": "It's good.",
+          "1": "It's bitter, citrusy and quite strong.",
+          "2": "You'll like it.",
+          "3": "It's famous."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_dishingredients_2",
+        "situation_slug": "guest-asks-whats-in-a-dish",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest mentions an allergy and you are not sure. What do you say?",
+        "canonical_options_en": {
+          "0": "Let me check that with the kitchen.",
+          "1": "I think it's fine.",
+          "2": "Probably no dairy.",
+          "3": "It should be okay."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_dishingredients_3",
+        "situation_slug": "guest-asks-whats-in-a-dish",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"Does it contain any cream?\" What does the guest want to know?",
+        "canonical_options_en": {
+          "0": "Si la nata forma parte del plato.",
+          "1": "Si está caliente.",
+          "2": "Si es caro.",
+          "3": "Si viene con pan."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "1": "Se è caldo."
+          },
+          "fr": {
+            "1": "S’il est chaud."
+          },
+          "pt": {
+            "1": "Se está quente."
+          },
+          "de": {
+            "1": "Ob es heiß ist."
+          },
+          "pl": {
+            "1": "Czy jest gorące."
+          },
+          "ro": {
+            "1": "Dacă este fierbinte."
+          },
+          "uk": {
+            "1": "Чи страва гаряча."
+          },
+          "nl": {
+            "1": "Of het warm is."
+          },
+          "en": {
+            "1": "Whether it is hot."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_dishingredients_1",
+        "situation_slug": "guest-asks-whats-in-a-dish",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"Made with\" means:",
+        "canonical_options_en": {
+          "0": "Hecho con.",
+          "1": "Servido después.",
+          "2": "Pagado con.",
+          "3": "Cocinado mañana."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Preparato con.",
+            "1": "Servito dopo.",
+            "3": "Cucinato domani."
+          },
+          "fr": {
+            "0": "Préparé avec.",
+            "1": "Servi après.",
+            "3": "Cuisiné demain."
+          },
+          "pt": {
+            "0": "Feito com.",
+            "1": "Servido depois.",
+            "3": "Cozinhado amanhã."
+          },
+          "de": {
+            "0": "Zubereitet mit.",
+            "1": "Später serviert.",
+            "3": "Morgen gekocht."
+          },
+          "pl": {
+            "0": "Przygotowane z.",
+            "1": "Podane później.",
+            "3": "Ugotowane jutro."
+          },
+          "ro": {
+            "0": "Făcut cu.",
+            "1": "Servit după.",
+            "3": "Gătit mâine."
+          },
+          "uk": {
+            "0": "Зроблено з.",
+            "1": "Подано після.",
+            "3": "Приготовано завтра."
+          },
+          "nl": {
+            "0": "Gemaakt met.",
+            "1": "Later geserveerd.",
+            "3": "Morgen gekookt."
+          },
+          "en": {
+            "0": "Made with.",
+            "1": "Served afterwards.",
+            "3": "Cooked tomorrow."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            2
+          ],
+          "fr": [
+            2
+          ],
+          "pt": [
+            2
+          ],
+          "de": [
+            2
+          ],
+          "pl": [
+            2
+          ],
+          "ro": [
+            2
+          ],
+          "uk": [
+            2
+          ],
+          "nl": [
+            2
+          ],
+          "en": [
+            2
+          ]
+        }
+      },
+      {
+        "question_id": "q_dishingredients_2",
+        "situation_slug": "guest-asks-whats-in-a-dish",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"Comes with\" means:",
+        "canonical_options_en": {
+          "0": "Viene acompañado de.",
+          "1": "No contiene.",
+          "2": "Se paga aparte.",
+          "3": "Está agotado."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "È accompagnato da.",
+            "3": "È esaurito."
+          },
+          "fr": {
+            "0": "Accompagné de.",
+            "3": "Il est épuisé."
+          },
+          "pt": {
+            "0": "É acompanhado por.",
+            "3": "Está esgotado."
+          },
+          "de": {
+            "0": "Wird serviert mit.",
+            "3": "Ist ausverkauft."
+          },
+          "pl": {
+            "0": "Podawane z.",
+            "3": "Jest wyprzedane."
+          },
+          "ro": {
+            "0": "Vine cu.",
+            "3": "Nu mai este disponibil."
+          },
+          "uk": {
+            "0": "Подається з.",
+            "3": "Закінчилося."
+          },
+          "nl": {
+            "0": "Wordt geserveerd met.",
+            "3": "Het is uitverkocht."
+          },
+          "en": {
+            "0": "Comes with.",
+            "3": "It is sold out."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            2
+          ],
+          "fr": [
+            1,
+            2
+          ],
+          "pt": [
+            1,
+            2
+          ],
+          "de": [
+            1,
+            2
+          ],
+          "pl": [
+            1,
+            2
+          ],
+          "ro": [
+            1,
+            2
+          ],
+          "uk": [
+            1,
+            2
+          ],
+          "nl": [
+            1,
+            2
+          ],
+          "en": [
+            1,
+            2
+          ]
+        }
+      },
+      {
+        "question_id": "q_dishingredients_3",
+        "situation_slug": "guest-asks-whats-in-a-dish",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The question becomes a safety issue when:",
+        "canonical_options_en": {
+          "0": "El cliente menciona una alergia.",
+          "1": "Pregunta el precio.",
+          "2": "Mira la carta.",
+          "3": "Pide agua."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Il cliente menziona un'allergia."
+          },
+          "fr": {
+            "0": "Le client mentionne une allergie."
+          },
+          "pt": {
+            "0": "O cliente menciona uma alergia."
+          },
+          "de": {
+            "0": "Der Gast eine Allergie erwähnt."
+          },
+          "pl": {
+            "0": "Klient wspomina o alergii."
+          },
+          "ro": {
+            "0": "Clientul menționează o alergie."
+          },
+          "uk": {
+            "0": "Клієнт згадує алергію."
+          },
+          "nl": {
+            "0": "De gast een allergie noemt."
+          },
+          "en": {
+            "0": "The guest mentions an allergy."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            1,
+            2,
+            3
+          ],
+          "de": [
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            1,
+            2,
+            3
+          ],
+          "en": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_dishingredients_4",
+        "situation_slug": "guest-asks-whats-in-a-dish",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which response should you avoid if you are not sure?",
+        "canonical_options_en": {
+          "0": "I think it's dairy-free.",
+          "1": "Let me check with the kitchen.",
+          "2": "I'll confirm the ingredients.",
+          "3": "Thanks for letting me know."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_upsell_1",
+        "situation_slug": "guest-finishes-main-course",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which option upsells without putting pressure on the guest?",
+        "canonical_options_en": {
+          "0": "Would you like to see the dessert menu?",
+          "1": "You should get dessert.",
+          "2": "You need dessert.",
+          "3": "Order the cheesecake."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_upsell_2",
+        "situation_slug": "guest-finishes-main-course",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"We're quite full.\" means:",
+        "canonical_options_en": {
+          "0": "Han comido suficiente y quizá no quieran postre.",
+          "1": "Tienen una reserva.",
+          "2": "Quieren otra mesa.",
+          "3": "Quieren pagar en efectivo."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Hanno mangiato abbastanza e forse non vogliono il dessert."
+          },
+          "fr": {
+            "0": "Ils ont assez mangé et ne veulent peut-être pas de dessert."
+          },
+          "pt": {
+            "0": "Já comeram o suficiente e talvez não queiram sobremesa."
+          },
+          "de": {
+            "0": "Sie haben genug gegessen und möchten vielleicht kein Dessert."
+          },
+          "pl": {
+            "0": "Zjedli już wystarczająco dużo i mogą nie chcieć deseru."
+          },
+          "ro": {
+            "0": "Au mâncat suficient și poate nu mai doresc desert."
+          },
+          "uk": {
+            "0": "Вони вже достатньо поїли й, можливо, не хочуть десерт."
+          },
+          "nl": {
+            "0": "Ze hebben genoeg gegeten en willen misschien geen dessert."
+          },
+          "en": {
+            "0": "They have eaten enough and may not want dessert."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            1,
+            2,
+            3
+          ],
+          "de": [
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            1,
+            2,
+            3
+          ],
+          "en": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_upsell_1",
+        "situation_slug": "guest-finishes-main-course",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "What do you do before upselling?",
+        "canonical_options_en": {
+          "0": "Comprobar cómo fue la comida.",
+          "1": "Traer la cuenta sin hablar.",
+          "2": "Retirar el café.",
+          "3": "Insistir en el postre."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Verificare com'è andato il pasto.",
+            "2": "Portare via il caffè."
+          },
+          "fr": {
+            "0": "Vérifier comment s’est passé le repas.",
+            "2": "Retirer le café."
+          },
+          "pt": {
+            "0": "Verificar como correu a refeição.",
+            "2": "Retirar o café."
+          },
+          "de": {
+            "0": "Fragen, wie das Essen war.",
+            "2": "Den Kaffee abräumen."
+          },
+          "pl": {
+            "0": "Sprawdzić, jak smakował posiłek.",
+            "2": "Zabrać kawę."
+          },
+          "ro": {
+            "0": "Să verifici cum a fost mâncarea.",
+            "2": "Să iei cafeaua de pe masă."
+          },
+          "uk": {
+            "0": "Запитати, як пройшла трапеза.",
+            "2": "Забрати каву."
+          },
+          "nl": {
+            "0": "Vragen hoe het eten was.",
+            "2": "De koffie weghalen."
+          },
+          "en": {
+            "0": "Check how the meal was.",
+            "2": "Clear away the coffee."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            3
+          ],
+          "fr": [
+            1,
+            3
+          ],
+          "pt": [
+            1,
+            3
+          ],
+          "de": [
+            1,
+            3
+          ],
+          "pl": [
+            1,
+            3
+          ],
+          "ro": [
+            1,
+            3
+          ],
+          "uk": [
+            1,
+            3
+          ],
+          "nl": [
+            1,
+            3
+          ],
+          "en": [
+            1,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_upsell_2",
+        "situation_slug": "guest-finishes-main-course",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which response is too direct?",
+        "canonical_options_en": {
+          "0": "You should get dessert.",
+          "1": "Would you like to see the dessert menu?",
+          "2": "No problem at all.",
+          "3": "Can I get you any coffee?"
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_upsell_3",
+        "situation_slug": "guest-finishes-main-course",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "Here, \"If you have room\" means:",
+        "canonical_options_en": {
+          "0": "Si todavía os apetece o podéis comer algo más.",
+          "1": "Si tenéis una habitación.",
+          "2": "Si hay otra mesa.",
+          "3": "Si queda espacio en el restaurante."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Se avete ancora voglia o spazio per mangiare qualcosa.",
+            "1": "Se avete una camera."
+          },
+          "fr": {
+            "0": "Si vous avez encore envie ou la place de manger quelque chose.",
+            "1": "Si vous avez une chambre."
+          },
+          "pt": {
+            "0": "Se ainda vos apetecer ou conseguirem comer mais alguma coisa.",
+            "1": "Se tiverem um quarto."
+          },
+          "de": {
+            "0": "Wenn ihr noch Lust oder Platz für etwas zu essen habt.",
+            "1": "Wenn ihr ein Zimmer habt."
+          },
+          "pl": {
+            "0": "Jeśli nadal macie ochotę lub miejsce na coś więcej.",
+            "1": "Jeśli macie pokój."
+          },
+          "ro": {
+            "0": "Dacă încă vă mai este poftă sau mai puteți mânca ceva.",
+            "1": "Dacă aveți o cameră."
+          },
+          "uk": {
+            "0": "Якщо вам ще хочеться або ви можете з’їсти щось іще.",
+            "1": "Якщо у вас є кімната."
+          },
+          "nl": {
+            "0": "Als jullie nog trek of ruimte hebben voor iets extra's.",
+            "1": "Als jullie een kamer hebben."
+          },
+          "en": {
+            "0": "If you still feel like or have space to eat something else.",
+            "1": "If you have a hotel room."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            2,
+            3
+          ],
+          "fr": [
+            2,
+            3
+          ],
+          "pt": [
+            2,
+            3
+          ],
+          "de": [
+            2,
+            3
+          ],
+          "pl": [
+            2,
+            3
+          ],
+          "ro": [
+            2,
+            3
+          ],
+          "uk": [
+            2,
+            3
+          ],
+          "nl": [
+            2,
+            3
+          ],
+          "en": [
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_upsell_4",
+        "situation_slug": "guest-finishes-main-course",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "If the guest says they do not want dessert, what do you do?",
+        "canonical_options_en": {
+          "0": "Aceptar sin presionar.",
+          "1": "Insistir.",
+          "2": "Decir que se lo perderá.",
+          "3": "Traerlo igualmente."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Accettare senza insistere.",
+            "2": "Dirgli che si perderà qualcosa."
+          },
+          "fr": {
+            "0": "Accepter sans insister.",
+            "2": "Dire qu’il va le regretter."
+          },
+          "pt": {
+            "0": "Aceitar sem pressionar.",
+            "2": "Dizer que vai perder a oportunidade."
+          },
+          "de": {
+            "0": "Ohne Druck akzeptieren.",
+            "2": "Sagen, dass er etwas verpasst."
+          },
+          "pl": {
+            "0": "Zaakceptować bez naciskania.",
+            "2": "Powiedzieć, że dużo traci."
+          },
+          "ro": {
+            "0": "Acceptă fără să insiști.",
+            "2": "Spune-i că pierde ceva."
+          },
+          "uk": {
+            "0": "Прийняти відмову без тиску.",
+            "2": "Сказати, що він багато втрачає."
+          },
+          "nl": {
+            "0": "Accepteren zonder druk te zetten.",
+            "2": "Zeggen dat hij iets mist."
+          },
+          "en": {
+            "0": "Accept the answer without pressuring them.",
+            "2": "Tell them they are missing out."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            3
+          ],
+          "fr": [
+            1,
+            3
+          ],
+          "pt": [
+            1,
+            3
+          ],
+          "de": [
+            1,
+            3
+          ],
+          "pl": [
+            1,
+            3
+          ],
+          "ro": [
+            1,
+            3
+          ],
+          "uk": [
+            1,
+            3
+          ],
+          "nl": [
+            1,
+            3
+          ],
+          "en": [
+            1,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_refuse_1",
+        "situation_slug": "guest-has-had-too-much-to-drink",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "What is the best way to communicate the decision?",
+        "canonical_options_en": {
+          "0": "You're too drunk.",
+          "1": "Stop drinking.",
+          "2": "I'm sorry, but I can't serve you another alcoholic drink right now.",
+          "3": "Go home."
+        },
+        "answer_index": 2,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_refuse_2",
+        "situation_slug": "guest-has-had-too-much-to-drink",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "The guest replies: \"I'm completely fine.\" What are they doing?",
+        "canonical_options_en": {
+          "0": "Aceptando la decisión.",
+          "1": "Cuestionando la decisión del bartender.",
+          "2": "Pidiendo agua.",
+          "3": "Pidiendo la cuenta."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {
+            "0": "Sta accettando la decisione.",
+            "1": "Sta mettendo in discussione la decisione del bartender."
+          },
+          "fr": {
+            "0": "Il accepte la décision.",
+            "1": "Il remet en question la décision du bartender."
+          },
+          "pt": {
+            "0": "A aceitar a decisão.",
+            "1": "A questionar a decisão do bartender."
+          },
+          "de": {
+            "0": "Er akzeptiert die Entscheidung.",
+            "1": "Er stellt die Entscheidung des Bartenders infrage."
+          },
+          "pl": {
+            "0": "Akceptuje decyzję.",
+            "1": "Kwestionuje decyzję barmana."
+          },
+          "ro": {
+            "0": "Acceptă decizia.",
+            "1": "Contestă decizia bartenderului."
+          },
+          "uk": {
+            "0": "Приймає рішення.",
+            "1": "Ставить під сумнів рішення bartender."
+          },
+          "nl": {
+            "0": "De beslissing accepteren.",
+            "1": "De beslissing van de bartender betwisten."
+          },
+          "en": {
+            "0": "Accepting the decision.",
+            "1": "Challenging the bartender's decision."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            2,
+            3
+          ],
+          "fr": [
+            2,
+            3
+          ],
+          "pt": [
+            2,
+            3
+          ],
+          "de": [
+            2,
+            3
+          ],
+          "pl": [
+            2,
+            3
+          ],
+          "ro": [
+            2,
+            3
+          ],
+          "uk": [
+            2,
+            3
+          ],
+          "nl": [
+            2,
+            3
+          ],
+          "en": [
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_refuse_1",
+        "situation_slug": "guest-has-had-too-much-to-drink",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest starts to argue. What is the best communication strategy?",
+        "canonical_options_en": {
+          "0": "Mantener la calma, repetir la decisión y evitar una discusión larga.",
+          "1": "Subir el tono.",
+          "2": "Insultarlo.",
+          "3": "Seguir sirviendo para evitar problemas."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Mantenere la calma, ripetere la decisione ed evitare una lunga discussione."
+          },
+          "fr": {
+            "0": "Rester calme, répéter la décision et éviter une longue discussion."
+          },
+          "pt": {
+            "0": "Manter a calma, repetir a decisão e evitar uma discussão longa."
+          },
+          "de": {
+            "0": "Ruhig bleiben, die Entscheidung wiederholen und eine lange Diskussion vermeiden."
+          },
+          "pl": {
+            "0": "Zachować spokój, powtórzyć decyzję i unikać długiej kłótni."
+          },
+          "ro": {
+            "0": "Păstrează-ți calmul, repetă decizia și evită o discuție lungă."
+          },
+          "uk": {
+            "0": "Зберігати спокій, повторити рішення й уникати довгої суперечки."
+          },
+          "nl": {
+            "0": "Rustig blijven, de beslissing herhalen en een lange discussie vermijden."
+          },
+          "en": {
+            "0": "Stay calm, repeat the decision, and avoid a long argument."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            1,
+            2,
+            3
+          ],
+          "de": [
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            1,
+            2,
+            3
+          ],
+          "en": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_refuse_3",
+        "situation_slug": "guest-has-had-too-much-to-drink",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "What alternative can you offer?",
+        "canonical_options_en": {
+          "0": "Agua o una bebida sin alcohol.",
+          "1": "Más alcohol.",
+          "2": "Una bebida doble.",
+          "3": "Nada, siempre."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "1": "Più alcol.",
+            "2": "Un doppio."
+          },
+          "fr": {
+            "1": "Plus d’alcool.",
+            "2": "Un double."
+          },
+          "pt": {
+            "1": "Mais álcool.",
+            "2": "Uma bebida dupla."
+          },
+          "de": {
+            "1": "Mehr Alkohol.",
+            "2": "Ein doppeltes Getränk."
+          },
+          "pl": {
+            "1": "Więcej alkoholu.",
+            "2": "Podwójny drink."
+          },
+          "ro": {
+            "1": "Mai mult alcool.",
+            "2": "O băutură dublă."
+          },
+          "uk": {
+            "1": "Більше алкоголю.",
+            "2": "Подвійну порцію напою."
+          },
+          "nl": {
+            "1": "Meer alcohol.",
+            "2": "Een dubbele drank."
+          },
+          "en": {
+            "1": "More alcohol.",
+            "2": "A double drink."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            3
+          ],
+          "fr": [
+            0,
+            3
+          ],
+          "pt": [
+            0,
+            3
+          ],
+          "de": [
+            0,
+            3
+          ],
+          "pl": [
+            0,
+            3
+          ],
+          "ro": [
+            0,
+            3
+          ],
+          "uk": [
+            0,
+            3
+          ],
+          "nl": [
+            0,
+            3
+          ],
+          "en": [
+            0,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_refuse_4",
+        "situation_slug": "guest-has-had-too-much-to-drink",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"I want to speak to your manager.\" What is the guest asking for?",
+        "canonical_options_en": {
+          "0": "Hablar con el responsable.",
+          "1": "Pagar.",
+          "2": "Otra bebida.",
+          "3": "Una mesa."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Parlare con il responsabile.",
+            "3": "Un tavolo."
+          },
+          "fr": {
+            "0": "Parler au responsable.",
+            "3": "Une table."
+          },
+          "pt": {
+            "0": "Falar com o responsável.",
+            "3": "Uma mesa."
+          },
+          "de": {
+            "0": "Mit der verantwortlichen Person sprechen.",
+            "3": "Einen Tisch."
+          },
+          "pl": {
+            "0": "Porozmawiać z osobą odpowiedzialną.",
+            "3": "Stolik."
+          },
+          "ro": {
+            "0": "Să vorbească cu persoana responsabilă.",
+            "3": "O masă."
+          },
+          "uk": {
+            "0": "Поговорити з відповідальною особою.",
+            "3": "Стіл."
+          },
+          "nl": {
+            "0": "Met de verantwoordelijke spreken.",
+            "3": "Een tafel."
+          },
+          "en": {
+            "0": "To speak to the person in charge.",
+            "3": "A table."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            2
+          ],
+          "fr": [
+            1,
+            2
+          ],
+          "pt": [
+            1,
+            2
+          ],
+          "de": [
+            1,
+            2
+          ],
+          "pl": [
+            1,
+            2
+          ],
+          "ro": [
+            1,
+            2
+          ],
+          "uk": [
+            1,
+            2
+          ],
+          "nl": [
+            1,
+            2
+          ],
+          "en": [
+            1,
+            2
+          ]
+        }
+      },
+      {
+        "question_id": "ex_notready_1",
+        "situation_slug": "guest-is-not-ready-to-order",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"We need a few more minutes.\" means:",
+        "canonical_options_en": {
+          "0": "Todavía no están preparados para pedir.",
+          "1": "Quieren pagar.",
+          "2": "Quieren irse.",
+          "3": "Quieren otra mesa."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Non sono ancora pronti a ordinare."
+          },
+          "fr": {
+            "0": "Ils ne sont pas encore prêts à commander."
+          },
+          "pt": {
+            "0": "Ainda não estão prontos para pedir."
+          },
+          "de": {
+            "0": "Sie sind noch nicht bereit zu bestellen."
+          },
+          "pl": {
+            "0": "Nie są jeszcze gotowi do zamówienia."
+          },
+          "ro": {
+            "0": "Încă nu sunt pregătiți să comande."
+          },
+          "uk": {
+            "0": "Вони ще не готові замовляти."
+          },
+          "nl": {
+            "0": "Ze zijn nog niet klaar om te bestellen."
+          },
+          "en": {
+            "0": "They are not ready to order yet."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            1,
+            2,
+            3
+          ],
+          "de": [
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            1,
+            2,
+            3
+          ],
+          "en": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_notready_3",
+        "situation_slug": "guest-is-not-ready-to-order",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which option avoids putting pressure on the guest?",
+        "canonical_options_en": {
+          "0": "Of course. Take your time.",
+          "1": "Order now, please.",
+          "2": "Are you done?",
+          "3": "You need to choose."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_notready_1",
+        "situation_slug": "guest-is-not-ready-to-order",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"A few more minutes\" means:",
+        "canonical_options_en": {
+          "0": "Unos minutos más.",
+          "1": "Una hora.",
+          "2": "Mañana.",
+          "3": "Ahora mismo."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Ancora qualche minuto.",
+            "1": "Un'ora.",
+            "2": "Domani."
+          },
+          "fr": {
+            "0": "Quelques minutes de plus.",
+            "1": "Une heure.",
+            "2": "Demain."
+          },
+          "pt": {
+            "0": "Mais alguns minutos.",
+            "1": "Uma hora.",
+            "2": "Amanhã."
+          },
+          "de": {
+            "0": "Noch ein paar Minuten.",
+            "1": "Eine Stunde.",
+            "2": "Morgen."
+          },
+          "pl": {
+            "0": "Jeszcze kilka minut.",
+            "1": "Godzinę.",
+            "2": "Jutro."
+          },
+          "ro": {
+            "0": "Încă câteva minute.",
+            "1": "O oră.",
+            "2": "Mâine."
+          },
+          "uk": {
+            "0": "Ще кілька хвилин.",
+            "1": "Одну годину.",
+            "2": "Завтра."
+          },
+          "nl": {
+            "0": "Nog een paar minuten.",
+            "1": "Een uur.",
+            "2": "Morgen."
+          },
+          "en": {
+            "0": "A few more minutes.",
+            "1": "An hour.",
+            "2": "Tomorrow."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            3
+          ],
+          "fr": [
+            3
+          ],
+          "pt": [
+            3
+          ],
+          "de": [
+            3
+          ],
+          "pl": [
+            3
+          ],
+          "ro": [
+            3
+          ],
+          "uk": [
+            3
+          ],
+          "nl": [
+            3
+          ],
+          "en": [
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_notready_3",
+        "situation_slug": "guest-is-not-ready-to-order",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "What can you offer while they wait?",
+        "canonical_options_en": {
+          "0": "Responder preguntas sobre la carta.",
+          "1": "Cobrarles.",
+          "2": "Retirar la mesa.",
+          "3": "Traer la cuenta."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_notready_4",
+        "situation_slug": "guest-is-not-ready-to-order",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which is the most natural option?",
+        "canonical_options_en": {
+          "0": "Are you ready to order, or would you like another minute?",
+          "1": "Are you ready now?",
+          "2": "Choose something.",
+          "3": "You must order."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_nt_1",
+        "situation_slug": "guest-mentions-a-nut-allergy",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest says they have a nut allergy. What is the SAFEST response?",
+        "canonical_options_en": {
+          "0": "Don't worry, it's completely safe.",
+          "1": "Let me double-check with the kitchen for you.",
+          "2": "A little bit won't hurt.",
+          "3": "I think it's fine."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_nt_1",
+        "situation_slug": "guest-mentions-a-nut-allergy",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which of these responses is UNSAFE and should be avoided?",
+        "canonical_options_en": {
+          "0": "Don't worry, it's completely safe.",
+          "1": "Let me confirm with the kitchen.",
+          "2": "Could you tell me which nuts to avoid?",
+          "3": "I'll check the cross-contamination info."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_round_1",
+        "situation_slug": "guest-orders-a-round-with-changes",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "What change does the guest ask for with the gin and tonic?",
+        "canonical_options_en": {
+          "0": "No ice",
+          "1": "No lemon",
+          "2": "Extra tonic",
+          "3": "No gin"
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_round_2",
+        "situation_slug": "guest-orders-a-round-with-changes",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Why would you repeat a long order?",
+        "canonical_options_en": {
+          "0": "Para hacer que el cliente espere.",
+          "1": "Para confirmar que lo has entendido correctamente.",
+          "2": "Porque tienes que traducirlo.",
+          "3": "Para vender otra bebida."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {
+            "0": "Per far aspettare il cliente.",
+            "1": "Per confermare di aver capito correttamente.",
+            "3": "Per vendere un'altra bevanda."
+          },
+          "fr": {
+            "0": "Pour faire attendre le client.",
+            "1": "Pour confirmer que tu as bien compris.",
+            "3": "Pour vendre une autre boisson."
+          },
+          "pt": {
+            "0": "Para fazer o cliente esperar.",
+            "1": "Para confirmar que o compreendeste corretamente.",
+            "3": "Para vender outra bebida."
+          },
+          "de": {
+            "0": "Damit der Gast länger warten muss.",
+            "1": "Um zu bestätigen, dass du alles richtig verstanden hast.",
+            "3": "Um ein weiteres Getränk zu verkaufen."
+          },
+          "pl": {
+            "0": "Żeby klient musiał czekać.",
+            "1": "Aby potwierdzić, że poprawnie zrozumiałeś zamówienie.",
+            "3": "Żeby sprzedać kolejny napój."
+          },
+          "ro": {
+            "0": "Pentru a-l face pe client să aștepte.",
+            "1": "Pentru a confirma că ai înțeles corect.",
+            "3": "Pentru a vinde încă o băutură."
+          },
+          "uk": {
+            "0": "Щоб змусити клієнта чекати.",
+            "1": "Щоб підтвердити, що ти все правильно зрозумів.",
+            "3": "Щоб продати ще один напій."
+          },
+          "nl": {
+            "0": "Om de gast te laten wachten.",
+            "1": "Om te bevestigen dat je het goed hebt begrepen.",
+            "3": "Om nog een drankje te verkopen."
+          },
+          "en": {
+            "0": "To make the guest wait.",
+            "1": "To confirm that you understood it correctly.",
+            "3": "To sell another drink."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            2
+          ],
+          "fr": [
+            2
+          ],
+          "pt": [
+            2
+          ],
+          "de": [
+            2
+          ],
+          "pl": [
+            2
+          ],
+          "ro": [
+            2
+          ],
+          "uk": [
+            2
+          ],
+          "nl": [
+            2
+          ],
+          "en": [
+            2
+          ]
+        }
+      },
+      {
+        "question_id": "q_round_2",
+        "situation_slug": "guest-orders-a-round-with-changes",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "How would you confirm the change?",
+        "canonical_options_en": {
+          "0": "Was that with no lemon?",
+          "1": "You said lemon.",
+          "2": "No lemon, right now.",
+          "3": "Why no lemon?"
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_round_4",
+        "situation_slug": "guest-orders-a-round-with-changes",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "What does repeating a long order at the end achieve?",
+        "canonical_options_en": {
+          "0": "Reducir posibles errores.",
+          "1": "Hacer upselling.",
+          "2": "Cambiar el pedido.",
+          "3": "Cobrar antes."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_sw_1",
+        "situation_slug": "guest-says-cocktail-is-too-sweet",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest says: “This is too sweet.” What is the BEST response?",
+        "canonical_options_en": {
+          "0": "That's how it's supposed to taste.",
+          "1": "I'm sorry about that. Would you like something less sweet?",
+          "2": "You ordered it.",
+          "3": "It's fine."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_sw_1",
+        "situation_slug": "guest-says-cocktail-is-too-sweet",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which sentence is correct English but blames the guest?",
+        "canonical_options_en": {
+          "0": "You ordered it, though.",
+          "1": "I'm sorry about that.",
+          "2": "Let me fix that for you.",
+          "3": "Thank you for letting me know."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_ls_1",
+        "situation_slug": "guest-wants-something-less-sweet",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest says: “I don't want anything too sweet.” What is the best response?",
+        "canonical_options_en": {
+          "0": "It's more citrus-forward and quite dry.",
+          "1": "Everything here is sweet.",
+          "2": "Okay.",
+          "3": "That's not possible."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_ls_3",
+        "situation_slug": "guest-wants-something-less-sweet",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The guest asks: “Is it strong?” What is the best professional response?",
+        "canonical_options_en": {
+          "0": "It's medium — refreshing rather than strong.",
+          "1": "No idea.",
+          "2": "Very strong, be careful.",
+          "3": "Just drink it."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_ls_4",
+        "situation_slug": "guest-wants-something-less-sweet",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "If the guest wants something even lighter, what could you offer?",
+        "canonical_options_en": {
+          "0": "A spritz",
+          "1": "A double whisky",
+          "2": "A sweet liqueur",
+          "3": "Nothing"
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_bar_pay_3",
+        "situation_slug": "guest-wants-to-split-the-bar-tab",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The group wants to pay separately. What is the best response?",
+        "canonical_options_en": {
+          "0": "Of course. How would you like to split it?",
+          "1": "No, one payment only.",
+          "2": "You decide.",
+          "3": "Pay now."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_bar_pay_1",
+        "situation_slug": "guest-wants-to-split-the-bar-tab",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"Evenly\" means:",
+        "canonical_options_en": {
+          "0": "A partes iguales.",
+          "1": "En efectivo.",
+          "2": "Con tarjeta.",
+          "3": "Por adelantado."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "In parti uguali."
+          },
+          "fr": {
+            "0": "À parts égales."
+          },
+          "pt": {
+            "0": "Em partes iguais."
+          },
+          "de": {
+            "0": "Zu gleichen Teilen."
+          },
+          "pl": {
+            "0": "Po równo."
+          },
+          "ro": {
+            "0": "În părți egale."
+          },
+          "uk": {
+            "0": "Порівну."
+          },
+          "nl": {
+            "0": "In gelijke delen."
+          },
+          "en": {
+            "0": "In equal parts."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            1,
+            2,
+            3
+          ],
+          "de": [
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            1,
+            2,
+            3
+          ],
+          "en": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_bar_pay_3",
+        "situation_slug": "guest-wants-to-split-the-bar-tab",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which question clarifies how they want to pay?",
+        "canonical_options_en": {
+          "0": "How would you like to split it?",
+          "1": "What did you drink?",
+          "2": "Do you want another?",
+          "3": "Where are you going?"
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_bill_1",
+        "situation_slug": "guest-wants-to-split-the-bill",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "In this context, \"The two of us are together.\" means:",
+        "canonical_options_en": {
+          "0": "Esas dos personas quieren pagar conjuntamente.",
+          "1": "Quieren sentarse juntas.",
+          "2": "Quieren otra mesa.",
+          "3": "Van a compartir postre."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_bill_3",
+        "situation_slug": "guest-wants-to-split-the-bill",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "The bill split is complex. What helps prevent mistakes?",
+        "canonical_options_en": {
+          "0": "Repetir y confirmar cómo quieren dividirla.",
+          "1": "Adivinar.",
+          "2": "Cobrar todo junto.",
+          "3": "Pedir que vuelvan mañana."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Ripetere e confermare come vogliono dividerlo.",
+            "3": "Chiedere loro di tornare domani."
+          },
+          "fr": {
+            "0": "Répéter et confirmer comment ils veulent la partager.",
+            "3": "Leur demander de revenir demain."
+          },
+          "pt": {
+            "0": "Repetir e confirmar como querem dividi-la.",
+            "3": "Pedir-lhes que voltem amanhã."
+          },
+          "de": {
+            "0": "Wiederholen und bestätigen, wie sie die Rechnung aufteilen möchten.",
+            "3": "Sie bitten, morgen wiederzukommen."
+          },
+          "pl": {
+            "0": "Powtórzyć i potwierdzić, jak chcą podzielić rachunek.",
+            "3": "Poprosić, żeby wrócili jutro."
+          },
+          "ro": {
+            "0": "Să repeți și să confirmi cum vor să o împartă.",
+            "3": "Să le ceri să revină mâine."
+          },
+          "uk": {
+            "0": "Повторити й підтвердити, як вони хочуть розділити рахунок.",
+            "3": "Попросити їх повернутися завтра."
+          },
+          "nl": {
+            "0": "Herhalen en bevestigen hoe ze hem willen splitsen.",
+            "3": "Vragen of ze morgen terugkomen."
+          },
+          "en": {
+            "0": "Repeat and confirm how they want to split it.",
+            "3": "Ask them to come back tomorrow."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            1,
+            2
+          ],
+          "fr": [
+            1,
+            2
+          ],
+          "pt": [
+            1,
+            2
+          ],
+          "de": [
+            1,
+            2
+          ],
+          "pl": [
+            1,
+            2
+          ],
+          "ro": [
+            1,
+            2
+          ],
+          "uk": [
+            1,
+            2
+          ],
+          "nl": [
+            1,
+            2
+          ],
+          "en": [
+            1,
+            2
+          ]
+        }
+      },
+      {
+        "question_id": "q_bill_2",
+        "situation_slug": "guest-wants-to-split-the-bill",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"Pay separately\" means:",
+        "canonical_options_en": {
+          "0": "Pagar por separado.",
+          "1": "Pagar juntos.",
+          "2": "Pagar mañana.",
+          "3": "No pagar."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "Pagare separatamente.",
+            "1": "Pagare insieme.",
+            "2": "Pagare domani."
+          },
+          "fr": {
+            "0": "Payer séparément.",
+            "1": "Payer ensemble.",
+            "2": "Payer demain."
+          },
+          "pt": {
+            "0": "Pagar separadamente.",
+            "1": "Pagar juntos.",
+            "2": "Pagar amanhã."
+          },
+          "de": {
+            "0": "Getrennt bezahlen.",
+            "1": "Zusammen bezahlen.",
+            "2": "Morgen bezahlen."
+          },
+          "pl": {
+            "0": "Zapłacić osobno.",
+            "1": "Zapłacić razem.",
+            "2": "Zapłacić jutro."
+          },
+          "ro": {
+            "0": "Să plătească separat.",
+            "1": "Să plătească împreună.",
+            "2": "Să plătească mâine."
+          },
+          "uk": {
+            "0": "Платити окремо.",
+            "1": "Платити разом.",
+            "2": "Заплатити завтра."
+          },
+          "nl": {
+            "0": "Apart betalen.",
+            "1": "Samen betalen.",
+            "2": "Morgen betalen."
+          },
+          "en": {
+            "0": "Pay separately.",
+            "1": "Pay together.",
+            "2": "Pay tomorrow."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            3
+          ],
+          "fr": [
+            3
+          ],
+          "pt": [
+            3
+          ],
+          "de": [
+            3
+          ],
+          "pl": [
+            3
+          ],
+          "ro": [
+            3
+          ],
+          "uk": [
+            3
+          ],
+          "nl": [
+            3
+          ],
+          "en": [
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_bill_4",
+        "situation_slug": "guest-wants-to-split-the-bill",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "What is the best way to confirm the split?",
+        "canonical_options_en": {
+          "0": "So these two are together, and the other two are separate?",
+          "1": "You pay.",
+          "2": "Who ordered dessert?",
+          "3": "One bill only."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_walkin_1",
+        "situation_slug": "guests-arrive-without-a-reservation",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"We don't have a reservation.\" means:",
+        "canonical_options_en": {
+          "0": "Han llegado sin una reserva previa.",
+          "1": "Han perdido la cuenta.",
+          "2": "Quieren cancelar.",
+          "3": "Quieren pedir bebidas."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_walkin_2",
+        "situation_slug": "guests-arrive-without-a-reservation",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "You do not know exactly how long a table will take. What do you say?",
+        "canonical_options_en": {
+          "0": "It'll be exactly five minutes.",
+          "1": "Let me check what we have available.",
+          "2": "Just wait.",
+          "3": "Come back later."
+        },
+        "answer_index": 1,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_walkin_2",
+        "situation_slug": "guests-arrive-without-a-reservation",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "\"Shortly\" means:",
+        "canonical_options_en": {
+          "0": "En breve.",
+          "1": "Mañana.",
+          "2": "Nunca.",
+          "3": "Exactamente cinco minutos."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {
+            "0": "A breve.",
+            "1": "Domani."
+          },
+          "fr": {
+            "0": "Sous peu.",
+            "1": "Demain."
+          },
+          "pt": {
+            "0": "Em breve.",
+            "1": "Amanhã."
+          },
+          "de": {
+            "0": "In Kürze.",
+            "1": "Morgen."
+          },
+          "pl": {
+            "0": "Wkrótce.",
+            "1": "Jutro."
+          },
+          "ro": {
+            "0": "În curând.",
+            "1": "Mâine."
+          },
+          "uk": {
+            "0": "Незабаром.",
+            "1": "Завтра."
+          },
+          "nl": {
+            "0": "Binnenkort.",
+            "1": "Morgen."
+          },
+          "en": {
+            "0": "Soon.",
+            "1": "Tomorrow."
+          }
+        },
+        "missing_option_indices": {
+          "it": [
+            2,
+            3
+          ],
+          "fr": [
+            2,
+            3
+          ],
+          "pt": [
+            2,
+            3
+          ],
+          "de": [
+            2,
+            3
+          ],
+          "pl": [
+            2,
+            3
+          ],
+          "ro": [
+            2,
+            3
+          ],
+          "uk": [
+            2,
+            3
+          ],
+          "nl": [
+            2,
+            3
+          ],
+          "en": [
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_walkin_3",
+        "situation_slug": "guests-arrive-without-a-reservation",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "Which response is too direct?",
+        "canonical_options_en": {
+          "0": "You need to wait.",
+          "1": "Would you mind waiting here for a moment?",
+          "2": "Let me check what we have available.",
+          "3": "Please follow me."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_walkin_4",
+        "situation_slug": "guests-arrive-without-a-reservation",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "service",
+        "prompt_en": "When the table is ready, what can you say?",
+        "canonical_options_en": {
+          "0": "Your table is ready. Please follow me.",
+          "1": "Wait more.",
+          "2": "No table.",
+          "3": "Come tomorrow."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "ex_mc_ready",
+        "situation_slug": "taking-an-order",
+        "section": "exercise",
+        "type": "multiple_choice",
+        "assessment_dimension": "english",
+        "prompt_en": "What is the correct way to ask whether the guests are ready to order?",
+        "canonical_options_en": {
+          "0": "Are you ready to order?",
+          "1": "Do you ready order?",
+          "2": "You want food now?",
+          "3": "Are ready food?"
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_steak",
+        "situation_slug": "taking-an-order",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "english",
+        "prompt_en": "How do you ask how the guest would like their steak cooked in English?",
+        "canonical_options_en": {
+          "0": "How would you like your steak cooked?",
+          "1": "How you want the meat?",
+          "2": "What cook the steak?",
+          "3": "Which steak you cook?"
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "question_id": "q_mc_reply",
+        "situation_slug": "taking-an-order",
+        "section": "quiz",
+        "type": "multiple_choice",
+        "assessment_dimension": "comprehension",
+        "prompt_en": "A guest says: “We're ready to order.” What do you say?",
+        "canonical_options_en": {
+          "0": "Of course. What would you like to have?",
+          "1": "No, you can't.",
+          "2": "I don't know food.",
+          "3": "Order is finished."
+        },
+        "answer_index": 0,
+        "existing_option_translations": {
+          "it": {},
+          "fr": {},
+          "pt": {},
+          "de": {},
+          "pl": {},
+          "ro": {},
+          "uk": {},
+          "nl": {},
+          "en": {}
+        },
+        "missing_option_indices": {
+          "it": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fr": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pt": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "de": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ro": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "uk": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "nl": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "en": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      }
+    ]
+  },
+  "category_situation_count": {
+    "computed_at": "server.py GET /api/categories line ~366: count_documents({'category': slug}) with NO active filter (counts inactive too)",
+    "categories": [
+      {
+        "slug": "general",
+        "name_en": "General Hospitality",
+        "situation_count_current": 2,
+        "situation_count_active_only": 0
+      },
+      {
+        "slug": "restaurant",
+        "name_en": "Restaurant",
+        "situation_count_current": 15,
+        "situation_count_active_only": 10
+      },
+      {
+        "slug": "bar",
+        "name_en": "Bar",
+        "situation_count_current": 15,
+        "situation_count_active_only": 10
+      },
+      {
+        "slug": "hotel",
+        "name_en": "Hotel / Reception",
+        "situation_count_current": 5,
+        "situation_count_active_only": 0
+      },
+      {
+        "slug": "coffee",
+        "name_en": "Coffee Shop",
+        "situation_count_current": 2,
+        "situation_count_active_only": 0
+      },
+      {
+        "slug": "kitchen",
+        "name_en": "Kitchen",
+        "situation_count_current": 2,
+        "situation_count_active_only": 0
+      },
+      {
+        "slug": "housekeeping",
+        "name_en": "Housekeeping",
+        "situation_count_current": 2,
+        "situation_count_active_only": 0
+      }
+    ]
+  }
+}
