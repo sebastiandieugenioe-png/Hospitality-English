@@ -42,6 +42,7 @@ export default function Practice() {
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null); // null = landing
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!guestLoading && !onboardingCompleted) navigate("/onboarding", { replace: true });
@@ -50,21 +51,28 @@ export default function Practice() {
   const load = async () => {
     if (!guestId) return;
     setLoading(true);
-    const [sum, all, sk] = await Promise.all([
-      getReviewSummary(guestId),
-      getReviewItems(guestId, {}),
-      getSkills({}),
-    ]);
-    setSummary(sum);
-    setItems(all);
-    setSkillsMap(Object.fromEntries(sk.map((s) => [s.id, s.translations?.es?.name || s.name])));
-    setLoading(false);
+    setError(false);
+    try {
+      const [sum, all, sk] = await Promise.all([
+        getReviewSummary(guestId),
+        getReviewItems(guestId, {}),
+        getSkills({}),
+      ]);
+      setSummary(sum);
+      setItems(all);
+      setSkillsMap(Object.fromEntries(sk.map((s) => [s.id, s.translations?.es?.name || s.name])));
+    } catch (e) {
+      console.error("Practice load failed", e);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    if (guestId) load();
+    if (guestId && onboardingCompleted) load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [guestId]);
+  }, [guestId, onboardingCompleted]);
 
   const startSession = async () => {
     const due = await getReviewItems(guestId, { due: true, limit: 10 });
@@ -110,6 +118,21 @@ export default function Practice() {
 
         {loading ? (
           <p className="mt-8 text-brand-charcoal/50">Cargando…</p>
+        ) : error ? (
+          <div
+            data-testid="practice-error-state"
+            className="mt-10 rounded-3xl bg-white border border-black/5 p-10 text-center shadow-sm"
+          >
+            <h2 className="text-2xl font-serif text-brand-espresso">No pudimos cargar tu repaso</h2>
+            <p className="mt-2 text-brand-charcoal/60">Revisa tu conexión e inténtalo de nuevo.</p>
+            <button
+              data-testid="practice-retry-btn"
+              onClick={load}
+              className="mt-8 inline-flex items-center justify-center gap-2 bg-brand-forest text-white rounded-lg px-6 py-3.5 font-medium hover:bg-brand-forest-hover transition-colors"
+            >
+              <RotateCw className="w-4 h-4" /> Reintentar
+            </button>
+          </div>
         ) : items.length === 0 ? (
           <EmptyState navigate={navigate} />
         ) : (

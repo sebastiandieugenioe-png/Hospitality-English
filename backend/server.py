@@ -214,7 +214,7 @@ def _compute_schedule(item, rating):
 
     if rating == "again":
         return {
-            "ease_factor": max(MIN_EASE, ease - 0.20),
+            "ease_factor": round(max(MIN_EASE, ease - 0.20), 2),
             "consecutive_successes": 0,
             "interval_days": 0,
             "review_state": "learning",

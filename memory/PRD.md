@@ -62,3 +62,33 @@ Rutas existentes, diseño visual, autenticación (no hay), colecciones de conten
 ### Próximo a implementar (roadmap, NO hecho aún)
 professional profiles UI + onboarding por rol; situation attempts + service-language scoring; job-readiness progress; mistake bank; spaced repetition; shift practice; on-shift phrase search; country-specific vocabulary variants.
 
+---
+
+## Fase: Mistake Bank + Repetición Espaciada (SRS) + Practice (2026-08-24)
+Backend es la fuente de verdad para corrección y para el scheduling SRS. Timestamps en UTC.
+
+### Backend (`server.py`)
+- **Mastery semantics**: umbrales en constantes (`MASTERY_OVERALL_THRESHOLD=80`, `MASTERY_SERVICE_THRESHOLD=70`). `complete_attempt` escribe el campo canónico `met_mastery_threshold` + mirror legacy `mastered` (retrocompat). `situation_stats` deriva mastery con `_attempt_mastered` (canónico con fallback al legacy).
+- **Colección `review_items`** (independiente). Único por `guest_id + source_type + source_id + situation_slug` (índice único). Al enviar respuesta incorrecta en un attempt (`PUT /situation-attempts/{id}/response`), `_upsert_mistake` crea/actualiza el item (source_type=question, origin=mistake). `times_wrong` se incrementa como máximo una vez por attempt (guardado por `last_mistake_attempt_id`).
+- **Endpoints SRS**:
+  - `GET /api/guests/{id}/review-items?due=&limit=` → items con `content` resuelto (sin N+1 vía `_resolve_review_content`), sin filtrar la respuesta (`_public_question`). `due=true` = `next_review_at<=now`. Orphans (contenido inexistente) se omiten.
+  - `GET /api/guests/{id}/review-summary` → `{total, due, by_skill, by_dimension}`.
+  - `POST /api/review-items/{id}/answer` → backend califica; devuelve `correct`, `correct_answer`, `explanation`; incrementa `times_seen`/`times_correct`. No toca scheduling.
+  - `POST /api/review-items/{id}/rate` → `again|hard|good|easy` (422 si otro). `_compute_schedule` recalcula `ease_factor` (min 1.3), `interval_days`, `consecutive_successes`, `review_state`, `next_review_at`, `last_reviewed_at`. Rating independiente de la corrección. SM-2 simplificado: again=+10min/reset; good 1º=1d, 2º=3d; easy 1º=3d, 2º=7d; luego ×ease.
+- Índices nuevos para `review_items`.
+
+### Frontend (`pages/Practice.js`, ruta `/practice`, enlace navbar `Practicar`)
+- Landing: tarjeta prominente de items **due**, "Errores por habilidad", "Banco de errores" con filtros Todos/Inglés/Comprensión/Servicio (por `assessment_dimension`, incluye todos los errores activos aunque no estén due), estado vacío, y estado de error con reintento.
+- Sesión de repaso: pregunta (MC/fill_gap/word_ordering) → Comprobar → feedback (correcto/incorrecto + respuesta correcta + explicación) → valorar dificultad → siguiente → "Repaso completado".
+- Redirige a `/onboarding` si el perfil no está completo; `load()` con try/catch (guest inválido no rompe la página).
+
+### Tests
+- `tests/test_srs.py` (19 tests) + verificación del testing agent en `test_srs_verification.py` (11). Suite completa: **93 passed, 0 regresiones**. Frontend verificado E2E (desktop + mobile 390px).
+
+### Fuera de alcance (confirmado por el usuario, NO hecho)
+Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shift Practice; IA.
+
+## Next Tasks
+- (Backlog) Integrar flashcards legacy en el motor `review_items`.
+- (Backlog) Shift/Daily Practice; Job Readiness global.
+

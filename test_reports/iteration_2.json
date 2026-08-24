@@ -1,0 +1,46 @@
+{
+  "summary": "Verified the new Mistake Bank + Spaced Repetition phase end-to-end. Backend: re-ran the full existing pytest suite (82 passed) and added an independent verification suite /app/backend/tests/test_srs_verification.py (11 tests, all passing) covering answer-leak protection for all 3 question types, limit/due semantics + limit validation (422), summary coherence/404/empty guest, times_seen/times_correct counters, rating independence from correctness (easy after a wrong answer, again after a correct answer), rating validation (case-sensitive 422), met_mastery_threshold + legacy 'mastered' mirror + situation-stats 'mastered', guest isolation and times_wrong dedup within/across attempts. Frontend /practice: redirect to /onboarding without profile, due-count priority card (8), errors grouped by skill, Banco de errores with dimension filters partitioning exactly (all 8 = english 5 + comprehension 1 + service 2), full session flow (MC, fill_gap and word_ordering) answer -> feedback with correct answer + explanation -> rating -> next item -> 'Repaso completado' -> due count decreasing (8->6 after good+again; 1->0 after easy, start button disabled, non-due item still listed in bank), empty state, navbar 'Practicar' link, and mobile 390px with no horizontal overflow. One real edge-case defect found: a stale/unknown guest_id in localStorage causes an unhandled 404 rejection in Practice.load() (uncaught runtime error, page never renders).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/review-items/{id}/rate", "issue": "The 'again' branch of _compute_schedule does not round ease_factor (persists 2.4499999999999997) while hard/good/easy use round(ease, 2). Cosmetic float drift in stored data; wrap with round(..., 2) for consistency."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "/practice initial load with stale or unknown guest_id in localStorage (iph_guest_id)", "issue": "Practice.load() awaits Promise.all(getReviewSummary/getReviewItems/getSkills) with no try/catch. If the guest no longer exists (DB reset, shared/stale localStorage) the backend correctly returns 404 but the rejection is unhandled: React dev overlay shows 'Uncaught runtime errors: AxiosError 404' and the page never renders (no <main>). Needs try/catch with an error state/retry, and load() should be skipped while the onboarding redirect is pending.", "affected_selectors": ["[data-testid=\"practice-due-count\"]", "[data-testid=\"practice-empty-state\"]"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_srs_verification.py",
+    "/app/backend/tests/test_srs.py",
+    "/app/tests/t1_seed_practice_guest.py",
+    "/app/tests/t1_seed_practice_edge.py",
+    "/app/test_reports/pytest/t1_srs_verification.xml"
+  ],
+  "action_items": [
+    "Add error handling (try/catch + visible error/retry state) to Practice.load(); currently a 404 for an unknown guest_id leaves /practice permanently broken with an unhandled promise rejection.",
+    "Round ease_factor in the 'again' branch of _compute_schedule for consistency."
+  ],
+  "critical_code_review_comments": [
+    "Practice.js load() and startSession() have no error handling; every other state (loading/success) exists but there is no error UI, violating the loading/success/error rule.",
+    "review-items GET applies `limit` AFTER fetching up to 1000 docs and after orphan filtering (out[:limit]); correct behaviour but consider a DB-level limit for large mistake banks.",
+    "get_review_summary counts due with `it.get('next_review_at', now) <= now` — string ISO comparison works only because all timestamps are UTC with the same offset format; a naive/other-offset timestamp would silently mis-count. Consider parsing to datetime.",
+    "The review session queue is snapshotted at start, so an item rated 'again' (due in 10 min) cannot reappear within the same session — acceptable for MVP but worth documenting.",
+    "server.py is 829 lines and mixes models, SRS helpers and routes; consider splitting into routers/services modules before the next phase."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_srs_verification.py",
+    "/app/tests/t1_seed_practice_guest.py",
+    "/app/tests/t1_seed_practice_edge.py"
+  ],
+  "success_rate": {"backend": "100% (93/93: 82 existing + 11 new)", "frontend": "95% (all /practice flows pass; stale-guest 404 handling fails)"},
+  "seed_data_creation": "Guests created via API: 356e6702-b2d6-494e-9d52-371e553f1dcb (profile bartender/cocktail-bar/UK, 8 mistakes in guest-asks-for-cocktail-recommendation, 2 already reviewed), 31648104-8dc4-46ee-ab55-58da814713c1 (1 word_ordering mistake, now reviewed/not due), 069ada63-1c9a-4016-8128-14f3967831ae (profile complete, no mistakes -> empty state). Plus throwaway guests from pytest.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "No auth; anonymous guest_id in localStorage key iph_guest_id (see /app/memory/test_credentials.md).",
+  "context_for_next_testing_agent": "Backend SRS/mistake-bank behaviour is fully covered by /app/backend/tests/test_srs.py + test_srs_verification.py (run with `cd /app/backend && python -m pytest tests/ -q`, ~3 min for the whole suite). Word-ordering chips in guest-asks-for-cocktail-recommendation are ['recommend','the',\"I'd\",'Gin Sour'] (note 'Gin Sour' is one chip) — use get_by_role('button', name=..., exact=True) instead of splitting on spaces. Reusable seed helpers in /app/tests/t1_seed_practice_*.py print guest ids as JSON. Only open frontend item: error handling in Practice.load().",
+  "rca_of_the_issue": "Practice.load() calls `await Promise.all([...])` without try/catch. GET /api/guests/{id}/review-summary and /review-items return 404 for a guest id that is not in Mongo (correct backend behaviour), so axios rejects, the async function throws, setLoading(false) never runs and React surfaces an uncaught runtime error. Reproduce: localStorage.setItem('iph_guest_id','bogus-guest-id-123') then open /practice. Mitigation: wrap in try/catch, clear the invalid guest id (or redirect to /onboarding) and show a retry state."
+}
