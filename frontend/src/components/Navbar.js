@@ -79,49 +79,51 @@ export function Navbar() {
             Inglés para Hostelería
           </span>
         </Link>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3 sm:gap-5 min-w-0">
           {onboardingCompleted && (
-            <>
+            <div className="flex items-center gap-3 sm:gap-5 min-w-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <Link
                 to="/home"
                 data-testid="navbar-home-link"
-                className="text-sm font-medium text-brand-charcoal/70 hover:text-brand-forest transition-colors"
+                className="text-sm font-medium text-brand-charcoal/70 hover:text-brand-forest transition-colors whitespace-nowrap shrink-0"
               >
                 {t("nav.home")}
               </Link>
               <Link
                 to="/learn"
                 data-testid="navbar-learn-link"
-                className="text-sm font-medium text-brand-charcoal/70 hover:text-brand-forest transition-colors"
+                className="text-sm font-medium text-brand-charcoal/70 hover:text-brand-forest transition-colors whitespace-nowrap shrink-0"
               >
                 {t("nav.learn")}
               </Link>
               <Link
                 to="/progress"
                 data-testid="navbar-progress-link"
-                className="text-sm font-medium text-brand-charcoal/70 hover:text-brand-forest transition-colors"
+                className="text-sm font-medium text-brand-charcoal/70 hover:text-brand-forest transition-colors whitespace-nowrap shrink-0"
               >
                 {t("nav.progress")}
               </Link>
               <Link
                 to="/practice"
                 data-testid="navbar-practice-link"
-                className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors"
+                className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors whitespace-nowrap shrink-0"
               >
                 {t("nav.practice")}
               </Link>
-            </>
+            </div>
           )}
           {!onboardingCompleted && (
             <button
               data-testid="navbar-cta"
               onClick={() => navigate("/onboarding")}
-              className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors"
+              className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors whitespace-nowrap shrink-0"
             >
               {t("nav.startFree")}
             </button>
           )}
-          <LanguageSwitcher />
+          <div className="shrink-0">
+            <LanguageSwitcher />
+          </div>
         </div>
       </nav>
     </header>

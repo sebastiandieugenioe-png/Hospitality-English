@@ -112,7 +112,14 @@ def _set_options(q, slug, section, qid, lookup):
         if m:
             q.setdefault("translations", {})
             q["translations"].setdefault(lang, {})
-            q["translations"][lang]["options"] = [m[i] for i in sorted(m)]
+            # Position-preserving: start from the canonical options and override only
+            # the indices the bundle provides. The bundle intentionally omits English
+            # target options, which correctly stay English. Never truncate or shift.
+            merged = list(q.get("options") or [])
+            for i, txt in m.items():
+                if 0 <= i < len(merged):
+                    merged[i] = txt
+            q["translations"][lang]["options"] = merged
 
 
 def _apply_phrase(p, slug, lookup):

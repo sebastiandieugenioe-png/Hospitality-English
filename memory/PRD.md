@@ -118,6 +118,14 @@ Backend es la fuente de verdad para corrección y para el scheduling SRS. Timest
 - Wiring frontend mínimo (usa resolver existente): `Home.js` nombre de categoría vía `getLocalizedField` (la descripción ya lo usaba); `Category.js` header name+description vía `getLocalizedField`.
 - **Tests**: `tests/test_categories_i18n.py` (7) PASS + testing_agent iteración 4 (**100% backend + 100% frontend**, sin issues, idempotente). Sin deploy.
 
+### QA final pre-deploy (2026-06)
+- **Suite completa backend**: 161 tests → 160 passed + 1 flaky (`ConnectionError` transitorio bajo carga paralela; pasa aislado). 0 regresiones reales.
+- **Bugs bloqueantes encontrados y corregidos** (verificados por testing_agent iteración 6, 100% backend+frontend):
+  1. `seed_i18n._set_options` compactaba mapas de índices sparse → opciones MC localizadas truncadas/desplazadas → corrupción de grading (falsos positivos, preguntas irresolubles) + 500 en `POST /review-items/{id}/answer`. **Fix**: construir desde las `options` canónicas y sobrescribir solo los índices provistos (position-preserving); `_loc_options` ahora exige `len(loc)==len(canonical)` y `_correct_answer_text` valida bounds (nunca 500). Regresión: `test_i18n_import.py::TestLocalizedOptionsInvariant` (+2 tests).
+  2. Navbar móvil (390px) desbordaba en uk/fr y ocultaba el selector de idioma. **Fix**: enlaces en contenedor scrollable `min-w-0`, `LanguageSwitcher` en wrapper `shrink-0` (siempre accesible). Sin rediseño.
+- **Gaps de datos del bundle (report-only, NO corregidos — prohibido inventar)**: cobertura de traducción de opciones MC ~40% (223/376 por idioma caen a ES → listas mixtas en ~26-28 preguntas/idioma); `skills` solo es/it (8 idiomas caen a ES); `categories.situation_count` incluye situations inactivas 'Pronto' (preexistente/intencional); interfaz EN duplica el target inglés como su traducción (por diseño); word_ordering chips sin data-testid (LOW, solo testabilidad).
+- **Build producción**: frontend `yarn build` OK; backend inicia OK. **No se hizo deploy.**
+
 ### Exportación i18n v1 (2026-06) — solo lectura, sin cambios de código/contenido
 - Herramienta reproducible `backend/tools/export_i18n.py` → genera `backend/data/mvp_i18n_export_v1.json` (copia descargable en `frontend/public/`).
 - Contiene: 7 situations legacy activas (completas: situation+lesson+learning_items, sin las 13 del pack), `ui_translations` (168 claves es+it), 9 strings visibles hardcodeados detectados, taxonomías (profiles 2, venues 6, countries 6, goals 5, skills 14), idiomas soportados (es/it) y descripción del fallback. Excluye guests/progress/attempts/SRS.

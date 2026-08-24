@@ -1,0 +1,59 @@
+{
+  "summary": "Fix-verification pass for iteration_5. Independently re-verified FIX #1 (localized MC option truncation/shift causing grading corruption + Practice 500) and FIX #2 (mobile navbar overflow at 390px for uk/fr), plus full e2e regression. Backend: re-ran the affected suites (test_i18n_import.py, test_bug_repro_i18n_options.py, test_srs.py, test_attempts.py, test_pack_import.py) = 59 passed / 0 failed, and added an independent verification suite /app/backend/tests/test_iter6_fix_verify.py = 10 passed / 0 failed. That new suite proves: (a) GET /api/languages == [es,it,fr,pt,de,pl,ro,uk,nl,en]; (b) 20 active situations (10 bartender / 10 waiter) and 7 categories; (c) q_bar_greet_4 has 4 canonical options with answer_index=1 and 4 localized options in ALL 10 langs; (d) INVARIANT across every MC question of every lesson x 10 langs: localized options length == canonical length and answer_index always in range (0 violations); (e) full attempt flow (start -> all answers wrong -> complete) yields 0% score, exactly one review_item per wrong question with times_wrong=1, review-items content exposes NO answer/answer_index; (f) EVERY due review item answered with HTTP 200 (no 500) returning correct_answer + explanation, and rated again/hard/good/easy with 200 - repeated for interface langs es/uk/fr/en; (g) no false positives: submitting answer_index grades correct and any other index grades wrong for q_bar_greet_1 and q_bar_greet_4; (h) PUT /guests/{id}/language keeps the same guest id, profile, attempts and review_items. Frontend (Playwright, public URL): FIX #2 confirmed at 390x844 for uk AND fr - documentElement.scrollWidth == 390 == innerWidth (no horizontal overflow), navbar scrollWidth == clientWidth == 390, language-switcher-btn bounding box x=331 w=39 fully on-screen, tappable, language-menu opens, and switching language keeps the same iph_guest_id. FIX #1 confirmed in the browser: Lesson quiz question quiz-3 (= q_bar_greet_4) renders FOUR options and selecting index 1 grades 'Правильно!/Correcto'; quiz-0 (= q_bar_greet_1, answer_index=0) grades index 0 correct and index 2 incorrect (no false positive). Full e2e in ES: Landing/Onboarding(5 steps) -> Home -> Learn -> Lesson (Intro/Phrases/Dialogue/Flashcards/3 exercises/5 quiz/Completion, score 25%) -> Practice (due=6, all 6 items answered: 2 MC + 2 fill_gap + 2 word_ordering, each showed feedback + correct answer, each SRS-rated) -> 'Repaso completado' session-complete screen -> Progress (0/10 mastered, 1 practiced, per-skill rows). Zero console errors and ZERO HTTP >=400 responses captured during the whole flow; guest id unchanged end-to-end. Both reported bugs are FIXED.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/lessons/{slug} (i18n bundle data, seed_i18n)",
+        "issue": "REPORT-ONLY content gap (new observation, direct consequence of the position-preserving fix): only ~40% of MC option strings are localized (153/376 per language). For 26-28 questions per language the option list is MIXED-language: e.g. in the uk interface q_bar_greet_4 renders ['Одразу порадити найдорожчий напій.', 'Darle tiempo o preguntarle si quiere ver la carta.', 'Ignorarlo.', 'Pedirle que decida.'] and the feedback line shows 'Правильна відповідь: Si puede hacer su pedido en esa barra.' (Spanish inside a Ukrainian UI). Same for en/fr/de/pl/ro/nl/pt/it. Grading is now correct (fix works); this is a translation-coverage gap in the i18n pack, not a code bug. Diagnostic: /app/backend/tests/diag_option_i18n_coverage.py"
+      },
+      {
+        "endpoint": "GET /api/skills",
+        "issue": "Pre-existing / known-not-in-scope: skills only carry es+it translations, so Learn/Skill/Progress show Spanish skill names in the other 8 languages (confirmed still the case)."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Lesson / Practice word_ordering word chips",
+        "issue": "Testability gap: the draggable/tappable word chips (both the pool and the picked answer chips) have NO data-testid, so automation must fall back to structural CSS ('[data-testid=\"{tid}-answer-area\"] + div button'). Recommend data-testid like {tid}-word-{i} and {tid}-picked-{i}.",
+        "selector": "[data-testid=\"exercise-2-answer-area\"] + div button",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Mobile navbar 390px (uk, fr)",
+        "issues": ["FIXED - no horizontal overflow, switcher on-screen and tappable; nav links scroll horizontally as intended"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter6_fix_verify.py",
+    "/app/backend/tests/diag_option_i18n_coverage.py",
+    "/app/test_reports/pytest/iter6_fixverify.xml",
+    "/app/test_reports/pytest/iter6_results.xml"
+  ],
+  "action_items": [
+    "No blocking action items: FIX #1 and FIX #2 are verified fixed at API and UI level.",
+    "Optional (post-MVP / separate pack): complete MC option translations - 223/376 option strings per language remain Spanish, producing 26-28 mixed-language option lists per language (incl. the correct answer of q_bar_greet_4 shown in Spanish in the uk/fr/en UI).",
+    "Optional: add data-testid to word_ordering word chips in Lesson.js and Practice.js."
+  ],
+  "critical_code_review_comments": [
+    "server.py _loc_options has the length-equality guard, but the frontend equivalent /app/frontend/src/lib/i18n.js getLocalizedOptions() has NO guard - it returns tr[lang].options unconditionally. Lessons are served raw (GET /api/lessons/{slug} returns the whole lesson document with translations) so the frontend localizes options itself; if any future pack ships a shorter localized array, the exact iteration_5 bug returns in the UI only. Recommend mirroring the guard: return loc only when loc.length === q.options.length.",
+    "GET /api/lessons/{slug} ships the full lesson document including answer/answer_index for every exercise and quiz question. That is fine for this MVP (client-side grading of lesson steps is also backed by the server), but it means answers are inspectable in devtools; the Practice/review-items path correctly hides them."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter6_fix_verify.py (new)",
+    "/app/backend/tests/diag_option_i18n_coverage.py (new, diagnostic only)"
+  ],
+  "success_rate": {"backend": "100% (69/69: 59 re-run + 10 new)", "frontend": "100% of tested flows (e2e ES, quiz grading, full practice session, mobile navbar uk+fr, uk lesson)"},
+  "seed_data_creation": "Created ~7 throwaway guests via POST /api/guests + PUT /guests/{id}/profile (bartender/pub/ireland/first_hospitality_job) with attempts and review_items; no seeded content modified.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "None required (guest-only app); /app/memory/test_credentials.md exists but auth is not used.",
+  "context_for_next_testing_agent": "FIX #1 (localized MC options) and FIX #2 (390px navbar uk/fr) are verified FIXED. Reusable independent suite: /app/backend/tests/test_iter6_fix_verify.py (invariant over all lessons x 10 langs, e2e attempt + practice never-500, grading no-false-positive, language-switch persistence). Playwright notes: onboarding has 5 steps starting with interface_language (testid onboarding-option-interface_language-{code}); the continue click is occasionally swallowed so retry it while onboarding-step-indicator is unchanged; the last flashcard-knew click detaches from the DOM (wrap in try/except); word_ordering chips lack data-testid - use '[data-testid=\"{tid}-answer-area\"] + div button:not([disabled])'. Remaining known gaps (report-only, data not code): skills translations only es/it, ~60% of MC option strings still Spanish in the other languages, categories situation_count includes locked situations.",
+  "rca_of_the_issue": "iteration_5 root cause: seed_i18n._set_options compacted a SPARSE localized index map, truncating/shifting localized option arrays while grading used the canonical answer_index -> unanswerable questions, false positives and an IndexError 500 in _correct_answer_text. The fix now builds localized arrays from the canonical list and overrides only provided indices (untranslated indices keep the canonical string), plus server-side guards (_loc_options length equality, _correct_answer_text bounds). Verified: 0 length/index violations across all lessons x 10 languages, Practice answer never 500, grading aligned. Residual side effect (expected, cosmetic): untranslated indices display the Spanish canonical text, creating mixed-language option lists until the translation pack is completed."
+}

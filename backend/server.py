@@ -135,14 +135,19 @@ def _loc_field(obj, base, lang):
 
 
 def _loc_options(q, lang):
-    """Localized MC options if a translation exists; otherwise the canonical
-    options untouched (English target answers must never be translated)."""
+    """Localized MC options if a complete translation exists; otherwise the canonical
+    options untouched (English target answers must never be translated). Any length
+    mismatch falls back to canonical so answer_index alignment can never break."""
+    canonical = q.get("options") or []
     tr = q.get("translations") or {}
-    if isinstance(tr.get(lang), dict) and tr[lang].get("options"):
-        return tr[lang]["options"]
-    if q.get(f"options_{lang}"):
-        return q[f"options_{lang}"]
-    return q.get("options")
+    if isinstance(tr.get(lang), dict):
+        loc = tr[lang].get("options")
+        if loc and len(loc) == len(canonical):
+            return loc
+    suffix = q.get(f"options_{lang}")
+    if suffix and len(suffix) == len(canonical):
+        return suffix
+    return canonical
 
 
 # ---------- Scoring helpers ----------
@@ -333,7 +338,12 @@ def _public_question(q, lang=DEFAULT_LANGUAGE):
 
 def _correct_answer_text(q, lang=DEFAULT_LANGUAGE):
     if q["type"] == "multiple_choice":
-        return _loc_options(q, lang)[q.get("answer_index", 0)]
+        opts = _loc_options(q, lang)
+        idx = q.get("answer_index", 0)
+        if 0 <= idx < len(opts):
+            return opts[idx]
+        canonical = q.get("options") or []
+        return canonical[idx] if 0 <= idx < len(canonical) else None
     return q.get("answer")
 
 

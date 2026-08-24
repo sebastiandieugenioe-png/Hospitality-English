@@ -41,6 +41,51 @@ class TestCatalogIntact:
         assert len(requests.get(f"{API}/situations", params={"role": "waiter"}).json()) == 10
 
 
+class TestLocalizedOptionsInvariant:
+    """Regression guard for the seed_i18n._set_options sparse-compaction bug:
+    every localized MC options array must keep the SAME length as the canonical
+    options and keep answer_index in range, in all 10 languages."""
+    LANGS = ["es", "it", "fr", "pt", "de", "pl", "ro", "uk", "nl", "en"]
+
+    def test_all_mc_options_length_and_index(self):
+        situations = requests.get(f"{API}/situations").json()
+        checked = 0
+        for s in situations:
+            les = requests.get(f"{API}/lessons/{s['slug']}").json().get("lesson")
+            if not les:
+                continue
+            for section in ("exercises", "quiz"):
+                for q in les.get(section, []):
+                    if q.get("type") != "multiple_choice":
+                        continue
+                    canonical = q["options"]
+                    assert 0 <= q["answer_index"] < len(canonical), f"{q['id']} bad answer_index"
+                    tr = q.get("translations") or {}
+                    for lang in self.LANGS:
+                        loc = (tr.get(lang) or {}).get("options")
+                        if loc is not None:
+                            assert len(loc) == len(canonical), (
+                                f"{q['id']} {lang}: options len {len(loc)} != canonical {len(canonical)}")
+                            checked += 1
+        assert checked > 0
+
+    def test_practice_answer_never_500(self):
+        """Reproduces the blocking 500: answer the previously-broken review item."""
+        slug = "guest-arrives-at-the-bar"
+        gid = requests.post(f"{API}/guests", json={"interface_language": "fr"}).json()["id"]
+        aid = requests.post(f"{API}/situation-attempts/start",
+                            json={"guest_id": gid, "situation_slug": slug}).json()["attempt_id"]
+        # q_bar_greet_4: 4 options, answer_index=1; submit wrong to create a review item
+        requests.put(f"{API}/situation-attempts/{aid}/response",
+                     json={"question_id": "q_bar_greet_4", "section": "quiz", "submitted_answer": 0})
+        items = requests.get(f"{API}/guests/{gid}/review-items").json()
+        rid = [i["id"] for i in items if i["source_id"] == "q_bar_greet_4"][0]
+        r = requests.post(f"{API}/review-items/{rid}/answer", json={"submitted_answer": 1})
+        assert r.status_code == 200, f"Practice answer returned {r.status_code}"
+        assert r.json()["correct"] is True
+        assert r.json()["correct_answer"]
+
+
 class TestContentResolution:
     def test_situation_and_lesson_multilang(self):
         slug = "guest-arrives-at-the-bar"

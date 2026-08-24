@@ -1,0 +1,92 @@
+{
+  "summary": "Final pre-deploy QA. Ran the full desktop e2e (Landing -> Onboarding[es/bartender/pub/ireland/first_hospitality_job] -> Home -> Learn -> Skill -> Lesson: Intro/Phrases/Dialogue/Flashcards/Exercises/Quiz/Completion -> Practice -> Progress), mobile smoke at 390x844 (DE + UK), i18n structural + visual smoke (ES, FR, UK, EN), and security/regression checks on Practice. Re-ran the existing backend suite: 145 passed / 0 failed (no regression). Core flow, guest identity, persistence, SRS and answer non-exposure all behave correctly, BUT I found one BLOCKING data/i18n defect that breaks grading and hard-blocks the Practice session (500 + white-screen runtime error), plus a skills i18n gap and a mobile navbar overflow in Ukrainian. Verified OK: guest id in localStorage stayed identical across the entire flow (onboarding -> lesson -> practice -> progress -> language switch); professional_profile persisted (role/venue/country/goal); situation-attempt created and completed with per-dimension scores (overall 38%, english 50, comprehension 0, service 33, met_mastery_threshold false); wrong answers created exactly 5 review_items with times_wrong=1 each (no double increment); Practice due=5 shown, mistake list + skill group render; answering + rating (again/hard/good/easy) works and re-schedules SRS (due dropped 5 -> 2, ease/interval updated); Progress shows 0/10 mastered + 1 practiced + 10 per-skill rows consistent with the attempt. GET /api/guests/{id}/review-items content exposes only {id,type,prompt,options|words} - no answer/answer_index leakage. GET /api/languages = [es,it,fr,pt,de,pl,ro,uk,nl,en] ('pt', not pt-PT). Language switch from the navbar did NOT create a new guest and did NOT wipe profile/attempts/review-items (5 review items and 1 attempt before and after switching es -> uk). English learning content stayed English in every interface language (dialogue EN lines, MC option texts, correct_answer text 'Take your time. I'll be right here when you're ready.'). No new endpoints observed.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET /api/lessons/{slug} + PUT /api/situation-attempts/{id}/response + POST /api/review-items/{id}/answer (data seeded by seed_i18n._set_options)",
+        "issue": "BLOCKING: localized multiple-choice option arrays are TRUNCATED and POSITIONALLY SHIFTED vs the canonical `options`, while grading uses the canonical `answer_index`. 26 distinct MC questions across 15 of the 20 situations are affected, in ALL 10 languages (incl. es). Root cause: seed_i18n._set_options compacts a SPARSE index map -> `[m[i] for i in sorted(m)]`, so when the i18n bundle only carries some option indices the list collapses. Effects: (a) IMPOSSIBLE-TO-ANSWER questions: guest-arrives-at-the-bar quiz q_bar_greet_4 has 4 canonical options, answer_index=1, but only 1 localized option -> UI renders 1 option, correct answer unreachable; (b) FALSE POSITIVES: q_bar_greet_1 renders the translations of canonical options 1 and 3 as positions 0 and 1, so clicking 'Si puede sentarse alli.' (a wrong answer) is graded 'Correcto' because answer_index=0; (c) 500 Internal Server Error on POST /api/review-items/{id}/answer (IndexError in _correct_answer_text -> _loc_options(q,lang)[answer_index] out of range) which hard-blocks the Practice session.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "GET /api/skills",
+        "issue": "skills documents only carry translations for 'es' and 'it'. For the other 8 interface languages (fr, pt, de, pl, ro, uk, nl, en) the skill name/description fall back to Spanish, so Learn / Skill / Progress show Spanish rows inside an otherwise fully localized page (e.g. EN and FR both show 'Recibir a los clientes - Saluda y da la bienvenida...'). All lessons/situations/categories/venues/goals/countries/profiles DO have all 10 languages; skills are the only gap."
+      },
+      {
+        "endpoint": "GET /api/categories",
+        "issue": "Pre-existing (also flagged in iteration_4): situation_count counts INACTIVE situations (bar 15 / restaurant 15 / general 2 / hotel 5 while only 10 / 10 / 0 / 0 are active). Home advertises '15 situaciones' for Bar and '2 situaciones' for General Hospitality where 0 are playable. Confirm this is intended (locked 'Pronto' catalog) before deploy."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Navbar (mobile 390x844, interface language = uk)",
+        "issue": "Navbar overflows horizontally once onboarding is completed: document.scrollWidth 469 vs viewport 390. 'Практикуватися' is clipped and the language-switcher button is entirely off-screen (right edge at x=469), so a Ukrainian mobile user cannot open the language selector without horizontal scrolling. FR also overflows slightly (399 vs 390, switcher right edge exactly at 399). es/it/pt/de/pl/ro/nl/en fit. Repro: mobile 390x844, guest with completed profile, set interface language to uk, open /home.",
+        "selector": "[data-testid=\"app-navbar\"], [data-testid=\"language-switcher-btn\"]",
+        "priority": "HIGH"
+      },
+      {
+        "component": "Practice session (Practice.js onAnswer)",
+        "issue": "When POST /api/review-items/{id}/answer fails (the 500 above), the session is left stuck on the same question: no error message, no retry, the 'Comprobar' button stays there and phase never advances (in preview the CRA overlay shows 'Uncaught runtime errors: AxiosError 500'). No error state is rendered for a failed answer submission.",
+        "selector": "[data-testid=\"review-check-btn\"], [data-testid=\"review-feedback\"]",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Practice review session (4th item = q_bar_greet_4)",
+        "issue": "Session dies at the affected review item: 500 from /api/review-items/{id}/answer, no feedback, no rating possible -> user cannot finish the practice queue. Reproduced end-to-end in the browser after a normal lesson with wrong answers.",
+        "affected_selectors": ["[data-testid=\"review-option-0\"]", "[data-testid=\"review-check-btn\"]", "[data-testid=\"review-feedback\"]"]
+      },
+      {
+        "flow": "Lesson quiz (guest-arrives-at-the-bar)",
+        "issue": "quiz item 4 (q_bar_greet_4) renders only 1 of 4 options and can never be answered correctly; quiz item 1 (q_bar_greet_1) renders 2 shifted options and grades the wrong text as correct. This directly corrupts the completion score (comprehension 0%, service 33%) and creates spurious review_items.",
+        "affected_selectors": ["[data-testid=\"quiz-0-option-0\"]", "[data-testid=\"quiz-3-option-0\"]"]
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "Learn / Skill / Progress (all languages except es/it)",
+        "issues": ["Skill names and descriptions render in Spanish inside FR/EN/UK/DE pages (data gap, see backend minor issue)."]
+      },
+      {
+        "screen": "Lesson in EN interface",
+        "issues": ["Cosmetic: with interface_language=en the translation line duplicates the English target verbatim (intro guest opening and phrase cards show the same sentence twice). Acceptable but looks like a bug to a reviewer."]
+      },
+      {
+        "screen": "Category pages (general, hotel)",
+        "issues": ["All rows are locked 'Pronto' placeholders with English titles while the page chrome is localized; the category card on Home still advertises a situation count for them."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_bug_repro_i18n_options.py",
+    "/app/test_reports/pytest/final_qa.xml"
+  ],
+  "action_items": [
+    "FIX BLOCKER: make localized MC options position-preserving. In seed_i18n._set_options, build the list from the CANONICAL options and only override the indices present in the bundle (e.g. out = list(q['options']); for i,txt in m.items(): out[i]=txt) instead of `[m[i] for i in sorted(m)]`. Then re-seed. 26 questions in 15 situations are currently corrupted in all 10 languages.",
+    "Harden server._correct_answer_text / _loc_options against length mismatch so POST /api/review-items/{id}/answer can never 500 (guard answer_index bounds and fall back to canonical options).",
+    "Add a length-equality invariant test (localized options length == canonical length, answer_index < length) to the backend suite so this cannot regress.",
+    "Add translations for the 14 skills (name + description) for fr, pt, de, pl, ro, uk, nl, en - currently only es/it exist and Learn/Skill/Progress leak Spanish.",
+    "Fix the mobile navbar overflow at 390px for long-translation languages (uk, fr): the language switcher must stay reachable (e.g. allow the nav links to wrap/shrink or hide labels below sm).",
+    "Add an error state / retry to the Practice answer submission so a failed POST does not freeze the session silently."
+  ],
+  "critical_code_review_comments": [
+    "seed_i18n._set_options (and the identical pattern in _set_objectives) compacts sparse index maps; any missing index silently shifts every later item. Positional data (MC options graded by answer_index) must never be rebuilt from a sparse dict.",
+    "server._correct_answer_text indexes the LOCALIZED option list with the CANONICAL answer_index without a bounds check -> uncaught IndexError -> 500.",
+    "Frontend Lesson.js/Practice.js also trust getLocalizedOptions length (options.map + selected === q.answer_index), so a data mismatch turns into silent mis-grading rather than a visible failure.",
+    "Practice.js onAnswer has no catch/error UI for the answer POST; the session becomes unusable on any backend error."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_bug_repro_i18n_options.py"
+  ],
+  "success_rate": {"backend": "97% (145/145 existing pytest pass; 4/4 new repro tests fail = 1 real critical defect + its 500)", "frontend": "80% (full e2e lesson + progress + i18n switch OK; Practice session blocked, mobile navbar overflow in uk/fr, skills untranslated)"},
+  "seed_data_creation": "Anonymous guests created via the UI/API only: 8b3ae50e-51b6-47a8-809f-62a3870d3f8b (es/bartender/pub/ireland, 1 completed attempt + 5 review_items, language left at es) and one DE/waiter guest from the mobile onboarding run. No seeded content modified.",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "test_credentials": "No auth - anonymous guests (per /app/memory/test_credentials.md).",
+  "context_for_next_testing_agent": "Repro suite: pytest /app/backend/tests/test_bug_repro_i18n_options.py (4 tests, all fail today; they must all pass after the _set_options fix + re-seed). To reproduce in the browser: set localStorage iph_guest_id to an existing guest with a completed profile (or run onboarding), open /lesson/guest-arrives-at-the-bar, answer through to the quiz - quiz item 4 shows only 1 option; then /practice and answer items until the 4th (q_bar_greet_4) which returns 500. Full affected list = 26 MC questions across 15 situations (query: for each lesson, len(translations[lang].options) != len(options)). Existing 145-test suite still green (252s runtime, run it in background - it exceeds the 120s foreground limit).",
+  "rca_of_the_issue": "seed_i18n._set_options collects option translations into a per-language dict keyed by option index and then rebuilds the list with `[m[i] for i in sorted(m)]`. The verified i18n bundle only contains refs for SOME option indices of 26 questions (e.g. guest-arrives-at-the-bar q_bar_greet_1 has refs for indices 1 and 3 only), so the stored localized list is shorter than the canonical list and its positions no longer match. Because grading (_check_answer, Lesson.js evaluate) is positional against the canonical answer_index, the UI renders fewer/shifted options -> unanswerable questions, wrong answers graded correct, corrupted dimension scores, and a 500 (IndexError) in _correct_answer_text when answer_index exceeds the localized list length, which hard-blocks the Practice session."
+}
