@@ -20,17 +20,39 @@ export function Navbar() {
           <span className="grid place-items-center w-9 h-9 rounded-lg bg-brand-forest text-white">
             <GraduationCap className="w-5 h-5" strokeWidth={1.75} />
           </span>
-          <span className="font-serif text-lg text-brand-espresso tracking-tight">
+          <span className="font-serif text-lg text-brand-espresso tracking-tight hidden sm:block">
             Inglés para Hostelería
           </span>
         </Link>
-        <button
-          data-testid="navbar-cta"
-          onClick={() => navigate(onboardingCompleted ? "/home" : "/onboarding")}
-          className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors"
-        >
-          {onboardingCompleted ? "Mi aprendizaje" : "Empezar gratis"}
-        </button>
+        <div className="flex items-center gap-5">
+          {onboardingCompleted && (
+            <>
+              <Link
+                to="/home"
+                data-testid="navbar-home-link"
+                className="text-sm font-medium text-brand-charcoal/70 hover:text-brand-forest transition-colors"
+              >
+                Inicio
+              </Link>
+              <Link
+                to="/learn"
+                data-testid="navbar-learn-link"
+                className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors"
+              >
+                Aprender
+              </Link>
+            </>
+          )}
+          {!onboardingCompleted && (
+            <button
+              data-testid="navbar-cta"
+              onClick={() => navigate("/onboarding")}
+              className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors"
+            >
+              Empezar gratis
+            </button>
+          )}
+        </div>
       </nav>
     </header>
   );

@@ -10,6 +10,12 @@ export const roleToCategory = { bartender: "bar", waiter: "restaurant" };
 // Safe prefill of the role step from a legacy guest's old `workplace` selection.
 export const legacyWorkplaceToRole = { bar: "bartender", restaurant: "waiter" };
 
+// Home featured situation, relevant to the user's role.
+export const roleToFeaturedSituation = {
+  bartender: "guest-asks-for-cocktail-recommendation",
+  waiter: "guest-asks-for-food-recommendation",
+};
+
 // 4-step professional onboarding (questions + subtitles are UI copy in Spanish).
 export const onboardingSteps = [
   {

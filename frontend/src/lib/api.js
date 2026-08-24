@@ -15,6 +15,11 @@ export const getVenueTypes = () => client.get("/venue-types").then((r) => r.data
 export const getTargetCountries = () => client.get("/target-countries").then((r) => r.data);
 export const getLearningGoals = () => client.get("/learning-goals").then((r) => r.data);
 
+// Skills & situations (role/skill/venue filtered).
+export const getSkills = (params = {}) => client.get("/skills", { params }).then((r) => r.data);
+export const getSituations = (params = {}) => client.get("/situations", { params }).then((r) => r.data);
+export const getSituation = (slug) => client.get(`/situations/${slug}`).then((r) => r.data);
+
 export const createGuest = (payload = {}) => client.post("/guests", payload).then((r) => r.data);
 export const getGuest = (id) => client.get(`/guests/${id}`).then((r) => r.data);
 export const updateOnboarding = (id, payload) => client.put(`/guests/${id}/onboarding`, payload).then((r) => r.data);

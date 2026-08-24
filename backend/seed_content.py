@@ -283,14 +283,49 @@ LEARNING_ITEM_META = {
 }
 
 
-def _situation_extra(slug):
-    meta = SITUATION_META.get(slug, {})
-    return {
-        "roles": meta.get("roles", []),
-        "skills": meta.get("skills", []),
-        "venue_types": meta.get("venue_types", []),
-        "country_variants": meta.get("country_variants", []),
-    }
+DIFFICULTY_TO_NUM = {"beginner": 1, "intermediate": 2, "advanced": 3}
+DIFFICULTY_TO_LEVEL = {"beginner": "a2", "intermediate": "b1", "advanced": "b2"}
+
+# Curated metadata for the one legacy full lesson we keep and promote.
+CURATED_SITUATIONS = {
+    "taking-an-order": {
+        "roles": ["waiter"],
+        "primary_skill": "taking-orders",
+        "skills": ["taking-orders"],
+        "venue_types": ["casual-restaurant", "fine-dining", "hotel-restaurant"],
+        "level": "a2",
+        "difficulty": 1,
+        "estimated_minutes": 5,
+        "service_registers": ["neutral", "professional"],
+        "country_variants": ["united_states", "united_kingdom"],
+        "active": True,
+        "translations": {"es": {
+            "title": "Tomar una comanda",
+            "description": "Aprende a tomar una comanda en un restaurante en inglés.",
+        }},
+    },
+}
+
+
+def _build_situation(s):
+    """Expand a legacy situation dict into the full backwards-compatible model."""
+    meta = SITUATION_META.get(s["slug"], {})
+    doc = dict(s)
+    doc["title"] = s["title_en"]
+    doc["translations"] = {"es": {"title": s["title_en"], "description": ""}}
+    doc["level"] = DIFFICULTY_TO_LEVEL.get(s["difficulty"], "a2")
+    doc["difficulty"] = DIFFICULTY_TO_NUM.get(s["difficulty"], 1)
+    doc["estimated_minutes"] = 5
+    doc["service_registers"] = []
+    doc["roles"] = meta.get("roles", [])
+    doc["venue_types"] = meta.get("venue_types", [])
+    doc["country_variants"] = meta.get("country_variants", [])
+    doc["primary_skill"] = None
+    doc["skills"] = []
+    doc["active"] = False
+    if s["slug"] in CURATED_SITUATIONS:
+        doc.update(CURATED_SITUATIONS[s["slug"]])
+    return doc
 
 
 async def seed(db):
@@ -301,14 +336,7 @@ async def seed(db):
     await db.lessons.delete_many({})
 
     await db.categories.insert_many([dict(c) for c in CATEGORIES])
-
-    # Situations get additive optional metadata (defaults empty) for forward compatibility.
-    situations = []
-    for s in SITUATIONS:
-        doc = dict(s)
-        doc.update(_situation_extra(s["slug"]))
-        situations.append(doc)
-    await db.situations.insert_many(situations)
+    await db.situations.insert_many([_build_situation(s) for s in SITUATIONS])
 
     # Persist learning items with their category/situation context + optional metadata.
     items = []
@@ -322,7 +350,6 @@ async def seed(db):
             "difficulty": "beginner",
             "english_content": phrase["english_content"],
             "translations": phrase["translations"],
-            # Forward-looking optional fields (additive):
             "skills": meta.get("skills", []),
             "country_variants": meta.get("country_variants", {}),
         })

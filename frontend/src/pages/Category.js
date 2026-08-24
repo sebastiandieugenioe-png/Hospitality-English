@@ -6,11 +6,7 @@ import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
 import { getCategory } from "@/lib/api";
 
-const difficultyLabel = {
-  beginner: "Principiante",
-  intermediate: "Intermedio",
-  advanced: "Avanzado",
-};
+const levelLabel = { a1: "A1", a2: "A2", b1: "B1", b2: "B2" };
 
 export default function Category() {
   const { slug } = useParams();
@@ -93,7 +89,7 @@ function SituationRow({ sit, index }) {
           )}
         </div>
         <p className="text-xs uppercase tracking-[0.15em] text-brand-charcoal/40 mt-1">
-          {difficultyLabel[sit.difficulty] || sit.difficulty}
+          {levelLabel[sit.level] || sit.level}
         </p>
       </div>
       {sit.is_full ? (

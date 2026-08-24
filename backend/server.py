@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Query
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 
 import seed_content
 import seed_reference
+import seed_catalog
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -116,8 +117,67 @@ async def get_target_countries():
 
 
 @api_router.get("/skills")
-async def get_skills():
-    return await db.skills.find({}, {"_id": 0}).to_list(100)
+async def get_skills(role: str = Query(None), venue_type: str = Query(None)):
+    """Active skills, optionally filtered by role, each with a situation_count.
+
+    situation_count reflects how many ACTIVE situations match the role (and venue,
+    when provided) for that skill (as primary or secondary).
+    """
+    if role and not await db.professional_profiles.find_one({"slug": role}):
+        raise HTTPException(status_code=422, detail="Invalid role")
+    if venue_type and not await db.venue_types.find_one({"slug": venue_type}):
+        raise HTTPException(status_code=422, detail="Invalid venue_type")
+
+    query = {"active": True}
+    if role:
+        query["roles"] = role
+    skills = await db.skills.find(query, {"_id": 0}).sort("order", 1).to_list(100)
+
+    for sk in skills:
+        sit_q = {"active": True, "skills": sk["id"]}
+        if role:
+            sit_q["roles"] = role
+        situations = await db.situations.find(sit_q, {"_id": 0, "venue_types": 1}).to_list(500)
+        if venue_type:
+            situations = [s for s in situations if not s.get("venue_types") or venue_type in s["venue_types"]]
+        sk["situation_count"] = len(situations)
+    return skills
+
+
+async def _validate_situation_filters(role, skill, venue_type):
+    if role and not await db.professional_profiles.find_one({"slug": role}):
+        raise HTTPException(status_code=422, detail="Invalid role")
+    if skill and not await db.skills.find_one({"id": skill}):
+        raise HTTPException(status_code=422, detail="Invalid skill")
+    if venue_type and not await db.venue_types.find_one({"slug": venue_type}):
+        raise HTTPException(status_code=422, detail="Invalid venue_type")
+
+
+@api_router.get("/situations")
+async def list_situations(role: str = Query(None), skill: str = Query(None), venue_type: str = Query(None)):
+    """List ACTIVE situations filtered by role / skill / venue_type.
+
+    Venue rule: a situation with an empty venue_types is valid for any venue;
+    otherwise it must include the requested venue_type.
+    """
+    await _validate_situation_filters(role, skill, venue_type)
+    query = {"active": True}
+    if role:
+        query["roles"] = role
+    if skill:
+        query["skills"] = skill
+    situations = await db.situations.find(query, {"_id": 0}).sort("order", 1).to_list(500)
+    if venue_type:
+        situations = [s for s in situations if not s.get("venue_types") or venue_type in s["venue_types"]]
+    return situations
+
+
+@api_router.get("/situations/{slug}")
+async def get_situation(slug: str):
+    situation = await db.situations.find_one({"slug": slug}, {"_id": 0})
+    if not situation:
+        raise HTTPException(status_code=404, detail="Situation not found")
+    return situation
 
 
 @api_router.get("/learning-goals")
@@ -252,6 +312,7 @@ app.add_middleware(
 async def startup_seed():
     await seed_content.seed(db)
     await seed_reference.seed_reference(db)
+    await seed_catalog.seed_catalog(db)
     # Forward-looking indexes (safe / additive).
     try:
         await db.guests.create_index("id")

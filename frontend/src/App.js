@@ -5,6 +5,8 @@ import { AppProvider } from "@/context/AppContext";
 import Landing from "@/pages/Landing";
 import Onboarding from "@/pages/Onboarding";
 import Home from "@/pages/Home";
+import Learn from "@/pages/Learn";
+import Skill from "@/pages/Skill";
 import Category from "@/pages/Category";
 import Lesson from "@/pages/Lesson";
 
@@ -17,6 +19,8 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/learn" element={<Learn />} />
+            <Route path="/skill/:slug" element={<Skill />} />
             <Route path="/category/:slug" element={<Category />} />
             <Route path="/lesson/:slug" element={<Lesson />} />
           </Routes>

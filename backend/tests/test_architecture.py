@@ -42,8 +42,8 @@ class TestReferenceData:
     def test_skills(self):
         r = requests.get(f"{API}/skills")
         assert r.status_code == 200
-        slugs = {s["slug"] for s in r.json()}
-        assert "taking-orders" in slugs
+        ids = {s["id"] for s in r.json()}
+        assert "taking-orders" in ids
 
     def test_learning_goals(self):
         r = requests.get(f"{API}/learning-goals")

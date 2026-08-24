@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
-import { getCategories, getProfessionalProfiles, getTargetCountries } from "@/lib/api";
-import { recommendationMap, roleToCategory, FEATURED_SITUATION } from "@/lib/content";
+import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation } from "@/lib/api";
+import { recommendationMap, roleToCategory, roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
 import { useApp } from "@/context/AppContext";
 
 export default function Home() {
@@ -14,6 +14,7 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [planLabel, setPlanLabel] = useState("");
+  const [featured, setFeatured] = useState(null);
 
   // Send users with an incomplete professional profile through onboarding first.
   useEffect(() => {
@@ -25,6 +26,12 @@ export default function Home() {
       .then(setCategories)
       .finally(() => setLoading(false));
   }, []);
+
+  // Featured "continue" situation, relevant to the user's role.
+  useEffect(() => {
+    const slug = roleToFeaturedSituation[profile?.role] || FEATURED_SITUATION;
+    getSituation(slug).then(setFeatured).catch(() => {});
+  }, [profile]);
 
   // Build a discreet localized plan label ("Bartender · Irlanda") from taxonomies.
   useEffect(() => {
@@ -79,7 +86,7 @@ export default function Home() {
           </h2>
           <motion.button
             data-testid="continue-learning-card"
-            onClick={() => navigate(`/lesson/${FEATURED_SITUATION}`)}
+            onClick={() => navigate(`/lesson/${featured?.slug || FEATURED_SITUATION}`)}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05 }}
@@ -87,14 +94,14 @@ export default function Home() {
           >
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-white/60 mb-2">
-                Restaurante · Situación recomendada
+                Situación recomendada para tu turno
               </p>
               <h3 className="text-2xl sm:text-3xl font-serif tracking-tight">
-                Taking an order
+                {featured?.translations?.es?.title || "Tomar una comanda"}
               </h3>
               <p className="mt-2 text-sm text-white/70 max-w-md">
-                Aprende a tomar una comanda en inglés: frases, diálogo real,
-                flashcards y quiz.
+                {featured?.translations?.es?.description ||
+                  "Aprende frases reales, diálogo, flashcards y quiz."}
               </p>
             </div>
             <span className="shrink-0 grid place-items-center w-14 h-14 rounded-full bg-white text-brand-forest group-hover:scale-105 transition-transform">

@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 import { getLesson } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
+import { ServiceNote } from "@/components/ServiceNote";
 
 const STEPS = ["intro", "phrases", "dialogue", "flashcards", "exercises", "quiz", "completion"];
 const STEP_LABEL = {
@@ -113,7 +114,7 @@ export default function Lesson() {
             />
           )}
           {step === "completion" && (
-            <Completion lesson={lesson} score={score} slug={slug} />
+            <Completion lesson={lesson} score={score} situation={data.situation} />
           )}
         </motion.div>
       </AnimatePresence>
@@ -169,22 +170,35 @@ function PrimaryBtn({ children, testId, ...props }) {
 
 /* ---------- Step 1: Intro ---------- */
 function Intro({ lesson, onNext }) {
+  const intro = lesson.intro;
   return (
     <div>
       <p className="text-xs uppercase tracking-[0.2em] font-semibold text-brand-terracotta mb-3">
-        Restaurante
+        Tu turno
       </p>
-      <h1 className="text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">
-        Taking an order
-      </h1>
-      <p className="mt-4 text-base text-brand-charcoal/70 leading-relaxed">
-        {lesson.intro.summary_es}
-      </p>
+      {/* Turn context (shift framing) */}
+      {intro.context_es && (
+        <div className="rounded-2xl bg-white border border-black/5 p-5 shadow-sm">
+          <p className="text-brand-charcoal/70 leading-relaxed">{intro.context_es}</p>
+          {intro.guest_opening_en && (
+            <div className="mt-3 rounded-xl bg-brand-sand border border-black/5 px-4 py-3">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-brand-charcoal/40 mb-1">
+                Cliente
+              </p>
+              <p className="text-lg text-brand-espresso font-medium">“{intro.guest_opening_en}”</p>
+              {intro.guest_opening_es && (
+                <p className="mt-0.5 text-sm text-brand-charcoal/60">{intro.guest_opening_es}</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+      <p className="mt-6 text-base text-brand-charcoal/70 leading-relaxed">{intro.summary_es}</p>
       <div className="mt-8 space-y-3">
         <p className="text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50">
-          En esta lección aprenderás a
+          En esta situación aprenderás a
         </p>
-        {lesson.intro.objectives_es.map((obj, i) => (
+        {intro.objectives_es.map((obj, i) => (
           <div
             key={i}
             className="flex items-start gap-3 rounded-xl bg-white border border-black/5 p-4"
@@ -224,6 +238,7 @@ function Phrases({ lesson, onNext, onBack }) {
           >
             <p className="text-lg text-brand-espresso font-medium">{p.english_content}</p>
             <p className="mt-1 text-sm text-brand-charcoal/60">{p.translations.es}</p>
+            <ServiceNote item={p} />
           </div>
         ))}
       </div>
@@ -661,8 +676,9 @@ function QuestionCard({ q, onContinue, isLast, finishLabel, testId }) {
 }
 
 /* ---------- Step 7: Completion ---------- */
-function Completion({ lesson, score, slug }) {
+function Completion({ lesson, score, situation }) {
   const navigate = useNavigate();
+  const title = situation?.translations?.es?.title || situation?.title_en || "Situación";
   return (
     <div className="text-center py-6">
       <motion.div
@@ -676,7 +692,7 @@ function Completion({ lesson, score, slug }) {
       <h1 className="mt-6 text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">
         ¡Lección completada!
       </h1>
-      <p className="mt-2 text-brand-charcoal/60">Taking an order</p>
+      <p className="mt-2 text-brand-charcoal/60">{title}</p>
 
       <div className="mt-8 grid grid-cols-2 gap-4">
         <div className="rounded-2xl bg-white border border-black/5 p-6 shadow-sm">
@@ -698,7 +714,7 @@ function Completion({ lesson, score, slug }) {
       <div className="mt-10 space-y-3">
         <PrimaryBtn
           testId="completion-continue-btn"
-          onClick={() => navigate("/category/restaurant")}
+          onClick={() => navigate("/learn")}
         >
           <BookOpen className="w-4 h-4" /> Continuar aprendiendo
         </PrimaryBtn>
