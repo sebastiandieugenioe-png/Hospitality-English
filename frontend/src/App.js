@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import Learn from "@/pages/Learn";
 import Skill from "@/pages/Skill";
 import Progress from "@/pages/Progress";
+import Practice from "@/pages/Practice";
 import Category from "@/pages/Category";
 import Lesson from "@/pages/Lesson";
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="/learn" element={<Learn />} />
             <Route path="/skill/:slug" element={<Skill />} />
             <Route path="/progress" element={<Progress />} />
+            <Route path="/practice" element={<Practice />} />
             <Route path="/category/:slug" element={<Category />} />
             <Route path="/lesson/:slug" element={<Lesson />} />
           </Routes>

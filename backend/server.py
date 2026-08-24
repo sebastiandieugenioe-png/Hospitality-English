@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 import uuid
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import seed_content
 import seed_reference
@@ -589,7 +589,39 @@ async def submit_response(attempt_id: str, payload: AttemptResponse):
     await db.situation_attempts.update_one(
         {"id": attempt_id}, {"$push": {"responses": response}}
     )
+
+    # Mistake Bank: a wrong answer becomes a spaced-repetition review item.
+    if not correct:
+        await _upsert_mistake(attempt, payload.question_id, section, dim)
+
     return {"correct": correct, "feedback": q.get("explanation_es"), "assessment_dimension": dim}
+
+
+async def _upsert_mistake(attempt, question_id, section, dim):
+    """Create/update a review item from a mistake. Unique per
+    guest_id + source_type + source_id + situation_slug. times_wrong increments at
+    most once per attempt (guarded by last_mistake_attempt_id)."""
+    situation = await db.situations.find_one({"slug": attempt["situation_slug"]}, {"_id": 0})
+    if not situation:
+        return
+    key = {
+        "guest_id": attempt["guest_id"],
+        "source_type": "question",
+        "source_id": question_id,
+        "situation_slug": attempt["situation_slug"],
+    }
+    existing = await db.review_items.find_one(key)
+    if not existing:
+        item = _new_review_item(
+            attempt["guest_id"], question_id, situation, section, dim, attempt["id"]
+        )
+        await db.review_items.insert_one(dict(item))
+        return
+    updates = {"$set": {"updated_at": now_iso()}}
+    if existing.get("last_mistake_attempt_id") != attempt["id"]:
+        updates["$inc"] = {"times_wrong": 1}
+        updates["$set"]["last_mistake_attempt_id"] = attempt["id"]
+    await db.review_items.update_one({"id": existing["id"]}, updates)
 
 
 @api_router.post("/situation-attempts/{attempt_id}/complete")
@@ -602,12 +634,14 @@ async def complete_attempt(attempt_id: str):
 
     index, _ = await _lesson_questions(attempt["situation_slug"])
     scores, total, correct = _compute_scores(attempt.get("responses", []), index)
-    mastered = _is_mastered(scores)
+    met = _is_mastered(scores)
     await db.situation_attempts.update_one(
         {"id": attempt_id},
         {"$set": {
             "status": "completed", "completed_at": now_iso(), "scores": scores,
-            "total_questions": total, "correct_questions": correct, "mastered": mastered,
+            "total_questions": total, "correct_questions": correct,
+            # Canonical field + legacy mirror for backwards compatibility.
+            "met_mastery_threshold": met, "mastered": met,
         }},
     )
     return await db.situation_attempts.find_one({"id": attempt_id}, {"_id": 0})
@@ -638,7 +672,7 @@ async def situation_stats(guest_id: str):
             ov = a["scores"]["overall"]
             if s["best_score"] is None or ov > s["best_score"]:
                 s["best_score"] = ov
-            if a.get("mastered"):
+            if _attempt_mastered(a):
                 s["mastered"] = True
     for slug, s in stats.items():
         if s["mastered"]:
@@ -648,6 +682,105 @@ async def situation_stats(guest_id: str):
         else:
             s["status"] = "in_progress"
     return stats
+
+
+# ---------- Spaced Repetition / Mistake Bank ----------
+@api_router.get("/guests/{guest_id}/review-items")
+async def get_review_items(
+    guest_id: str,
+    due: bool = Query(False),
+    limit: int = Query(50, ge=1, le=200),
+):
+    """Review items for a guest with canonical content resolved (no N+1).
+
+    - due=true → only items whose next_review_at <= now (the practice queue).
+    - due=false → all active review items (the Mistake Bank / history).
+    Orphan items (content no longer exists) are skipped from the response.
+    """
+    if not await db.guests.find_one({"id": guest_id}):
+        raise HTTPException(status_code=404, detail="Guest not found")
+
+    query = {"guest_id": guest_id}
+    if due:
+        query["next_review_at"] = {"$lte": now_iso()}
+    items = await db.review_items.find(query, {"_id": 0}).sort("next_review_at", 1).to_list(1000)
+
+    resolved = await _resolve_review_content(items)
+    out = []
+    for it in items:
+        rc = resolved.get((it["situation_slug"], it["source_id"]))
+        if not rc:
+            continue  # orphan item: skip
+        section, q, sit = rc
+        out.append({
+            **it,
+            "situation_title_es": (sit or {}).get("translations", {}).get("es", {}).get("title")
+            or (sit or {}).get("title_en"),
+            "content": _public_question(q),
+        })
+    return out[:limit]
+
+
+@api_router.get("/guests/{guest_id}/review-summary")
+async def get_review_summary(guest_id: str):
+    """Counts for the practice landing: due total + active mistakes grouped by skill/dimension."""
+    if not await db.guests.find_one({"id": guest_id}):
+        raise HTTPException(status_code=404, detail="Guest not found")
+    items = await db.review_items.find({"guest_id": guest_id}, {"_id": 0}).to_list(1000)
+    now = now_iso()
+    due = sum(1 for it in items if it.get("next_review_at", now) <= now)
+    by_skill = {}
+    by_dimension = {}
+    for it in items:
+        by_skill[it.get("primary_skill")] = by_skill.get(it.get("primary_skill"), 0) + 1
+        d = it.get("assessment_dimension", "english")
+        by_dimension[d] = by_dimension.get(d, 0) + 1
+    return {"total": len(items), "due": due, "by_skill": by_skill, "by_dimension": by_dimension}
+
+
+async def _review_item_or_404(item_id):
+    item = await db.review_items.find_one({"id": item_id})
+    if not item:
+        raise HTTPException(status_code=404, detail="Review item not found")
+    return item
+
+
+@api_router.post("/review-items/{item_id}/answer")
+async def answer_review_item(item_id: str, payload: ReviewAnswer):
+    """Backend grades the submitted answer. Does NOT change the SRS schedule
+    (rating is a separate, independent step)."""
+    item = await _review_item_or_404(item_id)
+    index, _ = await _lesson_questions(item["situation_slug"])
+    entry = index.get(item["source_id"])
+    if not entry:
+        raise HTTPException(status_code=404, detail="Question content no longer exists")
+    _, q = entry
+    correct = _check_answer(q, payload.submitted_answer)
+    inc = {"times_seen": 1}
+    if correct:
+        inc["times_correct"] = 1
+    await db.review_items.update_one(
+        {"id": item_id}, {"$inc": inc, "$set": {"updated_at": now_iso()}}
+    )
+    return {
+        "correct": correct,
+        "correct_answer": _correct_answer_text(q),
+        "explanation": q.get("explanation_es"),
+        "assessment_dimension": q.get("assessment_dimension", "english"),
+    }
+
+
+@api_router.post("/review-items/{item_id}/rate")
+async def rate_review_item(item_id: str, payload: ReviewRate):
+    """Recalculates the SRS schedule from a self-rating. Independent of correctness."""
+    if payload.rating not in VALID_RATINGS:
+        raise HTTPException(status_code=422, detail="Invalid rating")
+    item = await _review_item_or_404(item_id)
+    schedule = _compute_schedule(item, payload.rating)
+    schedule["last_reviewed_at"] = now_iso()
+    schedule["updated_at"] = now_iso()
+    await db.review_items.update_one({"id": item_id}, {"$set": schedule})
+    return await db.review_items.find_one({"id": item_id}, {"_id": 0})
 
 
 app.include_router(api_router)
@@ -679,6 +812,12 @@ async def startup_seed():
         await db.situation_attempts.create_index([("guest_id", 1), ("status", 1)])
         await db.situation_attempts.create_index([("guest_id", 1), ("primary_skill", 1)])
         await db.situation_attempts.create_index("completed_at")
+        await db.review_items.create_index("guest_id")
+        await db.review_items.create_index([("guest_id", 1), ("next_review_at", 1)])
+        await db.review_items.create_index(
+            [("guest_id", 1), ("source_type", 1), ("source_id", 1), ("situation_slug", 1)],
+            unique=True,
+        )
     except Exception as e:
         logger.warning(f"Index creation skipped: {e}")
     logger.info("Content + reference data seeded.")

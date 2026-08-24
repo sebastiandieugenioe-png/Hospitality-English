@@ -31,6 +31,16 @@ export const getAttempts = (guestId) => client.get(`/guests/${guestId}/attempts`
 export const getSituationStats = (guestId) =>
   client.get(`/guests/${guestId}/situation-stats`).then((r) => r.data);
 
+// Spaced repetition / Mistake Bank
+export const getReviewItems = (guestId, params = {}) =>
+  client.get(`/guests/${guestId}/review-items`, { params }).then((r) => r.data);
+export const getReviewSummary = (guestId) =>
+  client.get(`/guests/${guestId}/review-summary`).then((r) => r.data);
+export const answerReviewItem = (itemId, submitted_answer) =>
+  client.post(`/review-items/${itemId}/answer`, { submitted_answer }).then((r) => r.data);
+export const rateReviewItem = (itemId, rating) =>
+  client.post(`/review-items/${itemId}/rate`, { rating }).then((r) => r.data);
+
 export const createGuest = (payload = {}) => client.post("/guests", payload).then((r) => r.data);
 export const getGuest = (id) => client.get(`/guests/${id}`).then((r) => r.data);
 export const updateOnboarding = (id, payload) => client.put(`/guests/${id}/onboarding`, payload).then((r) => r.data);

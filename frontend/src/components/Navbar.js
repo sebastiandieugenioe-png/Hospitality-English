@@ -44,9 +44,16 @@ export function Navbar() {
               <Link
                 to="/progress"
                 data-testid="navbar-progress-link"
-                className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors"
+                className="text-sm font-medium text-brand-charcoal/70 hover:text-brand-forest transition-colors"
               >
                 Progreso
+              </Link>
+              <Link
+                to="/practice"
+                data-testid="navbar-practice-link"
+                className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors"
+              >
+                Practicar
               </Link>
             </>
           )}
