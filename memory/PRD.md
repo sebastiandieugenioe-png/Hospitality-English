@@ -102,6 +102,10 @@ Backend es la fuente de verdad para corrección y para el scheduling SRS. Timest
 - **Flashcards**: derivadas de phrases; las de `service_rating="inappropriate"` se excluyen (verificado en vivo: 6 frases → 5 flashcards en `guest-has-had-too-much-to-drink`).
 - **Tests**: `backend/tests/test_pack_import.py` (9 tests) → PASS. Regresión relevante: test_catalog/test_attempts/test_architecture (41) + test_srs/test_srs_verification (30) → PASS. No deploy.
 
+### Exportación i18n v1 (2026-06) — solo lectura, sin cambios de código/contenido
+- Herramienta reproducible `backend/tools/export_i18n.py` → genera `backend/data/mvp_i18n_export_v1.json` (copia descargable en `frontend/public/`).
+- Contiene: 7 situations legacy activas (completas: situation+lesson+learning_items, sin las 13 del pack), `ui_translations` (168 claves es+it), 9 strings visibles hardcodeados detectados, taxonomías (profiles 2, venues 6, countries 6, goals 5, skills 14), idiomas soportados (es/it) y descripción del fallback. Excluye guests/progress/attempts/SRS.
+
 ### Fuera de alcance (confirmado por el usuario, NO hecho)
 Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shift Practice; IA.
 
