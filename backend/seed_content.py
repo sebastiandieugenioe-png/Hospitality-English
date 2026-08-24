@@ -260,11 +260,11 @@ LESSONS = {
 # ---------------------------------------------------------------------------
 SITUATION_META = {
     "welcoming-guests": {"roles": ["waiter"], "skills": ["greeting-guests", "small-talk"], "venue_types": ["casual-restaurant", "fine-dining"]},
-    "taking-an-order": {"roles": ["waiter"], "skills": ["taking-orders", "greeting-guests"], "venue_types": ["casual-restaurant", "fine-dining", "hotel-restaurant"], "country_variants": ["US", "UK"]},
+    "taking-an-order": {"roles": ["waiter"], "skills": ["taking-orders", "greeting-guests"], "venue_types": ["casual-restaurant", "fine-dining", "hotel-restaurant"], "country_variants": ["united_states", "united_kingdom"]},
     "explaining-the-menu": {"roles": ["waiter"], "skills": ["explaining-menu", "upselling"], "venue_types": ["casual-restaurant", "fine-dining"]},
     "allergies-and-dietary-requirements": {"roles": ["waiter"], "skills": ["explaining-menu", "handling-complaints"]},
     "checking-on-the-table": {"roles": ["waiter"], "skills": ["small-talk"]},
-    "bringing-the-bill": {"roles": ["waiter"], "skills": ["processing-payment"], "country_variants": ["US", "UK"]},
+    "bringing-the-bill": {"roles": ["waiter"], "skills": ["processing-payment"], "country_variants": ["united_states", "united_kingdom"]},
     "taking-a-drinks-order": {"roles": ["bartender"], "skills": ["taking-orders"], "venue_types": ["cocktail-bar", "pub"]},
     "recommending-drinks": {"roles": ["bartender"], "skills": ["upselling"], "venue_types": ["cocktail-bar", "pub"]},
     "explaining-cocktails": {"roles": ["bartender"], "skills": ["explaining-menu"], "venue_types": ["cocktail-bar"]},

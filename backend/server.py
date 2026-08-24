@@ -38,19 +38,17 @@ class Onboarding(BaseModel):
 
 
 class GuestCreate(BaseModel):
+    # Legacy optional fields (kept for backwards compatibility with old clients).
     workplace: Optional[str] = None
     goal: Optional[str] = None
-    # Forward-looking optional fields for the professional-profile evolution.
-    role: Optional[str] = None
-    venue_type: Optional[str] = None
-    country: Optional[str] = None
 
 
 class ProfileUpdate(BaseModel):
-    role: Optional[str] = None
-    venue_type: Optional[str] = None
-    country: Optional[str] = None
-    skills: Optional[List[str]] = None
+    role: str
+    venue_type: str
+    target_country: str
+    goal: str
+    english_level: Optional[str] = None
 
 
 class FlashcardInteraction(BaseModel):
@@ -122,26 +120,31 @@ async def get_skills():
     return await db.skills.find({}, {"_id": 0}).to_list(100)
 
 
+@api_router.get("/learning-goals")
+async def get_learning_goals():
+    return await db.learning_goals.find({}, {"_id": 0}).sort("order", 1).to_list(100)
+
+
 # ---------- Guest / progress endpoints ----------
 @api_router.post("/guests")
 async def create_guest(payload: GuestCreate):
     guest = {
         "id": str(uuid.uuid4()),
         "created_at": now_iso(),
+        # Legacy onboarding kept for backwards compatibility; not the source of truth.
         "onboarding": {"workplace": payload.workplace, "goal": payload.goal},
-        # Forward-looking professional profile (additive; empty until set).
+        # Professional profile: who the user is and where they want to use English.
         "professional_profile": {
-            "role": payload.role,
-            "venue_type": payload.venue_type,
-            "country": payload.country,
-            "skills": [],
+            "role": None,
+            "venue_type": None,
+            "target_country": None,
+            "goal": None,
+            "english_level": None,
         },
+        "onboarding_completed": False,
+        # Existing progress (must never be reset).
         "flashcard_interactions": [],
         "completed_lessons": [],
-        # Placeholders for the conversation-training roadmap (not yet used by any feature):
-        "situation_attempts": [],
-        "mistake_bank": [],
-        "srs": {},
     }
     await db.guests.insert_one(dict(guest))
     guest.pop("_id", None)
@@ -150,14 +153,35 @@ async def create_guest(payload: GuestCreate):
 
 @api_router.put("/guests/{guest_id}/profile")
 async def update_profile(guest_id: str, payload: ProfileUpdate):
-    updates = {f"professional_profile.{k}": v for k, v in payload.model_dump(exclude_none=True).items()}
-    if not updates:
-        raise HTTPException(status_code=422, detail="No profile fields provided")
-    result = await db.guests.update_one({"id": guest_id}, {"$set": updates})
-    if result.matched_count == 0:
+    guest = await db.guests.find_one({"id": guest_id})
+    if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
-    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
-    return guest
+
+    # Validate every id against its taxonomy so we never store unknown values.
+    invalid = []
+    if not await db.professional_profiles.find_one({"slug": payload.role}):
+        invalid.append("role")
+    if not await db.venue_types.find_one({"slug": payload.venue_type}):
+        invalid.append("venue_type")
+    if not await db.target_countries.find_one({"id": payload.target_country}):
+        invalid.append("target_country")
+    if not await db.learning_goals.find_one({"id": payload.goal}):
+        invalid.append("goal")
+    if invalid:
+        raise HTTPException(status_code=422, detail=f"Invalid values for: {', '.join(invalid)}")
+
+    profile = {
+        "role": payload.role,
+        "venue_type": payload.venue_type,
+        "target_country": payload.target_country,
+        "goal": payload.goal,
+        "english_level": payload.english_level,
+    }
+    await db.guests.update_one(
+        {"id": guest_id},
+        {"$set": {"professional_profile": profile, "onboarding_completed": True}},
+    )
+    return await db.guests.find_one({"id": guest_id}, {"_id": 0})
 
 
 @api_router.get("/guests/{guest_id}")

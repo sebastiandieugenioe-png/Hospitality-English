@@ -4,6 +4,41 @@
 export const FEATURED_SITUATION = "taking-an-order";
 export const FEATURED_CATEGORY = "restaurant";
 
+// Maps the professional role to a primary category for Home recommendations.
+export const roleToCategory = { bartender: "bar", waiter: "restaurant" };
+
+// Safe prefill of the role step from a legacy guest's old `workplace` selection.
+export const legacyWorkplaceToRole = { bar: "bartender", restaurant: "waiter" };
+
+// 4-step professional onboarding (questions + subtitles are UI copy in Spanish).
+export const onboardingSteps = [
+  {
+    id: "role",
+    field: "role",
+    question: "¿Cuál es tu puesto?",
+    subtitle: "Adaptaremos las situaciones y el vocabulario a tu trabajo.",
+  },
+  {
+    id: "venue",
+    field: "venue_type",
+    question: "¿Dónde trabajas?",
+    subtitle: "El inglés cambia según el tipo de servicio.",
+  },
+  {
+    id: "country",
+    field: "target_country",
+    question: "¿Dónde quieres usar tu inglés?",
+    subtitle: "Te enseñaremos vocabulario y expresiones habituales en ese país.",
+  },
+  {
+    id: "goal",
+    field: "goal",
+    question: "¿Qué quieres conseguir?",
+    subtitle: "Personalizaremos tu plan según tu objetivo.",
+  },
+];
+
+
 export const workplaceOptions = [
   { id: "restaurant", label: "Restaurante" },
   { id: "bar", label: "Bar" },

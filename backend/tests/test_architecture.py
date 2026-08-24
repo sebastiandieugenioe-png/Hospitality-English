@@ -34,16 +34,23 @@ class TestReferenceData:
     def test_target_countries(self):
         r = requests.get(f"{API}/target-countries")
         assert r.status_code == 200
-        codes = {c["code"] for c in r.json()}
-        assert {"US", "UK"}.issubset(codes)
+        ids = {c["id"] for c in r.json()}
+        assert {"ireland", "united_kingdom", "united_states", "international"}.issubset(ids)
         for c in r.json():
-            assert c["english_variant"]
+            assert c["english_variant"] and c["name_es"] and c["flag"]
 
     def test_skills(self):
         r = requests.get(f"{API}/skills")
         assert r.status_code == 200
         slugs = {s["slug"] for s in r.json()}
         assert "taking-orders" in slugs
+
+    def test_learning_goals(self):
+        r = requests.get(f"{API}/learning-goals")
+        assert r.status_code == 200
+        ids = {g["id"] for g in r.json()}
+        assert {"first_hospitality_job", "work_abroad"}.issubset(ids)
+        assert all(g["name_es"] for g in r.json())
 
 
 class TestBackwardsCompatibleContent:
@@ -55,7 +62,7 @@ class TestBackwardsCompatibleContent:
         # New optional fields present and correctly typed.
         assert tao["roles"] == ["waiter"]
         assert "taking-orders" in tao["skills"]
-        assert set(tao["country_variants"]) == {"US", "UK"}
+        assert set(tao["country_variants"]) == {"united_states", "united_kingdom"}
         # Original fields untouched.
         assert tao["is_full"] is True and tao["title_en"] == "Taking an order"
 
@@ -68,34 +75,17 @@ class TestBackwardsCompatibleContent:
 
 
 class TestProfessionalProfile:
-    def test_guest_has_profile_and_placeholders(self):
-        r = requests.post(f"{API}/guests", json={"workplace": "bar", "goal": "all", "role": "bartender"})
+    def test_new_guest_has_empty_profile(self):
+        r = requests.post(f"{API}/guests", json={})
         assert r.status_code == 200
         g = r.json()
-        # Existing shape preserved.
-        assert g["onboarding"] == {"workplace": "bar", "goal": "all"}
-        assert g["flashcard_interactions"] == [] and g["completed_lessons"] == []
-        # New additive structures.
-        assert g["professional_profile"]["role"] == "bartender"
-        assert g["professional_profile"]["skills"] == []
-        assert g["situation_attempts"] == [] and g["mistake_bank"] == [] and g["srs"] == {}
-        gid = g["id"]
-
-        # Update profile.
-        r = requests.put(f"{API}/guests/{gid}/profile",
-                         json={"venue_type": "cocktail-bar", "country": "UK", "skills": ["taking-orders"]})
-        assert r.status_code == 200
-        prof = r.json()["professional_profile"]
-        assert prof["venue_type"] == "cocktail-bar"
-        assert prof["country"] == "UK"
-        assert prof["skills"] == ["taking-orders"]
-        assert prof["role"] == "bartender"  # untouched
+        prof = g["professional_profile"]
+        assert prof == {"role": None, "venue_type": None, "target_country": None, "goal": None, "english_level": None}
+        assert g["onboarding_completed"] is False
+        # Placeholders are no longer part of the definitive architecture.
+        assert "situation_attempts" not in g and "mistake_bank" not in g and "srs" not in g
 
     def test_profile_update_missing_guest(self):
-        r = requests.put(f"{API}/guests/nope/profile", json={"role": "waiter"})
+        r = requests.put(f"{API}/guests/nope/profile", json={
+            "role": "waiter", "venue_type": "fine-dining", "target_country": "ireland", "goal": "work_abroad"})
         assert r.status_code == 404
-
-    def test_guest_create_without_role_still_works(self):
-        r = requests.post(f"{API}/guests", json={"workplace": "restaurant", "goal": "vocabulary"})
-        assert r.status_code == 200
-        assert r.json()["professional_profile"]["role"] is None

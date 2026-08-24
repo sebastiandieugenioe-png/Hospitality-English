@@ -37,20 +37,31 @@ PROFESSIONAL_PROFILES = [
 ]
 
 VENUE_TYPES = [
-    {"slug": "cocktail-bar", "name_en": "Cocktail bar", "name_es": "Coctelería", "order": 1},
-    {"slug": "pub", "name_en": "Pub", "name_es": "Pub", "order": 2},
-    {"slug": "casual-restaurant", "name_en": "Casual restaurant", "name_es": "Restaurante informal", "order": 3},
-    {"slug": "fine-dining", "name_en": "Fine dining", "name_es": "Alta cocina", "order": 4},
-    {"slug": "hotel-restaurant", "name_en": "Hotel restaurant", "name_es": "Restaurante de hotel", "order": 5},
-    {"slug": "cafe", "name_en": "Café", "name_es": "Cafetería", "order": 6},
+    {"slug": "pub", "name_en": "Pub", "name_es": "Pub", "order": 1},
+    {"slug": "cafe", "name_en": "Café", "name_es": "Cafetería", "order": 2},
+    {"slug": "casual-restaurant", "name_en": "Casual restaurant", "name_es": "Restaurante casual", "order": 3},
+    {"slug": "fine-dining", "name_en": "Fine dining", "name_es": "Fine dining", "order": 4},
+    {"slug": "cocktail-bar", "name_en": "Cocktail bar", "name_es": "Cocktail bar", "order": 5},
+    {"slug": "hotel-restaurant", "name_en": "Hotel restaurant", "name_es": "Hotel 4-5 estrellas", "order": 6},
 ]
 
+# Stable ids compatible with situation.country_variants; flag is visual support only.
 TARGET_COUNTRIES = [
-    {"code": "US", "name_es": "Estados Unidos", "english_variant": "american", "order": 1},
-    {"code": "UK", "name_es": "Reino Unido", "english_variant": "british", "order": 2},
-    {"code": "IE", "name_es": "Irlanda", "english_variant": "british", "order": 3},
-    {"code": "AU", "name_es": "Australia", "english_variant": "australian", "order": 4},
-    {"code": "CA", "name_es": "Canadá", "english_variant": "american", "order": 5},
+    {"id": "ireland", "name_es": "Irlanda", "flag": "🇮🇪", "english_variant": "british", "order": 1},
+    {"id": "united_kingdom", "name_es": "Reino Unido", "flag": "🇬🇧", "english_variant": "british", "order": 2},
+    {"id": "canada", "name_es": "Canadá", "flag": "🇨🇦", "english_variant": "canadian", "order": 3},
+    {"id": "united_states", "name_es": "Estados Unidos", "flag": "🇺🇸", "english_variant": "american", "order": 4},
+    {"id": "australia", "name_es": "Australia", "flag": "🇦🇺", "english_variant": "australian", "order": 5},
+    {"id": "international", "name_es": "Internacional", "flag": "🌍", "english_variant": "international", "order": 6},
+]
+
+# Small taxonomy for onboarding goals (same pattern as roles/venues/countries).
+LEARNING_GOALS = [
+    {"id": "first_hospitality_job", "name_es": "Empezar mi primer trabajo en hostelería", "order": 1},
+    {"id": "improve_guest_communication", "name_es": "Comunicarme mejor con los clientes", "order": 2},
+    {"id": "work_abroad", "name_es": "Trabajar en otro país", "order": 3},
+    {"id": "prepare_for_interview", "name_es": "Prepararme para una entrevista", "order": 4},
+    {"id": "improve_current_job", "name_es": "Mejorar en mi trabajo actual", "order": 5},
 ]
 
 SKILLS = [
@@ -70,8 +81,10 @@ async def seed_reference(db):
     await db.venue_types.delete_many({})
     await db.target_countries.delete_many({})
     await db.skills.delete_many({})
+    await db.learning_goals.delete_many({})
 
     await db.professional_profiles.insert_many([dict(x) for x in PROFESSIONAL_PROFILES])
     await db.venue_types.insert_many([dict(x) for x in VENUE_TYPES])
     await db.target_countries.insert_many([dict(x) for x in TARGET_COUNTRIES])
     await db.skills.insert_many([dict(x) for x in SKILLS])
+    await db.learning_goals.insert_many([dict(x) for x in LEARNING_GOALS])

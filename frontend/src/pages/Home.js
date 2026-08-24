@@ -4,15 +4,21 @@ import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
-import { getCategories } from "@/lib/api";
-import { recommendationMap, FEATURED_SITUATION, workplaceOptions } from "@/lib/content";
+import { getCategories, getProfessionalProfiles, getTargetCountries } from "@/lib/api";
+import { recommendationMap, roleToCategory, FEATURED_SITUATION } from "@/lib/content";
 import { useApp } from "@/context/AppContext";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { onboarding } = useApp();
+  const { loading: guestLoading, onboardingCompleted, profile } = useApp();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [planLabel, setPlanLabel] = useState("");
+
+  // Send users with an incomplete professional profile through onboarding first.
+  useEffect(() => {
+    if (!guestLoading && !onboardingCompleted) navigate("/onboarding", { replace: true });
+  }, [guestLoading, onboardingCompleted, navigate]);
 
   useEffect(() => {
     getCategories()
@@ -20,9 +26,20 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, []);
 
-  const workplace = onboarding?.workplace || "other";
-  const workplaceLabel = workplaceOptions.find((w) => w.id === workplace)?.label;
-  const recSlugs = recommendationMap[workplace] || recommendationMap.other;
+  // Build a discreet localized plan label ("Bartender · Irlanda") from taxonomies.
+  useEffect(() => {
+    if (!profile?.role && !profile?.target_country) return;
+    Promise.all([getProfessionalProfiles(), getTargetCountries()])
+      .then(([roles, countries]) => {
+        const roleName = roles.find((r) => r.slug === profile.role)?.name_es;
+        const countryName = countries.find((c) => c.id === profile.target_country)?.name_es;
+        setPlanLabel([roleName, countryName].filter(Boolean).join(" · "));
+      })
+      .catch(() => {});
+  }, [profile]);
+
+  const primaryCategory = roleToCategory[profile?.role] || "general";
+  const recSlugs = recommendationMap[primaryCategory] || recommendationMap.other;
   const bySlug = (slug) => categories.find((c) => c.slug === slug);
   const recommended = recSlugs.map(bySlug).filter(Boolean);
 
@@ -41,7 +58,19 @@ export default function Home() {
           <h1 className="mt-2 text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">
             ¿Seguimos practicando?
           </h1>
+          {planLabel && (
+            <p
+              data-testid="home-plan-label"
+              className="mt-3 inline-flex items-center gap-2 text-sm text-brand-charcoal/70 bg-white border border-black/5 rounded-full px-4 py-1.5"
+            >
+              <span className="text-xs uppercase tracking-[0.15em] text-brand-charcoal/40">
+                Tu plan
+              </span>
+              <span className="font-medium text-brand-espresso">{planLabel}</span>
+            </p>
+          )}
         </motion.div>
+
 
         {/* Continue learning */}
         <section className="mt-8">
@@ -76,14 +105,9 @@ export default function Home() {
 
         {/* Recommended for you */}
         <section className="mt-12">
-          <h2 className="text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50 mb-1">
+          <h2 className="text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50 mb-4">
             Recomendado para ti
           </h2>
-          {workplaceLabel && (
-            <p className="text-sm text-brand-charcoal/60 mb-4">
-              Según tu selección: <span className="font-medium">{workplaceLabel}</span>
-            </p>
-          )}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {recommended.map((cat, i) => (
               <CategoryCard key={cat.slug} cat={cat} highlight index={i} testIdPrefix="recommended-card" />

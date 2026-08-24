@@ -3,7 +3,7 @@ import { GraduationCap } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 
 export function Navbar() {
-  const { hasOnboarded } = useApp();
+  const { onboardingCompleted } = useApp();
   const navigate = useNavigate();
 
   return (
@@ -13,7 +13,7 @@ export function Navbar() {
     >
       <nav className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
         <Link
-          to={hasOnboarded ? "/home" : "/"}
+          to={onboardingCompleted ? "/home" : "/"}
           data-testid="navbar-logo"
           className="flex items-center gap-2 group"
         >
@@ -26,10 +26,10 @@ export function Navbar() {
         </Link>
         <button
           data-testid="navbar-cta"
-          onClick={() => navigate(hasOnboarded ? "/home" : "/onboarding")}
+          onClick={() => navigate(onboardingCompleted ? "/home" : "/onboarding")}
           className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors"
         >
-          {hasOnboarded ? "Mi aprendizaje" : "Empezar gratis"}
+          {onboardingCompleted ? "Mi aprendizaje" : "Empezar gratis"}
         </button>
       </nav>
     </header>

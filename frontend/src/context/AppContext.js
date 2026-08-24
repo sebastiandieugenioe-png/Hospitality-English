@@ -1,68 +1,101 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import * as api from "@/lib/api";
 
 const AppContext = createContext(null);
 
 const GUEST_KEY = "iph_guest_id";
-const ONBOARDING_KEY = "iph_onboarding";
+// Temporary onboarding draft (allowed in localStorage). MongoDB is the source of truth
+// for the *completed* profile.
+export const DRAFT_KEY = "iph_onboarding_draft";
 
 export function AppProvider({ children }) {
   const [guestId, setGuestId] = useState(() => localStorage.getItem(GUEST_KEY) || null);
-  const [onboarding, setOnboardingState] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem(ONBOARDING_KEY)) || null;
-    } catch {
-      return null;
-    }
-  });
+  const [guest, setGuest] = useState(null);
+  // `loading` is true until the initial guest fetch settles (only if a guestId exists).
+  const [loading, setLoading] = useState(() => !!localStorage.getItem(GUEST_KEY));
+  const creatingRef = useRef(null);
 
   useEffect(() => {
-    if (onboarding) localStorage.setItem(ONBOARDING_KEY, JSON.stringify(onboarding));
-  }, [onboarding]);
-
-  // Creates (or reuses) an anonymous guest in the backend and persists onboarding.
-  const completeOnboarding = async ({ workplace, goal }) => {
-    const data = { workplace, goal };
-    setOnboardingState(data);
-    try {
-      if (guestId) {
-        await api.updateOnboarding(guestId, data);
-        return guestId;
-      }
-      const guest = await api.createGuest(data);
-      localStorage.setItem(GUEST_KEY, guest.id);
-      setGuestId(guest.id);
-      return guest.id;
-    } catch (e) {
-      // Backend unavailable: keep local onboarding so the flow is never blocked.
-      console.error("Onboarding sync failed", e);
-      return null;
+    let active = true;
+    if (!guestId) {
+      setLoading(false);
+      return;
     }
+    setLoading(true);
+    api
+      .getGuest(guestId)
+      .then((g) => active && setGuest(g))
+      .catch(() => {
+        // Stale/unknown id (e.g. DB reset): drop it so the user can start fresh.
+        localStorage.removeItem(GUEST_KEY);
+        if (active) setGuestId(null);
+      })
+      .finally(() => active && setLoading(false));
+    return () => {
+      active = false;
+    };
+  }, [guestId]);
+
+  // Returns an existing guest id or creates one. Never creates duplicates.
+  const ensureGuest = async () => {
+    if (guestId) return guestId;
+    if (creatingRef.current) return creatingRef.current;
+    creatingRef.current = api.createGuest().then((g) => {
+      localStorage.setItem(GUEST_KEY, g.id);
+      setGuestId(g.id);
+      setGuest(g);
+      return g.id;
+    });
+    return creatingRef.current;
+  };
+
+  const refreshGuest = async () => {
+    if (!guestId) return null;
+    const g = await api.getGuest(guestId);
+    setGuest(g);
+    return g;
+  };
+
+  // Persists the completed professional profile to MongoDB (source of truth).
+  const completeProfile = async ({ role, venue_type, target_country, goal }) => {
+    const id = await ensureGuest();
+    const updated = await api.updateProfile(id, { role, venue_type, target_country, goal });
+    setGuest(updated);
+    localStorage.removeItem(DRAFT_KEY);
+    return updated;
   };
 
   const logFlashcard = async (learningItemId, knew) => {
-    if (!guestId) return;
+    const id = await ensureGuest();
     try {
-      await api.recordFlashcard(guestId, { learning_item_id: learningItemId, knew });
+      await api.recordFlashcard(id, { learning_item_id: learningItemId, knew });
     } catch (e) {
       console.error("Flashcard sync failed", e);
     }
   };
 
   const logCompletion = async (situationSlug, score, total) => {
-    if (!guestId) return;
+    const id = await ensureGuest();
     try {
-      await api.recordCompletion(guestId, { situation_slug: situationSlug, score, total });
+      await api.recordCompletion(id, { situation_slug: situationSlug, score, total });
     } catch (e) {
       console.error("Completion sync failed", e);
     }
   };
 
+  const profile = guest?.professional_profile || null;
+  const legacyOnboarding = guest?.onboarding || null;
+
   const value = {
     guestId,
-    onboarding,
-    hasOnboarded: !!onboarding,
-    completeOnboarding,
+    guest,
+    loading,
+    profile,
+    legacyOnboarding,
+    onboardingCompleted: !!guest?.onboarding_completed,
+    ensureGuest,
+    refreshGuest,
+    completeProfile,
     logFlashcard,
     logCompletion,
   };
