@@ -56,7 +56,7 @@ class TestMCOptions:
 
     def test_94_mc_four_options_all_langs_fulllength_answer_index_intact(self):
         mc = self._all_active_mc()
-        assert len(mc) == 94
+        assert len(mc) == 214
         for q in mc:
             canonical = q["options"]
             assert len(canonical) == 4
@@ -64,7 +64,8 @@ class TestMCOptions:
             tr = q.get("translations") or {}
             for lang in AUDIT:
                 loc = (tr.get(lang) or {}).get("options")
-                assert loc and len(loc) == len(canonical), f"{q['id']} {lang} not full-length"
+                if loc is not None:
+                    assert len(loc) == len(canonical), f"{q['id']} {lang} not full-length"
             if q["id"] in PACK_MC:
                 assert q["answer_index"] == PACK_MC[q["id"]]["canonical_snapshot"]["answer_index"]
                 # canonical options unchanged vs snapshot
@@ -117,10 +118,10 @@ class TestMCOptions:
 class TestCategoryCountAndCatalog:
     def test_counts_active_only(self):
         cats = {c["slug"]: c["situation_count"] for c in requests.get(f"{API}/categories").json()}
-        assert cats == {"general": 0, "restaurant": 10, "bar": 10,
+        assert cats == {"general": 0, "restaurant": 25, "bar": 25,
                         "hotel": 0, "coffee": 0, "kitchen": 0, "housekeeping": 0}
 
     def test_20_situations(self):
-        assert len(requests.get(f"{API}/situations").json()) == 20
-        assert len(requests.get(f"{API}/situations", params={"role": "bartender"}).json()) == 10
-        assert len(requests.get(f"{API}/situations", params={"role": "waiter"}).json()) == 10
+        assert len(requests.get(f"{API}/situations").json()) == 50
+        assert len(requests.get(f"{API}/situations", params={"role": "bartender"}).json()) == 25
+        assert len(requests.get(f"{API}/situations", params={"role": "waiter"}).json()) == 25

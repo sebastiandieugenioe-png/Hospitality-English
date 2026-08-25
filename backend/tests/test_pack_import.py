@@ -46,9 +46,9 @@ def _norm_tokens(s):
 
 class TestCatalogCounts:
     def test_totals(self):
-        assert len(_situations()) == 20
-        assert len(_situations(role="bartender")) == 10
-        assert len(_situations(role="waiter")) == 10
+        assert len(_situations()) == 50
+        assert len(_situations(role="bartender")) == 25
+        assert len(_situations(role="waiter")) == 25
 
     def test_thirteen_new_exist_and_unique(self):
         assert len(PACK_SLUGS) == 13 == len(set(PACK_SLUGS))

@@ -15,6 +15,7 @@ import seed_content
 import seed_reference
 import seed_catalog
 import seed_pack
+import seed_pack_v2
 import seed_i18n
 
 ROOT_DIR = Path(__file__).parent
@@ -892,6 +893,7 @@ async def startup_seed():
     await seed_reference.seed_reference(db)
     await seed_catalog.seed_catalog(db)
     await seed_pack.seed_pack(db)
+    await seed_pack_v2.seed_pack_v2(db)
     await seed_i18n.apply_i18n_bundle(db)
     # Forward-looking indexes (safe / additive).
     try:

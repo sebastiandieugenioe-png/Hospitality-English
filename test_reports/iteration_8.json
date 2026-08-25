@@ -1,0 +1,44 @@
+{
+  "summary": "Independent verification (T1) of the Hospitality English Content Pack v2 import. Wrote 2 new pytest suites (23 tests) and re-ran the dev's v2 + updated v1 suites: 64/64 backend tests pass. Confirmed active catalog is exactly 50 (25 bartender / 25 waiter), all 30 v2 slugs active with no duplicates, handling-a-complaint ACTIVE (category bar, bartender, is_full) while handling-a-complaint-bar stays INACTIVE and present in DB (64 docs total, 14 inactive incl. all 5 forbidden placeholder families), i18n resolves in all 10 languages with no blanks (titles, intro.context, intro.objectives, every phrase, every exercise+quiz prompt for all 30 situations), 120 v2 MC questions keep canonical options/order/answer_index/assessment_dimension (policy split 48 preserve_english_target_verbatim / 72 translate_from_es verified: preserve items are English in all 9 non-es locales, translate items have full length-4 localized arrays), practice+grading unchanged (review-items hide answer/answer_index, wrong index -> correct:false, canonical index -> correct:true, 200s), categories active-only counts (restaurant 25, bar 25, all others 0), and v1 20 situations still active + gradable. Idempotency verified across 2 backend restarts: identical stable-ID hash, 64/50/50/265 doc counts, zero duplicates. Frontend smoke passed in fr/uk/it/pt/de: full v2 lesson (taking-a-drinks-order) run end-to-end in uk (intro->phrases->dialogue->flashcards->3 exercises->5 quiz->62% completion with dimension scores), preserve-English MC options rendered verbatim in English while translate_from_es quiz options rendered in Ukrainian/French; Practice page (fr) listed v2 review items with localized prompts/options, graded correct, showed SRS rating buttons and completed the session; Learn -> Skill -> Lesson navigation reaches v2 situations (it); language switcher persists iph_lang.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Lesson word-order exercise", "issue": "Same bank word can be placed repeatedly when clicks arrive in one React tick (reproduced 20x 'that' chips); the Check button then stays permanently disabled with no reset/clear affordance, forcing a page reload. Low user impact (requires very fast/synthetic clicking) but a dedupe guard + reset button would harden it.", "selector": "[data-testid='exercise-2-answer-area']", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Lesson intro / Learn skill cards / Practice due card", "issues": ["Body copy (intro.context, '5 SITUAZIONI' meta labels, 'Elements prets a etre revises') is rendered in a very light grey on an off-white background - contrast looks below WCAG AA for small text", "Some Learn skill cards below the fold render at reduced opacity (scroll-reveal animation) and read as disabled until scrolled into view"]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v2_verify_t1.py",
+    "/app/backend/tests/test_v2_edge_t1.py",
+    "/app/backend/tests/snapshot_ids_t1.py",
+    "/app/test_reports/pytest/pytest_results_t1.xml"
+  ],
+  "action_items": [
+    "No blocking action items for the v2 import - all acceptance criteria independently verified.",
+    "Optional (content taxonomy, pre-existing): venue-type discoverability is uneven - GET /api/situations?role=waiter&venue_type=pub returns 2, &venue_type=cafe returns 1, and role=bartender&venue_type=cafe returns 0, so a cafe/pub profile sees almost none of the 50 active situations (Learn shows the 'coming soon' empty state). The v2 pack itself flagged venue_types_resolution_required; consider widening venue_types or the venue filter fallback.",
+    "Optional UI hardening: dedupe/reset for the word-order exercise; raise contrast of light-grey secondary text."
+  ],
+  "critical_code_review_comments": [
+    "seed_pack_v2._FORCE_NEW is a one-off user authorization for 'handling-a-complaint'; keep the inline comment and consider moving it into the pack metadata so future packs do not need code edits.",
+    "Stale log noise: /var/log/supervisor/backend.out.log still contains older '[seed_pack_v2] BLOCKERS ... handling-a-complaint' lines from before _FORCE_NEW; current startups log no blockers (verified on 2 fresh restarts).",
+    "seed_pack_v2 relies on seed_content wiping situations/lessons/learning_items for idempotency; the replace_one/upsert path is fine, but a unique index on situations.slug and lessons.situation_slug would make duplicate protection structural rather than procedural."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v2_verify_t1.py",
+    "/app/backend/tests/test_v2_edge_t1.py",
+    "/app/backend/tests/snapshot_ids_t1.py"
+  ],
+  "success_rate": {"backend": "100% (64/64 tests)", "frontend": "100% of exercised flows"},
+  "seed_data_creation": "Created ~8 anonymous guests via POST /api/guests (fr/uk/it/pt/de) plus profile completions, situation attempts and review items for grading/practice checks. No seeded content modified; handling-a-complaint-bar untouched and still inactive.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "None - app has no auth (per /app/memory/test_credentials.md); guests are anonymous (localStorage iph_guest_id / iph_lang).",
+  "context_for_next_testing_agent": "New regression suites: /app/backend/tests/test_v2_verify_t1.py (catalog 50/25/25, activation policy, 10-lang i18n coverage with no blanks, 120 MC canonical + 48/72 policy split, practice grading + answer-leak check, v1 regression) and test_v2_edge_t1.py (out-of-range/string answers, unknown ids, _id leakage). Use /app/backend/tests/snapshot_ids_t1.py <out.json> to snapshot stable IDs/counts before-after a restart (hash d028e56b... at time of testing). pytest.ini uses xdist; run individual files with -o addopts=''. Frontend flow notes: guests created via API need PUT /api/guests/{id}/profile (role/venue_type/target_country/goal/english_level) to set onboarding_completed before /practice or /learn are reachable; lesson steps are intro-start-btn -> phrases-next-btn -> dialogue-next-btn -> 5 flashcards (click flashcard then flashcard-knew) -> exercise-{i} (MC/fill/word-order) -> quiz-{i} -> completion-score.",
+  "rca_of_the_issue": "No defects in the v2 import. The word-order duplication is a React state-batching edge case (bank chip disabled state not yet re-rendered when multiple clicks land in the same tick), and the venue-type discoverability gap comes from the content pack's venue_type targets (bar situations -> pub/cocktail-bar/hotel-restaurant, restaurant situations -> casual-restaurant/fine-dining/hotel-restaurant), not from the importer."
+}

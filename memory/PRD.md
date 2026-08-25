@@ -133,6 +133,14 @@ Backend es la fuente de verdad para corrección y para el scheduling SRS. Timest
 - **situation_count**: `GET /api/categories` ahora filtra `active:True` → counts 0/10/10/0/0/0/0 (visibilidad de categorías sin cambios).
 - Idempotente tras restart. **Tests**: `tests/test_final_gaps.py` (7) PASS + testing_agent iteración 7 (**100% backend 32/32 + 100% frontend**, sin issues). Sin deploy.
 
+### Content Pack v2 — 30 situaciones (2026-06, catálogo 20→50)
+- Fuente de verdad: `backend/data/hospitality_english_content_v2_emergent_single_file.json` (content_pack 30 situaciones + i18n_bundle 1024 IDs × 10 idiomas + preserve_english_mc_items 48).
+- Importador `seed_pack_v2.py` (reutiliza transformaciones de `seed_pack.py`): 10 `activate_existing_placeholder` (por slug exacto) + 20 `new`. `handling-a-complaint` no tenía placeholder exacto (solo `handling-a-complaint-bar`); por autorización del usuario se importó como **new** con slug exacto `handling-a-complaint`, dejando `handling-a-complaint-bar` inactivo/intacto. Idempotente (seed_content limpia + replace/upsert).
+- i18n: `seed_i18n.apply_i18n_bundle` fusiona bundles v1+v2; `_build_lookup` acepta source `mvp_content_pack_v2_30`, normaliza el vocabulario de keys v2 (`lesson.intro.*`→`intro.*`, `intro.objective.N`→`intro.objectives.N`, `exercise.*`→`exercises.*`) y descarta el índice redundante en campos escalares por item_id (mantiene índice solo en `.option.N`).
+- MC: 120 preguntas v2 (48 preserve_english_target_verbatim → opciones en inglés verbatim en todos los locales; 72 translate_from_es → opciones localizadas full-length). Orden/answer_index/assessment_dimension/canonical intactos.
+- Catálogo final: **50 activas (25 Bartender + 25 Waiter)**; categorías active-only (restaurant 25, bar 25, resto 0). MC activas totales 214 (94 v1 + 120 v2).
+- **Tests**: `tests/test_v2_import.py` (8) PASS + regresión v1 actualizada (33) PASS + testing_agent iteración 8 (**100% backend 64/64 + 100% frontend**, sin issues críticos, idempotencia verificada en 2 restarts). Sin deploy.
+
 ### Exportación i18n v1 (2026-06) — solo lectura, sin cambios de código/contenido
 - Herramienta reproducible `backend/tools/export_i18n.py` → genera `backend/data/mvp_i18n_export_v1.json` (copia descargable en `frontend/public/`).
 - Contiene: 7 situations legacy activas (completas: situation+lesson+learning_items, sin las 13 del pack), `ui_translations` (168 claves es+it), 9 strings visibles hardcodeados detectados, taxonomías (profiles 2, venues 6, countries 6, goals 5, skills 14), idiomas soportados (es/it) y descripción del fallback. Excluye guests/progress/attempts/SRS.

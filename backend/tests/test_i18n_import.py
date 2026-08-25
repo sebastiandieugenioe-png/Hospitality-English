@@ -36,9 +36,9 @@ class TestLanguages:
 
 class TestCatalogIntact:
     def test_counts(self):
-        assert len(requests.get(f"{API}/situations").json()) == 20
-        assert len(requests.get(f"{API}/situations", params={"role": "bartender"}).json()) == 10
-        assert len(requests.get(f"{API}/situations", params={"role": "waiter"}).json()) == 10
+        assert len(requests.get(f"{API}/situations").json()) == 50
+        assert len(requests.get(f"{API}/situations", params={"role": "bartender"}).json()) == 25
+        assert len(requests.get(f"{API}/situations", params={"role": "waiter"}).json()) == 25
 
 
 class TestLocalizedOptionsInvariant:

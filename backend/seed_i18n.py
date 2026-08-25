@@ -19,13 +19,39 @@ from pathlib import Path
 BUNDLE_PATH = Path(__file__).parent / "data" / "mvp_i18n_import_bundle_verified_v1.json"
 CATEGORIES_PACK_PATH = Path(__file__).parent / "data" / "mvp_categories_i18n_micro_pack_v1.json"
 FINAL_GAPS_PACK_PATH = Path(__file__).parent / "data" / "mvp_final_i18n_gaps_micro_pack_v1.json"
+V2_FILE_PATH = Path(__file__).parent / "data" / "hospitality_english_content_v2_emergent_single_file.json"
 
 LANGS = ["es", "it", "fr", "pt", "de", "pl", "ro", "uk", "nl", "en"]
+
+# The v2 bundle uses a slightly different key vocabulary; normalize it to the one
+# this overlay already consumes (no second system).
+_V2_KEY_NORMALIZE = {
+    "lesson.intro.context": "intro.context",
+    "lesson.intro.guest_opening": "intro.guest_opening",
+    "lesson.intro.summary": "intro.summary",
+    "exercise.prompt": "exercises.prompt",
+    "exercise.explanation": "exercises.explanation",
+}
+
+
+def _normalize_key(key):
+    if key in _V2_KEY_NORMALIZE:
+        return _V2_KEY_NORMALIZE[key]
+    if key and key.startswith("lesson.intro.objective."):
+        return "intro.objectives." + key.rsplit(".", 1)[1]
+    if key and key.startswith("exercise.option."):
+        return "exercises.option." + key.rsplit(".", 1)[1]
+    return key
 
 
 def _load_bundle():
     with open(BUNDLE_PATH, encoding="utf-8") as f:
         return json.load(f)
+
+
+def _load_v2_bundle():
+    with open(V2_FILE_PATH, encoding="utf-8") as f:
+        return json.load(f)["i18n_bundle"]
 
 
 async def apply_skills_i18n(db):
@@ -126,9 +152,17 @@ def _build_lookup(bundle):
         tr = e["translations"]
         for r in e["references"]:
             src = r.get("source")
-            if src in ("mvp_content_pack_v1", "legacy_export"):
-                content[(r.get("situation_slug"), r.get("key"), r.get("item_id"), r.get("index"))] = tr
-                if r.get("key") == "dialogue.speaker_label":
+            if src in ("mvp_content_pack_v1", "legacy_export", "mvp_content_pack_v2_30"):
+                key = _normalize_key(r.get("key"))
+                item_id = r.get("item_id")
+                idx = r.get("index")
+                # For item_id-scoped scalar fields (prompt/explanation/phrase text &
+                # metadata) the numeric index is redundant; drop it so the existing
+                # item_id-keyed lookups match. Option arrays keep their index.
+                if item_id is not None and ".option." not in (key or ""):
+                    idx = None
+                content[(r.get("situation_slug"), key, item_id, idx)] = tr
+                if key == "dialogue.speaker_label":
                     speaker_labels[tr["es"]] = tr
             elif src == "taxonomies":
                 taxonomy[(r.get("taxonomy"), r.get("id"), r.get("key"))] = tr
@@ -200,7 +234,9 @@ def _apply_phrase(p, slug, lookup):
 
 async def apply_i18n_bundle(db):
     bundle = _load_bundle()
-    content, taxonomy, speaker_labels = _build_lookup(bundle)
+    v2 = _load_v2_bundle()
+    combined = {"entries": bundle["entries"] + v2["entries"]}
+    content, taxonomy, speaker_labels = _build_lookup(combined)
 
     slugs = sorted({k[0] for k in content if k[0]})
 
