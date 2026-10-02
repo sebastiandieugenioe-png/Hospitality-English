@@ -121,6 +121,14 @@ export const submitSpeakingAttempt = (guestId, { speaking_item_id, duration_ms, 
     .then((r) => r.data);
 };
 
+// Accounts & Auth (Firebase Bearer token)
+const authHdr = (token) => ({ headers: { Authorization: `Bearer ${token}` } });
+export const authBootstrap = (token, body) => client.post("/auth/bootstrap", body, authHdr(token)).then((r) => r.data);
+export const authCompleteLink = (token, body) => client.post("/auth/complete-link", body, authHdr(token)).then((r) => r.data);
+export const authMe = (token) => client.get("/auth/me", authHdr(token)).then((r) => r.data);
+export const deleteAccount = (token) =>
+  client.delete("/account", { ...authHdr(token), data: { confirm: "DELETE" } }).then((r) => r.data);
+
 export const updateLanguage = (id, interface_language) =>
   client.put(`/guests/${id}/language`, { interface_language }).then((r) => r.data);
 export const getLanguages = () => client.get("/languages").then((r) => r.data);

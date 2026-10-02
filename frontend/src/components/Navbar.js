@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { GraduationCap, Globe, Check } from "lucide-react";
+import { GraduationCap, Globe, Check, UserCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { SUPPORTED_LANGUAGES } from "@/lib/i18n";
 
@@ -124,6 +124,14 @@ export function Navbar() {
           <div className="shrink-0">
             <LanguageSwitcher />
           </div>
+          <Link
+            to="/account"
+            data-testid="navbar-account-link"
+            aria-label={t("nav.account")}
+            className="shrink-0 text-brand-charcoal/70 hover:text-brand-forest transition-colors"
+          >
+            <UserCircle className="w-6 h-6" strokeWidth={1.75} />
+          </Link>
         </div>
       </nav>
     </header>

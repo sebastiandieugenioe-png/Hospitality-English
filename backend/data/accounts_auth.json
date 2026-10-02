@@ -1,0 +1,299 @@
+{
+  "name": "HospitalityEnglish — Accounts & Auth MVP — WorkEnglish-compatible",
+  "version": 1,
+  "status": "ARCHITECTURE_READY_EXTERNAL_CONFIG_REQUIRED",
+  "profession_id": "hospitality",
+  "auth_provider": {
+    "platform": "Firebase Authentication",
+    "reasons": [
+      "Supports Google and Apple social sign-in",
+      "Supports anonymous users and account linking",
+      "Keeps identity management separate from FastAPI/Mongo learning data",
+      "Fits future multi-vertical WorkEnglish account model",
+      "Avoids building password/security infrastructure in the MVP"
+    ],
+    "firebase_methods_v1": [
+      "anonymous",
+      "google.com",
+      "apple.com"
+    ]
+  },
+  "workenglish_model": {
+    "current_brand": "HospitalityEnglish",
+    "future_parent": "WorkEnglish",
+    "principle": "One user account can own one or more profession learning profiles.",
+    "v1_professions": [
+      "hospitality"
+    ],
+    "future_professions": [
+      "pharmacy",
+      "care",
+      "construction",
+      "warehouse",
+      "retail",
+      "childcare",
+      "mechanic",
+      "electrician"
+    ],
+    "no_profession_selector_v1": true
+  },
+  "collections": {
+    "users": {
+      "fields": [
+        "id",
+        "firebase_uid",
+        "email",
+        "display_name",
+        "providers",
+        "professions",
+        "active_profession",
+        "profile_ids_by_profession",
+        "created_at",
+        "updated_at",
+        "last_login_at",
+        "status"
+      ],
+      "unique": [
+        "firebase_uid"
+      ]
+    },
+    "guests_existing_collection_extension": {
+      "description": "Keep the existing guests collection to avoid a risky pre-launch migration. Treat each guest document conceptually as a profession learning profile.",
+      "add_fields": [
+        "user_id nullable",
+        "profession_id default 'hospitality'",
+        "auth_state: guest|linked"
+      ],
+      "future_debt_note": "After launch, guests can be renamed/migrated to learning_profiles without changing the user/auth model."
+    },
+    "account_events": {
+      "fields": [
+        "id",
+        "user_id",
+        "firebase_uid",
+        "event_type",
+        "provider",
+        "guest_id",
+        "profession_id",
+        "created_at",
+        "metadata"
+      ],
+      "purpose": "Audit account linking, sign-in, logout and deletion without storing provider tokens."
+    }
+  },
+  "guest_to_account_strategy": {
+    "bootstrap": [
+      "Preserve the existing local guest_id.",
+      "Initialize Firebase Authentication.",
+      "If no Firebase user exists, sign in anonymously.",
+      "Send Firebase ID token + current guest_id to backend bootstrap.",
+      "Backend verifies token and maps anonymous firebase_uid to current guest profile."
+    ],
+    "first_account_creation": [
+      "Link Google or Apple credential to the CURRENT anonymous Firebase user whenever possible.",
+      "Firebase UID remains stable after successful linking.",
+      "Backend creates/updates a users document and attaches the current hospitality guest profile.",
+      "Do not copy or rewrite progress collections; keep the same guest_id so all existing progress remains intact."
+    ],
+    "existing_account_sign_in": [
+      "If provider credential already belongs to another Firebase user, sign in to that existing Firebase account.",
+      "Backend resolves its canonical hospitality guest profile.",
+      "Switch client to canonical guest_id.",
+      "Do not silently overwrite the target account with the temporary guest profile.",
+      "For V1, if the temporary guest has meaningful activity, retain it as an unmerged local profile and show a non-blocking message that current account progress has been loaded. A generic merge service may be added later if analytics show this case matters."
+    ],
+    "cross_device": "On another device, provider sign-in resolves firebase_uid -> users -> profile_ids_by_profession['hospitality'] -> canonical guest_id."
+  },
+  "user_schema_example": {
+    "id": "usr_uuid",
+    "firebase_uid": "firebase_uid",
+    "email": "nullable",
+    "display_name": "nullable",
+    "providers": [
+      "google.com"
+    ],
+    "professions": [
+      "hospitality"
+    ],
+    "active_profession": "hospitality",
+    "profile_ids_by_profession": {
+      "hospitality": "existing_guest_uuid"
+    },
+    "status": "active"
+  },
+  "auth_flow": {
+    "guest": "App works without a visible account requirement.",
+    "sign_up_google": "Link current anonymous Firebase user to Google, preserve guest_id.",
+    "sign_up_apple": "Show explicit consent that current HospitalityEnglish progress will be linked to the Apple account, then link current anonymous Firebase user.",
+    "sign_in_existing": "Resolve canonical hospitality profile for the authenticated Firebase UID.",
+    "logout": "Sign out authenticated Firebase user, clear authenticated profile from local app state, start a new anonymous Firebase session and fresh guest profile so the previous user's data is not visible.",
+    "session_validation": "Backend verifies Firebase ID token on protected account endpoints.",
+    "no_passwords": true
+  },
+  "backend_endpoints": [
+    {
+      "method": "POST",
+      "path": "/api/auth/bootstrap",
+      "auth": "Firebase Bearer token",
+      "body": [
+        "current_guest_id",
+        "profession_id"
+      ],
+      "returns": [
+        "auth_state",
+        "user_id",
+        "canonical_guest_id",
+        "profession_id",
+        "providers"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/complete-link",
+      "auth": "Firebase Bearer token",
+      "body": [
+        "current_guest_id",
+        "profession_id"
+      ],
+      "returns": [
+        "user_id",
+        "canonical_guest_id",
+        "providers"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me",
+      "auth": "Firebase Bearer token",
+      "returns": [
+        "user",
+        "canonical_guest_id"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/account",
+      "auth": "Firebase Bearer token + recent reauthentication on client",
+      "body": [
+        "confirm='DELETE'"
+      ],
+      "returns": [
+        "deleted"
+      ]
+    }
+  ],
+  "frontend": {
+    "account_entry_points": [
+      "Settings / Profile",
+      "Optional save-progress card after meaningful guest progress"
+    ],
+    "buttons": [
+      "Continue with Google",
+      "Continue with Apple"
+    ],
+    "do_not_force_signup": true,
+    "benefit_copy": "Save your progress and continue on another device.",
+    "apple_link_consent": "Your current HospitalityEnglish progress will be linked to your Apple account and available across devices.",
+    "settings": [
+      "Signed-in email/name when available",
+      "Linked providers",
+      "Sign out",
+      "Delete account"
+    ]
+  },
+  "deletion": {
+    "in_app_required": true,
+    "external_web_deletion_page_required_before_google_play_submission": true,
+    "collections_to_delete_by_guest_or_user": [
+      "guests",
+      "attempts",
+      "review_items",
+      "assessment_attempts",
+      "shift_sessions",
+      "job_interview_progress",
+      "first_week_progress",
+      "listening_attempts",
+      "speaking_attempts",
+      "users",
+      "account_events where legally/operationally appropriate"
+    ],
+    "apple": {
+      "reauthenticate_before_delete": true,
+      "revoke_apple_access_token_before_account_delete": true,
+      "implementation_note": "Use Firebase's Apple reauthentication/revokeAccessToken flow when Apple auth is enabled."
+    },
+    "provider_account": "Delete Firebase Authentication user only after associated HospitalityEnglish data deletion succeeds or is idempotently confirmed."
+  },
+  "security": {
+    "backend_verifies_id_tokens": true,
+    "never_trust_client_uid": true,
+    "never_store_google_or_apple_passwords": true,
+    "never_store_oauth_access_tokens_unless_required_for_immediate revocation": true,
+    "firebase_admin_credentials_backend_only": true,
+    "rate_limit_account_endpoints": true
+  },
+  "progress_preservation": {
+    "principle": "First guest -> account conversion must preserve 100% of existing progress without bulk migration.",
+    "method": "Attach existing guest profile to user instead of creating a new profile.",
+    "existing_collections_remain_keyed_by_guest_id": true,
+    "future_profession_support": "One user may map to a separate canonical profile_id per profession."
+  },
+  "future_entitlements_hook": {
+    "do_not_build_paywall_now": true,
+    "future_model": [
+      "profession entitlement",
+      "multi-profession entitlement",
+      "WorkEnglish Unlimited",
+      "WorkEnglish Teams"
+    ],
+    "auth_user_id_becomes_billing_owner": true
+  },
+  "tests": [
+    "Guest can still use app with no account.",
+    "Existing guest progress remains intact after Google account linking.",
+    "Existing guest progress remains intact after Apple account linking.",
+    "Google-linked account resolves same canonical guest_id after refresh.",
+    "Apple-linked account resolves same canonical guest_id after refresh.",
+    "Cross-device sign-in resolves same hospitality guest profile.",
+    "Logout never exposes previous authenticated profile.",
+    "New anonymous session after logout gets fresh guest profile.",
+    "Backend rejects invalid/expired Firebase ID token.",
+    "Backend ignores client-supplied firebase_uid and derives identity from verified token.",
+    "user.professions includes hospitality.",
+    "user.active_profession is hospitality in V1.",
+    "guest.profession_id is hospitality.",
+    "50 situations remain 25/25.",
+    "Assessment intact.",
+    "Emergency Phrases intact.",
+    "Tonight's Shift intact.",
+    "Job Interview intact.",
+    "First Week intact.",
+    "Listening intact.",
+    "Speaking intact.",
+    "Recommended remains 3–5.",
+    "SRS/mastery intact.",
+    "Account deletion removes linked learning data.",
+    "Apple deletion path requires fresh Apple reauth/token revocation when Apple provider is enabled.",
+    "No account creation is required to start learning."
+  ],
+  "implementation_phases": {
+    "A_firebase_core_google": [
+      "Firebase project",
+      "anonymous auth",
+      "Google provider",
+      "backend Firebase Admin verification",
+      "guest linking",
+      "cross-device sync",
+      "logout",
+      "in-app deletion"
+    ],
+    "B_apple": [
+      "Apple Developer App ID",
+      "Sign in with Apple capability",
+      "Services ID / return URL",
+      "Apple provider in Firebase",
+      "Apple account linking",
+      "Apple reauth + revokeAccessToken deletion flow"
+    ]
+  }
+}

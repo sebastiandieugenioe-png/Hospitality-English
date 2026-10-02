@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Query, UploadFile, File, Form
+from fastapi import FastAPI, APIRouter, HTTPException, Query, UploadFile, File, Form, Header, Request, Depends
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -27,6 +27,7 @@ import listening_data as listening
 import speaking_data as speaking
 import stt_elevenlabs
 import speaking_evaluator
+import firebase_admin_setup
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -137,6 +138,21 @@ class JobInterviewOpen(BaseModel):
 class ListeningAnswer(BaseModel):
     listening_item_id: str
     selected_index: int
+
+
+class BootstrapReq(BaseModel):
+    current_guest_id: Optional[str] = None
+    profession_id: str = "hospitality"
+
+
+class CompleteLinkReq(BaseModel):
+    current_guest_id: Optional[str] = None
+    profession_id: str = "hospitality"
+
+
+class DeleteAccountReq(BaseModel):
+    confirm: str
+
 
 
 # ---------- Mastery + SRS constants ----------
@@ -550,6 +566,11 @@ async def create_guest(payload: GuestCreate):
             "employment_status": None,
         },
         "onboarding_completed": False,
+        # Accounts/Auth V1 (WorkEnglish-compatible). Backward-compatible additions:
+        # existing guest docs without these are treated as anonymous "guest" profiles.
+        "profession_id": "hospitality",
+        "user_id": None,
+        "auth_state": "guest",
         # Existing progress (must never be reset).
         "flashcard_interactions": [],
         "completed_lessons": [],
@@ -2287,6 +2308,214 @@ async def speaking_attempt(
 
 
 
+# ---------- Accounts & Auth MVP (Firebase identity; Mongo = learning source of truth) ----------
+# Learning-data collections keyed by guest_id (real collection names in this DB).
+LEARNING_COLLECTIONS = [
+    "situation_attempts", "review_items", "assessment_attempts", "shift_sessions",
+    "job_interview_progress", "first_week_progress", "listening_attempts", "speaking_attempts",
+]
+
+# Minimal in-memory rate limiter for auth endpoints (per client, sliding window).
+_rate_buckets = {}
+
+
+def _rate_limit(key, limit=30, window=60):
+    import time
+    now = time.time()
+    bucket = [t for t in _rate_buckets.get(key, []) if now - t < window]
+    if len(bucket) >= limit:
+        raise HTTPException(status_code=429, detail="Too many requests")
+    bucket.append(now)
+    _rate_buckets[key] = bucket
+
+
+async def require_identity(request: Request, authorization: str = Header(None)):
+    """Verify the Firebase ID token; identity is derived ONLY from the token."""
+    _rate_limit(request.client.host if request.client else "unknown")
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing bearer token")
+    token = authorization.split(" ", 1)[1].strip()
+    try:
+        return firebase_admin_setup.verify_token(token)
+    except Exception:
+        # Do not leak internals.
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+
+def _public_user(user):
+    return {
+        "id": user["id"],
+        "email": user.get("email"),
+        "display_name": user.get("display_name"),
+        "providers": user.get("providers", []),
+        "professions": user.get("professions", []),
+        "active_profession": user.get("active_profession"),
+        "profile_ids_by_profession": user.get("profile_ids_by_profession", {}),
+        "status": user.get("status", "active"),
+    }
+
+
+async def _log_account_event(user_id, firebase_uid, event_type, provider=None, guest_id=None, profession_id="hospitality", metadata=None):
+    await db.account_events.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "firebase_uid": firebase_uid,
+        "event_type": event_type,
+        "provider": provider,
+        "guest_id": guest_id,
+        "profession_id": profession_id,
+        "created_at": now_iso(),
+        "metadata": metadata or {},
+    })
+
+
+async def _ensure_anonymous_guest(uid, current_guest_id, profession):
+    """Map an anonymous firebase_uid to the current guest (no visible account)."""
+    guest = None
+    if current_guest_id:
+        guest = await db.guests.find_one({"id": current_guest_id}, {"_id": 0})
+    if not guest:
+        guest = await db.guests.find_one({"anonymous_firebase_uid": uid}, {"_id": 0})
+    if not guest:
+        # No local guest yet: create a fresh anonymous profile.
+        guest = (await create_guest(GuestCreate())).copy()
+    await db.guests.update_one(
+        {"id": guest["id"]},
+        {"$set": {"anonymous_firebase_uid": uid, "profession_id": profession,
+                  "auth_state": guest.get("auth_state", "guest") if guest.get("user_id") else "guest"}},
+    )
+    return guest["id"]
+
+
+async def _create_user_attaching_guest(uid, email, name, providers, current_guest_id, profession):
+    """First-time link: create a users doc attaching the CURRENT guest (preserve guest_id).
+    No progress is copied or migrated."""
+    if not current_guest_id or not await db.guests.find_one({"id": current_guest_id}):
+        raise HTTPException(status_code=422, detail="current_guest_id required to link")
+    user = {
+        "id": "usr_" + str(uuid.uuid4()),
+        "firebase_uid": uid,
+        "email": email,
+        "display_name": name,
+        "providers": providers,
+        "professions": [profession],
+        "active_profession": profession,
+        "profile_ids_by_profession": {profession: current_guest_id},
+        "created_at": now_iso(),
+        "updated_at": now_iso(),
+        "last_login_at": now_iso(),
+        "status": "active",
+    }
+    await db.users.insert_one(dict(user))
+    await db.guests.update_one(
+        {"id": current_guest_id},
+        {"$set": {"user_id": user["id"], "auth_state": "linked", "profession_id": profession}},
+    )
+    await _log_account_event(user["id"], uid, "link", providers[0] if providers else None, current_guest_id, profession)
+    return user
+
+
+@api_router.post("/auth/bootstrap")
+async def auth_bootstrap(payload: BootstrapReq, identity: dict = Depends(require_identity)):
+    uid = identity["uid"]
+    profession = payload.profession_id or "hospitality"
+    providers = firebase_admin_setup.providers_from_claims(identity)
+
+    user = await db.users.find_one({"firebase_uid": uid}, {"_id": 0})
+    if user:
+        await db.users.update_one({"firebase_uid": uid}, {"$set": {"last_login_at": now_iso(), "updated_at": now_iso()}})
+        canonical = user.get("profile_ids_by_profession", {}).get(profession)
+        return {"auth_state": "linked", "user_id": user["id"], "canonical_guest_id": canonical,
+                "profession_id": profession, "providers": user.get("providers", providers)}
+
+    if firebase_admin_setup.is_anonymous(identity):
+        canonical = await _ensure_anonymous_guest(uid, payload.current_guest_id, profession)
+        return {"auth_state": "guest", "user_id": None, "canonical_guest_id": canonical,
+                "profession_id": profession, "providers": providers}
+
+    # Non-anonymous token without a user doc → treat as first link / existing provider sign-in.
+    new_user = await _create_user_attaching_guest(
+        uid, identity.get("email"), identity.get("name"), providers, payload.current_guest_id, profession)
+    canonical = new_user["profile_ids_by_profession"][profession]
+    return {"auth_state": "linked", "user_id": new_user["id"], "canonical_guest_id": canonical,
+            "profession_id": profession, "providers": providers}
+
+
+@api_router.post("/auth/complete-link")
+async def auth_complete_link(payload: CompleteLinkReq, identity: dict = Depends(require_identity)):
+    uid = identity["uid"]
+    profession = payload.profession_id or "hospitality"
+    providers = firebase_admin_setup.providers_from_claims(identity)
+    email = identity.get("email")
+    name = identity.get("name")
+
+    user = await db.users.find_one({"firebase_uid": uid}, {"_id": 0})
+    if user:
+        # Existing account sign-in (same device re-auth OR cross-device): resolve the
+        # canonical profile. NEVER overwrite it with the temporary guest.
+        merged_providers = sorted(set(user.get("providers", []) + providers))
+        await db.users.update_one(
+            {"firebase_uid": uid},
+            {"$set": {"last_login_at": now_iso(), "updated_at": now_iso(), "providers": merged_providers,
+                      "email": email or user.get("email"), "display_name": name or user.get("display_name")}},
+        )
+        canonical = user.get("profile_ids_by_profession", {}).get(profession)
+        await _log_account_event(user["id"], uid, "sign_in", providers[0] if providers else None, canonical, profession)
+        loaded_existing = canonical != payload.current_guest_id
+        return {"user_id": user["id"], "canonical_guest_id": canonical, "providers": merged_providers,
+                "loaded_existing_account": loaded_existing}
+
+    # First-time link of the current (anonymous→Google) user: attach current guest.
+    new_user = await _create_user_attaching_guest(uid, email, name, providers, payload.current_guest_id, profession)
+    canonical = new_user["profile_ids_by_profession"][profession]
+    return {"user_id": new_user["id"], "canonical_guest_id": canonical, "providers": providers,
+            "loaded_existing_account": False}
+
+
+@api_router.get("/auth/me")
+async def auth_me(identity: dict = Depends(require_identity)):
+    uid = identity["uid"]
+    user = await db.users.find_one({"firebase_uid": uid}, {"_id": 0})
+    if user:
+        canonical = user.get("profile_ids_by_profession", {}).get(user.get("active_profession", "hospitality"))
+        return {"user": _public_user(user), "canonical_guest_id": canonical}
+    g = await db.guests.find_one({"anonymous_firebase_uid": uid}, {"_id": 0, "id": 1})
+    return {"user": None, "canonical_guest_id": g["id"] if g else None}
+
+
+@api_router.delete("/account")
+async def delete_account(payload: DeleteAccountReq, identity: dict = Depends(require_identity)):
+    if payload.confirm != "DELETE":
+        raise HTTPException(status_code=422, detail="Confirmation required")
+    uid = identity["uid"]
+
+    guest_ids = set()
+    user = await db.users.find_one({"firebase_uid": uid}, {"_id": 0})
+    if user:
+        for gid in (user.get("profile_ids_by_profession", {}) or {}).values():
+            if gid:
+                guest_ids.add(gid)
+    anon = await db.guests.find_one({"anonymous_firebase_uid": uid}, {"_id": 0, "id": 1})
+    if anon:
+        guest_ids.add(anon["id"])
+
+    # Delete all learning data for the owned guest profile(s), then the guest docs.
+    for gid in guest_ids:
+        for col in LEARNING_COLLECTIONS:
+            await db[col].delete_many({"guest_id": gid})
+        await db.guests.delete_one({"id": gid})
+
+    if user:
+        await db.users.delete_one({"firebase_uid": uid})
+
+    # Delete the Firebase Auth user last (idempotent).
+    firebase_admin_setup.delete_user(uid)
+    await _log_account_event(user["id"] if user else None, uid, "delete", None, None, "hospitality",
+                             {"deleted_guest_ids": list(guest_ids)})
+    return {"deleted": True}
+
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -2343,6 +2572,10 @@ async def startup_seed():
         await db.speaking_attempts.create_index("guest_id")
         await db.speaking_attempts.create_index([("guest_id", 1), ("speaking_item_id", 1)])
         await db.speaking_attempts.create_index([("guest_id", 1), ("overall", 1)])
+        await db.users.create_index("firebase_uid", unique=True)
+        await db.guests.create_index("anonymous_firebase_uid")
+        await db.guests.create_index("user_id")
+        await db.account_events.create_index("firebase_uid")
     except Exception as e:
         logger.warning(f"Index creation skipped: {e}")
     logger.info("Content + reference data seeded.")
