@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, Bookmark, BookmarkCheck, ChevronDown, LifeBuoy } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -18,7 +17,6 @@ const VENUE_LABEL = {
 };
 
 export default function EmergencyPhrases() {
-  const navigate = useNavigate();
   const { language, profile, savedPhraseIds, t } = useApp();
   const [pack, setPack] = useState(null);
   const [query, setQuery] = useState("");
@@ -47,7 +45,7 @@ export default function EmergencyPhrases() {
     return p.phrase_en.toLowerCase().includes(q) || m.includes(q);
   };
 
-  const phrases = pack?.phrases || [];
+  const phrases = useMemo(() => pack?.phrases || [], [pack]);
 
   const results = useMemo(() => phrases.filter(matches), [phrases, q, category, language]); // eslint-disable-line
 
