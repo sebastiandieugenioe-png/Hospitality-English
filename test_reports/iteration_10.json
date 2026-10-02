@@ -1,0 +1,39 @@
+{
+  "summary": "Independently verified the new optional 'Can I Work in English?' assessment feature on backend (20/20 pytest PASS) and frontend (full flow in 390x844 mobile viewport). Backend: role-specific question counts (bartender 15, waiter 15), /api/assessment/start requires role (400 otherwise), preserve_english_target_verbatim MC options byte-identical to canonical English in es/de/uk, translate_from_es MC uses localized_options (verified de), prompts localized per language (fr), scoring EXACT per pack (all-correct bartender=100 band=strong_foundation, all-correct waiter=100, all-wrong=0 band=build_foundations, partial first-6-wrong formula matches server output), baseline immutability (is_baseline true on 1st attempt, baseline_score=100 preserved across retake, current_score updated to 0), assessment-summary reflects baseline+current+weak_areas+weak_skills+last_completed_at+latest, weak_areas size=2 and matches lowest-2 scores, weak_skills <=3, /api/guests/{id}/recommended-situations returns 3-5 and surfaces 'weakness' reason when assessment weak_skills exist, summary without assessment returns has_assessment=false with sane defaults (no error), meta exposes 6 areas + 4 bands + ui with all 10 languages (es,it,fr,pt,de,pl,ro,uk,nl,en), /api/situations still has exactly 50 active (25 bartender + 25 waiter), meta is stable across calls. Frontend: Home shows [data-testid=assessment-entry-card] with localized title/subtitle; click navigates to /assessment; intro renders assessment-title, duration, maybe-later-btn and start-btn; starting shows assessment-progress 1/15..15/15; all 3 question types (multiple_choice via assessment-option-<i>, fill_gap via assessment-gap-input, word_ordering via assessment-answer-area + pool buttons) are answerable; assessment-continue-btn advances; completing renders assessment-overall-score, exactly 6 [data-testid=assessment-area-<key>], assessment-strong, assessment-needs-practice and assessment-retake-btn. Scoring formula matches UI (one wrong payments MC => 50% area, 95% overall which is 25+15+15+15+20+5). Clicking retake returns to Q1. No CEFR level tokens (A1/A2/B1/B2/C1/C2) appear anywhere on intro or result.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Assessment intro", "issues": ["The disclaimer literally contains the acronym 'CEFR' in Spanish ('no una certificación laboral ni CEFR'). The spec says 'Must NOT show CEFR'. This is a *denial* (not a claim) so it may be acceptable, but the strict reading of the acceptance criterion 'No CEFR text anywhere' is technically violated. Consider rephrasing the disclaimer to drop the acronym (e.g. 'no una certificación oficial'). Not blocking."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_assessment_can_i_work.py",
+    "/app/test_reports/pytest/assessment_results.xml"
+  ],
+  "action_items": [
+    "OPTIONAL: Rephrase assessment intro disclaimer to avoid the acronym 'CEFR' (currently 'no una certificación laboral ni CEFR'); the spec forbids CEFR text anywhere. The intent (no CEFR level grading) is honored - no A1/A2/B1/B2/C1/C2 tokens appear."
+  ],
+  "critical_code_review_comments": [
+    "Positive: assessment questions are loaded from a read-only JSON pack at import time -> inherently idempotent across restarts; no DB seeding, no duplication possible.",
+    "Positive: _score_assessment computes area_score=round(100*correct/total_in_area) and overall=round(sum(area*weight)) exactly per the pack's scoring block; verified against hand-computed partial scenario.",
+    "Positive: baseline flag is set only when prior_completed==0 and assessment_baseline_score is only written on the baseline attempt; retakes update current_score / last_completed_at / weak_* but never touch baseline. Verified end-to-end.",
+    "Positive: preserve_english_target_verbatim honored -- for b01/b08/b10/b13/b14 MC the served options are byte-identical to the canonical English options in es/de/uk; translate_from_es MC (b04) returns localized_options for the requested language. answer_index is never exposed on the public question payload.",
+    "Positive: GET /api/guests/{id}/recommended-situations enforces the 3-5 contract and merges guest.assessment_weak_skills into the weakness scoring, surfacing 'weakness:*' reasons when applicable.",
+    "Positive: In-progress attempts are reused on repeated POST /api/assessment/start -> no attempt duplication.",
+    "Positive: _assessment_public_q strips answer_index/answer and only exposes id/type/area/prompt/options|sentence|words.",
+    "Minor/UX: The intro disclaimer text includes the literal acronym 'CEFR' which the spec says must not appear; see action item.",
+    "Minor: /api/assessment/meta.ui is a {key:{lang:string}} map while /api/assessment/meta.supported_languages lists codes; redundant but not harmful."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_assessment_can_i_work.py"
+  ],
+  "success_rate": {"backend": "100% (20/20 assessment tests)", "frontend": "100% (Home entry card, intro, 15-question flow mixing all 3 types, results with 6 areas + strong + needs-practice + retake, no CEFR level tokens)"},
+  "test_credentials": "Anonymous guest via POST /api/guests + PUT /api/guests/{id}/profile with role=bartender/waiter, venue_type=pub, target_country=ireland, goal=work_abroad, employment_status=looking_for_job.",
+  "seed_data_creation": "Created ~15 anonymous guests across backend+frontend tests. No modification to catalog/situations/lessons/attempts of pre-existing data.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend regression suite: /app/backend/tests/test_assessment_can_i_work.py (run with -o addopts='' to avoid xdist). Bartender full-correct answer key for UI E2E (indexes 0-14): [MC=1, FG='like', WO=\"I'll get those started for you\", MC=0, MC=2, MC=1, FG='crisp', MC=2, FG='check', MC=1, MC=3, WO='Let me see what I can do for you', MC=2, MC=1, MC=3]. For word_ordering use button clicks with has-text in the pool div (div.mt-4.flex.flex-wrap button:not([disabled])). To seed a bartender guest with role already set, POST /api/guests then PUT /api/guests/{id}/profile and inject localStorage iph_guest_id via page.add_init_script BEFORE page.goto('/assessment'). Mobile viewport 390x844.",
+  "rca_of_the_issue": "Only an optional UX nit: the Spanish disclaimer explicitly denies CEFR by name ('no es una certificación laboral ni CEFR'). The intent of the ban is to avoid *claiming* a CEFR level/grading; the denial does the opposite. Fix is a one-line copy change in /app/backend/data/can_i_work_assessment.json ui_translations.note (or similar key) across the 10 languages. Not blocking."
+}
