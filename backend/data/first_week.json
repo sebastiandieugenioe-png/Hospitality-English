@@ -1,0 +1,796 @@
+{
+  "name": "Hospitality English — First Week at Work MVP — VERIFIED",
+  "version": 1,
+  "status": "READY_FOR_IMPLEMENTATION",
+  "learning_language": "en",
+  "interface_languages": [
+    "es",
+    "it",
+    "fr",
+    "pt",
+    "de",
+    "pl",
+    "ro",
+    "uk",
+    "nl",
+    "en"
+  ],
+  "scenario_count": 10,
+  "roles": [
+    "bartender",
+    "waiter"
+  ],
+  "ui_translations": {
+    "title": {
+      "es": "Tu primera semana en el trabajo",
+      "it": "La tua prima settimana di lavoro",
+      "fr": "Votre première semaine au travail",
+      "pt": "A tua primeira semana no trabalho",
+      "de": "Deine erste Woche bei der Arbeit",
+      "pl": "Twój pierwszy tydzień w pracy",
+      "ro": "Prima ta săptămână la muncă",
+      "uk": "Твій перший тиждень на роботі",
+      "nl": "Je eerste werkweek",
+      "en": "First Week at Work"
+    },
+    "subtitle": {
+      "es": "Inglés práctico para entender a tu equipo, pedir ayuda y adaptarte a tu nuevo trabajo.",
+      "it": "Inglese pratico per capire il team, chiedere aiuto e adattarti al nuovo lavoro.",
+      "fr": "De l’anglais pratique pour comprendre votre équipe, demander de l’aide et vous adapter à votre nouveau poste.",
+      "pt": "Inglês prático para entender a tua equipa, pedir ajuda e adaptar-te ao novo trabalho.",
+      "de": "Praktisches Englisch, um dein Team zu verstehen, um Hilfe zu bitten und dich an den neuen Job anzupassen.",
+      "pl": "Praktyczny angielski, który pomoże ci rozumieć zespół, prosić o pomoc i odnaleźć się w nowej pracy.",
+      "ro": "Engleză practică pentru a-ți înțelege echipa, a cere ajutor și a te adapta la noul loc de muncă.",
+      "uk": "Практична англійська, щоб розуміти команду, просити допомогу й адаптуватися до нової роботи.",
+      "nl": "Praktisch Engels om je team te begrijpen, hulp te vragen en je aan je nieuwe baan aan te passen.",
+      "en": "Practical English for understanding your team, asking for help and settling into a new job."
+    },
+    "situation": {
+      "es": "Situación",
+      "it": "Situazione",
+      "fr": "Situation",
+      "pt": "Situação",
+      "de": "Situation",
+      "pl": "Sytuacja",
+      "ro": "Situație",
+      "uk": "Ситуація",
+      "nl": "Situatie",
+      "en": "Situation"
+    },
+    "what_you_need": {
+      "es": "Qué necesitas saber",
+      "it": "Cosa devi sapere",
+      "fr": "Ce que vous devez savoir",
+      "pt": "O que precisas de saber",
+      "de": "Was du wissen musst",
+      "pl": "Co musisz wiedzieć",
+      "ro": "Ce trebuie să știi",
+      "uk": "Що потрібно знати",
+      "nl": "Wat je moet weten",
+      "en": "What you need to know"
+    },
+    "useful_phrases": {
+      "es": "Frases útiles",
+      "it": "Frasi utili",
+      "fr": "Phrases utiles",
+      "pt": "Frases úteis",
+      "de": "Nützliche Sätze",
+      "pl": "Przydatne zwroty",
+      "ro": "Expresii utile",
+      "uk": "Корисні фрази",
+      "nl": "Handige zinnen",
+      "en": "Useful phrases"
+    },
+    "example": {
+      "es": "Ejemplo",
+      "it": "Esempio",
+      "fr": "Exemple",
+      "pt": "Exemplo",
+      "de": "Beispiel",
+      "pl": "Przykład",
+      "ro": "Exemplu",
+      "uk": "Приклад",
+      "nl": "Voorbeeld",
+      "en": "Example"
+    },
+    "practice": {
+      "es": "Práctica",
+      "it": "Pratica",
+      "fr": "Entraînement",
+      "pt": "Prática",
+      "de": "Übung",
+      "pl": "Praktyka",
+      "ro": "Practică",
+      "uk": "Практика",
+      "nl": "Oefening",
+      "en": "Practice"
+    },
+    "progress": {
+      "es": "Situación {current} de {total}",
+      "it": "Situazione {current} di {total}",
+      "fr": "Situation {current} sur {total}",
+      "pt": "Situação {current} de {total}",
+      "de": "Situation {current} von {total}",
+      "pl": "Sytuacja {current} z {total}",
+      "ro": "Situația {current} din {total}",
+      "uk": "Ситуація {current} з {total}",
+      "nl": "Situatie {current} van {total}",
+      "en": "Situation {current} of {total}"
+    },
+    "complete": {
+      "es": "Completar",
+      "it": "Completa",
+      "fr": "Terminer",
+      "pt": "Concluir",
+      "de": "Abschließen",
+      "pl": "Zakończ",
+      "ro": "Finalizează",
+      "uk": "Завершити",
+      "nl": "Voltooien",
+      "en": "Complete"
+    },
+    "completed": {
+      "es": "Módulo completado",
+      "it": "Modulo completato",
+      "fr": "Module terminé",
+      "pt": "Módulo concluído",
+      "de": "Modul abgeschlossen",
+      "pl": "Moduł ukończony",
+      "ro": "Modul finalizat",
+      "uk": "Модуль завершено",
+      "nl": "Module voltooid",
+      "en": "Module complete"
+    }
+  },
+  "scenarios": [
+    {
+      "id": "fw_01_understanding_instructions",
+      "order": 1,
+      "title": {
+        "es": "Entender instrucciones",
+        "it": "Capire le istruzioni",
+        "fr": "Comprendre les consignes",
+        "pt": "Perceber instruções",
+        "de": "Anweisungen verstehen",
+        "pl": "Rozumienie poleceń",
+        "ro": "Înțelegerea instrucțiunilor",
+        "uk": "Розуміння інструкцій",
+        "nl": "Instructies begrijpen",
+        "en": "Understanding instructions"
+      },
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "what_you_need": {
+        "es": "No tienes que fingir que has entendido. Es mejor pedir que repitan o expliquen una instrucción.",
+        "it": "Non devi fingere di aver capito. È meglio chiedere di ripetere o spiegare un’istruzione.",
+        "fr": "Vous n’avez pas besoin de faire semblant d’avoir compris. Il vaut mieux demander de répéter ou d’expliquer une consigne.",
+        "pt": "Não precisas de fingir que percebeste. É melhor pedir para repetir ou explicar uma instrução.",
+        "de": "Du musst nicht so tun, als hättest du alles verstanden. Bitte lieber darum, eine Anweisung zu wiederholen oder zu erklären.",
+        "pl": "Nie musisz udawać, że wszystko rozumiesz. Lepiej poprosić o powtórzenie lub wyjaśnienie polecenia.",
+        "ro": "Nu trebuie să pretinzi că ai înțeles. Este mai bine să ceri repetarea sau explicarea instrucțiunii.",
+        "uk": "Не треба вдавати, що ти все зрозумів/зрозуміла. Краще попросити повторити або пояснити інструкцію.",
+        "nl": "Je hoeft niet te doen alsof je het begrepen hebt. Vraag liever om herhaling of uitleg.",
+        "en": "You don't need to pretend you understood. It's better to ask for an instruction to be repeated or explained."
+      },
+      "useful_phrases_en": [
+        "Sorry, could you repeat that?",
+        "Could you show me how you want this done?",
+        "Just to make sure I understood…"
+      ],
+      "example_en": "Manager: Please restock this section before service. You: Sure. Just to make sure I understood, do you want everything fully restocked before 5?",
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué haces si no entiendes una instrucción?",
+          "it": "Cosa fai se non capisci un’istruzione?",
+          "fr": "Que faites-vous si vous ne comprenez pas une consigne ?",
+          "pt": "O que fazes se não percebes uma instrução?",
+          "de": "Was machst du, wenn du eine Anweisung nicht verstehst?",
+          "pl": "Co robisz, jeśli nie rozumiesz polecenia?",
+          "ro": "Ce faci dacă nu înțelegi o instrucțiune?",
+          "uk": "Що робити, якщо не розумієш інструкцію?",
+          "nl": "Wat doe je als je een instructie niet begrijpt?",
+          "en": "What should you do if you don't understand an instruction?"
+        },
+        "options_en": [
+          "Pretend you understood.",
+          "Ask them to repeat or explain it.",
+          "Ignore the task."
+        ],
+        "answer_index": 1
+      }
+    },
+    {
+      "id": "fw_02_asking_for_help",
+      "order": 2,
+      "title": {
+        "es": "Pedir ayuda",
+        "it": "Chiedere aiuto",
+        "fr": "Demander de l’aide",
+        "pt": "Pedir ajuda",
+        "de": "Um Hilfe bitten",
+        "pl": "Proszenie o pomoc",
+        "ro": "Cererea de ajutor",
+        "uk": "Просити допомогу",
+        "nl": "Om hulp vragen",
+        "en": "Asking for help"
+      },
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "what_you_need": {
+        "es": "Pedir ayuda a tiempo es mejor que dejar que un problema crezca durante el servicio.",
+        "it": "Chiedere aiuto in tempo è meglio che lasciare crescere un problema durante il servizio.",
+        "fr": "Demander de l’aide à temps vaut mieux que laisser un problème s’aggraver pendant le service.",
+        "pt": "Pedir ajuda a tempo é melhor do que deixar um problema crescer durante o serviço.",
+        "de": "Rechtzeitig um Hilfe zu bitten ist besser, als ein Problem während des Services größer werden zu lassen.",
+        "pl": "Lepiej poprosić o pomoc na czas niż pozwolić, by problem narastał podczas serwisu.",
+        "ro": "Este mai bine să ceri ajutor la timp decât să lași o problemă să se agraveze în timpul serviciului.",
+        "uk": "Краще вчасно попросити допомогу, ніж дозволити проблемі зрости під час зміни.",
+        "nl": "Op tijd om hulp vragen is beter dan een probleem tijdens de service groter laten worden.",
+        "en": "Asking for help early is better than letting a problem grow during service."
+      },
+      "useful_phrases_en": [
+        "Could you give me a hand for a moment?",
+        "Can you help me with this table/order?",
+        "I'm not sure about this — can I check with you?"
+      ],
+      "example_en": "You: Could you give me a hand for a moment? I'm getting behind with these orders. Colleague: Sure, I'll take this one.",
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Cuál es la mejor forma de pedir ayuda?",
+          "it": "Qual è il modo migliore per chiedere aiuto?",
+          "fr": "Quelle est la meilleure façon de demander de l’aide ?",
+          "pt": "Qual é a melhor forma de pedir ajuda?",
+          "de": "Wie bittest du am besten um Hilfe?",
+          "pl": "Jak najlepiej poprosić o pomoc?",
+          "ro": "Care este cel mai bun mod de a cere ajutor?",
+          "uk": "Як найкраще попросити допомогу?",
+          "nl": "Wat is de beste manier om hulp te vragen?",
+          "en": "What is the best way to ask for help?"
+        },
+        "options_en": [
+          "Say nothing and hope someone notices.",
+          "Ask clearly and explain what you need.",
+          "Complain that nobody is helping."
+        ],
+        "answer_index": 1
+      }
+    },
+    {
+      "id": "fw_03_breaks_and_staff_areas",
+      "order": 3,
+      "title": {
+        "es": "Descansos y zonas de personal",
+        "it": "Pause e aree staff",
+        "fr": "Pauses et espaces du personnel",
+        "pt": "Pausas e zonas de staff",
+        "de": "Pausen und Personalbereiche",
+        "pl": "Przerwy i strefy pracownicze",
+        "ro": "Pauze și zone pentru personal",
+        "uk": "Перерви та зони для персоналу",
+        "nl": "Pauzes en personeelsruimtes",
+        "en": "Breaks and staff areas"
+      },
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "what_you_need": {
+        "es": "Aprende a preguntar dónde y cuándo puedes hacer tu descanso sin sonar exigente.",
+        "it": "Impara a chiedere dove e quando puoi fare la pausa senza sembrare esigente.",
+        "fr": "Apprenez à demander où et quand prendre votre pause sans paraître exigeant.",
+        "pt": "Aprende a perguntar onde e quando podes fazer a pausa sem parecer exigente.",
+        "de": "Lerne, höflich nach Ort und Zeitpunkt deiner Pause zu fragen.",
+        "pl": "Naucz się pytać, gdzie i kiedy możesz zrobić przerwę, bez roszczeniowego tonu.",
+        "ro": "Învață să întrebi unde și când poți lua pauza fără să pari pretențios.",
+        "uk": "Навчися ввічливо питати, де й коли можна зробити перерву.",
+        "nl": "Leer hoe je vraagt waar en wanneer je pauze kunt nemen zonder veeleisend te klinken.",
+        "en": "Learn how to ask where and when you can take your break without sounding demanding."
+      },
+      "useful_phrases_en": [
+        "When would be a good time for me to take my break?",
+        "Where is the staff room?",
+        "Should I clock out for my break?"
+      ],
+      "example_en": "You: When would be a good time for me to take my break? Manager: Around 4, once the rush is over.",
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué pregunta es más profesional?",
+          "it": "Quale domanda è più professionale?",
+          "fr": "Quelle question est la plus professionnelle ?",
+          "pt": "Qual pergunta é mais profissional?",
+          "de": "Welche Frage ist professioneller?",
+          "pl": "Które pytanie jest bardziej profesjonalne?",
+          "ro": "Care întrebare este mai profesionistă?",
+          "uk": "Яке запитання професійніше?",
+          "nl": "Welke vraag is professioneler?",
+          "en": "Which question is more professional?"
+        },
+        "options_en": [
+          "I'm taking my break now, okay?",
+          "When would be a good time for me to take my break?",
+          "Why haven't I had a break yet?"
+        ],
+        "answer_index": 1
+      }
+    },
+    {
+      "id": "fw_04_rota_and_shift_times",
+      "order": 4,
+      "title": {
+        "es": "Rota y horarios",
+        "it": "Turni e orari",
+        "fr": "Planning et horaires",
+        "pt": "Escala e horários",
+        "de": "Dienstplan und Schichtzeiten",
+        "pl": "Grafik i godziny zmian",
+        "ro": "Program și ore de tură",
+        "uk": "Графік і час змін",
+        "nl": "Rooster en werktijden",
+        "en": "Rota and shift times"
+      },
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "what_you_need": {
+        "es": "Tienes que poder confirmar tus turnos, preguntar por cambios y evitar malentendidos con los horarios.",
+        "it": "Devi saper confermare i turni, chiedere dei cambi ed evitare malintesi sugli orari.",
+        "fr": "Vous devez pouvoir confirmer vos horaires, demander des changements et éviter les malentendus.",
+        "pt": "Tens de conseguir confirmar os turnos, perguntar sobre alterações e evitar mal-entendidos.",
+        "de": "Du solltest Schichten bestätigen, nach Änderungen fragen und Missverständnisse vermeiden können.",
+        "pl": "Musisz umieć potwierdzać zmiany, pytać o zmiany grafiku i unikać nieporozumień.",
+        "ro": "Trebuie să poți confirma turele, întreba despre schimbări și evita neînțelegerile.",
+        "uk": "Потрібно вміти підтверджувати зміни, питати про зміни графіка й уникати непорозумінь.",
+        "nl": "Je moet diensten kunnen bevestigen, naar wijzigingen vragen en misverstanden voorkomen.",
+        "en": "You need to be able to confirm shifts, ask about changes and avoid misunderstandings about times."
+      },
+      "useful_phrases_en": [
+        "Am I still on the rota for Friday evening?",
+        "What time would you like me to start?",
+        "Has the rota changed for next week?"
+      ],
+      "example_en": "You: Has the rota changed for next week? Manager: Yes, you're starting at 4 instead of 5 on Saturday.",
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué frase confirma claramente un horario?",
+          "it": "Quale frase conferma chiaramente un orario?",
+          "fr": "Quelle phrase confirme clairement un horaire ?",
+          "pt": "Qual frase confirma claramente um horário?",
+          "de": "Welcher Satz bestätigt eine Zeit klar?",
+          "pl": "Które zdanie jasno potwierdza godzinę?",
+          "ro": "Care propoziție confirmă clar ora?",
+          "uk": "Яка фраза чітко підтверджує час?",
+          "nl": "Welke zin bevestigt een tijd duidelijk?",
+          "en": "Which sentence clearly confirms a shift time?"
+        },
+        "options_en": [
+          "I think I'm in on Saturday.",
+          "Just to confirm, I'm starting at 4 on Saturday, right?",
+          "I'll see what happens on Saturday."
+        ],
+        "answer_index": 1
+      }
+    },
+    {
+      "id": "fw_05_shift_swap",
+      "order": 5,
+      "title": {
+        "es": "Cambiar un turno",
+        "it": "Cambiare un turno",
+        "fr": "Échanger un service",
+        "pt": "Trocar um turno",
+        "de": "Eine Schicht tauschen",
+        "pl": "Zamiana zmiany",
+        "ro": "Schimbarea unei ture",
+        "uk": "Обмін змінами",
+        "nl": "Een dienst ruilen",
+        "en": "Changing a shift"
+      },
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "what_you_need": {
+        "es": "Pide cambios con tiempo y deja claro que entiendes que deben aprobarse.",
+        "it": "Chiedi i cambi con anticipo e fai capire che sai che devono essere approvati.",
+        "fr": "Demandez les changements à l’avance et montrez que vous comprenez qu’ils doivent être approuvés.",
+        "pt": "Pede alterações com antecedência e deixa claro que sabes que precisam de aprovação.",
+        "de": "Bitte frühzeitig um Änderungen und zeige, dass du weißt, dass sie genehmigt werden müssen.",
+        "pl": "Proś o zmianę z wyprzedzeniem i pokaż, że rozumiesz, że wymaga ona akceptacji.",
+        "ro": "Cere schimbări din timp și arată că înțelegi că trebuie aprobate.",
+        "uk": "Проси про зміни завчасно й покажи, що розумієш: їх потрібно погодити.",
+        "nl": "Vraag wijzigingen op tijd aan en maak duidelijk dat je begrijpt dat ze goedgekeurd moeten worden.",
+        "en": "Ask for changes early and make it clear you understand they need approval."
+      },
+      "useful_phrases_en": [
+        "Would it be possible to swap my shift on Sunday?",
+        "I've found someone who can cover it, if that's okay.",
+        "I understand if it can't be changed."
+      ],
+      "example_en": "You: Would it be possible to swap my Sunday shift? I've found someone who can cover it, if that's okay with you.",
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué enfoque es mejor para cambiar un turno?",
+          "it": "Qual è l’approccio migliore per cambiare un turno?",
+          "fr": "Quelle est la meilleure approche pour échanger un service ?",
+          "pt": "Qual é a melhor abordagem para trocar um turno?",
+          "de": "Wie gehst du am besten bei einem Schichttausch vor?",
+          "pl": "Jak najlepiej podejść do zamiany zmiany?",
+          "ro": "Care este cea mai bună abordare pentru schimbarea unei ture?",
+          "uk": "Як найкраще підійти до обміну зміною?",
+          "nl": "Wat is de beste aanpak om een dienst te ruilen?",
+          "en": "What is the best approach to changing a shift?"
+        },
+        "options_en": [
+          "Tell the manager you won't be coming.",
+          "Ask early and wait for approval.",
+          "Swap with someone without telling anyone."
+        ],
+        "answer_index": 1
+      }
+    },
+    {
+      "id": "fw_06_opening_closing_duties",
+      "order": 6,
+      "title": {
+        "es": "Tareas de apertura y cierre",
+        "it": "Compiti di apertura e chiusura",
+        "fr": "Tâches d’ouverture et de fermeture",
+        "pt": "Tarefas de abertura e fecho",
+        "de": "Öffnungs- und Schlussaufgaben",
+        "pl": "Obowiązki otwarcia i zamknięcia",
+        "ro": "Sarcini de deschidere și închidere",
+        "uk": "Обов’язки відкриття й закриття",
+        "nl": "Openings- en sluitingstaken",
+        "en": "Opening and closing duties"
+      },
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "what_you_need": {
+        "es": "Pregunta qué debe estar terminado, en qué orden y quién comprueba el cierre o la apertura.",
+        "it": "Chiedi cosa deve essere completato, in che ordine e chi controlla l’apertura o la chiusura.",
+        "fr": "Demandez ce qui doit être terminé, dans quel ordre et qui vérifie l’ouverture ou la fermeture.",
+        "pt": "Pergunta o que deve ficar concluído, por que ordem e quem verifica a abertura ou o fecho.",
+        "de": "Frage, was erledigt werden muss, in welcher Reihenfolge und wer Öffnung oder Schluss kontrolliert.",
+        "pl": "Zapytaj, co ma być zrobione, w jakiej kolejności i kto sprawdza otwarcie lub zamknięcie.",
+        "ro": "Întreabă ce trebuie terminat, în ce ordine și cine verifică deschiderea sau închiderea.",
+        "uk": "Запитай, що має бути виконано, у якому порядку й хто перевіряє відкриття або закриття.",
+        "nl": "Vraag wat af moet zijn, in welke volgorde en wie opening of sluiting controleert.",
+        "en": "Ask what needs to be finished, in what order and who checks the opening or close."
+      },
+      "useful_phrases_en": [
+        "What are my closing duties tonight?",
+        "Is there a checklist I should follow?",
+        "Can you check this before I finish?"
+      ],
+      "example_en": "You: Is there a closing checklist I should follow? Manager: Yes, it's next to the till. Ask me before you leave if anything is unclear.",
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué frase ayuda a evitar olvidos al cerrar?",
+          "it": "Quale frase aiuta a evitare dimenticanze in chiusura?",
+          "fr": "Quelle phrase aide à éviter les oublis à la fermeture ?",
+          "pt": "Qual frase ajuda a evitar esquecimentos no fecho?",
+          "de": "Welcher Satz hilft, beim Schließen nichts zu vergessen?",
+          "pl": "Które zdanie pomaga uniknąć pominięć przy zamknięciu?",
+          "ro": "Care propoziție ajută la evitarea omisiunilor la închidere?",
+          "uk": "Яка фраза допомагає нічого не забути під час закриття?",
+          "nl": "Welke zin helpt om niets te vergeten bij het afsluiten?",
+          "en": "Which phrase helps you avoid missing tasks at close?"
+        },
+        "options_en": [
+          "Is there a checklist I should follow?",
+          "I'll just do what looks important.",
+          "Someone else will probably finish it."
+        ],
+        "answer_index": 0
+      }
+    },
+    {
+      "id": "fw_07_uniform_and_standards",
+      "order": 7,
+      "title": {
+        "es": "Uniforme y estándares",
+        "it": "Uniforme e standard",
+        "fr": "Uniforme et standards",
+        "pt": "Uniforme e padrões",
+        "de": "Uniform und Standards",
+        "pl": "Uniform i standardy",
+        "ro": "Uniformă și standarde",
+        "uk": "Форма та стандарти",
+        "nl": "Uniform en standaarden",
+        "en": "Uniform and standards"
+      },
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "what_you_need": {
+        "es": "Aclara desde el principio qué uniforme, presentación y estándares espera el local.",
+        "it": "Chiarisci fin dall’inizio quale uniforme, presentazione e standard richiede il locale.",
+        "fr": "Clarifiez dès le départ l’uniforme, la présentation et les standards attendus par l’établissement.",
+        "pt": "Esclarece desde o início o uniforme, a apresentação e os padrões esperados pelo local.",
+        "de": "Kläre von Anfang an, welche Kleidung, welches Erscheinungsbild und welche Standards erwartet werden.",
+        "pl": "Od początku wyjaśnij, jaki strój, wygląd i standardy obowiązują w lokalu.",
+        "ro": "Clarifică de la început ce uniformă, prezentare și standarde cere locația.",
+        "uk": "Відразу уточни, яку форму, зовнішній вигляд і стандарти очікує заклад.",
+        "nl": "Vraag vanaf het begin welke kleding, uitstraling en standaarden de zaak verwacht.",
+        "en": "Clarify from the beginning what uniform, presentation and standards the venue expects."
+      },
+      "useful_phrases_en": [
+        "Is there a specific uniform I need to wear?",
+        "Are black shoes required?",
+        "Is there anything specific I should know about presentation standards?"
+      ],
+      "example_en": "You: Is there a specific uniform I need to wear tomorrow? Manager: Yes, black shirt, black trousers and black non-slip shoes.",
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué pregunta es más útil antes del primer turno?",
+          "it": "Quale domanda è più utile prima del primo turno?",
+          "fr": "Quelle question est la plus utile avant le premier service ?",
+          "pt": "Qual pergunta é mais útil antes do primeiro turno?",
+          "de": "Welche Frage ist vor der ersten Schicht am nützlichsten?",
+          "pl": "Które pytanie jest najbardziej przydatne przed pierwszą zmianą?",
+          "ro": "Care întrebare este cea mai utilă înainte de prima tură?",
+          "uk": "Яке запитання найкорисніше перед першою зміною?",
+          "nl": "Welke vraag is het nuttigst voor je eerste dienst?",
+          "en": "Which question is most useful before your first shift?"
+        },
+        "options_en": [
+          "Is there a specific uniform I need to wear?",
+          "Can I wear anything comfortable?",
+          "Does anyone really care what shoes I wear?"
+        ],
+        "answer_index": 0
+      }
+    },
+    {
+      "id": "fw_08_learning_products_menu",
+      "order": 8,
+      "title": {
+        "es": "Aprender productos y menú",
+        "it": "Imparare prodotti e menu",
+        "fr": "Apprendre les produits et le menu",
+        "pt": "Aprender produtos e menu",
+        "de": "Produkte und Menü lernen",
+        "pl": "Nauka produktów i menu",
+        "ro": "Învățarea produselor și meniului",
+        "uk": "Вивчення продуктів і меню",
+        "nl": "Producten en menu leren",
+        "en": "Learning products and the menu"
+      },
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "what_you_need": {
+        "es": "Durante la primera semana no lo sabrás todo. Aprende a pedir recursos, prioridades y aclaraciones.",
+        "it": "Durante la prima settimana non saprai tutto. Impara a chiedere risorse, priorità e chiarimenti.",
+        "fr": "Pendant la première semaine, vous ne saurez pas tout. Apprenez à demander des ressources, des priorités et des précisions.",
+        "pt": "Na primeira semana não vais saber tudo. Aprende a pedir recursos, prioridades e esclarecimentos.",
+        "de": "In der ersten Woche wirst du nicht alles wissen. Frage nach Lernmaterial, Prioritäten und Erklärungen.",
+        "pl": "W pierwszym tygodniu nie będziesz wiedzieć wszystkiego. Naucz się prosić o materiały, priorytety i wyjaśnienia.",
+        "ro": "În prima săptămână nu vei ști totul. Învață să ceri resurse, priorități și clarificări.",
+        "uk": "У перший тиждень ти не знатимеш усього. Навчися просити матеріали, пріоритети й пояснення.",
+        "nl": "In je eerste week weet je nog niet alles. Leer om hulpmiddelen, prioriteiten en uitleg te vragen.",
+        "en": "You won't know everything in your first week. Learn to ask for resources, priorities and clarification."
+      },
+      "useful_phrases_en": [
+        "What should I learn first?",
+        "Is there a menu or product guide I can study?",
+        "Which items do guests ask about most often?"
+      ],
+      "example_by_role": {
+        "bartender": "You: Which drinks should I focus on learning first? Manager: Start with the signature cocktails and the wines by the glass.",
+        "waiter": "You: Which menu items should I focus on learning first? Manager: Start with the best sellers, allergens and today's specials."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué pregunta te ayuda a priorizar?",
+          "it": "Quale domanda ti aiuta a dare priorità?",
+          "fr": "Quelle question vous aide à prioriser ?",
+          "pt": "Qual pergunta te ajuda a definir prioridades?",
+          "de": "Welche Frage hilft dir zu priorisieren?",
+          "pl": "Które pytanie pomaga ustalić priorytety?",
+          "ro": "Care întrebare te ajută să stabilești prioritățile?",
+          "uk": "Яке запитання допомагає визначити пріоритети?",
+          "nl": "Welke vraag helpt je prioriteiten te stellen?",
+          "en": "Which question helps you prioritise?"
+        },
+        "options_en": [
+          "What should I learn first?",
+          "Do I really need to learn all this?",
+          "Can someone else answer every question for me?"
+        ],
+        "answer_index": 0
+      }
+    },
+    {
+      "id": "fw_09_feedback",
+      "order": 9,
+      "title": {
+        "es": "Recibir feedback",
+        "it": "Ricevere feedback",
+        "fr": "Recevoir du feedback",
+        "pt": "Receber feedback",
+        "de": "Feedback erhalten",
+        "pl": "Otrzymywanie informacji zwrotnej",
+        "ro": "Primirea feedbackului",
+        "uk": "Отримання зворотного зв’язку",
+        "nl": "Feedback krijgen",
+        "en": "Receiving feedback"
+      },
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "what_you_need": {
+        "es": "El feedback durante la primera semana es normal. Escucha, confirma qué debes cambiar y aplícalo.",
+        "it": "Il feedback durante la prima settimana è normale. Ascolta, conferma cosa devi cambiare e applicalo.",
+        "fr": "Le feedback pendant la première semaine est normal. Écoutez, confirmez ce que vous devez changer et appliquez-le.",
+        "pt": "O feedback durante a primeira semana é normal. Ouve, confirma o que deves mudar e aplica-o.",
+        "de": "Feedback in der ersten Woche ist normal. Höre zu, kläre, was du ändern sollst, und setze es um.",
+        "pl": "Informacja zwrotna w pierwszym tygodniu jest normalna. Słuchaj, potwierdź, co trzeba zmienić, i zastosuj to.",
+        "ro": "Feedbackul în prima săptămână este normal. Ascultă, clarifică ce trebuie schimbat și aplică.",
+        "uk": "Зворотний зв’язок у перший тиждень — це нормально. Вислухай, уточни, що змінити, і застосуй це.",
+        "nl": "Feedback in je eerste week is normaal. Luister, bevestig wat je moet veranderen en pas het toe.",
+        "en": "Feedback in your first week is normal. Listen, clarify what needs to change and apply it."
+      },
+      "useful_phrases_en": [
+        "Thanks, I'll make sure I do that next time.",
+        "Just to clarify, you want me to…?",
+        "Is there anything else I should improve?"
+      ],
+      "example_en": "Manager: Please acknowledge guests sooner, even if you're busy. You: Got it. I'll make sure I do that next time.",
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Cuál es la mejor respuesta al feedback?",
+          "it": "Qual è la risposta migliore al feedback?",
+          "fr": "Quelle est la meilleure réponse au feedback ?",
+          "pt": "Qual é a melhor resposta ao feedback?",
+          "de": "Was ist die beste Reaktion auf Feedback?",
+          "pl": "Jaka jest najlepsza reakcja na feedback?",
+          "ro": "Care este cel mai bun răspuns la feedback?",
+          "uk": "Яка найкраща реакція на зворотний зв’язок?",
+          "nl": "Wat is de beste reactie op feedback?",
+          "en": "What is the best response to feedback?"
+        },
+        "options_en": [
+          "Argue immediately.",
+          "Listen, clarify and apply it.",
+          "Ignore it unless another manager says the same thing."
+        ],
+        "answer_index": 1
+      }
+    },
+    {
+      "id": "fw_10_end_of_shift",
+      "order": 10,
+      "title": {
+        "es": "Final del turno",
+        "it": "Fine turno",
+        "fr": "Fin de service",
+        "pt": "Fim do turno",
+        "de": "Schichtende",
+        "pl": "Koniec zmiany",
+        "ro": "Sfârșitul turei",
+        "uk": "Кінець зміни",
+        "nl": "Einde van de dienst",
+        "en": "End of shift"
+      },
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "what_you_need": {
+        "es": "Antes de irte, confirma que tus tareas están terminadas y que nadie necesita nada más de ti.",
+        "it": "Prima di andare via, conferma che i tuoi compiti siano finiti e che nessuno abbia bisogno di altro.",
+        "fr": "Avant de partir, confirmez que vos tâches sont terminées et que personne n’a besoin de vous pour autre chose.",
+        "pt": "Antes de ires embora, confirma que as tuas tarefas estão concluídas e que ninguém precisa de mais nada.",
+        "de": "Bevor du gehst, bestätige, dass deine Aufgaben erledigt sind und niemand noch etwas von dir braucht.",
+        "pl": "Przed wyjściem potwierdź, że twoje zadania są zakończone i nikt nie potrzebuje już twojej pomocy.",
+        "ro": "Înainte să pleci, confirmă că sarcinile tale sunt terminate și că nimeni nu mai are nevoie de tine.",
+        "uk": "Перед тим як піти, переконайся, що твої завдання завершені й нікому більше не потрібна твоя допомога.",
+        "nl": "Controleer voor je weggaat of je taken klaar zijn en niemand je nog nodig heeft.",
+        "en": "Before you leave, confirm that your tasks are finished and nobody needs anything else from you."
+      },
+      "useful_phrases_en": [
+        "Is there anything else you need me to do before I finish?",
+        "I've finished my closing tasks.",
+        "Am I okay to clock out?"
+      ],
+      "example_en": "You: I've finished my closing tasks. Is there anything else you need me to do before I finish? Manager: No, that's everything. Thanks.",
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué deberías hacer antes de marcharte?",
+          "it": "Cosa dovresti fare prima di andare via?",
+          "fr": "Que devriez-vous faire avant de partir ?",
+          "pt": "O que deves fazer antes de ir embora?",
+          "de": "Was solltest du tun, bevor du gehst?",
+          "pl": "Co powinieneś/powinnaś zrobić przed wyjściem?",
+          "ro": "Ce ar trebui să faci înainte să pleci?",
+          "uk": "Що варто зробити перед тим, як піти?",
+          "nl": "Wat moet je doen voordat je weggaat?",
+          "en": "What should you do before leaving?"
+        },
+        "options_en": [
+          "Leave as soon as your scheduled time arrives.",
+          "Confirm your tasks are done and check whether anything else is needed.",
+          "Wait for someone to notice you're still there."
+        ],
+        "answer_index": 1
+      }
+    }
+  ],
+  "personalization": {
+    "home_priority_conditions": [
+      "profile.employment_status == starting_new_job",
+      "profile.goal == improve_current_job AND guest has very low completed-situation count"
+    ],
+    "role_variant": "Use profile.role only where example_by_role exists. Otherwise use shared content.",
+    "english_level": "May order scenarios; never block.",
+    "venue_type": "May affect Home ranking only; no venue-specific rewriting in MVP."
+  },
+  "persistence": {
+    "collection": "first_week_progress",
+    "unique_key": [
+      "guest_id",
+      "role"
+    ],
+    "fields": [
+      "guest_id",
+      "role",
+      "completed_scenario_ids",
+      "last_opened_scenario_id",
+      "practice_answers",
+      "practice_correct_count",
+      "started_at",
+      "completed_at",
+      "updated_at"
+    ],
+    "resume": true,
+    "retake_allowed": true
+  },
+  "ux_contract": [
+    "Optional Home entry point.",
+    "10 scenarios, one per screen/page.",
+    "Scenario title/explanation localized.",
+    "Useful phrases and examples remain English.",
+    "Use role-specific example only where provided.",
+    "1 lightweight MC practice item per scenario.",
+    "Progress 1/10…10/10.",
+    "Completion page shows 10/10 + practice score X/10.",
+    "No audio, Speaking, AI, gamification or paywall in MVP."
+  ],
+  "future_hooks": {
+    "listening": "Manager/colleague lines can later become listening audio.",
+    "speaking": "User can later answer manager/colleague prompts by voice.",
+    "tonights_shift": "Future version may source one First Week item when employment_status == starting_new_job.",
+    "emergency_phrases": "May later link directly to related saved phrases."
+  },
+  "regression_contract": [
+    "Do not change 50 situations.",
+    "Do not change Assessment.",
+    "Do not change Emergency Phrases.",
+    "Do not change Tonight's Shift.",
+    "Do not change Job Interview.",
+    "Do not change Practice/SRS.",
+    "Recommended for you remains 3–5.",
+    "No deploy."
+  ]
+}
