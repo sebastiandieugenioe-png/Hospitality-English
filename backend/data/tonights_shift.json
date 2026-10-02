@@ -1,0 +1,332 @@
+{
+  "name": "Hospitality English — Tonight's Shift MVP — IMPLEMENTATION SPEC",
+  "version": 1,
+  "status": "READY_FOR_IMPLEMENTATION",
+  "content_strategy": "REUSE_EXISTING_CONTENT_ONLY",
+  "interface_languages": [
+    "es",
+    "it",
+    "fr",
+    "pt",
+    "de",
+    "pl",
+    "ro",
+    "uk",
+    "nl",
+    "en"
+  ],
+  "ui_translations": {
+    "title": {
+      "es": "Inglés para tu turno de hoy",
+      "it": "Inglese per il turno di oggi",
+      "fr": "L’anglais pour votre service d’aujourd’hui",
+      "pt": "Inglês para o teu turno de hoje",
+      "de": "Englisch für deine heutige Schicht",
+      "pl": "Angielski na dzisiejszą zmianę",
+      "ro": "Engleză pentru tura de azi",
+      "uk": "Англійська для сьогоднішньої зміни",
+      "nl": "Engels voor je dienst van vandaag",
+      "en": "Tonight's Shift"
+    },
+    "home_title": {
+      "es": "Turno de hoy",
+      "it": "Turno di oggi",
+      "fr": "Service d’aujourd’hui",
+      "pt": "Turno de hoje",
+      "de": "Heutige Schicht",
+      "pl": "Dzisiejsza zmiana",
+      "ro": "Tura de azi",
+      "uk": "Сьогоднішня зміна",
+      "nl": "Dienst van vandaag",
+      "en": "Tonight's Shift"
+    },
+    "subtitle": {
+      "es": "5 preguntas rápidas según tu rol y lo que más necesitas practicar.",
+      "it": "5 domande rapide in base al tuo ruolo e a ciò che devi allenare di più.",
+      "fr": "5 questions rapides selon votre rôle et ce que vous devez le plus travailler.",
+      "pt": "5 perguntas rápidas com base na tua função e no que mais precisas de praticar.",
+      "de": "5 kurze Fragen passend zu deiner Rolle und deinen wichtigsten Übungsfeldern.",
+      "pl": "5 szybkich pytań dopasowanych do twojej roli i tego, co najbardziej warto przećwiczyć.",
+      "ro": "5 întrebări rapide în funcție de rolul tău și de ceea ce ai cel mai mult de exersat.",
+      "uk": "5 швидких запитань відповідно до твоєї ролі та того, що найбільше треба потренувати.",
+      "nl": "5 snelle vragen op basis van je rol en wat je het meest moet oefenen.",
+      "en": "5 quick questions based on your role and what you most need to practise."
+    },
+    "duration": {
+      "es": "3–5 minutos",
+      "it": "3–5 minuti",
+      "fr": "3 à 5 minutes",
+      "pt": "3–5 minutos",
+      "de": "3–5 Minuten",
+      "pl": "3–5 minut",
+      "ro": "3–5 minute",
+      "uk": "3–5 хвилин",
+      "nl": "3–5 minuten",
+      "en": "3–5 minutes"
+    },
+    "start": {
+      "es": "Empezar",
+      "it": "Inizia",
+      "fr": "Commencer",
+      "pt": "Começar",
+      "de": "Starten",
+      "pl": "Rozpocznij",
+      "ro": "Începe",
+      "uk": "Почати",
+      "nl": "Start",
+      "en": "Start"
+    },
+    "continue": {
+      "es": "Continuar",
+      "it": "Continua",
+      "fr": "Continuer",
+      "pt": "Continuar",
+      "de": "Fortsetzen",
+      "pl": "Kontynuuj",
+      "ro": "Continuă",
+      "uk": "Продовжити",
+      "nl": "Doorgaan",
+      "en": "Continue"
+    },
+    "question_progress": {
+      "es": "Pregunta {current} de {total}",
+      "it": "Domanda {current} di {total}",
+      "fr": "Question {current} sur {total}",
+      "pt": "Pergunta {current} de {total}",
+      "de": "Frage {current} von {total}",
+      "pl": "Pytanie {current} z {total}",
+      "ro": "Întrebarea {current} din {total}",
+      "uk": "Запитання {current} з {total}",
+      "nl": "Vraag {current} van {total}",
+      "en": "Question {current} of {total}"
+    },
+    "correct": {
+      "es": "Correcto",
+      "it": "Corretto",
+      "fr": "Correct",
+      "pt": "Correto",
+      "de": "Richtig",
+      "pl": "Dobrze",
+      "ro": "Corect",
+      "uk": "Правильно",
+      "nl": "Goed",
+      "en": "Correct"
+    },
+    "not_quite": {
+      "es": "Casi",
+      "it": "Non proprio",
+      "fr": "Pas tout à fait",
+      "pt": "Ainda não",
+      "de": "Noch nicht ganz",
+      "pl": "Jeszcze nie",
+      "ro": "Nu chiar",
+      "uk": "Не зовсім",
+      "nl": "Nog niet helemaal",
+      "en": "Not quite"
+    },
+    "complete_title": {
+      "es": "Práctica completada",
+      "it": "Pratica completata",
+      "fr": "Entraînement terminé",
+      "pt": "Prática concluída",
+      "de": "Übung abgeschlossen",
+      "pl": "Praktyka ukończona",
+      "ro": "Practică finalizată",
+      "uk": "Практику завершено",
+      "nl": "Oefening voltooid",
+      "en": "Shift practice complete"
+    },
+    "score": {
+      "es": "Resultado",
+      "it": "Risultato",
+      "fr": "Résultat",
+      "pt": "Resultado",
+      "de": "Ergebnis",
+      "pl": "Wynik",
+      "ro": "Rezultat",
+      "uk": "Результат",
+      "nl": "Score",
+      "en": "Score"
+    },
+    "focus_next": {
+      "es": "Prioridad para seguir practicando",
+      "it": "Prossima priorità",
+      "fr": "À travailler ensuite",
+      "pt": "Prioridade para continuar a praticar",
+      "de": "Als Nächstes üben",
+      "pl": "Następny priorytet",
+      "ro": "Prioritatea următoare",
+      "uk": "Наступний пріоритет",
+      "nl": "Volgende focus",
+      "en": "Focus next"
+    },
+    "done_today": {
+      "es": "Ya has completado la práctica de hoy.",
+      "it": "Hai già completato la pratica di oggi.",
+      "fr": "Vous avez déjà terminé l’entraînement d’aujourd’hui.",
+      "pt": "Já concluíste a prática de hoje.",
+      "de": "Du hast die heutige Übung bereits abgeschlossen.",
+      "pl": "Dzisiejsza praktyka jest już ukończona.",
+      "ro": "Ai finalizat deja practica de azi.",
+      "uk": "Ти вже завершив/завершила сьогоднішню практику.",
+      "nl": "Je hebt de oefening van vandaag al voltooid.",
+      "en": "You've completed today's shift practice."
+    },
+    "back_home": {
+      "es": "Volver a inicio",
+      "it": "Torna alla home",
+      "fr": "Retour à l’accueil",
+      "pt": "Voltar ao início",
+      "de": "Zur Startseite",
+      "pl": "Wróć do strony głównej",
+      "ro": "Înapoi la pagina principală",
+      "uk": "На головну",
+      "nl": "Terug naar home",
+      "en": "Back to Home"
+    }
+  },
+  "algorithm": {
+    "session_size": 5,
+    "target_duration_minutes": "3–5",
+    "supported_item_types": [
+      "multiple_choice",
+      "fill_gap",
+      "word_ordering"
+    ],
+    "candidate_pool": {
+      "source": "existing active situation lesson exercises + quiz items",
+      "role_filter": "match guest.profile.role when present; otherwise use all active situations",
+      "never_create_new_learning_content": true,
+      "never_duplicate_content_rows": true
+    },
+    "slot_order": [
+      {
+        "slot": 1,
+        "reason": "due_review",
+        "selection": "Earliest due review_item whose stable source item exists in active content and matches the current role.",
+        "fallback": [
+          "assessment_weak_skill_1",
+          "recommended_incomplete",
+          "variety"
+        ]
+      },
+      {
+        "slot": 2,
+        "reason": "assessment_weakness",
+        "selection": "Item whose primary_skill or skills matches assessment_weak_skills[0].",
+        "fallback": [
+          "historical_weak_skill",
+          "recommended_incomplete",
+          "variety"
+        ]
+      },
+      {
+        "slot": 3,
+        "reason": "assessment_weakness",
+        "selection": "Item matching the next distinct weak skill (assessment first, then existing mistake/performance evidence).",
+        "fallback": [
+          "recommended_incomplete",
+          "variety"
+        ]
+      },
+      {
+        "slot": 4,
+        "reason": "recommended",
+        "selection": "Pick an item from one of the existing 3–5 Recommended for you situations, preferring incomplete/low-mastery content.",
+        "fallback": [
+          "venue_relevant",
+          "variety"
+        ]
+      },
+      {
+        "slot": 5,
+        "reason": "variety",
+        "selection": "Role-compatible item from an underexposed/incomplete situation; venue_type is a tie-breaker and english_level may rank difficulty but never block.",
+        "fallback": [
+          "any_role_compatible"
+        ]
+      }
+    ],
+    "dedupe_rules": [
+      "No duplicate stable item_id in one session.",
+      "Prefer no duplicate situation_slug; allow only if needed to reach 5.",
+      "Prefer at most 2 items of the same exercise type when enough alternatives exist."
+    ],
+    "stability_rules": [
+      "Once created, today's session item list never changes.",
+      "Session key is guest_id + browser local_date + role.",
+      "Changing interface language changes rendered localization only, not the selected item IDs.",
+      "If role changes, a different session may exist for that same date under the new role."
+    ],
+    "deterministic_tiebreak": "Stable hash of guest_id + local_date + item_id; never use runtime AI or non-deterministic random selection after session creation.",
+    "country_variants": "Do not implement in this phase.",
+    "saved_emergency_phrases": "Do not inject into the scored 5-item session in this phase."
+  },
+  "scoring": {
+    "questions": 5,
+    "points_per_correct": 1,
+    "display": "X / 5",
+    "focus_skill": "Among incorrect answers, choose the skill with the highest error count; ties use slot order. If all correct, use the guest's first current weak skill if available, otherwise omit focus.",
+    "do_not_change_lesson_mastery": true,
+    "do_not_mark_situations_complete": true,
+    "do_not_modify_existing_attempts": true,
+    "srs_policy": "READ due review_items for selection, but do not modify generic SRS/review_items in MVP v1."
+  },
+  "persistence": {
+    "collection": "shift_sessions",
+    "unique_session_key": [
+      "guest_id",
+      "local_date",
+      "role"
+    ],
+    "fields": [
+      "id",
+      "guest_id",
+      "local_date",
+      "role",
+      "status",
+      "started_at",
+      "completed_at",
+      "item_refs",
+      "responses",
+      "correct_count",
+      "focus_skill",
+      "content_version"
+    ],
+    "item_ref_fields": [
+      "item_id",
+      "situation_slug",
+      "source_section",
+      "selection_reason",
+      "primary_skill",
+      "skills"
+    ],
+    "resume_in_progress": true,
+    "completed_session_is_read_only_for_that_day": true
+  },
+  "api_contract": {
+    "start": "POST /api/guests/{guest_id}/tonights-shift/start with local_date from browser; create or return today's in-progress/completed session for current role.",
+    "get_today": "GET /api/guests/{guest_id}/tonights-shift?local_date=YYYY-MM-DD&role=...",
+    "response": "PUT /api/shift-sessions/{session_id}/response",
+    "complete": "POST /api/shift-sessions/{session_id}/complete",
+    "content_rendering": "Return the selected existing items using the same localized payload/grading conventions already used by lessons. Do not expose a second content format unless required."
+  },
+  "ux_contract": [
+    "Home card visible and optional.",
+    "Card shows title, 3–5 minutes, and 5 quick questions.",
+    "One item per screen using existing exercise components where possible.",
+    "Show question progress 1/5…5/5.",
+    "Use existing immediate feedback pattern where possible.",
+    "Completion screen shows X/5 and optional focus skill.",
+    "If already completed today, Home can show completion state rather than starting a new session.",
+    "No streak, XP, coins, leaderboard, paywall or AI."
+  ],
+  "regression_contract": [
+    "Can I Work in English assessment remains intact.",
+    "Emergency Phrases remains intact.",
+    "Recommended for you remains 3–5.",
+    "50 active situations remain 25 Bartender + 25 Waiter.",
+    "Home → Learn → Lesson → Practice remains intact.",
+    "No deploy."
+  ]
+}

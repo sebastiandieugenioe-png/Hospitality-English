@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, ClipboardCheck, LifeBuoy } from "lucide-react";
+import { ArrowRight, Play, ClipboardCheck, LifeBuoy, Moon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
-import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta, getEmergency } from "@/lib/api";
+import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta, getEmergency, getTonightsShiftMeta, getTonightsShiftToday } from "@/lib/api";
 import { roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
 import { getLocalizedField, getText } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
@@ -22,6 +22,8 @@ export default function Home() {
   const [assessment, setAssessment] = useState(null);
   const [assessmentMeta, setAssessmentMeta] = useState(null);
   const [emergencyUi, setEmergencyUi] = useState(null);
+  const [shiftMeta, setShiftMeta] = useState(null);
+  const [shiftToday, setShiftToday] = useState(null);
 
   // Send users with an incomplete professional profile through onboarding first.
   useEffect(() => {
@@ -78,6 +80,16 @@ export default function Home() {
   useEffect(() => {
     getEmergency().then((d) => setEmergencyUi(d.ui)).catch(() => {});
   }, []);
+  useEffect(() => {
+    getTonightsShiftMeta().then(setShiftMeta).catch(() => {});
+  }, []);
+  useEffect(() => {
+    if (!guestId) return;
+    const d = new Date();
+    const p = (n) => String(n).padStart(2, "0");
+    const local = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+    getTonightsShiftToday(guestId, { local_date: local }).then(setShiftToday).catch(() => {});
+  }, [guestId]);
   useEffect(() => {
     if (!guestId) return;
     getAssessmentSummary(guestId).then(setAssessment).catch(() => {});
@@ -164,6 +176,37 @@ export default function Home() {
               </div>
               <span className="shrink-0 grid place-items-center w-12 h-12 rounded-xl bg-brand-terracotta/15 text-brand-terracotta-hover">
                 <LifeBuoy className="w-6 h-6" />
+              </span>
+            </button>
+          </section>
+        )}
+
+        {/* Tonight's Shift entry point */}
+        {shiftMeta && (
+          <section className="mt-4">
+            <button
+              data-testid="shift-entry-card"
+              onClick={() => navigate("/tonights-shift")}
+              className="group w-full text-left rounded-2xl bg-white border border-brand-espresso/15 p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-between gap-5"
+            >
+              <div>
+                <p className="text-lg font-serif text-brand-espresso">{getText(shiftMeta.ui.home_title, language)}</p>
+                <p className="mt-1 text-sm text-brand-charcoal/60 leading-relaxed max-w-md">
+                  {shiftToday?.status === "completed"
+                    ? getText(shiftMeta.ui.done_today, language)
+                    : getText(shiftMeta.ui.subtitle, language)}
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-forest">
+                  {shiftToday?.status === "completed"
+                    ? `${shiftToday.correct_count} / ${shiftMeta.session_size}`
+                    : shiftToday?.status === "in_progress"
+                    ? getText(shiftMeta.ui.continue, language)
+                    : getText(shiftMeta.ui.start, language)}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+              <span className="shrink-0 grid place-items-center w-12 h-12 rounded-xl bg-brand-espresso/10 text-brand-espresso">
+                <Moon className="w-6 h-6" />
               </span>
             </button>
           </section>

@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 import uuid
 import re
+import hashlib
 from datetime import datetime, timezone, timedelta
 
 import seed_content
@@ -19,6 +20,7 @@ import seed_pack_v2
 import seed_i18n
 import assessment_data as assessment
 import emergency_data as emergency
+import tonights_shift_data as shift
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -106,6 +108,15 @@ class AssessmentResponse(BaseModel):
 
 class SavedPhrase(BaseModel):
     phrase_id: str
+
+
+class ShiftStart(BaseModel):
+    local_date: str  # YYYY-MM-DD from the browser (avoids UTC day drift)
+
+
+class ShiftResponse(BaseModel):
+    item_id: str
+    submitted_answer: object
 
 
 # ---------- Mastery + SRS constants ----------
@@ -878,6 +889,27 @@ def _rec_score(sit, profile, stats, weak_skills):
     return score, reasons
 
 
+async def _rank_situations_for_guest(guest, stats=None):
+    """Deterministic ranking of all active situations for a guest (shared by
+    Recommended for you and Tonight's Shift). Returns a list sorted best-first:
+    [(score, order, situation, reasons)]."""
+    guest_id = guest["id"]
+    profile = guest.get("professional_profile") or {}
+    situations = await db.situations.find({"active": True}, {"_id": 0}).to_list(500)
+    if stats is None:
+        stats = await _compute_situation_stats(guest_id)
+    review = await db.review_items.find({"guest_id": guest_id}, {"_id": 0, "primary_skill": 1}).to_list(2000)
+    weak_skills = {it.get("primary_skill") for it in review if it.get("primary_skill")}
+    weak_skills |= {s for s in (guest.get("assessment_weak_skills") or []) if s}
+
+    scored = []
+    for s in situations:
+        sc, reasons = _rec_score(s, profile, stats, weak_skills)
+        scored.append((sc, s.get("order") or 0, s, reasons))
+    scored.sort(key=lambda x: (-x[0], x[1]))
+    return scored
+
+
 @api_router.get("/guests/{guest_id}/recommended-situations")
 async def recommended_situations(guest_id: str, limit: int = Query(5, ge=1, le=10)):
     """~3-5 situations ranked for this guest. Deterministic and localized.
@@ -886,21 +918,8 @@ async def recommended_situations(guest_id: str, limit: int = Query(5, ge=1, le=1
     if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
     lang = guest.get("interface_language", DEFAULT_LANGUAGE)
-    profile = guest.get("professional_profile") or {}
-
-    situations = await db.situations.find({"active": True}, {"_id": 0}).to_list(500)
     stats = await _compute_situation_stats(guest_id)
-    review = await db.review_items.find({"guest_id": guest_id}, {"_id": 0, "primary_skill": 1}).to_list(2000)
-    weak_skills = {it.get("primary_skill") for it in review if it.get("primary_skill")}
-    # Assessment weaknesses also influence ranking (Can I Work in English?).
-    weak_skills |= {s for s in (guest.get("assessment_weak_skills") or []) if s}
-
-    scored = []
-    for s in situations:
-        sc, reasons = _rec_score(s, profile, stats, weak_skills)
-        scored.append((sc, s.get("order") or 0, s, reasons))
-    # Highest score first; ties broken by lower order (stable, interpretable).
-    scored.sort(key=lambda x: (-x[0], x[1]))
+    scored = await _rank_situations_for_guest(guest, stats)
 
     # Explicit contract: always between 3 and 5 recommendations.
     n = min(5, max(3, limit))
@@ -1327,6 +1346,371 @@ async def remove_saved_phrase(guest_id: str, phrase_id: str):
     return {"saved_emergency_phrase_ids": guest.get("saved_emergency_phrase_ids", [])}
 
 
+# ---------- Tonight's Shift (daily 5-question practice) ----------
+LOCAL_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+_STATUS_RANK = {"not_started": 0, "in_progress": 1, "completed": 2, "mastered": 3}
+
+
+def _item_matches_skill(item, skill):
+    return bool(skill) and (item["primary_skill"] == skill or skill in (item.get("skills") or []))
+
+
+def _pick_item(ordered, state):
+    """Pick the first candidate honouring dedupe rules: never duplicate item_id;
+    prefer a distinct situation and at most 2 of the same exercise type, relaxing
+    those soft preferences only if needed to fill the slot."""
+    avail = [c for c in ordered if c["item_id"] not in state["used_ids"]]
+    if not avail:
+        return None
+
+    def ok(c, strict_sit, strict_type):
+        if strict_sit and c["situation_slug"] in state["used_slugs"]:
+            return False
+        if strict_type and state["type_counts"].get(c["type"], 0) >= 2:
+            return False
+        return True
+
+    for strict_sit, strict_type in ((True, True), (False, True), (True, False), (False, False)):
+        for c in avail:
+            if ok(c, strict_sit, strict_type):
+                return c
+    return avail[0]
+
+
+async def _select_shift_items(guest, local_date):
+    """Implements algorithm.slot_order exactly. Deterministic, no runtime AI/random.
+    Reads review_items (due) for selection but never writes them."""
+    guest_id = guest["id"]
+    profile = guest.get("professional_profile") or {}
+    role = profile.get("role")
+    venue = profile.get("venue_type")
+    level = profile.get("english_level")
+    weak = [s for s in (guest.get("assessment_weak_skills") or []) if s]
+
+    lessons = await db.lessons.find({}, {"_id": 0}).to_list(1000)
+    sits = {s["slug"]: s for s in await db.situations.find({"active": True}, {"_id": 0}).to_list(500)}
+    all_items = []
+    for l in lessons:
+        slug = l["situation_slug"]
+        sit = sits.get(slug)
+        if not sit:
+            continue
+        for section, key in (("exercise", "exercises"), ("quiz", "quiz")):
+            for q in l.get(key, []):
+                if q.get("type") not in shift.SUPPORTED_ITEM_TYPES:
+                    continue
+                all_items.append({
+                    "item_id": q["id"], "situation_slug": slug, "source_section": section,
+                    "type": q["type"], "primary_skill": sit.get("primary_skill"),
+                    "skills": sit.get("skills") or [], "roles": sit.get("roles") or [],
+                    "venue_types": sit.get("venue_types") or [], "level": sit.get("level"),
+                    "difficulty": sit.get("difficulty") or 1, "order": sit.get("order") or 0,
+                })
+    pool = [i for i in all_items if (not role or role in i["roles"])] or all_items
+
+    def tb(i):
+        return int(hashlib.sha256(f"{guest_id}|{local_date}|{i['item_id']}".encode()).hexdigest(), 16)
+
+    stats = await _compute_situation_stats(guest_id)
+
+    def incomplete_rank(i):
+        return _STATUS_RANK.get(stats.get(i["situation_slug"], {}).get("status", "not_started"), 0)
+
+    now = now_iso()
+    due = await db.review_items.find(
+        {"guest_id": guest_id, "next_review_at": {"$lte": now}}, {"_id": 0}
+    ).sort("next_review_at", 1).to_list(500)
+    pool_by_id = {i["item_id"]: i for i in pool}
+    due_items = [pool_by_id[r["source_id"]] for r in due if r.get("source_id") in pool_by_id]
+
+    scored = await _rank_situations_for_guest(guest, stats)
+    rec_slugs = [s["slug"] for _sc, _o, s, _r in scored[:5]]
+    rec_pos = {slug: i for i, slug in enumerate(rec_slugs)}
+
+    hist = await db.review_items.find({"guest_id": guest_id}, {"_id": 0}).to_list(2000)
+    hist_counts = {}
+    for h in hist:
+        sk = h.get("primary_skill")
+        if sk:
+            hist_counts[sk] = hist_counts.get(sk, 0) + (h.get("times_wrong") or 1)
+    hist_skills = [s for s, _c in sorted(hist_counts.items(), key=lambda kv: (-kv[1], kv[0]))]
+
+    want_lvl = LEVEL_ORDER.get(level) if level else None
+
+    def by_skill(skill):
+        c = [i for i in pool if _item_matches_skill(i, skill)]
+        c.sort(key=lambda i: (incomplete_rank(i), tb(i)))
+        return c
+
+    def recommended_incomplete():
+        c = [i for i in pool if i["situation_slug"] in rec_pos]
+        c.sort(key=lambda i: (rec_pos.get(i["situation_slug"], 99), incomplete_rank(i), tb(i)))
+        return c
+
+    def venue_relevant():
+        c = [i for i in pool if venue and i["venue_types"] and venue in i["venue_types"]]
+        c.sort(key=lambda i: (incomplete_rank(i), tb(i)))
+        return c
+
+    def variety():
+        c = list(pool)
+
+        def lvl(i):
+            have = LEVEL_ORDER.get(i["level"])
+            return abs(want_lvl - have) if (want_lvl and have) else 0
+        c.sort(key=lambda i: (incomplete_rank(i), lvl(i), tb(i)))
+        return c
+
+    chosen = []
+    state = {"used_ids": set(), "used_slugs": set(), "type_counts": {}}
+
+    def commit(item, reason):
+        chosen.append((item, reason))
+        state["used_ids"].add(item["item_id"])
+        state["used_slugs"].add(item["situation_slug"])
+        state["type_counts"][item["type"]] = state["type_counts"].get(item["type"], 0) + 1
+
+    def take(candidate_lists, reason):
+        for cands in candidate_lists:
+            p = _pick_item(cands, state)
+            if p:
+                commit(p, reason)
+                return True
+        return False
+
+    # Slot 1: earliest due review; fallbacks assessment_weak_skill_1 → recommended → variety.
+    take([
+        due_items,
+        by_skill(weak[0]) if weak else [],
+        recommended_incomplete(),
+        variety(),
+    ], "due_review")
+
+    # Slot 2: assessment weakness #1; fallbacks historical weak → recommended → variety.
+    take([
+        by_skill(weak[0]) if weak else [],
+        by_skill(hist_skills[0]) if hist_skills else [],
+        recommended_incomplete(),
+        variety(),
+    ], "assessment_weakness")
+
+    # Slot 3: next distinct weak skill (assessment first, then mistake evidence).
+    used_skills = {it["primary_skill"] for it, r in chosen if r == "assessment_weakness"}
+    distinct = [s for s in weak if s not in used_skills] + \
+               [s for s in hist_skills if s not in used_skills and s not in weak]
+    picked = False
+    for sk in distinct:
+        if _pick_item(by_skill(sk), state):
+            picked = take([by_skill(sk)], "assessment_weakness")
+            break
+    if not picked:
+        take([recommended_incomplete(), variety()], "assessment_weakness")
+
+    # Slot 4: from Recommended for you; fallbacks venue_relevant → variety.
+    take([recommended_incomplete(), venue_relevant(), variety()], "recommended")
+
+    # Slot 5: variety; fallback any role-compatible.
+    take([variety(), list(pool)], "variety")
+
+    # Guarantee exactly SESSION_SIZE items (fill from the full catalogue if needed).
+    if len(chosen) < shift.SESSION_SIZE:
+        for i in sorted(all_items, key=lambda x: tb(x)):
+            if len(chosen) >= shift.SESSION_SIZE:
+                break
+            if i["item_id"] not in state["used_ids"]:
+                commit(i, "variety")
+
+    return [{
+        "item_id": it["item_id"], "situation_slug": it["situation_slug"],
+        "source_section": it["source_section"], "selection_reason": reason,
+        "primary_skill": it["primary_skill"], "skills": it["skills"],
+    } for it, reason in chosen[:shift.SESSION_SIZE]]
+
+
+async def _shift_resolve_questions(item_refs):
+    """Map each item_ref to its canonical lesson question dict."""
+    slugs = list({r["situation_slug"] for r in item_refs})
+    lessons = await db.lessons.find({"situation_slug": {"$in": slugs}}, {"_id": 0}).to_list(1000)
+    by_id = {}
+    for l in lessons:
+        for key in ("exercises", "quiz"):
+            for q in l.get(key, []):
+                by_id[q["id"]] = q
+    return by_id
+
+
+async def _shift_session_payload(session, lang):
+    by_id = await _shift_resolve_questions(session["item_refs"])
+    items = []
+    answered = {r["item_id"]: r for r in session.get("responses", [])}
+    for ref in session["item_refs"]:
+        q = by_id.get(ref["item_id"])
+        if not q:
+            continue
+        pub = _public_question(q, lang)
+        pub["situation_slug"] = ref["situation_slug"]
+        pub["selection_reason"] = ref["selection_reason"]
+        pub["answered"] = ref["item_id"] in answered
+        items.append(pub)
+    return {
+        "session_id": session["id"],
+        "status": session["status"],
+        "local_date": session["local_date"],
+        "role": session["role"],
+        "total": len(session["item_refs"]),
+        "items": items,
+        "answered_count": len(answered),
+        "correct_count": session.get("correct_count"),
+        "focus_skill": session.get("focus_skill"),
+    }
+
+
+@api_router.post("/guests/{guest_id}/tonights-shift/start")
+async def tonights_shift_start(guest_id: str, payload: ShiftStart):
+    if not LOCAL_DATE_RE.match(payload.local_date or ""):
+        raise HTTPException(status_code=422, detail="local_date must be YYYY-MM-DD")
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    role = (guest.get("professional_profile") or {}).get("role") or "none"
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
+
+    key = {"guest_id": guest_id, "local_date": payload.local_date, "role": role}
+    existing = await db.shift_sessions.find_one(key, {"_id": 0})
+    if existing:
+        # Resume in-progress or return the read-only completed session for today.
+        return await _shift_session_payload(existing, lang)
+
+    item_refs = await _select_shift_items(guest, payload.local_date)
+    session = {
+        "id": str(uuid.uuid4()),
+        "guest_id": guest_id,
+        "local_date": payload.local_date,
+        "role": role,
+        "status": "in_progress",
+        "started_at": now_iso(),
+        "completed_at": None,
+        "item_refs": item_refs,
+        "responses": [],
+        "correct_count": None,
+        "focus_skill": None,
+        "content_version": shift.CONTENT_VERSION,
+    }
+    await db.shift_sessions.insert_one(dict(session))
+    return await _shift_session_payload(session, lang)
+
+
+@api_router.get("/guests/{guest_id}/tonights-shift")
+async def tonights_shift_today(guest_id: str, local_date: str = Query(...), role: str = Query(None)):
+    if not LOCAL_DATE_RE.match(local_date or ""):
+        raise HTTPException(status_code=422, detail="local_date must be YYYY-MM-DD")
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
+    r = role or (guest.get("professional_profile") or {}).get("role") or "none"
+    session = await db.shift_sessions.find_one(
+        {"guest_id": guest_id, "local_date": local_date, "role": r}, {"_id": 0}
+    )
+    if not session:
+        return {"exists": False}
+    payload = await _shift_session_payload(session, lang)
+    payload["exists"] = True
+    return payload
+
+
+@api_router.put("/shift-sessions/{session_id}/response")
+async def tonights_shift_response(session_id: str, payload: ShiftResponse):
+    session = await db.shift_sessions.find_one({"id": session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if session["status"] != "in_progress":
+        raise HTTPException(status_code=409, detail="Session is not in progress")
+    ref = next((r for r in session["item_refs"] if r["item_id"] == payload.item_id), None)
+    if not ref:
+        raise HTTPException(status_code=422, detail="Item does not belong to this session")
+
+    by_id = await _shift_resolve_questions([ref])
+    q = by_id.get(payload.item_id)
+    if not q:
+        raise HTTPException(status_code=422, detail="Item content not found")
+    correct = _check_answer(q, payload.submitted_answer)
+    response = {
+        "item_id": payload.item_id,
+        "situation_slug": ref["situation_slug"],
+        "primary_skill": ref.get("primary_skill"),
+        "submitted_answer": payload.submitted_answer,
+        "correct": correct,
+        "answered_at": now_iso(),
+    }
+    # Replace any prior answer for this item (no SRS / mastery / attempts writes).
+    await db.shift_sessions.update_one(
+        {"id": session_id}, {"$pull": {"responses": {"item_id": payload.item_id}}}
+    )
+    await db.shift_sessions.update_one(
+        {"id": session_id}, {"$push": {"responses": response}}
+    )
+    lang = session.get("role") and await _guest_language(session["guest_id"])
+    return {
+        "correct": correct,
+        "feedback": _loc_field(q, "explanation", lang or DEFAULT_LANGUAGE),
+        "correct_answer": _correct_answer_text(q, lang or DEFAULT_LANGUAGE),
+    }
+
+
+@api_router.post("/shift-sessions/{session_id}/complete")
+async def tonights_shift_complete(session_id: str):
+    session = await db.shift_sessions.find_one({"id": session_id}, {"_id": 0})
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    if session["status"] != "completed":
+        latest = {}
+        for r in session.get("responses", []):
+            latest[r["item_id"]] = r
+        order = [ref["item_id"] for ref in session["item_refs"]]
+        correct_count = sum(1 for r in latest.values() if r.get("correct"))
+
+        # focus_skill: skill with the most incorrect answers; ties use slot order.
+        err_counts = {}
+        err_order = {}
+        for pos, iid in enumerate(order):
+            r = latest.get(iid)
+            if r and not r.get("correct"):
+                sk = r.get("primary_skill")
+                if sk:
+                    err_counts[sk] = err_counts.get(sk, 0) + 1
+                    err_order.setdefault(sk, pos)
+        focus_skill = None
+        if err_counts:
+            focus_skill = sorted(err_counts.items(), key=lambda kv: (-kv[1], err_order[kv[0]]))[0][0]
+        else:
+            guest = await db.guests.find_one({"id": session["guest_id"]}, {"_id": 0}) or {}
+            cw = [s for s in (guest.get("assessment_weak_skills") or []) if s]
+            focus_skill = cw[0] if cw else None
+
+        await db.shift_sessions.update_one(
+            {"id": session_id},
+            {"$set": {
+                "status": "completed",
+                "completed_at": now_iso(),
+                "correct_count": correct_count,
+                "focus_skill": focus_skill,
+            }},
+        )
+        session = await db.shift_sessions.find_one({"id": session_id}, {"_id": 0})
+
+    lang = await _guest_language(session["guest_id"])
+    payload = await _shift_session_payload(session, lang)
+    payload["total"] = shift.SESSION_SIZE
+    return payload
+
+
+@api_router.get("/tonights-shift/meta")
+async def tonights_shift_meta():
+    return {"ui": shift.UI, "session_size": shift.SESSION_SIZE, "languages": shift.INTERFACE_LANGUAGES}
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -1368,6 +1752,9 @@ async def startup_seed():
         await db.assessment_attempts.create_index("guest_id")
         await db.assessment_attempts.create_index([("guest_id", 1), ("status", 1)])
         await db.assessment_attempts.create_index([("guest_id", 1), ("completed_at", -1)])
+        await db.shift_sessions.create_index(
+            [("guest_id", 1), ("local_date", 1), ("role", 1)], unique=True
+        )
     except Exception as e:
         logger.warning(f"Index creation skipped: {e}")
     logger.info("Content + reference data seeded.")

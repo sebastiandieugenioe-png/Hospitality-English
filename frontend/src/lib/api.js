@@ -63,6 +63,17 @@ export const saveEmergencyPhrase = (guestId, phrase_id) =>
   client.post(`/guests/${guestId}/saved-phrases`, { phrase_id }).then((r) => r.data);
 export const removeEmergencyPhrase = (guestId, phrase_id) =>
   client.delete(`/guests/${guestId}/saved-phrases/${phrase_id}`).then((r) => r.data);
+
+// Tonight's Shift (daily 5-question practice)
+export const getTonightsShiftMeta = () => client.get("/tonights-shift/meta").then((r) => r.data);
+export const startTonightsShift = (guestId, local_date) =>
+  client.post(`/guests/${guestId}/tonights-shift/start`, { local_date }).then((r) => r.data);
+export const getTonightsShiftToday = (guestId, params) =>
+  client.get(`/guests/${guestId}/tonights-shift`, { params }).then((r) => r.data);
+export const submitShiftResponse = (sessionId, payload) =>
+  client.put(`/shift-sessions/${sessionId}/response`, payload).then((r) => r.data);
+export const completeTonightsShift = (sessionId) =>
+  client.post(`/shift-sessions/${sessionId}/complete`).then((r) => r.data);
 export const updateLanguage = (id, interface_language) =>
   client.put(`/guests/${id}/language`, { interface_language }).then((r) => r.data);
 export const getLanguages = () => client.get("/languages").then((r) => r.data);

@@ -13,6 +13,7 @@ import Category from "@/pages/Category";
 import Lesson from "@/pages/Lesson";
 import Assessment from "@/pages/Assessment";
 import EmergencyPhrases from "@/pages/EmergencyPhrases";
+import TonightsShift from "@/pages/TonightsShift";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             <Route path="/lesson/:slug" element={<Lesson />} />
             <Route path="/assessment" element={<Assessment />} />
             <Route path="/emergency" element={<EmergencyPhrases />} />
+            <Route path="/tonights-shift" element={<TonightsShift />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-center" />
