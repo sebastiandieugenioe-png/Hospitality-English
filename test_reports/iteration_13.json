@@ -1,0 +1,21 @@
+{
+  "summary": "Job Interview English feature verified end-to-end. Backend: 15/15 pytest assertions pass (meta, 10 unique scenarios, bartender/waiter model_answer variants, English targets preserved + explanations localized, answer_index hidden & grading by JSON key, retake overwrites while keeping completion, language-change preserves progress, 10/10 completion sets completed_at, needs_role when role missing with model_answer=null). Regressions pass: 50 situations (25 bartender + 25 waiter), assessment meta OK (no CEFR), emergency 32/8, Tonight's Shift meta, recommended 3-5. Frontend (mobile 390x844): job-interview-entry-card renders on Home; PRIORITIZED above assessment/emergency/shift when goal=prepare_for_interview; non-prioritized guest shows it BELOW Tonight's Shift. /job-interview page shows ji-question, ji-progress ('Question 1 of 10'), all 5 sections (interviewer/structure/phrases/model/practice), exactly 3 practice options, ji-feedback shows on submit, ji-next-btn advances to Question 2 of 10, and reload resumes on Question 2.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_job_interview.py",
+    "/app/test_reports/pytest/job_interview_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "JobInterview.js Practice uses useMemo for a side-effect (setSelected/setFeedback on scenario change) instead of useEffect. It works but is a React anti-pattern; prefer useEffect(..., [scenario.id]).",
+    "In JobInterview.js the feedback banner for an incorrect answer only renders '✕' with no localized explanation; UX would benefit from showing the correct option label (correct_index is already returned by the API).",
+    "Home.js runs getJobInterview on every Home mount even for guests without a role (returns needs_role) — harmless but could be short-circuited for performance."
+  ],
+  "updated_files": ["/app/backend/tests/test_job_interview.py"],
+  "success_rate": {"backend": "100% (15/15)", "frontend": "100% of covered flows"},
+  "seed_data_creation": "Created ephemeral guests via /api/guests with profile role=bartender/waiter, goal=prepare_for_interview / first_hospitality_job; no DB cleanup performed (anonymous guests).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend profile endpoint requires goal ∈ learning-goals ids (e.g. 'prepare_for_interview', 'first_hospitality_job'); 'find_job' is NOT valid. Note the project's pytest.ini uses xdist loadscope that fails with class-less tests — run with `-o 'addopts='`. Frontend uses localStorage keys iph_guest_id and iph_lang; onboardingCompleted is set after PUT profile."
+}
