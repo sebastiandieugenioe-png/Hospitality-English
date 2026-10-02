@@ -22,6 +22,7 @@ import assessment_data as assessment
 import emergency_data as emergency
 import tonights_shift_data as shift
 import job_interview_data as jobint
+import first_week_data as firstweek
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -1849,6 +1850,123 @@ async def job_interview_practice(guest_id: str, payload: JobInterviewPractice):
     }
 
 
+# ---------- First Week at Work ----------
+async def _first_week_progress(guest_id, role):
+    return await db.first_week_progress.find_one({"guest_id": guest_id, "role": role}, {"_id": 0})
+
+
+@api_router.get("/first-week/meta")
+async def first_week_meta():
+    return {"ui": firstweek.UI, "scenario_count": firstweek.SCENARIO_COUNT, "languages": firstweek.INTERFACE_LANGUAGES}
+
+
+@api_router.get("/guests/{guest_id}/first-week")
+async def first_week_get(guest_id: str):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
+    role = (guest.get("professional_profile") or {}).get("role")
+    needs_role = role not in firstweek.ROLES  # shared content still available
+    key_role = role if role in firstweek.ROLES else "none"
+    scenarios = [firstweek.public_scenario(s, lang, role) for s in firstweek.SCENARIOS]
+
+    progress = await _first_week_progress(guest_id, key_role)
+    if not progress:
+        progress = {
+            "guest_id": guest_id, "role": key_role,
+            "completed_scenario_ids": [], "last_opened_scenario_id": None,
+            "practice_answers": {}, "practice_correct_count": 0,
+            "started_at": now_iso(), "completed_at": None, "updated_at": now_iso(),
+            "content_version": firstweek.CONTENT_VERSION,
+        }
+        await db.first_week_progress.update_one(
+            {"guest_id": guest_id, "role": key_role}, {"$setOnInsert": progress}, upsert=True
+        )
+        progress = await _first_week_progress(guest_id, key_role)
+    return {
+        "role": role,
+        "needs_role": needs_role,
+        "scenario_count": firstweek.SCENARIO_COUNT,
+        "scenarios": scenarios,
+        "progress": progress,
+    }
+
+
+@api_router.put("/guests/{guest_id}/first-week/open")
+async def first_week_open(guest_id: str, payload: JobInterviewOpen):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    if payload.scenario_id not in firstweek.SCENARIO_BY_ID:
+        raise HTTPException(status_code=422, detail="Unknown scenario_id")
+    role = (guest.get("professional_profile") or {}).get("role")
+    key_role = role if role in firstweek.ROLES else "none"
+    await db.first_week_progress.update_one(
+        {"guest_id": guest_id, "role": key_role},
+        {"$set": {"last_opened_scenario_id": payload.scenario_id, "updated_at": now_iso()},
+         "$setOnInsert": {
+             "guest_id": guest_id, "role": key_role, "completed_scenario_ids": [],
+             "practice_answers": {}, "practice_correct_count": 0,
+             "started_at": now_iso(), "completed_at": None,
+             "content_version": firstweek.CONTENT_VERSION,
+         }},
+        upsert=True,
+    )
+    return await _first_week_progress(guest_id, key_role)
+
+
+@api_router.post("/guests/{guest_id}/first-week/practice")
+async def first_week_practice(guest_id: str, payload: JobInterviewPractice):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    scenario = firstweek.SCENARIO_BY_ID.get(payload.scenario_id)
+    if not scenario:
+        raise HTTPException(status_code=422, detail="Unknown scenario_id")
+    role = (guest.get("professional_profile") or {}).get("role")
+    key_role = role if role in firstweek.ROLES else "none"
+
+    correct_index = scenario["practice"]["answer_index"]
+    correct = payload.answer_index == correct_index
+
+    progress = await _first_week_progress(guest_id, key_role) or {
+        "guest_id": guest_id, "role": key_role, "completed_scenario_ids": [],
+        "last_opened_scenario_id": None, "practice_answers": {}, "practice_correct_count": 0,
+        "started_at": now_iso(), "completed_at": None, "content_version": firstweek.CONTENT_VERSION,
+    }
+    answers = dict(progress.get("practice_answers") or {})
+    answers[payload.scenario_id] = {"answer_index": payload.answer_index, "correct": correct}
+    correct_count = sum(1 for a in answers.values() if a.get("correct"))
+    completed_ids = list(dict.fromkeys((progress.get("completed_scenario_ids") or []) + [payload.scenario_id]))
+    completed_at = progress.get("completed_at")
+    if len(completed_ids) >= firstweek.SCENARIO_COUNT and not completed_at:
+        completed_at = now_iso()
+
+    await db.first_week_progress.update_one(
+        {"guest_id": guest_id, "role": key_role},
+        {"$set": {
+            "practice_answers": answers,
+            "practice_correct_count": correct_count,
+            "completed_scenario_ids": completed_ids,
+            "last_opened_scenario_id": payload.scenario_id,
+            "completed_at": completed_at,
+            "updated_at": now_iso(),
+        },
+         "$setOnInsert": {
+             "guest_id": guest_id, "role": key_role,
+             "started_at": progress.get("started_at") or now_iso(),
+             "content_version": firstweek.CONTENT_VERSION,
+         }},
+        upsert=True,
+    )
+    return {
+        "correct": correct,
+        "correct_index": correct_index,
+        "progress": await _first_week_progress(guest_id, key_role),
+    }
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -1894,6 +2012,9 @@ async def startup_seed():
             [("guest_id", 1), ("local_date", 1), ("role", 1)], unique=True
         )
         await db.job_interview_progress.create_index(
+            [("guest_id", 1), ("role", 1)], unique=True
+        )
+        await db.first_week_progress.create_index(
             [("guest_id", 1), ("role", 1)], unique=True
         )
     except Exception as e:

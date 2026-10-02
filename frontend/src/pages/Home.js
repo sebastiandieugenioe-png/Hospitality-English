@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, ClipboardCheck, LifeBuoy, Moon, Briefcase } from "lucide-react";
+import { ArrowRight, Play, ClipboardCheck, LifeBuoy, Moon, Briefcase, CalendarDays } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
-import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta, getEmergency, getTonightsShiftMeta, getTonightsShiftToday, getJobInterviewMeta, getJobInterview } from "@/lib/api";
+import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta, getEmergency, getTonightsShiftMeta, getTonightsShiftToday, getJobInterviewMeta, getJobInterview, getFirstWeekMeta, getFirstWeek } from "@/lib/api";
 import { roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
 import { getLocalizedField, getText } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
@@ -26,6 +26,8 @@ export default function Home() {
   const [shiftToday, setShiftToday] = useState(null);
   const [jobMeta, setJobMeta] = useState(null);
   const [jobData, setJobData] = useState(null);
+  const [fwMeta, setFwMeta] = useState(null);
+  const [fwData, setFwData] = useState(null);
 
   // Send users with an incomplete professional profile through onboarding first.
   useEffect(() => {
@@ -89,8 +91,12 @@ export default function Home() {
     getJobInterviewMeta().then(setJobMeta).catch(() => {});
   }, []);
   useEffect(() => {
+    getFirstWeekMeta().then(setFwMeta).catch(() => {});
+  }, []);
+  useEffect(() => {
     if (!guestId) return;
     getJobInterview(guestId).then(setJobData).catch(() => {});
+    getFirstWeek(guestId).then(setFwData).catch(() => {});
   }, [guestId]);
   useEffect(() => {
     if (!guestId) return;
@@ -138,6 +144,41 @@ export default function Home() {
     </section>
   ) : null;
 
+  const firstWeekPriority =
+    profile?.employment_status === "starting_new_job" ||
+    (profile?.goal === "improve_current_job" && masteredCount < 1);
+  const fwCompleted = (fwData?.progress?.completed_scenario_ids || []).length;
+  const fwCard = fwMeta ? (
+    <section className="mt-4" key="first-week-card">
+      <button
+        data-testid="first-week-entry-card"
+        onClick={() => navigate("/first-week")}
+        className={`group w-full text-left rounded-2xl bg-white p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-between gap-5 ${
+          firstWeekPriority ? "border-2 border-brand-forest/40" : "border border-brand-forest/15"
+        }`}
+      >
+        <div>
+          {firstWeekPriority && (
+            <span className="inline-block text-[10px] uppercase tracking-[0.15em] font-semibold text-brand-forest bg-brand-success-muted rounded-full px-2.5 py-1 mb-2">
+              {t("home.recommendedForYou")}
+            </span>
+          )}
+          <p className="text-lg font-serif text-brand-espresso">{getText(fwMeta.ui.title, language)}</p>
+          <p className="mt-1 text-sm text-brand-charcoal/60 leading-relaxed max-w-md">
+            {getText(fwMeta.ui.subtitle, language)}
+          </p>
+          <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-forest">
+            {fwCompleted > 0 ? `${fwCompleted} / ${fwMeta.scenario_count}` : t("intro.start")}
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </span>
+        </div>
+        <span className="shrink-0 grid place-items-center w-12 h-12 rounded-xl bg-brand-forest/10 text-brand-forest">
+          <CalendarDays className="w-6 h-6" />
+        </span>
+      </button>
+    </section>
+  ) : null;
+
   return (
     <div className="min-h-screen bg-brand-sand">
       <Navbar />
@@ -169,6 +210,9 @@ export default function Home() {
 
         {/* Job Interview English — prioritized when goal/employment signals an interview */}
         {jobInterviewPriority && jobCard}
+
+        {/* First Week at Work — prioritized when starting a new job */}
+        {firstWeekPriority && fwCard}
 
         {/* Assessment entry point (optional, non-blocking) */}
         {assessmentMeta && (
@@ -260,6 +304,9 @@ export default function Home() {
 
         {/* Job Interview English — optional module when not prioritized */}
         {!jobInterviewPriority && jobCard}
+
+        {/* First Week at Work — optional module when not prioritized */}
+        {!firstWeekPriority && fwCard}
 
         {/* Resume + progress teaser */}
         {(resume || masteredCount > 0) && (

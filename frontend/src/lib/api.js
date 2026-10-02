@@ -83,6 +83,15 @@ export const openJobInterviewScenario = (guestId, scenario_id) =>
   client.put(`/guests/${guestId}/job-interview/open`, { scenario_id }).then((r) => r.data);
 export const submitJobInterviewPractice = (guestId, payload) =>
   client.post(`/guests/${guestId}/job-interview/practice`, payload).then((r) => r.data);
+
+// First Week at Work
+export const getFirstWeekMeta = () => client.get("/first-week/meta").then((r) => r.data);
+export const getFirstWeek = (guestId) =>
+  client.get(`/guests/${guestId}/first-week`).then((r) => r.data);
+export const openFirstWeekScenario = (guestId, scenario_id) =>
+  client.put(`/guests/${guestId}/first-week/open`, { scenario_id }).then((r) => r.data);
+export const submitFirstWeekPractice = (guestId, payload) =>
+  client.post(`/guests/${guestId}/first-week/practice`, payload).then((r) => r.data);
 export const updateLanguage = (id, interface_language) =>
   client.put(`/guests/${id}/language`, { interface_language }).then((r) => r.data);
 export const getLanguages = () => client.get("/languages").then((r) => r.data);
