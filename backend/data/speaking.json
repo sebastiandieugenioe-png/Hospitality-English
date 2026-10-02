@@ -1,0 +1,2608 @@
+{
+  "name": "Hospitality English — Speaking MVP — WorkEnglish-compatible",
+  "version": 1,
+  "status": "READY_FOR_IMPLEMENTATION_AFTER_SECRETS",
+  "profession_id": "hospitality",
+  "learning_language": "en",
+  "interface_languages": [
+    "es",
+    "it",
+    "fr",
+    "pt",
+    "de",
+    "pl",
+    "ro",
+    "uk",
+    "nl",
+    "en"
+  ],
+  "item_count": 50,
+  "role_distribution": {
+    "bartender": 25,
+    "waiter": 25
+  },
+  "ui_translations": {
+    "section_title": {
+      "es": "Speaking",
+      "it": "Speaking",
+      "fr": "Expression orale",
+      "pt": "Speaking",
+      "de": "Sprechen",
+      "pl": "Mówienie",
+      "ro": "Vorbire",
+      "uk": "Говоріння",
+      "nl": "Spreken",
+      "en": "Speaking"
+    },
+    "practice_title": {
+      "es": "Práctica de Speaking",
+      "it": "Pratica di speaking",
+      "fr": "Pratique orale",
+      "pt": "Prática de speaking",
+      "de": "Sprechtraining",
+      "pl": "Praktyka mówienia",
+      "ro": "Practică de vorbire",
+      "uk": "Практика говоріння",
+      "nl": "Spreekoefening",
+      "en": "Speaking Practice"
+    },
+    "listen_then_respond": {
+      "es": "Escucha y responde en voz alta.",
+      "it": "Ascolta e rispondi ad alta voce.",
+      "fr": "Écoutez puis répondez à voix haute.",
+      "pt": "Ouve e responde em voz alta.",
+      "de": "Hör zu und antworte laut.",
+      "pl": "Posłuchaj i odpowiedz na głos.",
+      "ro": "Ascultă și răspunde cu voce tare.",
+      "uk": "Послухай і відповідай вголос.",
+      "nl": "Luister en antwoord hardop.",
+      "en": "Listen and respond out loud."
+    },
+    "record": {
+      "es": "Grabar respuesta",
+      "it": "Registra risposta",
+      "fr": "Enregistrer la réponse",
+      "pt": "Gravar resposta",
+      "de": "Antwort aufnehmen",
+      "pl": "Nagraj odpowiedź",
+      "ro": "Înregistrează răspunsul",
+      "uk": "Записати відповідь",
+      "nl": "Antwoord opnemen",
+      "en": "Record response"
+    },
+    "stop": {
+      "es": "Detener",
+      "it": "Ferma",
+      "fr": "Arrêter",
+      "pt": "Parar",
+      "de": "Stoppen",
+      "pl": "Zatrzymaj",
+      "ro": "Oprește",
+      "uk": "Зупинити",
+      "nl": "Stoppen",
+      "en": "Stop"
+    },
+    "retry": {
+      "es": "Grabar de nuevo",
+      "it": "Registra di nuovo",
+      "fr": "Réenregistrer",
+      "pt": "Gravar novamente",
+      "de": "Neu aufnehmen",
+      "pl": "Nagraj ponownie",
+      "ro": "Înregistrează din nou",
+      "uk": "Записати ще раз",
+      "nl": "Opnieuw opnemen",
+      "en": "Record again"
+    },
+    "analyzing": {
+      "es": "Analizando tu respuesta…",
+      "it": "Analisi della risposta…",
+      "fr": "Analyse de votre réponse…",
+      "pt": "A analisar a tua resposta…",
+      "de": "Antwort wird analysiert…",
+      "pl": "Analizowanie odpowiedzi…",
+      "ro": "Se analizează răspunsul…",
+      "uk": "Аналіз відповіді…",
+      "nl": "Je antwoord wordt geanalyseerd…",
+      "en": "Analyzing your response…"
+    },
+    "your_transcript": {
+      "es": "Tu respuesta",
+      "it": "La tua risposta",
+      "fr": "Votre réponse",
+      "pt": "A tua resposta",
+      "de": "Deine Antwort",
+      "pl": "Twoja odpowiedź",
+      "ro": "Răspunsul tău",
+      "uk": "Твоя відповідь",
+      "nl": "Jouw antwoord",
+      "en": "Your response"
+    },
+    "model_response": {
+      "es": "Una posible respuesta",
+      "it": "Una possibile risposta",
+      "fr": "Une réponse possible",
+      "pt": "Uma resposta possível",
+      "de": "Eine mögliche Antwort",
+      "pl": "Przykładowa odpowiedź",
+      "ro": "Un posibil răspuns",
+      "uk": "Можлива відповідь",
+      "nl": "Een mogelijk antwoord",
+      "en": "One possible response"
+    },
+    "improved_response": {
+      "es": "Una versión más natural",
+      "it": "Una versione più naturale",
+      "fr": "Une version plus naturelle",
+      "pt": "Uma versão mais natural",
+      "de": "Eine natürlichere Version",
+      "pl": "Bardziej naturalna wersja",
+      "ro": "O variantă mai naturală",
+      "uk": "Природніший варіант",
+      "nl": "Een natuurlijkere versie",
+      "en": "A more natural version"
+    },
+    "clear": {
+      "es": "Claro",
+      "it": "Chiaro",
+      "fr": "Clair",
+      "pt": "Claro",
+      "de": "Verständlich",
+      "pl": "Zrozumiale",
+      "ro": "Clar",
+      "uk": "Зрозуміло",
+      "nl": "Duidelijk",
+      "en": "Clear"
+    },
+    "handled": {
+      "es": "Resuelve la situación",
+      "it": "Gestisce la situazione",
+      "fr": "Gère la situation",
+      "pt": "Resolve a situação",
+      "de": "Situation gelöst",
+      "pl": "Rozwiązuje sytuację",
+      "ro": "Rezolvă situația",
+      "uk": "Вирішує ситуацію",
+      "nl": "Situatie afgehandeld",
+      "en": "Situation handled"
+    },
+    "professional": {
+      "es": "Profesional",
+      "it": "Professionale",
+      "fr": "Professionnel",
+      "pt": "Profissional",
+      "de": "Professionell",
+      "pl": "Profesjonalnie",
+      "ro": "Profesional",
+      "uk": "Професійно",
+      "nl": "Professioneel",
+      "en": "Professional"
+    },
+    "grammar_vocab": {
+      "es": "Gramática y vocabulario",
+      "it": "Grammatica e vocabolario",
+      "fr": "Grammaire et vocabulaire",
+      "pt": "Gramática e vocabulário",
+      "de": "Grammatik und Wortschatz",
+      "pl": "Gramatyka i słownictwo",
+      "ro": "Gramatică și vocabular",
+      "uk": "Граматика й словниковий запас",
+      "nl": "Grammatica en woordenschat",
+      "en": "Grammar & vocabulary"
+    },
+    "naturalness": {
+      "es": "Naturalidad",
+      "it": "Naturalezza",
+      "fr": "Naturel",
+      "pt": "Naturalidade",
+      "de": "Natürlichkeit",
+      "pl": "Naturalność",
+      "ro": "Naturalețe",
+      "uk": "Природність",
+      "nl": "Natuurlijkheid",
+      "en": "Naturalness"
+    },
+    "strong": {
+      "es": "Muy bien",
+      "it": "Molto bene",
+      "fr": "Très bien",
+      "pt": "Muito bem",
+      "de": "Sehr gut",
+      "pl": "Bardzo dobrze",
+      "ro": "Foarte bine",
+      "uk": "Дуже добре",
+      "nl": "Heel goed",
+      "en": "Strong"
+    },
+    "partial": {
+      "es": "Casi",
+      "it": "Quasi",
+      "fr": "Presque",
+      "pt": "Quase",
+      "de": "Fast",
+      "pl": "Prawie",
+      "ro": "Aproape",
+      "uk": "Майже",
+      "nl": "Bijna",
+      "en": "Almost there"
+    },
+    "needs_work": {
+      "es": "Practicar",
+      "it": "Da migliorare",
+      "fr": "À travailler",
+      "pt": "A praticar",
+      "de": "Üben",
+      "pl": "Do przećwiczenia",
+      "ro": "De exersat",
+      "uk": "Потрібна практика",
+      "nl": "Oefenen",
+      "en": "Needs practice"
+    },
+    "mic_permission": {
+      "es": "Necesitamos acceso al micrófono para grabar tu respuesta.",
+      "it": "Serve l’accesso al microfono per registrare la risposta.",
+      "fr": "L’accès au microphone est nécessaire pour enregistrer votre réponse.",
+      "pt": "Precisamos de acesso ao microfone para gravar a tua resposta.",
+      "de": "Wir benötigen Mikrofonzugriff, um deine Antwort aufzunehmen.",
+      "pl": "Potrzebujemy dostępu do mikrofonu, aby nagrać odpowiedź.",
+      "ro": "Avem nevoie de acces la microfon pentru a înregistra răspunsul.",
+      "uk": "Потрібен доступ до мікрофона, щоб записати відповідь.",
+      "nl": "We hebben microfoontoegang nodig om je antwoord op te nemen.",
+      "en": "We need microphone access to record your response."
+    },
+    "too_short": {
+      "es": "Intenta responder con una frase completa.",
+      "it": "Prova a rispondere con una frase completa.",
+      "fr": "Essayez de répondre avec une phrase complète.",
+      "pt": "Tenta responder com uma frase completa.",
+      "de": "Versuche mit einem vollständigen Satz zu antworten.",
+      "pl": "Spróbuj odpowiedzieć pełnym zdaniem.",
+      "ro": "Încearcă să răspunzi cu o propoziție completă.",
+      "uk": "Спробуй відповісти повним реченням.",
+      "nl": "Probeer met een volledige zin te antwoorden.",
+      "en": "Try to answer with a complete sentence."
+    }
+  },
+  "items": [
+    {
+      "id": "speak_card_payment_is_declined_at_the_bar",
+      "profession_id": "hospitality",
+      "situation_slug": "card-payment-is-declined-at-the-bar",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/card-payment-is-declined-at-the-bar.mp3",
+      "prompt_transcript_en": "Did that go through?",
+      "prompt_translations": {
+        "es": "¿Ha pasado?",
+        "it": "È passato?",
+        "fr": "Est-ce que c'est passé ?",
+        "pt": "Passou?",
+        "de": "Ist das durchgegangen?",
+        "pl": "Czy przeszło?",
+        "ro": "A trecut?",
+        "uk": "Пройшло?",
+        "nl": "Is het gelukt?",
+        "en": "Did that go through?"
+      },
+      "model_response_en": "It looks like that didn't go through. Would you like to try again?",
+      "model_response_translations": {
+        "es": "Parece que no ha pasado. ¿Quieres intentarlo otra vez?",
+        "it": "Sembra che non sia passato. Vuoi riprovare?",
+        "fr": "Il semble que ce ne soit pas passé. Vous voulez réessayer ?",
+        "pt": "Parece que não passou. Quer tentar outra vez?",
+        "de": "Es sieht so aus, als wäre das nicht durchgegangen. Möchten Sie es noch einmal versuchen?",
+        "pl": "Wygląda na to, że nie przeszło. Chce pan spróbować ponownie?",
+        "ro": "Se pare că nu a trecut. Doriți să încercăm din nou?",
+        "uk": "Схоже, платіж не пройшов. Хочете спробувати ще раз?",
+        "nl": "Het lijkt erop dat het niet is gelukt. Wilt u het nog eens proberen?",
+        "en": "It looks like that didn't go through. Would you like to try again?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_explaining_cocktails",
+      "profession_id": "hospitality",
+      "situation_slug": "explaining-cocktails",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/explaining-cocktails.mp3",
+      "prompt_transcript_en": "What's in the Espresso Martini?",
+      "prompt_translations": {
+        "es": "¿Qué lleva el Espresso Martini?",
+        "it": "Che cosa contiene l'Espresso Martini?",
+        "fr": "Qu'est-ce qu'il y a dans l'Espresso Martini ?",
+        "pt": "O que leva o Espresso Martini?",
+        "de": "Was ist im Espresso Martini?",
+        "pl": "Co jest w Espresso Martini?",
+        "ro": "Ce conține Espresso Martini?",
+        "uk": "Що входить до Espresso Martini?",
+        "nl": "Wat zit er in de Espresso Martini?",
+        "en": "What's in the Espresso Martini?"
+      },
+      "model_response_en": "It's made with vodka, coffee liqueur and espresso.",
+      "model_response_translations": {
+        "es": "Lleva vodka, licor de café y espresso.",
+        "it": "Contiene vodka, liquore al caffè ed espresso.",
+        "fr": "Il contient de la vodka, de la liqueur de café et de l'espresso.",
+        "pt": "Leva vodka, licor de café e espresso.",
+        "de": "Er enthält Vodka, Kaffeelikör und Espresso.",
+        "pl": "Zawiera wódkę, likier kawowy i espresso.",
+        "ro": "Conține vodcă, lichior de cafea și espresso.",
+        "uk": "У ньому горілка, кавовий лікер та еспресо.",
+        "nl": "Hij bevat vodka, koffielikeur en espresso.",
+        "en": "It's made with vodka, coffee liqueur and espresso."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_arrives_at_the_bar",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-arrives-at-the-bar",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-arrives-at-the-bar.mp3",
+      "prompt_transcript_en": "Hi, can I order here?",
+      "prompt_translations": {
+        "es": "Hola, ¿puedo pedir aquí?",
+        "it": "Ciao, posso ordinare qui?",
+        "fr": "Bonjour, je peux commander ici ?",
+        "pt": "Olá, posso pedir aqui?",
+        "de": "Hallo, kann ich hier bestellen?",
+        "pl": "Cześć, mogę tutaj zamówić?",
+        "ro": "Bună, pot comanda aici?",
+        "uk": "Привіт, я можу замовити тут?",
+        "nl": "Hoi, kan ik hier bestellen?",
+        "en": "Hi, can I order here?"
+      },
+      "model_response_en": "Of course. What can I get you?",
+      "model_response_translations": {
+        "es": "Claro. ¿Qué te pongo?",
+        "it": "Certo. Cosa posso portarti?",
+        "fr": "Bien sûr. Qu’est-ce que je vous sers ?",
+        "pt": "Claro. O que posso servir?",
+        "de": "Klar. Was darf ich dir bringen?",
+        "pl": "Oczywiście. Co mogę dla ciebie podać?",
+        "ro": "Sigur. Ce vă pot servi?",
+        "uk": "Звичайно. Що вам подати?",
+        "nl": "Natuurlijk. Wat kan ik voor je inschenken?",
+        "en": "Of course. What can I get you?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_about_cocktail_allergens",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-about-cocktail-allergens",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-asks-about-cocktail-allergens.mp3",
+      "prompt_transcript_en": "Does this cocktail contain any nuts?",
+      "prompt_translations": {
+        "es": "¿Este cocktail contiene frutos secos?",
+        "it": "Questo cocktail contiene frutta a guscio?",
+        "fr": "Ce cocktail contient-il des fruits à coque ?",
+        "pt": "Este cocktail contém frutos secos?",
+        "de": "Enthält dieser Cocktail Nüsse?",
+        "pl": "Czy ten koktajl zawiera orzechy?",
+        "ro": "Acest cocktail conține nuci sau alte fructe cu coajă lemnoasă?",
+        "uk": "Цей cocktail містить горіхи?",
+        "nl": "Bevat deze cocktail noten?",
+        "en": "Does this cocktail contain any nuts?"
+      },
+      "model_response_en": "Do you have a nut allergy?",
+      "model_response_translations": {
+        "es": "¿Tienes alergia a los frutos secos?",
+        "it": "Hai un'allergia alla frutta a guscio?",
+        "fr": "Êtes-vous allergique aux fruits à coque ?",
+        "pt": "Tem alergia a frutos secos?",
+        "de": "Hast du eine Nussallergie?",
+        "pl": "Czy masz alergię na orzechy?",
+        "ro": "Aveți alergie la nuci sau alte fructe cu coajă lemnoasă?",
+        "uk": "У вас є алергія на горіхи?",
+        "nl": "Heb je een notenallergie?",
+        "en": "Do you have a nut allergy?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_about_last_orders",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-about-last-orders",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-asks-about-last-orders.mp3",
+      "prompt_transcript_en": "What time is last orders?",
+      "prompt_translations": {
+        "es": "¿A qué hora es la última ronda?",
+        "it": "A che ora è l'ultimo giro?",
+        "fr": "À quelle heure est la dernière commande ?",
+        "pt": "A que horas é a última ronda?",
+        "de": "Wann ist die letzte Bestellrunde?",
+        "pl": "O której są ostatnie zamówienia?",
+        "ro": "La ce oră este ultima rundă?",
+        "uk": "О котрій останнє замовлення?",
+        "nl": "Hoe laat is de laatste bestelronde?",
+        "en": "What time is last orders?"
+      },
+      "model_response_en": "Last orders is at eleven tonight. You still have about twenty minutes to order.",
+      "model_response_translations": {
+        "es": "La última ronda es a las once esta noche. Todavía tienes unos veinte minutos para pedir.",
+        "it": "L'ultimo giro è alle undici stasera. Hai ancora circa venti minuti per ordinare.",
+        "fr": "La dernière commande est à onze heures ce soir. Vous avez encore environ vingt minutes pour commander.",
+        "pt": "A última ronda é às onze esta noite. Ainda tem cerca de vinte minutos para pedir.",
+        "de": "Die letzte Bestellrunde ist heute Abend um elf. Sie haben noch ungefähr zwanzig Minuten zum Bestellen.",
+        "pl": "Ostatnie zamówienia są dziś o jedenastej. Ma pan jeszcze około dwudziestu minut na zamówienie.",
+        "ro": "Ultima rundă este la ora unsprezece în această seară. Mai aveți aproximativ douăzeci de minute pentru a comanda.",
+        "uk": "Останнє замовлення сьогодні об одинадцятій. У вас ще приблизно двадцять хвилин, щоб замовити.",
+        "nl": "De laatste bestelronde is vanavond om elf uur. U heeft nog ongeveer twintig minuten om te bestellen.",
+        "en": "Last orders is at eleven tonight. You still have about twenty minutes to order."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_about_spirits",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-about-spirits",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-asks-about-spirits.mp3",
+      "prompt_transcript_en": "What's the difference between the Irish whiskey and the bourbon?",
+      "prompt_translations": {
+        "es": "¿Cuál es la diferencia entre el whiskey irlandés y el bourbon?",
+        "it": "Qual è la differenza tra l'Irish whiskey e il bourbon?",
+        "fr": "Quelle est la différence entre l’Irish whiskey et le bourbon ?",
+        "pt": "Qual é a diferença entre o whiskey irlandês e o bourbon?",
+        "de": "Was ist der Unterschied zwischen dem irischen Whiskey und dem Bourbon?",
+        "pl": "Jaka jest różnica między irlandzką whiskey a bourbonem?",
+        "ro": "Care este diferența dintre whiskey-ul irlandez și bourbon?",
+        "uk": "У чому різниця між Irish whiskey і bourbon?",
+        "nl": "Wat is het verschil tussen Irish whiskey en bourbon?",
+        "en": "What's the difference between the Irish whiskey and the bourbon?"
+      },
+      "model_response_en": "They have quite different flavour profiles. What kind of flavours do you normally like?",
+      "model_response_translations": {
+        "es": "Tienen perfiles de sabor bastante diferentes. ¿Qué tipo de sabores te suelen gustar?",
+        "it": "Hanno profili aromatici piuttosto diversi. Che tipo di sapori ti piacciono di solito?",
+        "fr": "Ils ont des profils aromatiques assez différents. Quels types de saveurs aimez-vous habituellement ?",
+        "pt": "Têm perfis de sabor bastante diferentes. Que tipo de sabores costuma gostar?",
+        "de": "Sie haben ziemlich unterschiedliche Geschmacksprofile. Welche Geschmacksrichtungen magst du normalerweise?",
+        "pl": "Mają dość różne profile smakowe. Jakie smaki zwykle lubisz?",
+        "ro": "Au profiluri de gust destul de diferite. Ce fel de arome vă plac de obicei?",
+        "uk": "У них доволі різні смакові профілі. Які смаки вам зазвичай подобаються?",
+        "nl": "Ze hebben behoorlijk verschillende smaakprofielen. Van welke smaken hou je normaal gesproken?",
+        "en": "They have quite different flavour profiles. What kind of flavours do you normally like?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_for_a_local_beer",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-for-a-local-beer",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-asks-for-a-local-beer.mp3",
+      "prompt_transcript_en": "Do you have any local beers?",
+      "prompt_translations": {
+        "es": "¿Tenéis cervezas locales?",
+        "it": "Avete birre locali?",
+        "fr": "Vous avez des bières locales ?",
+        "pt": "Têm cervejas locais?",
+        "de": "Habt ihr lokale Biere?",
+        "pl": "Macie lokalne piwa?",
+        "ro": "Aveți beri locale?",
+        "uk": "У вас є місцеве пиво?",
+        "nl": "Hebben jullie lokale bieren?",
+        "en": "Do you have any local beers?"
+      },
+      "model_response_en": "Yes, we have two local beers on the menu. Do you prefer something light or more full-flavoured?",
+      "model_response_translations": {
+        "es": "Sí, tenemos dos cervezas locales en la carta. ¿Prefieres algo ligero o con más sabor?",
+        "it": "Sì, abbiamo due birre locali in carta. Preferisci qualcosa di leggero o con più sapore?",
+        "fr": "Oui, nous avons deux bières locales à la carte. Vous préférez quelque chose de léger ou avec plus de caractère ?",
+        "pt": "Sim, temos duas cervejas locais na carta. Prefere algo leve ou com mais sabor?",
+        "de": "Ja, wir haben zwei lokale Biere auf der Karte. Möchtest du etwas Leichtes oder etwas Geschmackvolleres?",
+        "pl": "Tak, mamy dwa lokalne piwa w karcie. Wolisz coś lekkiego czy o bardziej wyrazistym smaku?",
+        "ro": "Da, avem două beri locale în meniu. Preferați ceva ușor sau cu mai multă aromă?",
+        "uk": "Так, у нас у карті є два місцеві пива. Ви віддаєте перевагу чомусь легкому чи з більш виразним смаком?",
+        "nl": "Ja, we hebben twee lokale bieren op de kaart. Wil je iets lichts of iets met meer smaak?",
+        "en": "Yes, we have two local beers on the menu. Do you prefer something light or more full-flavoured?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_for_a_wine_recommendation",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-for-a-wine-recommendation",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-asks-for-a-wine-recommendation.mp3",
+      "prompt_transcript_en": "Could you recommend a white wine?",
+      "prompt_translations": {
+        "es": "¿Me puedes recomendar un vino blanco?",
+        "it": "Mi puoi consigliare un vino bianco?",
+        "fr": "Vous pouvez me recommander un vin blanc ?",
+        "pt": "Pode recomendar-me um vinho branco?",
+        "de": "Können Sie mir einen Weißwein empfehlen?",
+        "pl": "Czy może pan polecić mi białe wino?",
+        "ro": "Îmi puteți recomanda un vin alb?",
+        "uk": "Можете порекомендувати мені біле вино?",
+        "nl": "Kunt u een witte wijn aanraden?",
+        "en": "Could you recommend a white wine?"
+      },
+      "model_response_en": "Of course. Do you prefer something crisp and dry or a little fruitier?",
+      "model_response_translations": {
+        "es": "Claro. ¿Prefieres algo fresco y seco o un poco más afrutado?",
+        "it": "Certo. Preferisci qualcosa di fresco e secco o un po' più fruttato?",
+        "fr": "Bien sûr. Vous préférez quelque chose de frais et sec ou un peu plus fruité ?",
+        "pt": "Claro. Prefere algo fresco e seco ou um pouco mais frutado?",
+        "de": "Klar. Möchten Sie etwas Frisches und Trockenes oder etwas Fruchtigeres?",
+        "pl": "Oczywiście. Woli pan coś świeżego i wytrawnego czy trochę bardziej owocowego?",
+        "ro": "Sigur. Preferați ceva proaspăt și sec sau puțin mai fructat?",
+        "uk": "Звичайно. Ви віддаєте перевагу чомусь свіжому й сухому чи трохи більш фруктовому?",
+        "nl": "Natuurlijk. Wilt u iets fris en droog of iets fruitigers?",
+        "en": "Of course. Do you prefer something crisp and dry or a little fruitier?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_for_another_round",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-for-another-round",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-asks-for-another-round.mp3",
+      "prompt_transcript_en": "Can we get the same again?",
+      "prompt_translations": {
+        "es": "¿Nos pones lo mismo otra vez?",
+        "it": "Ci fai lo stesso di nuovo?",
+        "fr": "Vous nous remettez la même chose ?",
+        "pt": "Pode trazer-nos o mesmo outra vez?",
+        "de": "Können wir noch einmal das Gleiche bekommen?",
+        "pl": "Możemy dostać to samo jeszcze raz?",
+        "ro": "Ne aduceți același lucru din nou?",
+        "uk": "Можна нам те саме ще раз?",
+        "nl": "Kunnen we hetzelfde nog een keer krijgen?",
+        "en": "Can we get the same again?"
+      },
+      "model_response_en": "Of course. The same round again?",
+      "model_response_translations": {
+        "es": "Claro. ¿La misma ronda otra vez?",
+        "it": "Certo. Lo stesso giro di nuovo?",
+        "fr": "Bien sûr. La même tournée encore une fois ?",
+        "pt": "Claro. A mesma rodada outra vez?",
+        "de": "Klar. Noch einmal dieselbe Runde?",
+        "pl": "Oczywiście. Jeszcze raz ta sama runda?",
+        "ro": "Sigur. Aceeași rundă din nou?",
+        "uk": "Звичайно. Той самий раунд ще раз?",
+        "nl": "Natuurlijk. Dezelfde ronde nog een keer?",
+        "en": "Of course. The same round again?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_for_cocktail_recommendation",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-for-cocktail-recommendation",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-asks-for-cocktail-recommendation.mp3",
+      "prompt_transcript_en": "I'm not sure what to get. What would you recommend?",
+      "prompt_translations": {
+        "es": "No sé qué pedir. ¿Qué me recomiendas?",
+        "it": "Non so cosa ordinare. Cosa mi consigli?",
+        "fr": "Je ne sais pas quoi commander. Qu’est-ce que vous me recommandez ?",
+        "pt": "Não sei o que pedir. O que recomenda?",
+        "de": "Ich weiß nicht, was ich bestellen soll. Was würdest du empfehlen?",
+        "pl": "Nie wiem, co zamówić. Co polecasz?",
+        "ro": "Nu știu ce să comand. Ce îmi recomandați?",
+        "uk": "Я не знаю, що замовити. Що порадите?",
+        "nl": "Ik weet niet wat ik moet nemen. Wat raad je aan?",
+        "en": "I'm not sure what to get. What would you recommend?"
+      },
+      "model_response_en": "Of course. What kind of drinks do you usually like?",
+      "model_response_translations": {
+        "es": "Claro. ¿Qué tipo de bebidas te suelen gustar?",
+        "it": "Certo. Che tipo di bevande ti piacciono di solito?",
+        "fr": "Bien sûr. Quels types de boissons aimez-vous habituellement ?",
+        "pt": "Claro. Que tipo de bebidas costuma gostar?",
+        "de": "Klar. Welche Art von Getränken magst du normalerweise?",
+        "pl": "Oczywiście. Jakie napoje zwykle lubisz?",
+        "ro": "Sigur. Ce fel de băuturi vă plac de obicei?",
+        "uk": "Звичайно. Які напої вам зазвичай подобаються?",
+        "nl": "Natuurlijk. Van welke drankjes hou je meestal?",
+        "en": "Of course. What kind of drinks do you usually like?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_what_a_cocktail_tastes_like",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-what-a-cocktail-tastes-like",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-asks-what-a-cocktail-tastes-like.mp3",
+      "prompt_transcript_en": "What does the Negroni taste like?",
+      "prompt_translations": {
+        "es": "¿A qué sabe el Negroni?",
+        "it": "Che sapore ha il Negroni?",
+        "fr": "Quel goût a le Negroni ?",
+        "pt": "A que sabe o Negroni?",
+        "de": "Wie schmeckt ein Negroni?",
+        "pl": "Jak smakuje Negroni?",
+        "ro": "Ce gust are Negroni?",
+        "uk": "Який смак має Negroni?",
+        "nl": "Hoe smaakt de Negroni?",
+        "en": "What does the Negroni taste like?"
+      },
+      "model_response_en": "It's quite bitter, with some sweetness and citrus. It's also pretty spirit-forward.",
+      "model_response_translations": {
+        "es": "Es bastante amargo, con algo de dulzor y notas cítricas. También tiene bastante presencia del destilado.",
+        "it": "È piuttosto amaro, con un po' di dolcezza e note agrumate. Il distillato è anche piuttosto presente.",
+        "fr": "Il est assez amer, avec un peu de douceur et des notes d’agrumes. Le spiritueux est aussi assez présent.",
+        "pt": "É bastante amargo, com alguma doçura e notas cítricas. O destilado também tem bastante presença.",
+        "de": "Er ist ziemlich bitter, mit etwas Süße und Zitrusnoten. Die Spirituose ist ebenfalls deutlich präsent.",
+        "pl": "Jest dość gorzki, z odrobiną słodyczy i nutami cytrusowymi. Alkohol bazowy jest też dość wyraźny.",
+        "ro": "Este destul de amar, cu puțină dulceață și note citrice. Baza alcoolică este, de asemenea, destul de prezentă.",
+        "uk": "Він доволі гіркий, з невеликою солодкістю та цитрусовими нотами. Базовий алкоголь також добре відчувається.",
+        "nl": "Hij is behoorlijk bitter, met wat zoetheid en citrustoetsen. De sterke drank is ook duidelijk aanwezig.",
+        "en": "It's quite bitter, with some sweetness and citrus. It's also pretty spirit-forward."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_has_had_too_much_to_drink",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-has-had-too-much-to-drink",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-has-had-too-much-to-drink.mp3",
+      "prompt_transcript_en": "Can I get another whiskey?",
+      "prompt_translations": {
+        "es": "¿Me pones otro whiskey?",
+        "it": "Mi dai un altro whiskey?",
+        "fr": "Vous me servez un autre whiskey ?",
+        "pt": "Pode trazer-me outro whiskey?",
+        "de": "Kann ich noch einen Whiskey bekommen?",
+        "pl": "Poproszę kolejną whiskey.",
+        "ro": "Îmi mai dați un whiskey?",
+        "uk": "Можна ще один whiskey?",
+        "nl": "Mag ik nog een whiskey?",
+        "en": "Can I get another whiskey?"
+      },
+      "model_response_en": "I'm sorry, but I can't serve you another alcoholic drink right now.",
+      "model_response_translations": {
+        "es": "Lo siento, pero ahora mismo no puedo servirte otra bebida alcohólica.",
+        "it": "Mi dispiace, ma in questo momento non posso servirti un'altra bevanda alcolica.",
+        "fr": "Je suis désolé, mais je ne peux pas vous servir une autre boisson alcoolisée pour le moment.",
+        "pt": "Lamento, mas neste momento não posso servir-lhe outra bebida alcoólica.",
+        "de": "Es tut mir leid, aber ich kann dir im Moment kein weiteres alkoholisches Getränk servieren.",
+        "pl": "Przepraszam, ale teraz nie mogę podać ci kolejnego napoju alkoholowego.",
+        "ro": "Îmi pare rău, dar nu vă mai pot servi o băutură alcoolică în acest moment.",
+        "uk": "Перепрошую, але зараз я не можу подати вам ще один алкогольний напій.",
+        "nl": "Het spijt me, maar ik kan je op dit moment geen alcoholisch drankje meer serveren.",
+        "en": "I'm sorry, but I can't serve you another alcoholic drink right now."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_orders_a_round_with_changes",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-orders-a-round-with-changes",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-orders-a-round-with-changes.mp3",
+      "prompt_transcript_en": "Can I get two pints of Guinness, a gin and tonic with no lemon, and a vodka soda?",
+      "prompt_translations": {
+        "es": "¿Me pones dos pintas de Guinness, un gin tonic sin limón y un vodka soda?",
+        "it": "Mi dai due pinte di Guinness, un gin tonic senza limone e un vodka soda?",
+        "fr": "Je peux avoir deux pintes de Guinness, un gin tonic sans citron et une vodka soda ?",
+        "pt": "Pode trazer-me duas Guinness, um gin tónico sem limão e uma vodka soda?",
+        "de": "Kann ich zwei Pints Guinness, einen Gin Tonic ohne Zitrone und einen Vodka Soda bekommen?",
+        "pl": "Poproszę dwa Guinnessy, gin z tonikiem bez cytryny i vodkę z sodą.",
+        "ro": "Îmi dați două halbe de Guinness, un gin tonic fără lămâie și o vodcă cu sifon?",
+        "uk": "Можна дві пінти Guinness, gin and tonic без лимона та vodka soda?",
+        "nl": "Mag ik twee pints Guinness, een gin-tonic zonder citroen en een vodka soda?",
+        "en": "Can I get two pints of Guinness, a gin and tonic with no lemon, and a vodka soda?"
+      },
+      "model_response_en": "Sure. What gin would you like?",
+      "model_response_translations": {
+        "es": "Claro. ¿Qué gin te gustaría?",
+        "it": "Certo. Quale gin preferisci?",
+        "fr": "Bien sûr. Quel gin souhaitez-vous ?",
+        "pt": "Claro. Que gin gostaria?",
+        "de": "Klar. Welchen Gin möchtest du?",
+        "pl": "Oczywiście. Jaki gin wybierasz?",
+        "ro": "Sigur. Ce gin ați dori?",
+        "uk": "Звичайно. Який gin ви хотіли б?",
+        "nl": "Natuurlijk. Welke gin zou je willen?",
+        "en": "Sure. What gin would you like?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_says_cocktail_is_too_sweet",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-says-cocktail-is-too-sweet",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-says-cocktail-is-too-sweet.mp3",
+      "prompt_transcript_en": "Excuse me, this cocktail is too sweet for me.",
+      "prompt_translations": {
+        "es": "Disculpa, este cocktail está demasiado dulce para mí.",
+        "it": "Scusa, questo cocktail è troppo dolce per me.",
+        "fr": "Excusez-moi, ce cocktail est trop sucré pour moi.",
+        "pt": "Desculpe, este cocktail está demasiado doce para mim.",
+        "de": "Entschuldigung, dieser Cocktail ist mir zu süß.",
+        "pl": "Przepraszam, ten koktajl jest dla mnie zbyt słodki.",
+        "ro": "Scuzați-mă, cocktailul acesta este prea dulce pentru mine.",
+        "uk": "Перепрошую, цей cocktail для мене надто солодкий.",
+        "nl": "Sorry, deze cocktail is te zoet voor mij.",
+        "en": "Excuse me, this cocktail is too sweet for me."
+      },
+      "model_response_en": "I'm really sorry about that. Thank you for letting me know.",
+      "model_response_translations": {
+        "es": "Lo siento mucho. Gracias por decírmelo.",
+        "it": "Mi dispiace molto. Grazie per avermelo detto.",
+        "fr": "Je suis vraiment désolé. Merci de me l’avoir dit.",
+        "pt": "Lamento muito. Obrigado por me dizer.",
+        "de": "Das tut mir wirklich leid. Danke, dass du mir Bescheid gesagt hast.",
+        "pl": "Bardzo mi przykro. Dziękuję, że mi o tym powiedziałeś.",
+        "ro": "Îmi pare foarte rău. Mulțumesc că mi-ați spus.",
+        "uk": "Мені дуже шкода. Дякую, що сказали.",
+        "nl": "Het spijt me echt. Bedankt dat je het zegt.",
+        "en": "I'm really sorry about that. Thank you for letting me know."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_says_the_drink_is_too_strong",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-says-the-drink-is-too-strong",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-says-the-drink-is-too-strong.mp3",
+      "prompt_transcript_en": "Sorry, this is a bit too strong for me.",
+      "prompt_translations": {
+        "es": "Perdona, esto está un poco demasiado fuerte para mí.",
+        "it": "Scusa, per me è un po' troppo forte.",
+        "fr": "Désolé, c'est un peu trop fort pour moi.",
+        "pt": "Desculpe, isto está um pouco forte demais para mim.",
+        "de": "Entschuldigung, das ist mir etwas zu stark.",
+        "pl": "Przepraszam, to jest dla mnie trochę za mocne.",
+        "ro": "Scuze, este puțin prea tare pentru mine.",
+        "uk": "Вибачте, це трохи занадто міцно для мене.",
+        "nl": "Sorry, dit is een beetje te sterk voor mij.",
+        "en": "Sorry, this is a bit too strong for me."
+      },
+      "model_response_en": "I'm sorry it's not working for you. Would you prefer something lighter?",
+      "model_response_translations": {
+        "es": "Siento que no te esté gustando. ¿Preferirías algo más ligero?",
+        "it": "Mi dispiace che non ti piaccia. Preferiresti qualcosa di più leggero?",
+        "fr": "Je suis désolé que cela ne vous plaise pas. Vous préféreriez quelque chose de plus léger ?",
+        "pt": "Lamento que não esteja a gostar. Preferia algo mais leve?",
+        "de": "Es tut mir leid, dass es Ihnen nicht gefällt. Würden Sie etwas Leichteres bevorzugen?",
+        "pl": "Przykro mi, że panu nie smakuje. Wolałby pan coś lżejszego?",
+        "ro": "Îmi pare rău că nu vă place. Ați prefera ceva mai ușor?",
+        "uk": "Шкода, що вам не подобається. Ви б хотіли щось легше?",
+        "nl": "Het spijt me dat het niet naar wens is. Wilt u liever iets lichters?",
+        "en": "I'm sorry it's not working for you. Would you prefer something lighter?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_spills_a_drink",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-spills-a-drink",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-spills-a-drink.mp3",
+      "prompt_transcript_en": "I'm so sorry, I spilled my drink.",
+      "prompt_translations": {
+        "es": "Lo siento mucho, he derramado mi bebida.",
+        "it": "Mi dispiace molto, ho rovesciato la mia bevanda.",
+        "fr": "Je suis vraiment désolé, j'ai renversé ma boisson.",
+        "pt": "Peço muita desculpa, entornei a minha bebida.",
+        "de": "Es tut mir wirklich leid, ich habe mein Getränk verschüttet.",
+        "pl": "Bardzo przepraszam, rozlałem swój napój.",
+        "ro": "Îmi pare foarte rău, mi-am vărsat băutura.",
+        "uk": "Мені дуже шкода, я розлив свій напій.",
+        "nl": "Het spijt me echt, ik heb mijn drankje gemorst.",
+        "en": "I'm so sorry, I spilled my drink."
+      },
+      "model_response_en": "Don't worry. Are you okay?",
+      "model_response_translations": {
+        "es": "No te preocupes. ¿Estás bien?",
+        "it": "Non preoccuparti. Stai bene?",
+        "fr": "Ne vous inquiétez pas. Vous allez bien ?",
+        "pt": "Não se preocupe. Está bem?",
+        "de": "Keine Sorge. Geht es Ihnen gut?",
+        "pl": "Proszę się nie martwić. Czy wszystko w porządku?",
+        "ro": "Nu vă faceți griji. Sunteți bine?",
+        "uk": "Не хвилюйтеся. З вами все гаразд?",
+        "nl": "Geen zorgen. Gaat het met u?",
+        "en": "Don't worry. Are you okay?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_wants_an_alcohol_free_option",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-wants-an-alcohol-free-option",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-wants-an-alcohol-free-option.mp3",
+      "prompt_transcript_en": "What alcohol-free options do you have?",
+      "prompt_translations": {
+        "es": "¿Qué opciones sin alcohol tenéis?",
+        "it": "Quali opzioni analcoliche avete?",
+        "fr": "Quelles options sans alcool avez-vous ?",
+        "pt": "Que opções sem álcool têm?",
+        "de": "Welche alkoholfreien Optionen habt ihr?",
+        "pl": "Jakie macie opcje bezalkoholowe?",
+        "ro": "Ce opțiuni fără alcool aveți?",
+        "uk": "Які безалкогольні варіанти у вас є?",
+        "nl": "Welke alcoholvrije opties hebben jullie?",
+        "en": "What alcohol-free options do you have?"
+      },
+      "model_response_en": "We have alcohol-free beer, wine and mixed drinks. Are you looking for something refreshing?",
+      "model_response_translations": {
+        "es": "Tenemos cerveza, vino y bebidas mezcladas sin alcohol. ¿Buscas algo refrescante?",
+        "it": "Abbiamo birra, vino e bevande miscelate analcoliche. Cerchi qualcosa di rinfrescante?",
+        "fr": "Nous avons de la bière, du vin et des boissons mélangées sans alcool. Vous cherchez quelque chose de rafraîchissant ?",
+        "pt": "Temos cerveja, vinho e bebidas misturadas sem álcool. Procura algo refrescante?",
+        "de": "Wir haben alkoholfreies Bier, alkoholfreien Wein und alkoholfreie Mixgetränke. Suchst du etwas Erfrischendes?",
+        "pl": "Mamy bezalkoholowe piwo, wino i drinki mieszane. Szukasz czegoś orzeźwiającego?",
+        "ro": "Avem bere, vin și băuturi mixte fără alcool. Căutați ceva răcoritor?",
+        "uk": "У нас є безалкогольне пиво, вино й змішані напої. Шукаєте щось освіжаюче?",
+        "nl": "We hebben alcoholvrij bier, wijn en gemixte drankjes. Zoek je iets verfrissends?",
+        "en": "We have alcohol-free beer, wine and mixed drinks. Are you looking for something refreshing?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_wants_something_less_sweet",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-wants-something-less-sweet",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-wants-something-less-sweet.mp3",
+      "prompt_transcript_en": "I'd like a cocktail, but nothing too sweet.",
+      "prompt_translations": {
+        "es": "Quiero un cocktail, pero nada demasiado dulce.",
+        "it": "Vorrei un cocktail, ma niente di troppo dolce.",
+        "fr": "Je voudrais un cocktail, mais rien de trop sucré.",
+        "pt": "Quero um cocktail, mas nada demasiado doce.",
+        "de": "Ich hätte gern einen Cocktail, aber nichts zu Süßes.",
+        "pl": "Chcę koktajl, ale nic zbyt słodkiego.",
+        "ro": "Aș vrea un cocktail, dar nimic prea dulce.",
+        "uk": "Я хочу cocktail, але нічого надто солодкого.",
+        "nl": "Ik wil graag een cocktail, maar niets dat te zoet is.",
+        "en": "I'd like a cocktail, but nothing too sweet."
+      },
+      "model_response_en": "No problem. Do you like citrus or herbal flavours?",
+      "model_response_translations": {
+        "es": "Sin problema. ¿Te gustan los sabores cítricos o herbales?",
+        "it": "Nessun problema. Ti piacciono i sapori agrumati o erbacei?",
+        "fr": "Pas de problème. Vous aimez les saveurs agrumées ou herbacées ?",
+        "pt": "Sem problema. Gosta de sabores cítricos ou herbais?",
+        "de": "Kein Problem. Magst du zitrusartige oder kräuterige Aromen?",
+        "pl": "Nie ma problemu. Lubisz smaki cytrusowe czy ziołowe?",
+        "ro": "Nicio problemă. Vă plac aromele citrice sau erbacee?",
+        "uk": "Без проблем. Вам подобаються цитрусові чи трав’яні смаки?",
+        "nl": "Geen probleem. Hou je van citrusachtige of kruidige smaken?",
+        "en": "No problem. Do you like citrus or herbal flavours?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_wants_to_modify_a_cocktail",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-wants-to-modify-a-cocktail",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-wants-to-modify-a-cocktail.mp3",
+      "prompt_transcript_en": "Could I have the Mojito without sugar syrup?",
+      "prompt_translations": {
+        "es": "¿Me puedes hacer el Mojito sin sirope de azúcar?",
+        "it": "Mi puoi fare il Mojito senza sciroppo di zucchero?",
+        "fr": "Vous pouvez me faire le Mojito sans sirop de sucre ?",
+        "pt": "Pode fazer-me o Mojito sem xarope de açúcar?",
+        "de": "Können Sie mir den Mojito ohne Zuckersirup machen?",
+        "pl": "Czy może pan zrobić mi Mojito bez syropu cukrowego?",
+        "ro": "Îmi puteți face Mojito fără sirop de zahăr?",
+        "uk": "Можете зробити мені Mojito без цукрового сиропу?",
+        "nl": "Kunt u de Mojito zonder suikersiroop maken?",
+        "en": "Could I have the Mojito without sugar syrup?"
+      },
+      "model_response_en": "Of course. You’d like it without sugar syrup, is that right?",
+      "model_response_translations": {
+        "es": "Claro. Lo quieres sin sirope de azúcar, ¿correcto?",
+        "it": "Certo. Lo vuoi senza sciroppo di zucchero, giusto?",
+        "fr": "Bien sûr. Vous le voulez sans sirop de sucre, c'est bien ça ?",
+        "pt": "Claro. Quer sem xarope de açúcar, correto?",
+        "de": "Klar. Du möchtest ihn ohne Zuckersirup, richtig?",
+        "pl": "Oczywiście. Chcesz bez syropu cukrowego, zgadza się?",
+        "ro": "Sigur. Îl doriți fără sirop de zahăr, corect?",
+        "uk": "Звичайно. Ви хочете без цукрового сиропу, правильно?",
+        "nl": "Natuurlijk. U wilt hem zonder suikersiroop, klopt dat?",
+        "en": "Of course. You’d like it without sugar syrup, is that right?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_wants_to_open_a_tab",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-wants-to-open-a-tab",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-wants-to-open-a-tab.mp3",
+      "prompt_transcript_en": "Can I open a tab?",
+      "prompt_translations": {
+        "es": "¿Puedo abrir una cuenta?",
+        "it": "Posso aprire un conto?",
+        "fr": "Je peux ouvrir une note ?",
+        "pt": "Posso abrir uma conta?",
+        "de": "Kann ich einen Tab eröffnen?",
+        "pl": "Czy mogę otworzyć rachunek?",
+        "ro": "Pot deschide o notă?",
+        "uk": "Можна відкрити рахунок?",
+        "nl": "Kan ik een rekening openen?",
+        "en": "Can I open a tab?"
+      },
+      "model_response_en": "Yes, we can start a tab for you. What name should I put it under?",
+      "model_response_translations": {
+        "es": "Sí, podemos abrirte una cuenta. ¿A qué nombre la pongo?",
+        "it": "Sì, possiamo aprirti un conto. A che nome lo metto?",
+        "fr": "Oui, nous pouvons vous ouvrir une note. À quel nom dois-je la mettre ?",
+        "pt": "Sim, podemos abrir-lhe uma conta. Em que nome coloco a conta?",
+        "de": "Ja, wir können einen Tab für Sie eröffnen. Auf welchen Namen soll ich ihn anlegen?",
+        "pl": "Tak, możemy otworzyć dla pana rachunek. Na jakie nazwisko mam go otworzyć?",
+        "ro": "Da, vă putem deschide o notă. Pe ce nume să o trec?",
+        "uk": "Так, ми можемо відкрити для вас рахунок. На яке ім’я його оформити?",
+        "nl": "Ja, we kunnen een rekening voor u openen. Op welke naam zal ik hem zetten?",
+        "en": "Yes, we can start a tab for you. What name should I put it under?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_wants_to_split_the_bar_tab",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-wants-to-split-the-bar-tab",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/guest-wants-to-split-the-bar-tab.mp3",
+      "prompt_transcript_en": "Can we split the bill between four of us?",
+      "prompt_translations": {
+        "es": "¿Podemos dividir la cuenta entre los cuatro?",
+        "it": "Possiamo dividere il conto tra noi quattro?",
+        "fr": "On peut partager l’addition entre nous quatre ?",
+        "pt": "Podemos dividir a conta entre os quatro?",
+        "de": "Können wir die Rechnung auf vier Personen aufteilen?",
+        "pl": "Czy możemy podzielić rachunek między naszą czwórkę?",
+        "ro": "Putem împărți nota între noi patru?",
+        "uk": "Можемо розділити рахунок на чотирьох?",
+        "nl": "Kunnen we de rekening door vieren delen?",
+        "en": "Can we split the bill between four of us?"
+      },
+      "model_response_en": "Of course. Would you like to split it evenly?",
+      "model_response_translations": {
+        "es": "Claro. ¿Queréis dividirla a partes iguales?",
+        "it": "Certo. Volete dividerlo in parti uguali?",
+        "fr": "Bien sûr. Souhaitez-vous la partager à parts égales ?",
+        "pt": "Claro. Gostariam de dividir em partes iguais?",
+        "de": "Natürlich. Möchtet ihr sie gleichmäßig aufteilen?",
+        "pl": "Oczywiście. Chcecie podzielić rachunek po równo?",
+        "ro": "Sigur. Doriți să o împărțiți în mod egal?",
+        "uk": "Звичайно. Хотіли б розділити рахунок порівну?",
+        "nl": "Natuurlijk. Willen jullie hem gelijk verdelen?",
+        "en": "Of course. Would you like to split it evenly?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_handling_a_complaint",
+      "profession_id": "hospitality",
+      "situation_slug": "handling-a-complaint",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/handling-a-complaint.mp3",
+      "prompt_transcript_en": "Sorry, I ordered a vodka soda, not a gin and tonic.",
+      "prompt_translations": {
+        "es": "Perdona, pedí un vodka soda, no un gin tonic.",
+        "it": "Scusa, avevo ordinato un vodka soda, non un gin tonic.",
+        "fr": "Désolé, j'avais commandé un vodka soda, pas un gin tonic.",
+        "pt": "Desculpe, pedi um vodka soda, não um gin tónico.",
+        "de": "Entschuldigung, ich hatte einen Vodka Soda bestellt, keinen Gin Tonic.",
+        "pl": "Przepraszam, zamawiałem vodka soda, a nie gin z tonikiem.",
+        "ro": "Scuze, am comandat un vodka soda, nu un gin tonic.",
+        "uk": "Вибачте, я замовляв vodka soda, а не джин-тонік.",
+        "nl": "Sorry, ik had een vodka soda besteld, geen gin-tonic.",
+        "en": "Sorry, I ordered a vodka soda, not a gin and tonic."
+      },
+      "model_response_en": "I'm sorry about that. Let me check your order.",
+      "model_response_translations": {
+        "es": "Lo siento. Déjame comprobar tu pedido.",
+        "it": "Mi dispiace. Fammi controllare il tuo ordine.",
+        "fr": "Je suis désolé. Laissez-moi vérifier votre commande.",
+        "pt": "Peço desculpa. Deixe-me verificar o seu pedido.",
+        "de": "Es tut mir leid. Lass mich deine Bestellung prüfen.",
+        "pl": "Przepraszam. Pozwól, że sprawdzę twoje zamówienie.",
+        "ro": "Îmi pare rău. Permiteți-mi să verific comanda.",
+        "uk": "Перепрошую. Дозвольте перевірити ваше замовлення.",
+        "nl": "Het spijt me. Laat me je bestelling controleren.",
+        "en": "I'm sorry about that. Let me check your order."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_recommending_drinks",
+      "profession_id": "hospitality",
+      "situation_slug": "recommending-drinks",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/recommending-drinks.mp3",
+      "prompt_transcript_en": "I’m not drinking tonight. Do you have anything interesting without alcohol?",
+      "prompt_translations": {
+        "es": "Esta noche no bebo. ¿Tenéis algo interesante sin alcohol?",
+        "it": "Stasera non bevo. Avete qualcosa di interessante senza alcol?",
+        "fr": "Je ne bois pas ce soir. Vous avez quelque chose d'intéressant sans alcool ?",
+        "pt": "Hoje não vou beber. Têm alguma coisa interessante sem álcool?",
+        "de": "Ich trinke heute Abend nicht. Habt ihr etwas Interessantes ohne Alkohol?",
+        "pl": "Dziś nie piję. Macie coś ciekawego bez alkoholu?",
+        "ro": "Nu beau în seara asta. Aveți ceva interesant fără alcool?",
+        "uk": "Сьогодні я не п’ю. У вас є щось цікаве без алкоголю?",
+        "nl": "Ik drink vanavond niet. Hebben jullie iets interessants zonder alcohol?",
+        "en": "I’m not drinking tonight. Do you have anything interesting without alcohol?"
+      },
+      "model_response_en": "Absolutely. What kind of flavours do you like?",
+      "model_response_translations": {
+        "es": "Claro. ¿Qué tipo de sabores te gustan?",
+        "it": "Certo. Che tipo di sapori ti piacciono?",
+        "fr": "Bien sûr. Quel type de saveurs aimez-vous ?",
+        "pt": "Claro. Que tipo de sabores gosta?",
+        "de": "Klar. Welche Geschmacksrichtungen magst du?",
+        "pl": "Oczywiście. Jakie smaki lubisz?",
+        "ro": "Sigur. Ce tipuri de arome vă plac?",
+        "uk": "Звичайно. Які смаки вам подобаються?",
+        "nl": "Natuurlijk. Van welke smaken houd je?",
+        "en": "Absolutely. What kind of flavours do you like?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_serving_beer",
+      "profession_id": "hospitality",
+      "situation_slug": "serving-beer",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/serving-beer.mp3",
+      "prompt_transcript_en": "Can I get a beer, please?",
+      "prompt_translations": {
+        "es": "¿Me pones una cerveza, por favor?",
+        "it": "Mi fai una birra, per favore?",
+        "fr": "Vous me mettez une bière, s'il vous plaît ?",
+        "pt": "Pode trazer-me uma cerveja, por favor?",
+        "de": "Könnte ich bitte ein Bier bekommen?",
+        "pl": "Poproszę piwo.",
+        "ro": "Îmi aduceți o bere, vă rog?",
+        "uk": "Можна мені пиво, будь ласка?",
+        "nl": "Mag ik een biertje, alsjeblieft?",
+        "en": "Can I get a beer, please?"
+      },
+      "model_response_en": "Of course. Which beer would you like?",
+      "model_response_translations": {
+        "es": "Claro. ¿Qué cerveza te gustaría?",
+        "it": "Certo. Quale birra vorresti?",
+        "fr": "Bien sûr. Quelle bière souhaitez-vous ?",
+        "pt": "Claro. Que cerveja gostaria?",
+        "de": "Klar. Welches Bier möchtest du?",
+        "pl": "Oczywiście. Jakie piwo wybierasz?",
+        "ro": "Sigur. Ce bere ați dori?",
+        "uk": "Звичайно. Яке пиво ви хотіли б?",
+        "nl": "Natuurlijk. Welk bier wil je?",
+        "en": "Of course. Which beer would you like?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_taking_a_drinks_order",
+      "profession_id": "hospitality",
+      "situation_slug": "taking-a-drinks-order",
+      "role": "bartender",
+      "prompt_audio_asset_key": "listening/taking-a-drinks-order.mp3",
+      "prompt_transcript_en": "Can we get a lager and a gin and tonic, please?",
+      "prompt_translations": {
+        "es": "¿Nos pones una lager y un gin tonic, por favor?",
+        "it": "Ci fai una lager e un gin tonic, per favore?",
+        "fr": "Vous nous mettez une lager et un gin tonic, s'il vous plaît ?",
+        "pt": "Pode trazer-nos uma lager e um gin tónico, por favor?",
+        "de": "Können wir bitte ein Lager und einen Gin Tonic bekommen?",
+        "pl": "Poprosimy lagera i gin z tonikiem.",
+        "ro": "Ne aduceți un lager și un gin tonic, vă rog?",
+        "uk": "Можна нам лагер і джин-тонік, будь ласка?",
+        "nl": "Mogen we een lager en een gin-tonic, alsjeblieft?",
+        "en": "Can we get a lager and a gin and tonic, please?"
+      },
+      "model_response_en": "Of course. What gin would you like?",
+      "model_response_translations": {
+        "es": "Claro. ¿Qué gin te gustaría?",
+        "it": "Certo. Quale gin preferisci?",
+        "fr": "Bien sûr. Quel gin souhaitez-vous ?",
+        "pt": "Claro. Que gin gostaria?",
+        "de": "Klar. Welchen Gin möchtest du?",
+        "pl": "Oczywiście. Jaki gin wybierasz?",
+        "ro": "Sigur. Ce gin ați dori?",
+        "uk": "Звичайно. Який gin ви хотіли б?",
+        "nl": "Natuurlijk. Welke gin zou je willen?",
+        "en": "Sure. What gin would you like?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_a_dish_is_unavailable",
+      "profession_id": "hospitality",
+      "situation_slug": "a-dish-is-unavailable",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/a-dish-is-unavailable.mp3",
+      "prompt_transcript_en": "I'll have the lamb, please.",
+      "prompt_translations": {
+        "es": "Tomaré el cordero, por favor.",
+        "it": "Prendo l'agnello, per favore.",
+        "fr": "Je prendrai l'agneau, s'il vous plaît.",
+        "pt": "Vou querer o borrego, por favor.",
+        "de": "Ich nehme das Lamm, bitte.",
+        "pl": "Poproszę jagnięcinę.",
+        "ro": "Voi lua mielul, vă rog.",
+        "uk": "Я візьму ягня, будь ласка.",
+        "nl": "Ik neem het lamsvlees, alstublieft.",
+        "en": "I'll have the lamb, please."
+      },
+      "model_response_en": "I'm sorry, but the lamb is sold out tonight.",
+      "model_response_translations": {
+        "es": "Lo siento, pero el cordero se ha agotado esta noche.",
+        "it": "Mi dispiace, ma l'agnello è terminato per stasera.",
+        "fr": "Je suis désolé, mais l'agneau est épuisé ce soir.",
+        "pt": "Peço desculpa, mas o borrego esgotou esta noite.",
+        "de": "Es tut mir leid, aber das Lamm ist heute Abend ausverkauft.",
+        "pl": "Przepraszam, ale jagnięcina wyprzedała się na dziś.",
+        "ro": "Îmi pare rău, dar mielul s-a epuizat în această seară.",
+        "uk": "Перепрошую, але ягня сьогодні вже закінчилося.",
+        "nl": "Het spijt me, maar het lamsvlees is vanavond uitverkocht.",
+        "en": "I'm sorry, but the lamb is sold out tonight."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_allergies_and_dietary_requirements",
+      "profession_id": "hospitality",
+      "situation_slug": "allergies-and-dietary-requirements",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/allergies-and-dietary-requirements.mp3",
+      "prompt_transcript_en": "Do you have any vegetarian options?",
+      "prompt_translations": {
+        "es": "¿Tenéis opciones vegetarianas?",
+        "it": "Avete opzioni vegetariane?",
+        "fr": "Vous avez des options végétariennes ?",
+        "pt": "Têm opções vegetarianas?",
+        "de": "Habt ihr vegetarische Optionen?",
+        "pl": "Macie opcje wegetariańskie?",
+        "ro": "Aveți opțiuni vegetariene?",
+        "uk": "У вас є вегетаріанські варіанти?",
+        "nl": "Hebben jullie vegetarische opties?",
+        "en": "Do you have any vegetarian options?"
+      },
+      "model_response_en": "Yes, we have several. Are you asking because of an allergy?",
+      "model_response_translations": {
+        "es": "Sí, tenemos varias. ¿Lo preguntas por una alergia?",
+        "it": "Sì, ne abbiamo diverse. Lo chiedi per un'allergia?",
+        "fr": "Oui, nous en avons plusieurs. Vous demandez cela à cause d'une allergie ?",
+        "pt": "Sim, temos várias. Pergunta isso por causa de uma alergia?",
+        "de": "Ja, wir haben mehrere. Fragen Sie wegen einer Allergie?",
+        "pl": "Tak, mamy kilka. Czy pyta pan ze względu na alergię?",
+        "ro": "Da, avem mai multe. Întrebați din cauza unei alergii?",
+        "uk": "Так, у нас є кілька. Ви питаєте через алергію?",
+        "nl": "Ja, we hebben er verschillende. Vraagt u dit vanwege een allergie?",
+        "en": "Yes, we have several. Are you asking because of an allergy?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_bringing_the_bill",
+      "profession_id": "hospitality",
+      "situation_slug": "bringing-the-bill",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/bringing-the-bill.mp3",
+      "prompt_transcript_en": "Could we have the bill, please?",
+      "prompt_translations": {
+        "es": "¿Nos traes la cuenta, por favor?",
+        "it": "Ci porti il conto, per favore?",
+        "fr": "Vous nous apportez l'addition, s'il vous plaît ?",
+        "pt": "Pode trazer-nos a conta, por favor?",
+        "de": "Könnten Sie uns bitte die Rechnung bringen?",
+        "pl": "Czy może pan przynieść nam rachunek?",
+        "ro": "Ne aduceți nota, vă rog?",
+        "uk": "Принесете нам рахунок, будь ласка?",
+        "nl": "Kunt u ons de rekening brengen, alstublieft?",
+        "en": "Could we have the bill, please?"
+      },
+      "model_response_en": "Of course. I’ll bring it right over.",
+      "model_response_translations": {
+        "es": "Claro. Os la traigo ahora mismo.",
+        "it": "Certo. Ve lo porto subito.",
+        "fr": "Bien sûr. Je vous l'apporte tout de suite.",
+        "pt": "Claro. Trago-a já.",
+        "de": "Klar. Ich bringe sie sofort.",
+        "pl": "Oczywiście. Zaraz go przyniosę.",
+        "ro": "Sigur. V-o aduc chiar acum.",
+        "uk": "Звичайно. Я зараз його принесу.",
+        "nl": "Natuurlijk. Ik breng hem meteen.",
+        "en": "Of course. I’ll bring it right over."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_checking_on_the_table",
+      "profession_id": "hospitality",
+      "situation_slug": "checking-on-the-table",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/checking-on-the-table.mp3",
+      "prompt_transcript_en": "Everything is great, thanks. Could we have some more water?",
+      "prompt_translations": {
+        "es": "Todo está genial, gracias. ¿Nos puedes traer más agua?",
+        "it": "È tutto ottimo, grazie. Puoi portarci altra acqua?",
+        "fr": "Tout est parfait, merci. Vous pouvez nous apporter encore un peu d'eau ?",
+        "pt": "Está tudo ótimo, obrigado. Pode trazer-nos mais água?",
+        "de": "Alles ist super, danke. Können Sie uns noch etwas Wasser bringen?",
+        "pl": "Wszystko jest świetnie, dziękujemy. Czy może pan przynieść nam jeszcze trochę wody?",
+        "ro": "Totul este foarte bun, mulțumim. Ne puteți aduce mai multă apă?",
+        "uk": "Усе чудово, дякуємо. Можете принести нам ще води?",
+        "nl": "Alles is geweldig, bedankt. Kunt u ons nog wat water brengen?",
+        "en": "Everything is great, thanks. Could we have some more water?"
+      },
+      "model_response_en": "Of course. I’ll bring that right away.",
+      "model_response_translations": {
+        "es": "Claro. Os la traigo enseguida.",
+        "it": "Certo. Ve la porto subito.",
+        "fr": "Bien sûr. Je vous l'apporte tout de suite.",
+        "pt": "Claro. Trago-vos já.",
+        "de": "Klar. Ich bringe es sofort.",
+        "pl": "Oczywiście. Przyniosę od razu.",
+        "ro": "Sigur. Vă aduc imediat.",
+        "uk": "Звичайно. Я принесу її одразу.",
+        "nl": "Natuurlijk. Ik breng het meteen.",
+        "en": "Of course. I’ll bring that right away."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_explaining_the_menu",
+      "profession_id": "hospitality",
+      "situation_slug": "explaining-the-menu",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/explaining-the-menu.mp3",
+      "prompt_transcript_en": "Could you explain the menu a little?",
+      "prompt_translations": {
+        "es": "¿Podrías explicarnos un poco la carta?",
+        "it": "Potreste spiegarci un po' il menu?",
+        "fr": "Pourriez-vous nous expliquer un peu la carte ?",
+        "pt": "Pode explicar-nos um pouco o menu?",
+        "de": "Könnten Sie uns die Speisekarte kurz erklären?",
+        "pl": "Czy mógłby pan krótko wyjaśnić nam menu?",
+        "ro": "Ne puteți explica puțin meniul?",
+        "uk": "Можете трохи пояснити нам меню?",
+        "nl": "Kunt u ons de kaart kort uitleggen?",
+        "en": "Could you explain the menu a little?"
+      },
+      "model_response_en": "Of course. The starters are on the first page, and the main courses are listed here.",
+      "model_response_translations": {
+        "es": "Claro. Los entrantes están en la primera página y los principales están aquí.",
+        "it": "Certo. Gli antipasti sono nella prima pagina e i piatti principali sono qui.",
+        "fr": "Bien sûr. Les entrées sont sur la première page et les plats principaux sont ici.",
+        "pt": "Claro. As entradas estão na primeira página e os pratos principais estão aqui.",
+        "de": "Klar. Die Vorspeisen sind auf der ersten Seite und die Hauptgerichte sind hier.",
+        "pl": "Oczywiście. Przystawki są na pierwszej stronie, a dania główne są tutaj.",
+        "ro": "Sigur. Antreurile sunt pe prima pagină, iar felurile principale sunt aici.",
+        "uk": "Звичайно. Закуски на першій сторінці, а основні страви тут.",
+        "nl": "Natuurlijk. De voorgerechten staan op de eerste pagina en de hoofdgerechten staan hier.",
+        "en": "Of course. The starters are on the first page, and the main courses are listed here."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_food_is_taking_longer_than_expected",
+      "profession_id": "hospitality",
+      "situation_slug": "food-is-taking-longer-than-expected",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/food-is-taking-longer-than-expected.mp3",
+      "prompt_transcript_en": "Excuse me, is our food going to take much longer?",
+      "prompt_translations": {
+        "es": "Disculpa, ¿va a tardar mucho más nuestra comida?",
+        "it": "Scusa, ci vorrà ancora molto per il nostro cibo?",
+        "fr": "Excusez-moi, est-ce que notre repas va encore prendre longtemps ?",
+        "pt": "Desculpe, a nossa comida ainda vai demorar muito?",
+        "de": "Entschuldigung, dauert unser Essen noch viel länger?",
+        "pl": "Przepraszam, czy na nasze jedzenie trzeba będzie jeszcze długo czekać?",
+        "ro": "Scuzați-mă, mai durează mult până vine mâncarea noastră?",
+        "uk": "Перепрошую, наша їжа ще довго буде?",
+        "nl": "Sorry, duurt ons eten nog veel langer?",
+        "en": "Excuse me, is our food going to take much longer?"
+      },
+      "model_response_en": "I'm very sorry for the wait. Let me check with the kitchen.",
+      "model_response_translations": {
+        "es": "Siento mucho la espera. Déjame comprobarlo con la cocina.",
+        "it": "Mi dispiace molto per l'attesa. Lascia che controlli con la cucina.",
+        "fr": "Je suis vraiment désolé pour l’attente. Laissez-moi vérifier avec la cuisine.",
+        "pt": "Lamento muito a espera. Deixe-me verificar isso com a cozinha.",
+        "de": "Es tut mir sehr leid wegen der Wartezeit. Lass mich das mit der Küche prüfen.",
+        "pl": "Bardzo przepraszam za oczekiwanie. Pozwól, że sprawdzę to z kuchnią.",
+        "ro": "Îmi pare foarte rău pentru așteptare. Să verific cu bucătăria.",
+        "uk": "Мені дуже шкода за очікування. Дозвольте перевірити це з кухнею.",
+        "nl": "Het spijt me erg voor het wachten. Laat me het bij de keuken controleren.",
+        "en": "I'm very sorry for the wait. Let me check with the kitchen."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_about_service_charge",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-about-service-charge",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-asks-about-service-charge.mp3",
+      "prompt_transcript_en": "What is this service charge on the bill?",
+      "prompt_translations": {
+        "es": "¿Qué es este cargo de servicio en la cuenta?",
+        "it": "Che cos'è questo service charge sul conto?",
+        "fr": "Qu'est-ce que ce service charge sur l'addition ?",
+        "pt": "O que é este serviço incluído na conta?",
+        "de": "Was ist diese Service Charge auf der Rechnung?",
+        "pl": "Co to jest ten service charge na rachunku?",
+        "ro": "Ce este acest service charge de pe notă?",
+        "uk": "Що це за service charge у рахунку?",
+        "nl": "Wat is deze service charge op de rekening?",
+        "en": "What is this service charge on the bill?"
+      },
+      "model_response_en": "That is the service charge shown on the bill. Let me explain how it works here.",
+      "model_response_translations": {
+        "es": "Ese es el cargo de servicio que aparece en la cuenta. Déjame explicarte cómo funciona aquí.",
+        "it": "Quello è il costo del servizio che compare sul conto. Fammi spiegare come funziona qui.",
+        "fr": "C'est le service charge qui apparaît sur l'addition. Laissez-moi vous expliquer comment cela fonctionne ici.",
+        "pt": "Esse é o service charge que aparece na conta. Deixe-me explicar como funciona aqui.",
+        "de": "Das ist die Service Charge auf der Rechnung. Lassen Sie mich erklären, wie das hier funktioniert.",
+        "pl": "To service charge widoczny na rachunku. Pozwoli pan, że wyjaśnię, jak to działa u nas.",
+        "ro": "Acesta este service charge-ul de pe notă. Permiteți-mi să vă explic cum funcționează aici.",
+        "uk": "Це service charge, вказаний у рахунку. Дозвольте пояснити, як це працює у нас.",
+        "nl": "Dat is de service charge op de rekening. Laat me uitleggen hoe dat hier werkt.",
+        "en": "That is the service charge shown on the bill. Let me explain how it works here."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_about_vegetarian_options",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-about-vegetarian-options",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-asks-about-vegetarian-options.mp3",
+      "prompt_transcript_en": "Which dishes are vegetarian?",
+      "prompt_translations": {
+        "es": "¿Qué platos son vegetarianos?",
+        "it": "Quali piatti sono vegetariani?",
+        "fr": "Quels plats sont végétariens ?",
+        "pt": "Que pratos são vegetarianos?",
+        "de": "Welche Gerichte sind vegetarisch?",
+        "pl": "Które dania są wegetariańskie?",
+        "ro": "Ce preparate sunt vegetariene?",
+        "uk": "Які страви вегетаріанські?",
+        "nl": "Welke gerechten zijn vegetarisch?",
+        "en": "Which dishes are vegetarian?"
+      },
+      "model_response_en": "These three dishes are vegetarian. The mushroom risotto is one option.",
+      "model_response_translations": {
+        "es": "Estos tres platos son vegetarianos. El risotto de setas es una opción.",
+        "it": "Questi tre piatti sono vegetariani. Il risotto ai funghi è un'opzione.",
+        "fr": "Ces trois plats sont végétariens. Le risotto aux champignons est une option.",
+        "pt": "Estes três pratos são vegetarianos. O risotto de cogumelos é uma opção.",
+        "de": "Diese drei Gerichte sind vegetarisch. Das Pilzrisotto ist eine Option.",
+        "pl": "Te trzy dania są wegetariańskie. Risotto z grzybami jest jedną z opcji.",
+        "ro": "Aceste trei preparate sunt vegetariene. Risotto cu ciuperci este o opțiune.",
+        "uk": "Ці три страви вегетаріанські. Різото з грибами — один із варіантів.",
+        "nl": "Deze drie gerechten zijn vegetarisch. De paddenstoelenrisotto is een optie.",
+        "en": "These three dishes are vegetarian. The mushroom risotto is one option."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_for_a_wine_recommendation_restaurant",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-for-a-wine-recommendation-restaurant",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-asks-for-a-wine-recommendation-restaurant.mp3",
+      "prompt_transcript_en": "What wine would you recommend with this?",
+      "prompt_translations": {
+        "es": "¿Qué vino recomendarías con esto?",
+        "it": "Quale vino consiglieresti con questo?",
+        "fr": "Quel vin recommanderiez-vous avec cela ?",
+        "pt": "Que vinho recomendaria com isto?",
+        "de": "Welchen Wein würden Sie dazu empfehlen?",
+        "pl": "Jakie wino poleciłby pan do tego?",
+        "ro": "Ce vin ați recomanda cu asta?",
+        "uk": "Яке вино ви б порекомендували до цього?",
+        "nl": "Welke wijn zou u hierbij aanraden?",
+        "en": "What wine would you recommend with this?"
+      },
+      "model_response_en": "Do you usually prefer red or white?",
+      "model_response_translations": {
+        "es": "¿Sueles preferir tinto o blanco?",
+        "it": "Di solito preferisci rosso o bianco?",
+        "fr": "Vous préférez généralement le rouge ou le blanc ?",
+        "pt": "Costuma preferir tinto ou branco?",
+        "de": "Bevorzugen Sie normalerweise Rot- oder Weißwein?",
+        "pl": "Zwykle woli pan czerwone czy białe?",
+        "ro": "Preferați de obicei vin roșu sau alb?",
+        "uk": "Ви зазвичай віддаєте перевагу червоному чи білому?",
+        "nl": "Drinkt u meestal liever rood of wit?",
+        "en": "Do you usually prefer red or white?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_for_food_recommendation",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-for-food-recommendation",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-asks-for-food-recommendation.mp3",
+      "prompt_transcript_en": "What would you recommend?",
+      "prompt_translations": {
+        "es": "¿Qué me recomiendas?",
+        "it": "Cosa mi consigli?",
+        "fr": "Qu’est-ce que vous me recommandez ?",
+        "pt": "O que recomenda?",
+        "de": "Was würdest du empfehlen?",
+        "pl": "Co polecasz?",
+        "ro": "Ce îmi recomandați?",
+        "uk": "Що ви порадите?",
+        "nl": "Wat raad je aan?",
+        "en": "What would you recommend?"
+      },
+      "model_response_en": "Are you in the mood for meat, fish, or something vegetarian?",
+      "model_response_translations": {
+        "es": "¿Te apetece carne, pescado o algo vegetariano?",
+        "it": "Preferisci carne, pesce o qualcosa di vegetariano?",
+        "fr": "Vous avez envie de viande, de poisson ou de quelque chose de végétarien ?",
+        "pt": "Apetece-lhe carne, peixe ou algo vegetariano?",
+        "de": "Hast du eher Lust auf Fleisch, Fisch oder etwas Vegetarisches?",
+        "pl": "Masz ochotę na mięso, rybę czy coś wegetariańskiego?",
+        "ro": "Aveți poftă de carne, pește sau ceva vegetarian?",
+        "uk": "Вам хочеться м’яса, риби чи чогось вегетаріанського?",
+        "nl": "Heb je zin in vlees, vis of iets vegetarisch?",
+        "en": "Are you in the mood for meat, fish, or something vegetarian?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_how_a_dish_is_prepared",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-how-a-dish-is-prepared",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-asks-how-a-dish-is-prepared.mp3",
+      "prompt_transcript_en": "How is the sea bass prepared?",
+      "prompt_translations": {
+        "es": "¿Cómo está preparada la lubina?",
+        "it": "Come viene preparata la spigola?",
+        "fr": "Comment le bar est-il préparé ?",
+        "pt": "Como é preparado o robalo?",
+        "de": "Wie wird der Wolfsbarsch zubereitet?",
+        "pl": "Jak przygotowywany jest labraks?",
+        "ro": "Cum este pregătit bibanul de mare?",
+        "uk": "Як приготований sea bass?",
+        "nl": "Hoe wordt de zeebaars bereid?",
+        "en": "How is the sea bass prepared?"
+      },
+      "model_response_en": "It's pan-seared and served with seasonal vegetables.",
+      "model_response_translations": {
+        "es": "Está marcada a la plancha y se sirve con verduras de temporada.",
+        "it": "È scottata in padella e servita con verdure di stagione.",
+        "fr": "Il est poêlé et servi avec des légumes de saison.",
+        "pt": "É selado na frigideira e servido com legumes da época.",
+        "de": "Er wird in der Pfanne angebraten und mit saisonalem Gemüse serviert.",
+        "pl": "Jest obsmażany na patelni i podawany z sezonowymi warzywami.",
+        "ro": "Este rumenit în tigaie și servit cu legume de sezon.",
+        "uk": "Її обсмажують на сковороді й подають із сезонними овочами.",
+        "nl": "Hij wordt in de pan aangebakken en geserveerd met seizoensgroenten.",
+        "en": "It's pan-seared and served with seasonal vegetables."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_asks_whats_in_a_dish",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-asks-whats-in-a-dish",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-asks-whats-in-a-dish.mp3",
+      "prompt_transcript_en": "What's in the risotto?",
+      "prompt_translations": {
+        "es": "¿Qué lleva el risotto?",
+        "it": "Cosa c'è nel risotto?",
+        "fr": "Qu’est-ce qu’il y a dans le risotto ?",
+        "pt": "O que leva o risotto?",
+        "de": "Was ist im Risotto?",
+        "pl": "Co jest w risotto?",
+        "ro": "Ce conține risotto-ul?",
+        "uk": "Що входить до risotto?",
+        "nl": "Wat zit er in de risotto?",
+        "en": "What's in the risotto?"
+      },
+      "model_response_en": "It's made with mushrooms, Parmesan and vegetable stock.",
+      "model_response_translations": {
+        "es": "Está hecho con champiñones, parmesano y caldo de verduras.",
+        "it": "È preparato con funghi, Parmigiano e brodo vegetale.",
+        "fr": "Il est préparé avec des champignons, du parmesan et du bouillon de légumes.",
+        "pt": "É feito com cogumelos, parmesão e caldo de legumes.",
+        "de": "Es wird mit Pilzen, Parmesan und Gemüsebrühe zubereitet.",
+        "pl": "Jest przygotowane z grzybów, parmezanu i bulionu warzywnego.",
+        "ro": "Este făcut cu ciuperci, parmezan și supă de legume.",
+        "uk": "Його готують із грибами, Parmesan та овочевим бульйоном.",
+        "nl": "Het is gemaakt met champignons, Parmezaan en groentebouillon.",
+        "en": "It's made with mushrooms, Parmesan and vegetable stock."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_finishes_main_course",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-finishes-main-course",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-finishes-main-course.mp3",
+      "prompt_transcript_en": "Really good, thanks.",
+      "prompt_translations": {
+        "es": "Muy bien, gracias.",
+        "it": "Molto bene, grazie.",
+        "fr": "Très bien, merci.",
+        "pt": "Muito bom, obrigado.",
+        "de": "Sehr gut, danke.",
+        "pl": "Bardzo dobrze, dziękuję.",
+        "ro": "Foarte bun, mulțumim.",
+        "uk": "Дуже добре, дякую.",
+        "nl": "Heel goed, dank je.",
+        "en": "Really good, thanks."
+      },
+      "model_response_en": "I'm glad to hear that. Would you like to see the dessert menu?",
+      "model_response_translations": {
+        "es": "Me alegro. ¿Os gustaría ver la carta de postres?",
+        "it": "Mi fa piacere. Volete vedere il menu dei dessert?",
+        "fr": "Je suis ravi de l’entendre. Souhaitez-vous voir la carte des desserts ?",
+        "pt": "Fico contente. Gostariam de ver a carta de sobremesas?",
+        "de": "Freut mich. Möchtet ihr die Dessertkarte sehen?",
+        "pl": "Cieszę się. Chcecie zobaczyć kartę deserów?",
+        "ro": "Mă bucur. Doriți să vedeți meniul de deserturi?",
+        "uk": "Радий це чути. Хотіли б подивитися меню десертів?",
+        "nl": "Fijn om te horen. Willen jullie de dessertkaart zien?",
+        "en": "I'm glad to hear that. Would you like to see the dessert menu?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_is_not_ready_to_order",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-is-not-ready-to-order",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-is-not-ready-to-order.mp3",
+      "prompt_transcript_en": "Sorry, we need a few more minutes.",
+      "prompt_translations": {
+        "es": "Perdona, necesitamos unos minutos más.",
+        "it": "Scusa, ci servono ancora alcuni minuti.",
+        "fr": "Désolé, nous avons besoin de quelques minutes de plus.",
+        "pt": "Desculpe, precisamos de mais uns minutos.",
+        "de": "Entschuldigung, wir brauchen noch ein paar Minuten.",
+        "pl": "Przepraszam, potrzebujemy jeszcze kilku minut.",
+        "ro": "Scuzați-ne, mai avem nevoie de câteva minute.",
+        "uk": "Перепрошуємо, нам потрібно ще кілька хвилин.",
+        "nl": "Sorry, we hebben nog een paar minuten nodig.",
+        "en": "Sorry, we need a few more minutes."
+      },
+      "model_response_en": "Of course. Take your time.",
+      "model_response_translations": {
+        "es": "Por supuesto. Tomaos vuestro tiempo.",
+        "it": "Certo. Prendetevi pure il vostro tempo.",
+        "fr": "Bien sûr. Prenez votre temps.",
+        "pt": "Claro. Levem o tempo que precisarem.",
+        "de": "Natürlich. Lassen Sie sich Zeit.",
+        "pl": "Oczywiście. Nie spieszcie się.",
+        "ro": "Desigur. Nu vă grăbiți.",
+        "uk": "Звичайно. Не поспішайте.",
+        "nl": "Natuurlijk. Neem rustig de tijd.",
+        "en": "Of course. Take your time."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_mentions_a_nut_allergy",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-mentions-a-nut-allergy",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-mentions-a-nut-allergy.mp3",
+      "prompt_transcript_en": "Just so you know, I have a nut allergy.",
+      "prompt_translations": {
+        "es": "Para que lo sepas, tengo alergia a los frutos secos.",
+        "it": "Volevo avvisarti che sono allergico alla frutta a guscio.",
+        "fr": "Pour que vous le sachiez, je suis allergique aux fruits à coque.",
+        "pt": "Só para avisar, tenho alergia a frutos secos.",
+        "de": "Nur damit du es weißt: Ich habe eine Nussallergie.",
+        "pl": "Tak tylko informuję, mam alergię na orzechy.",
+        "ro": "Ca să știți, am alergie la nuci.",
+        "uk": "Щоб ви знали, у мене алергія на горіхи.",
+        "nl": "Even ter informatie: ik heb een notenallergie.",
+        "en": "Just so you know, I have a nut allergy."
+      },
+      "model_response_en": "Thanks for letting me know. Could you tell me exactly which nuts you need to avoid?",
+      "model_response_translations": {
+        "es": "Gracias por avisarme. ¿Podrías decirme exactamente qué frutos secos debes evitar?",
+        "it": "Grazie per avermelo detto. Potresti dirmi esattamente quale frutta a guscio devi evitare?",
+        "fr": "Merci de me l’avoir signalé. Pouvez-vous me dire exactement quels fruits à coque vous devez éviter ?",
+        "pt": "Obrigado por avisar. Poderia dizer-me exatamente que frutos secos precisa de evitar?",
+        "de": "Danke für den Hinweis. Kannst du mir genau sagen, welche Nüsse du vermeiden musst?",
+        "pl": "Dziękuję, że mnie o tym poinformowałeś. Czy możesz dokładnie powiedzieć, których orzechów musisz unikać?",
+        "ro": "Mulțumesc că mi-ați spus. Îmi puteți spune exact ce nuci trebuie să evitați?",
+        "uk": "Дякую, що повідомили. Можете точно сказати, яких горіхів вам потрібно уникати?",
+        "nl": "Bedankt dat je het zegt. Kun je precies vertellen welke noten je moet vermijden?",
+        "en": "Thanks for letting me know. Could you tell me exactly which nuts you need to avoid?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_says_the_food_is_cold",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-says-the-food-is-cold",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-says-the-food-is-cold.mp3",
+      "prompt_transcript_en": "Excuse me, my food is cold.",
+      "prompt_translations": {
+        "es": "Perdona, mi comida está fría.",
+        "it": "Scusa, il mio cibo è freddo.",
+        "fr": "Désolé, mon plat est froid.",
+        "pt": "Desculpe, a minha comida está fria.",
+        "de": "Entschuldigung, mein Essen ist kalt.",
+        "pl": "Przepraszam, moje jedzenie jest zimne.",
+        "ro": "Scuze, mâncarea mea este rece.",
+        "uk": "Вибачте, моя їжа холодна.",
+        "nl": "Sorry, mijn eten is koud.",
+        "en": "Excuse me, my food is cold."
+      },
+      "model_response_en": "I'm sorry about that. Thank you for letting me know.",
+      "model_response_translations": {
+        "es": "Lo siento. Gracias por avisarme.",
+        "it": "Mi dispiace. Grazie per avermelo detto.",
+        "fr": "Je suis désolé. Merci de me l'avoir signalé.",
+        "pt": "Peço desculpa. Obrigado por me avisar.",
+        "de": "Es tut mir leid. Danke, dass Sie mir Bescheid gesagt haben.",
+        "pl": "Przepraszam. Dziękuję, że pan o tym powiedział.",
+        "ro": "Îmi pare rău. Mulțumesc că mi-ați spus.",
+        "uk": "Перепрошую. Дякую, що повідомили.",
+        "nl": "Het spijt me. Bedankt dat u het aangeeft.",
+        "en": "I'm sorry about that. Thank you for letting me know."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_wants_to_change_a_side",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-wants-to-change-a-side",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-wants-to-change-a-side.mp3",
+      "prompt_transcript_en": "Can I have the chicken with salad instead of fries?",
+      "prompt_translations": {
+        "es": "¿Puedo pedir el pollo con ensalada en lugar de patatas?",
+        "it": "Posso avere il pollo con insalata invece delle patatine?",
+        "fr": "Je peux prendre le poulet avec de la salade à la place des frites ?",
+        "pt": "Posso pedir o frango com salada em vez de batatas fritas?",
+        "de": "Kann ich das Hähnchen mit Salat statt Pommes bekommen?",
+        "pl": "Czy mogę dostać kurczaka z sałatką zamiast frytek?",
+        "ro": "Pot comanda puiul cu salată în loc de cartofi prăjiți?",
+        "uk": "Можна курку із салатом замість картоплі фрі?",
+        "nl": "Kan ik de kip met salade krijgen in plaats van friet?",
+        "en": "Can I have the chicken with salad instead of fries?"
+      },
+      "model_response_en": "Of course. You’d like salad instead of fries, is that right?",
+      "model_response_translations": {
+        "es": "Claro. Quieres ensalada en lugar de patatas, ¿correcto?",
+        "it": "Certo. Vuoi insalata invece delle patatine, giusto?",
+        "fr": "Bien sûr. Vous voulez de la salade à la place des frites, c'est bien ça ?",
+        "pt": "Claro. Quer salada em vez de batatas fritas, correto?",
+        "de": "Klar. Du möchtest Salat statt Pommes, richtig?",
+        "pl": "Oczywiście. Chcesz sałatkę zamiast frytek, zgadza się?",
+        "ro": "Sigur. Doriți salată în loc de cartofi prăjiți, corect?",
+        "uk": "Звичайно. Ви хочете салат замість картоплі фрі, правильно?",
+        "nl": "Natuurlijk. U wilt salade in plaats van friet, klopt dat?",
+        "en": "Of course. You’d like salad instead of fries, is that right?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_wants_to_change_tables",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-wants-to-change-tables",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-wants-to-change-tables.mp3",
+      "prompt_transcript_en": "Would it be possible to move to another table?",
+      "prompt_translations": {
+        "es": "¿Sería posible cambiarnos a otra mesa?",
+        "it": "Sarebbe possibile spostarci a un altro tavolo?",
+        "fr": "Serait-il possible de changer de table ?",
+        "pt": "Seria possível mudarmos para outra mesa?",
+        "de": "Wäre es möglich, an einen anderen Tisch zu wechseln?",
+        "pl": "Czy byłoby możliwe przenieść się do innego stolika?",
+        "ro": "Ar fi posibil să ne mutăm la o altă masă?",
+        "uk": "Чи можна нам пересісти за інший стіл?",
+        "nl": "Zou het mogelijk zijn om naar een andere tafel te verhuizen?",
+        "en": "Would it be possible to move to another table?"
+      },
+      "model_response_en": "Of course. Are you looking for somewhere quieter?",
+      "model_response_translations": {
+        "es": "Claro. ¿Buscáis un sitio más tranquilo?",
+        "it": "Certo. Cercate un posto più tranquillo?",
+        "fr": "Bien sûr. Vous cherchez un endroit plus calme ?",
+        "pt": "Claro. Procuram um lugar mais tranquilo?",
+        "de": "Klar. Sucht ihr einen ruhigeren Platz?",
+        "pl": "Oczywiście. Szukają państwo spokojniejszego miejsca?",
+        "ro": "Sigur. Căutați un loc mai liniștit?",
+        "uk": "Звичайно. Ви шукаєте спокійніше місце?",
+        "nl": "Natuurlijk. Zoekt u een rustigere plek?",
+        "en": "Of course. Are you looking for somewhere quieter?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_wants_to_split_the_bill",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-wants-to-split-the-bill",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-wants-to-split-the-bill.mp3",
+      "prompt_transcript_en": "Could we split the bill, please?",
+      "prompt_translations": {
+        "es": "¿Podemos dividir la cuenta, por favor?",
+        "it": "Possiamo dividere il conto, per favore?",
+        "fr": "On peut partager l’addition, s’il vous plaît ?",
+        "pt": "Podemos dividir a conta, por favor?",
+        "de": "Können wir die Rechnung bitte aufteilen?",
+        "pl": "Czy możemy podzielić rachunek, proszę?",
+        "ro": "Putem împărți nota, vă rog?",
+        "uk": "Можемо розділити рахунок, будь ласка?",
+        "nl": "Kunnen we de rekening splitsen, alsjeblieft?",
+        "en": "Could we split the bill, please?"
+      },
+      "model_response_en": "Of course. How would you like to split it?",
+      "model_response_translations": {
+        "es": "Claro. ¿Cómo os gustaría dividirla?",
+        "it": "Certo. Come vorreste dividerlo?",
+        "fr": "Bien sûr. Comment souhaitez-vous la partager ?",
+        "pt": "Claro. Como gostariam de dividi-la?",
+        "de": "Natürlich. Wie möchtet ihr sie aufteilen?",
+        "pl": "Oczywiście. Jak chcecie podzielić rachunek?",
+        "ro": "Sigur. Cum ați dori să o împărțiți?",
+        "uk": "Звичайно. Як ви хотіли б розділити рахунок?",
+        "nl": "Natuurlijk. Hoe willen jullie hem splitsen?",
+        "en": "Of course. How would you like to split it?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guest_wants_to_take_leftovers_away",
+      "profession_id": "hospitality",
+      "situation_slug": "guest-wants-to-take-leftovers-away",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guest-wants-to-take-leftovers-away.mp3",
+      "prompt_transcript_en": "Could I take the rest of this away?",
+      "prompt_translations": {
+        "es": "¿Podría llevarme lo que queda?",
+        "it": "Potrei portare via quello che resta?",
+        "fr": "Pourrais-je emporter ce qu'il reste ?",
+        "pt": "Posso levar o que resta?",
+        "de": "Könnte ich den Rest mitnehmen?",
+        "pl": "Czy mogę zabrać resztę?",
+        "ro": "Aș putea lua ce a rămas?",
+        "uk": "Можна забрати те, що залишилося?",
+        "nl": "Mag ik meenemen wat er over is?",
+        "en": "Could I take the rest of this away?"
+      },
+      "model_response_en": "Of course. Let me check if we can pack that for you.",
+      "model_response_translations": {
+        "es": "Claro. Déjame comprobar si podemos prepararlo para llevar.",
+        "it": "Certo. Fammi controllare se possiamo prepararlo da asporto.",
+        "fr": "Bien sûr. Laissez-moi vérifier si nous pouvons le préparer à emporter.",
+        "pt": "Claro. Deixe-me verificar se podemos prepará-lo para levar.",
+        "de": "Klar. Lassen Sie mich prüfen, ob wir das zum Mitnehmen vorbereiten können.",
+        "pl": "Oczywiście. Pozwoli pan, że sprawdzę, czy możemy przygotować to na wynos.",
+        "ro": "Sigur. Permiteți-mi să verific dacă putem pregăti asta pentru a fi luată.",
+        "uk": "Звичайно. Дозвольте перевірити, чи можемо ми запакувати це із собою.",
+        "nl": "Natuurlijk. Laat me controleren of we dit kunnen verpakken om mee te nemen.",
+        "en": "Of course. Let me check if we can pack that for you."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guests_are_waiting_for_another_person",
+      "profession_id": "hospitality",
+      "situation_slug": "guests-are-waiting-for-another-person",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guests-are-waiting-for-another-person.mp3",
+      "prompt_transcript_en": "We're waiting for one more person before we order.",
+      "prompt_translations": {
+        "es": "Estamos esperando a una persona más antes de pedir.",
+        "it": "Stiamo aspettando un'altra persona prima di ordinare.",
+        "fr": "Nous attendons encore une personne avant de commander.",
+        "pt": "Estamos à espera de mais uma pessoa antes de pedir.",
+        "de": "Wir warten noch auf eine Person, bevor wir bestellen.",
+        "pl": "Czekamy jeszcze na jedną osobę, zanim zamówimy.",
+        "ro": "Mai așteptăm o persoană înainte să comandăm.",
+        "uk": "Ми чекаємо ще одну людину, перш ніж замовляти.",
+        "nl": "We wachten nog op één persoon voordat we bestellen.",
+        "en": "We're waiting for one more person before we order."
+      },
+      "model_response_en": "Of course. Take your time. Would you like anything to drink while you wait?",
+      "model_response_translations": {
+        "es": "Claro. Tomaos vuestro tiempo. ¿Queréis algo de beber mientras esperáis?",
+        "it": "Certo. Prendetevi il vostro tempo. Volete qualcosa da bere mentre aspettate?",
+        "fr": "Bien sûr. Prenez votre temps. Vous voulez quelque chose à boire pendant que vous attendez ?",
+        "pt": "Claro. Tomem o vosso tempo. Querem alguma coisa para beber enquanto esperam?",
+        "de": "Klar. Nehmt euch Zeit. Möchtet ihr etwas trinken, während ihr wartet?",
+        "pl": "Oczywiście. Proszę się nie spieszyć. Chcą państwo coś do picia, kiedy czekacie?",
+        "ro": "Sigur. Nu vă grăbiți. Doriți ceva de băut cât timp așteptați?",
+        "uk": "Звичайно. Не поспішайте. Хочете щось випити, поки чекаєте?",
+        "nl": "Natuurlijk. Neem rustig de tijd. Willen jullie iets drinken terwijl jullie wachten?",
+        "en": "Of course. Take your time. Would you like anything to drink while you wait?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_guests_arrive_without_a_reservation",
+      "profession_id": "hospitality",
+      "situation_slug": "guests-arrive-without-a-reservation",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/guests-arrive-without-a-reservation.mp3",
+      "prompt_transcript_en": "Hi, we don't have a reservation. Do you have a table for two?",
+      "prompt_translations": {
+        "es": "Hola, no tenemos reserva. ¿Tenéis una mesa para dos?",
+        "it": "Ciao, non abbiamo una prenotazione. Avete un tavolo per due?",
+        "fr": "Bonjour, nous n’avons pas de réservation. Vous avez une table pour deux ?",
+        "pt": "Olá, não temos reserva. Têm uma mesa para dois?",
+        "de": "Hallo, wir haben keine Reservierung. Haben Sie einen Tisch für zwei?",
+        "pl": "Dzień dobry, nie mamy rezerwacji. Czy macie stolik dla dwóch osób?",
+        "ro": "Bună, nu avem rezervare. Aveți o masă pentru două persoane?",
+        "uk": "Привіт, у нас немає бронювання. У вас є столик на двох?",
+        "nl": "Hoi, we hebben geen reservering. Hebben jullie een tafel voor twee?",
+        "en": "Hi, we don't have a reservation. Do you have a table for two?"
+      },
+      "model_response_en": "Of course. Let me check what we have available.",
+      "model_response_translations": {
+        "es": "Claro. Déjame comprobar qué tenemos disponible.",
+        "it": "Certo. Lascia che controlli cosa abbiamo disponibile.",
+        "fr": "Bien sûr. Laissez-moi vérifier ce que nous avons de disponible.",
+        "pt": "Claro. Deixe-me verificar o que temos disponível.",
+        "de": "Natürlich. Lass mich prüfen, was wir verfügbar haben.",
+        "pl": "Oczywiście. Pozwól, że sprawdzę, co mamy dostępne.",
+        "ro": "Sigur. Să verific ce avem disponibil.",
+        "uk": "Звичайно. Дозвольте перевірити, що в нас є вільного.",
+        "nl": "Natuurlijk. Laat me kijken wat we beschikbaar hebben.",
+        "en": "Of course. Let me check what we have available."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_taking_an_order",
+      "profession_id": "hospitality",
+      "situation_slug": "taking-an-order",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/taking-an-order.mp3",
+      "prompt_transcript_en": "Excuse me, we're ready to order.",
+      "prompt_translations": {
+        "es": "Disculpe, estamos listos para pedir.",
+        "it": "Scusi, siamo pronti per ordinare.",
+        "fr": "Excusez-moi, nous sommes prêts à commander.",
+        "pt": "Desculpe, estamos prontos para pedir.",
+        "de": "Entschuldigen Sie, wir sind bereit zu bestellen.",
+        "pl": "Przepraszam, jesteśmy gotowi zamówić.",
+        "ro": "Scuzați-mă, suntem gata să comandăm.",
+        "uk": "Перепрошую, ми готові замовляти.",
+        "nl": "Pardon, we zijn klaar om te bestellen.",
+        "en": "Excuse me, we're ready to order."
+      },
+      "model_response_en": "Of course. What would you like to have?",
+      "model_response_translations": {
+        "es": "Por supuesto. ¿Qué les gustaría tomar?",
+        "it": "Certo. Cosa desiderate?",
+        "fr": "Bien sûr. Qu’aimeriez-vous prendre ?",
+        "pt": "Claro. O que gostariam de pedir?",
+        "de": "Natürlich. Was möchten Sie gern?",
+        "pl": "Oczywiście. Co chcieliby państwo zamówić?",
+        "ro": "Desigur. Ce ați dori să comandați?",
+        "uk": "Звичайно. Що б ви хотіли?",
+        "nl": "Natuurlijk. Wat zouden jullie graag willen?",
+        "en": "Of course. What would you like to have?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_welcoming_guests",
+      "profession_id": "hospitality",
+      "situation_slug": "welcoming-guests",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/welcoming-guests.mp3",
+      "prompt_transcript_en": "Hi, we have a reservation for two.",
+      "prompt_translations": {
+        "es": "Hola, tenemos una reserva para dos.",
+        "it": "Salve, abbiamo una prenotazione per due.",
+        "fr": "Bonjour, nous avons une réservation pour deux personnes.",
+        "pt": "Olá, temos uma reserva para duas pessoas.",
+        "de": "Hallo, wir haben eine Reservierung für zwei.",
+        "pl": "Dzień dobry, mamy rezerwację dla dwóch osób.",
+        "ro": "Bună, avem o rezervare pentru două persoane.",
+        "uk": "Добрий день, у нас бронювання на двох.",
+        "nl": "Hallo, we hebben een reservering voor twee.",
+        "en": "Hi, we have a reservation for two."
+      },
+      "model_response_en": "Good evening. Welcome. What name is the reservation under?",
+      "model_response_translations": {
+        "es": "Buenas tardes. Bienvenidos. ¿A nombre de quién está la reserva?",
+        "it": "Buonasera. Benvenuti. Per quale nome è la prenotazione?",
+        "fr": "Bonsoir. Bienvenue. À quel nom est la réservation ?",
+        "pt": "Boa tarde. Bem-vindos. Em nome de quem está a reserva?",
+        "de": "Guten Abend. Willkommen. Auf welchen Namen ist die Reservierung?",
+        "pl": "Dobry wieczór. Witamy. Na jakie nazwisko jest rezerwacja?",
+        "ro": "Bună seara. Bine ați venit. Pe ce nume este rezervarea?",
+        "uk": "Добрий вечір. Ласкаво просимо. На чиє ім’я бронювання?",
+        "nl": "Goedenavond. Welkom. Op welke naam staat de reservering?",
+        "en": "Good evening. Welcome. What name is the reservation under?"
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    },
+    {
+      "id": "speak_wrong_dish_was_served",
+      "profession_id": "hospitality",
+      "situation_slug": "wrong-dish-was-served",
+      "role": "waiter",
+      "prompt_audio_asset_key": "listening/wrong-dish-was-served.mp3",
+      "prompt_transcript_en": "Sorry, I ordered the salmon, not the chicken.",
+      "prompt_translations": {
+        "es": "Perdona, pedí el salmón, no el pollo.",
+        "it": "Scusa, avevo ordinato il salmone, non il pollo.",
+        "fr": "Désolé, j'avais commandé le saumon, pas le poulet.",
+        "pt": "Desculpe, pedi o salmão, não o frango.",
+        "de": "Entschuldigung, ich hatte den Lachs bestellt, nicht das Hähnchen.",
+        "pl": "Przepraszam, zamawiałem łososia, nie kurczaka.",
+        "ro": "Scuze, am comandat somonul, nu puiul.",
+        "uk": "Вибачте, я замовляв лосося, а не курку.",
+        "nl": "Sorry, ik had de zalm besteld, niet de kip.",
+        "en": "Sorry, I ordered the salmon, not the chicken."
+      },
+      "model_response_en": "I'm sorry about that. Let me check your order.",
+      "model_response_translations": {
+        "es": "Lo siento. Déjame comprobar tu pedido.",
+        "it": "Mi dispiace. Fammi controllare il tuo ordine.",
+        "fr": "Je suis désolé. Laissez-moi vérifier votre commande.",
+        "pt": "Peço desculpa. Deixe-me verificar o seu pedido.",
+        "de": "Es tut mir leid. Lass mich deine Bestellung prüfen.",
+        "pl": "Przepraszam. Pozwól, że sprawdzę twoje zamówienie.",
+        "ro": "Îmi pare rău. Permiteți-mi să verific comanda.",
+        "uk": "Перепрошую. Дозвольте перевірити ваше замовлення.",
+        "nl": "Het spijt me. Laat me je bestelling controleren.",
+        "en": "I'm sorry about that. Let me check your order."
+      },
+      "source_of_truth": "existing_dialogue",
+      "recording": {
+        "max_seconds": 30,
+        "min_seconds": 1,
+        "accepted_mime_types": [
+          "audio/webm",
+          "audio/mp4",
+          "audio/wav",
+          "audio/mpeg"
+        ]
+      }
+    }
+  ],
+  "architecture": {
+    "recording": "Browser MediaRecorder; do not upload until user taps submit.",
+    "stt_provider": "ElevenLabs Scribe v2 batch STT via backend adapter.",
+    "evaluation_provider": "OpenAI text evaluator via backend adapter using structured output.",
+    "storage": "Do not persist raw user audio in MVP. Hold temporarily, transcribe, then delete.",
+    "separation": [
+      "recording UI",
+      "STT adapter",
+      "speaking evaluator",
+      "attempt persistence",
+      "lesson integration",
+      "Speaking Practice"
+    ]
+  },
+  "stt": {
+    "provider": "ElevenLabs",
+    "model_id": "scribe_v2",
+    "language_code": "eng",
+    "diarize": false,
+    "tag_audio_events": false,
+    "runtime": true,
+    "privacy": "Audio is temporary and deleted after transcription; only transcript/evaluation persist."
+  },
+  "evaluation": {
+    "provider": "OpenAI",
+    "model": "gpt-4o-mini",
+    "input_only": [
+      "profession_id",
+      "role",
+      "situation_slug",
+      "prompt_transcript_en",
+      "model_response_en",
+      "user_transcript"
+    ],
+    "do_not_score": [
+      "accent",
+      "native-likeness",
+      "personality"
+    ],
+    "principles": [
+      "Multiple valid answers are allowed.",
+      "Do not require wording to match model_response_en.",
+      "Judge whether the response solves the service situation appropriately.",
+      "Do not penalize accent unless the STT result suggests the speech was not intelligible.",
+      "Do not invent facts not present in the situation.",
+      "Return structured JSON only."
+    ],
+    "structured_output": {
+      "understandable": "boolean",
+      "situation_handled": "strong|partial|missed",
+      "professional_service_english": "strong|partial|missed",
+      "grammar_vocabulary": "strong|partial|missed",
+      "naturalness": "strong|partial|missed",
+      "issue_codes": [
+        "too_short",
+        "off_topic",
+        "missing_solution",
+        "too_direct",
+        "grammar_minor",
+        "grammar_major",
+        "awkward_wording",
+        "unclear_transcript"
+      ],
+      "improved_response_en": "string|null, max 30 words",
+      "overall": "strong|good|needs_practice"
+    },
+    "localization": "Evaluator returns codes and English improved_response only. UI labels/issue text use static 10-language translations."
+  },
+  "lesson_integration": {
+    "placement": "After Listening and before existing final quiz/completion where practical.",
+    "one_item_per_situation": true,
+    "reuse_listening_prompt_audio": true,
+    "do_not_change_existing_mastery": true,
+    "do_not_write_generic_srs": true,
+    "optional_in_mvp": true
+  },
+  "speaking_practice": {
+    "enabled": true,
+    "reuse_same_50_items": true,
+    "session_size": 5,
+    "selection_order": [
+      "profession_id='hospitality'",
+      "current role",
+      "previous speaking needs_practice/partial/missed",
+      "assessment weaknesses / recommended situations when resolvable",
+      "variety"
+    ]
+  },
+  "persistence": {
+    "collection": "speaking_attempts",
+    "fields": [
+      "id",
+      "guest_id",
+      "profession_id",
+      "speaking_item_id",
+      "situation_slug",
+      "role",
+      "transcript_en",
+      "stt_language_probability",
+      "stt_avg_logprob",
+      "understandable",
+      "situation_handled",
+      "professional_service_english",
+      "grammar_vocabulary",
+      "naturalness",
+      "issue_codes",
+      "improved_response_en",
+      "overall",
+      "attempted_at",
+      "interface_language",
+      "duration_ms"
+    ],
+    "audio_persisted": false,
+    "summary_fields_on_guest": [
+      "speaking_attempted_count",
+      "speaking_strong_count"
+    ]
+  },
+  "workenglish": {
+    "current_vertical": "HospitalityEnglish",
+    "future_parent_platform": "WorkEnglish",
+    "rule": "All new Speaking systems are profession-agnostic; V1 active profession is hospitality only.",
+    "no_profession_selector_v1": true
+  },
+  "freemium_hook": {
+    "implement_paywall_now": false,
+    "future_rule": "When entitlements exist, Speaking availability follows the situation entitlement. Free situations should still expose Speaking."
+  },
+  "regression_contract": [
+    "50 active situations stay 25/25.",
+    "Listening remains intact with 50 assets and 50 lesson integrations.",
+    "Assessment intact.",
+    "Emergency Phrases intact.",
+    "Tonight's Shift intact.",
+    "Job Interview intact.",
+    "First Week intact.",
+    "Recommended remains 3–5.",
+    "Existing mastery/completion and generic Practice/SRS remain unchanged.",
+    "No deploy."
+  ]
+}

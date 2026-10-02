@@ -103,6 +103,24 @@ export const submitListeningAttempt = (guestId, payload) =>
 export const getListeningSummary = (guestId) =>
   client.get(`/guests/${guestId}/listening-summary`).then((r) => r.data);
 
+// Speaking MVP
+export const getSpeakingMeta = () => client.get("/speaking/meta").then((r) => r.data);
+export const getSpeakingItem = (situationSlug, lang) =>
+  client.get(`/speaking/item/${situationSlug}`, { params: { lang } }).then((r) => r.data);
+export const getSpeakingPractice = (guestId) =>
+  client.get(`/guests/${guestId}/speaking-practice`).then((r) => r.data);
+export const getSpeakingSummary = (guestId) =>
+  client.get(`/guests/${guestId}/speaking-summary`).then((r) => r.data);
+export const submitSpeakingAttempt = (guestId, { speaking_item_id, duration_ms, blob, filename }) => {
+  const fd = new FormData();
+  fd.append("speaking_item_id", speaking_item_id);
+  fd.append("duration_ms", String(duration_ms || 0));
+  fd.append("audio", blob, filename || "response.webm");
+  return client
+    .post(`/guests/${guestId}/speaking-attempts`, fd, { headers: { "Content-Type": "multipart/form-data" }, timeout: 90000 })
+    .then((r) => r.data);
+};
+
 export const updateLanguage = (id, interface_language) =>
   client.put(`/guests/${id}/language`, { interface_language }).then((r) => r.data);
 export const getLanguages = () => client.get("/languages").then((r) => r.data);

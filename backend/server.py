@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Query
+from fastapi import FastAPI, APIRouter, HTTPException, Query, UploadFile, File, Form
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -24,6 +24,9 @@ import tonights_shift_data as shift
 import job_interview_data as jobint
 import first_week_data as firstweek
 import listening_data as listening
+import speaking_data as speaking
+import stt_elevenlabs
+import speaking_evaluator
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -2117,6 +2120,173 @@ async def listening_summary(guest_id: str):
 
 
 
+# ---------- Speaking MVP (WorkEnglish-compatible, vertical = hospitality) ----------
+async def _rank_speaking_items_for_guest(guest):
+    """Deterministic ranking of the 50 (hospitality) speaking items for a guest.
+    Priority: previous needs_practice/partial/missed > situation relevance (shared
+    ranker: role/progress/weakness/goal) > role match."""
+    guest_id = guest["id"]
+    profile = guest.get("professional_profile") or {}
+    role = profile.get("role")
+
+    scored = await _rank_situations_for_guest(guest)
+    sit_score = {s["slug"]: sc for sc, _o, s, _r in scored}
+    sit_order = {s["slug"]: (s.get("order") or 0) for _sc, _o, s, _r in scored}
+
+    attempts = await db.speaking_attempts.find(
+        {"guest_id": guest_id}, {"_id": 0, "speaking_item_id": 1, "overall": 1}
+    ).to_list(5000)
+    # latest overall per item (attempts are chronological by insertion)
+    latest = {}
+    for a in attempts:
+        latest[a["speaking_item_id"]] = a.get("overall")
+    attempted_ids = set(latest.keys())
+
+    ranked = []
+    for item in speaking.ITEMS:
+        slug = item["situation_slug"]
+        score = sit_score.get(slug, 0.0)
+        ov = latest.get(item["id"])
+        if ov in ("needs_practice", None):  # not-yet-strong / never tried
+            score += 500.0
+        if item["id"] not in attempted_ids:
+            score += 100.0
+        if role and item["role"] == role:
+            score += 400.0
+        ranked.append((score, sit_order.get(slug, 0), item))
+    ranked.sort(key=lambda x: (-x[0], x[1]))
+    return [it for _s, _o, it in ranked]
+
+
+@api_router.get("/speaking/meta")
+async def speaking_meta():
+    return {
+        "ui": speaking.UI,
+        "item_count": speaking.ITEM_COUNT,
+        "languages": speaking.INTERFACE_LANGUAGES,
+        "profession_id": speaking.PROFESSION_ID,
+        "session_size": speaking.SESSION_SIZE,
+    }
+
+
+@api_router.get("/speaking/item/{situation_slug}")
+async def speaking_item(situation_slug: str, lang: str = Query(DEFAULT_LANGUAGE)):
+    item = speaking.ITEM_BY_SLUG.get(situation_slug)
+    if not item:
+        raise HTTPException(status_code=404, detail="No speaking item for this situation")
+    if lang not in SUPPORTED_LANG_CODES:
+        lang = DEFAULT_LANGUAGE
+    return speaking.public_item(item, lang)
+
+
+@api_router.get("/guests/{guest_id}/speaking-practice")
+async def speaking_practice(guest_id: str):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
+    ranked = await _rank_speaking_items_for_guest(guest)
+    items = [speaking.public_item(it, lang) for it in ranked[: speaking.SESSION_SIZE]]
+    return {"session_size": speaking.SESSION_SIZE, "profession_id": speaking.PROFESSION_ID, "items": items}
+
+
+@api_router.get("/guests/{guest_id}/speaking-summary")
+async def speaking_summary(guest_id: str):
+    attempted = await db.speaking_attempts.count_documents({"guest_id": guest_id})
+    strong = await db.speaking_attempts.count_documents({"guest_id": guest_id, "overall": "strong"})
+    return {"attempted": attempted, "strong": strong, "item_count": speaking.ITEM_COUNT}
+
+
+@api_router.post("/guests/{guest_id}/speaking-attempts")
+async def speaking_attempt(
+    guest_id: str,
+    speaking_item_id: str = Form(...),
+    duration_ms: int = Form(0),
+    audio: UploadFile = File(...),
+):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    item = speaking.ITEM_BY_ID.get(speaking_item_id)
+    if not item:
+        raise HTTPException(status_code=422, detail="Unknown speaking_item_id")
+
+    audio_bytes = await audio.read()
+    if not audio_bytes:
+        raise HTTPException(status_code=422, detail="Empty audio")
+
+    # 1) STT (ElevenLabs Scribe v2) — raw audio is only held in memory, never stored.
+    try:
+        stt = stt_elevenlabs.transcribe(audio_bytes, filename=audio.filename or "audio.webm")
+    except Exception as e:
+        logger.error(f"STT failed: {e}")
+        raise HTTPException(status_code=502, detail="Transcription failed")
+    del audio_bytes  # drop raw audio immediately after transcription
+
+    user_transcript = stt["text"]
+
+    # 2) Evaluation (OpenAI structured output) — backend only.
+    try:
+        ev = await speaking_evaluator.evaluate(
+            profession_id=item["profession_id"],
+            role=item["role"],
+            situation_slug=item["situation_slug"],
+            prompt_transcript_en=item["prompt_transcript_en"],
+            model_response_en=item["model_response_en"],
+            user_transcript=user_transcript,
+        )
+    except Exception as e:
+        logger.error(f"Speaking evaluation failed: {e}")
+        raise HTTPException(status_code=502, detail="Evaluation failed")
+
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
+    attempt = {
+        "id": str(uuid.uuid4()),
+        "guest_id": guest_id,
+        "profession_id": speaking.PROFESSION_ID,  # hospitality in V1
+        "speaking_item_id": item["id"],
+        "situation_slug": item["situation_slug"],
+        "role": item["role"],
+        "transcript_en": user_transcript,
+        "stt_language_probability": stt.get("language_probability"),
+        "stt_avg_logprob": stt.get("avg_logprob"),
+        "understandable": ev["understandable"],
+        "situation_handled": ev["situation_handled"],
+        "professional_service_english": ev["professional_service_english"],
+        "grammar_vocabulary": ev["grammar_vocabulary"],
+        "naturalness": ev["naturalness"],
+        "issue_codes": ev["issue_codes"],
+        "improved_response_en": ev["improved_response_en"],
+        "overall": ev["overall"],
+        "attempted_at": now_iso(),
+        "interface_language": lang,
+        "duration_ms": duration_ms,
+    }
+    await db.speaking_attempts.insert_one(dict(attempt))  # raw audio NOT persisted
+
+    attempted_count = await db.speaking_attempts.count_documents({"guest_id": guest_id})
+    strong_count = await db.speaking_attempts.count_documents({"guest_id": guest_id, "overall": "strong"})
+    await db.guests.update_one(
+        {"id": guest_id},
+        {"$set": {"speaking_attempted_count": attempted_count, "speaking_strong_count": strong_count}},
+    )
+
+    return {
+        "transcript_en": user_transcript,
+        "understandable": ev["understandable"],
+        "situation_handled": ev["situation_handled"],
+        "professional_service_english": ev["professional_service_english"],
+        "grammar_vocabulary": ev["grammar_vocabulary"],
+        "naturalness": ev["naturalness"],
+        "issue_codes": ev["issue_codes"],
+        "improved_response_en": ev["improved_response_en"],
+        "overall": ev["overall"],
+        "model_response_en": item["model_response_en"],
+        "summary": {"attempted": attempted_count, "strong": strong_count},
+    }
+
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -2170,6 +2340,9 @@ async def startup_seed():
         await db.listening_attempts.create_index("guest_id")
         await db.listening_attempts.create_index([("guest_id", 1), ("listening_item_id", 1)])
         await db.listening_attempts.create_index([("guest_id", 1), ("correct", 1)])
+        await db.speaking_attempts.create_index("guest_id")
+        await db.speaking_attempts.create_index([("guest_id", 1), ("speaking_item_id", 1)])
+        await db.speaking_attempts.create_index([("guest_id", 1), ("overall", 1)])
     except Exception as e:
         logger.warning(f"Index creation skipped: {e}")
     logger.info("Content + reference data seeded.")

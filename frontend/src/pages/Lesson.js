@@ -13,13 +13,14 @@ import {
   BookOpen,
 } from "lucide-react";
 import { toast } from "sonner";
-import { getLesson, startAttempt, submitResponse, completeAttempt, getListeningMeta, getListeningItem } from "@/lib/api";
+import { getLesson, startAttempt, submitResponse, completeAttempt, getListeningMeta, getListeningItem, getSpeakingMeta, getSpeakingItem } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
 import { getLocalizedField, getText, getLocalizedOptions } from "@/lib/i18n";
 import { ServiceNote } from "@/components/ServiceNote";
 import { ListeningQuestion } from "@/components/ListeningQuestion";
+import { SpeakingQuestion } from "@/components/SpeakingQuestion";
 
-const STEPS = ["intro", "phrases", "dialogue", "flashcards", "listening", "exercises", "quiz", "completion"];
+const STEPS = ["intro", "phrases", "dialogue", "flashcards", "listening", "speaking", "exercises", "quiz", "completion"];
 
 export default function Lesson() {
   const { slug } = useParams();
@@ -34,6 +35,8 @@ export default function Lesson() {
   const [guestId, setGuestId] = useState(null);
   const [listeningMeta, setListeningMeta] = useState(null);
   const [listeningItem, setListeningItem] = useState(null);
+  const [speakingMeta, setSpeakingMeta] = useState(null);
+  const [speakingItem, setSpeakingItem] = useState(null);
   const recordedRef = useRef(false);
 
   useEffect(() => {
@@ -72,6 +75,26 @@ export default function Lesson() {
         setListeningItem(it);
       } catch (e) {
         if (active) setListeningItem(null); // no item → step auto-skips
+      }
+    })();
+    return () => { active = false; };
+  }, [data, slug, language]); // eslint-disable-line
+
+  // Speaking step content (reuses Listening prompt audio; optional in MVP).
+  useEffect(() => {
+    if (!data?.available) return;
+    let active = true;
+    (async () => {
+      try {
+        const [m, it] = await Promise.all([
+          speakingMeta ? Promise.resolve(speakingMeta) : getSpeakingMeta(),
+          getSpeakingItem(slug, language),
+        ]);
+        if (!active) return;
+        setSpeakingMeta(m);
+        setSpeakingItem(it);
+      } catch (e) {
+        if (active) setSpeakingItem(null); // no item → step auto-skips
       }
     })();
     return () => { active = false; };
@@ -131,7 +154,7 @@ export default function Lesson() {
   const progress = (stepIdx / (STEPS.length - 1)) * 100;
 
   return (
-    <Shell onClose={() => navigate("/home")} progress={progress} label={step === "listening" && listeningMeta ? getText(listeningMeta.ui.section_title, language) : t(`lesson.step.${step}`)}>
+    <Shell onClose={() => navigate("/home")} progress={progress} label={step === "listening" && listeningMeta ? getText(listeningMeta.ui.section_title, language) : step === "speaking" && speakingMeta ? getText(speakingMeta.ui.section_title, language) : t(`lesson.step.${step}`)}>
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -157,6 +180,20 @@ export default function Lesson() {
               />
             ) : (
               <SkipListening onDone={next} failed={listeningItem === null} />
+            )
+          )}
+          {step === "speaking" && (
+            speakingItem && speakingMeta ? (
+              <SpeakingQuestion
+                item={speakingItem}
+                ui={speakingMeta.ui}
+                language={language}
+                guestId={guestId}
+                onContinue={next}
+                continueLabel={t("question.next")}
+              />
+            ) : (
+              <SkipListening onDone={next} failed={speakingItem === null} />
             )
           )}
           {step === "exercises" && <Exercises lesson={lesson} onNext={next} onSubmit={sendResponse} />}

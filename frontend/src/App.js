@@ -17,6 +17,7 @@ import TonightsShift from "@/pages/TonightsShift";
 import JobInterview from "@/pages/JobInterview";
 import FirstWeek from "@/pages/FirstWeek";
 import ListeningPractice from "@/pages/ListeningPractice";
+import SpeakingPractice from "@/pages/SpeakingPractice";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="/job-interview" element={<JobInterview />} />
             <Route path="/first-week" element={<FirstWeek />} />
             <Route path="/listening-practice" element={<ListeningPractice />} />
+            <Route path="/speaking-practice" element={<SpeakingPractice />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-center" />
