@@ -1,0 +1,24 @@
+{
+  "summary": "Phase 2 (onboarding with real consequences + device-language auto-detection) independently verified. Added new pytest suite /app/backend/tests/test_phase2_recommendations.py (15 tests, 15/15 PASS) covering: catalog invariants (50 active, 25 bartender + 25 waiter), role-driven recommendations (bartender->all bartender, waiter->all waiter, role flip changes set), venue boost reason, scores/reasons payload, employment_status validation (invalid->422, omitted->null, all 4 valid values accepted), goal/employment biases (already_working vs looking_for_job differ; interview_soon surfaces communication skills), backwards compatibility (profile without employment_status still works and preserves completed_lessons), and english_level never hides content (full 50 reachable via GET /api/situations). Frontend verified via Playwright with per-case fresh browser context + add_init_script overriding navigator.languages BEFORE page load: 6/6 device-language detection cases pass (es-AR->es, en-IE->en, pt-BR->pt, fr-CA->fr, it-IT->it, ja-JP->es fallback). Step indicator UI matches detected language and onboarding-option-interface_language-<code> is pre-selected. Full 6-step onboarding end-to-end (language->role->venue->country->goal->employment, 'Step X of 6' / 'Étape X sur 6') completed in mobile viewport (390x844), finish lands on /home. Manual language choice (fr) selected over device (en-IE) persists on reload (iph_lang=fr, DB guest.interface_language=fr -- not reverted by device detection). Home 'Recommended for you' renders 5 situation cards with data-testid recommended-situations and recommended-situation-<slug>; clicking a card navigates to /lesson/<slug>. Guest API returned employment_status=looking_for_job and role=bartender as submitted.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_phase2_recommendations.py",
+    "/app/test_reports/pytest/phase2_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Positive: _rec_score weights are banded (role 1000 > progress 200/120/40 > weaknesses 80/40 > goal/employment 60 + difficulty*15 > venue 30 > level 0-20), guaranteeing the required priority order (role > progress > weaknesses > goal/employment > venue > english_level) and never hiding content from the catalog.",
+    "Positive: AppContext.setLanguage persists to backend immediately so manual choice outranks device detection on next load; detectBrowserLanguage is only consulted when neither iph_lang nor guest.interface_language exists.",
+    "Minor: Onboarding draft stored in localStorage (DRAFT_KEY) is cleaned on completeProfile but not when the user bails mid-flow; non-blocking.",
+    "Minor: /api/guests/{id}/recommended-situations limit is capped at 10, but the spec says 3-5. Current behavior defaults to 5 and the Home page requests limit=5, which is fine; no backend minimum is enforced if a client asks for 1 or 2 (would then return <3). Consider enforcing a lower bound of 3 in the handler to make the 3-5 contract explicit."
+  ],
+  "updated_files": ["/app/backend/tests/test_phase2_recommendations.py"],
+  "success_rate": {"backend": "100% (15/15 Phase 2 tests)", "frontend": "100% (6/6 language detection, 1/1 full onboarding, 1/1 manual-not-overwritten, 1/1 Home recommendations)"},
+  "seed_data_creation": "Created several anonymous guests via POST /api/guests + PUT profile during tests; no content modifications.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "None - anonymous guest via localStorage iph_guest_id; language cache iph_lang.",
+  "context_for_next_testing_agent": "Phase 2 backend regression lives in /app/backend/tests/test_phase2_recommendations.py (run with -o addopts='' to disable xdist if needed). For frontend language detection tests, each case MUST use a fresh browser context (browser.new_context) with add_init_script using Object.defineProperty({...configurable:true}); accumulating init scripts on a shared context cause subsequent defineProperty calls to silently fail and the first language sticks. Mobile viewport 390x844 is the intended breakpoint. Onboarding testids: onboarding-step-indicator, onboarding-option-<field>-<value>, onboarding-continue-btn, onboarding-finish-btn. Home testids: recommended-situations, recommended-situation-<slug>.",
+  "rca_of_the_issue": "No defects found."
+}

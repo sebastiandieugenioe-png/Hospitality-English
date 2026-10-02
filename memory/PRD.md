@@ -148,7 +148,17 @@ Backend es la fuente de verdad para corrección y para el scheduling SRS. Timest
 ### Fuera de alcance (confirmado por el usuario, NO hecho)
 Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shift Practice; IA.
 
+### Fase 2 (2026-06) — Onboarding con consecuencias reales + detección automática de idioma (PREVIEW, SIN deploy)
+- **Schema**: añadido `professional_profile.employment_status` (`looking_for_job | interview_soon | starting_new_job | already_working`), opcional y compatible con perfiles existentes (default `null`, nunca resetea progreso). `ProfileUpdate` lo valida (422 si inválido).
+- **Recomendaciones deterministas**: nuevo endpoint `GET /api/guests/{id}/recommended-situations?limit=5`. Helper `_rec_score` con pesos por bandas que garantizan el orden de prioridad requerido: role (1000) > progreso not_started/in_progress/completed/mastered (200/120/40/0) > debilidades del banco de errores (80/40) > goal/employment (focus comunicación/práctico +60, dificultad±según already_working/looking_for_job) > venue_type (30, neutral si `venue_types` vacío) > english_level (0-20 por proximidad). Nunca oculta contenido; el catálogo completo sigue accesible.
+- **Home**: sección "Recommended for you" ahora muestra 3-5 **situaciones** personalizadas (antes categorías); nuevo `RecommendedSituationCard`. "Explore categories" intacto.
+- **Detección de idioma**: `detectBrowserLanguage()` itera `navigator.languages`, normaliza variantes regionales (es-*→es, en-IE→en, pt-BR→pt, …), fallback `es`. Solo se usa en primer uso (sin `iph_lang` ni `guest.interface_language`); nunca sobrescribe una elección manual (fuente de verdad: DB `interface_language`). `pt` sigue siendo el código interno.
+- **Onboarding**: ahora 6 pasos (language, role, venue, country, goal, **employment**). Opciones de employment hardcodeadas con labels i18n en los 10 locales.
+- **i18n**: añadidas claves `onboarding.employment.*` y `home.recommendedEmpty` a los 10 locales.
+- **Tests**: `tests/test_phase2_recommendations.py` (15/15 PASS) + `test_onboarding.py` actualizado. testing_agent iteración 9: 100% backend (15/15) + 100% frontend (6/6 detección idioma, onboarding 6 pasos, elección manual no sobrescrita, Home recomendaciones). Confirmado **50/25/25 intacto**. Sin deploy.
+
 ## Next Tasks
 - (Backlog) Integrar flashcards legacy en el motor `review_items`.
 - (Backlog) Shift/Daily Practice; Job Readiness global.
+- (Backlog) Features futuras habilitadas por el perfil: Job Interview English, First Week at Work, Tonight's Shift (perfil ya preparado; contenido país-específico vía `country_variants`).
 
