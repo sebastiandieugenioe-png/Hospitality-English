@@ -18,6 +18,7 @@ import seed_pack
 import seed_pack_v2
 import seed_i18n
 import assessment_data as assessment
+import emergency_data as emergency
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -101,6 +102,10 @@ class AssessmentStart(BaseModel):
 class AssessmentResponse(BaseModel):
     question_id: str
     submitted_answer: object
+
+
+class SavedPhrase(BaseModel):
+    phrase_id: str
 
 
 # ---------- Mastery + SRS constants ----------
@@ -517,6 +522,7 @@ async def create_guest(payload: GuestCreate):
         # Existing progress (must never be reset).
         "flashcard_interactions": [],
         "completed_lessons": [],
+        "saved_emergency_phrase_ids": [],
     }
     await db.guests.insert_one(dict(guest))
     guest.pop("_id", None)
@@ -566,6 +572,8 @@ async def get_guest(guest_id: str):
         raise HTTPException(status_code=404, detail="Guest not found")
     # Existing guests default to Spanish without mutating stored data.
     guest.setdefault("interface_language", DEFAULT_LANGUAGE)
+    # Legacy guests without the field are treated as an empty saved list.
+    guest.setdefault("saved_emergency_phrase_ids", [])
     return guest
 
 
@@ -1270,6 +1278,53 @@ async def assessment_summary(guest_id: str):
         "weak_skills": guest.get("assessment_weak_skills", []),
         "latest": latest,
     }
+
+
+# ---------- Emergency Phrases ----------
+@api_router.get("/emergency")
+async def emergency_pack():
+    """Full Emergency Phrases pack (static). phrase_en is the English target and is
+    served verbatim; meaning/use_note keep their per-language maps so the client can
+    localize and search without a round-trip."""
+    return {
+        "ui": emergency.UI,
+        "categories": emergency.CATEGORY_LIST,
+        "phrases": emergency.PHRASES,
+        "content_count": emergency.CONTENT_COUNT,
+        "categories_count": emergency.CATEGORIES_COUNT,
+    }
+
+
+@api_router.get("/guests/{guest_id}/saved-phrases")
+async def list_saved_phrases(guest_id: str):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0, "saved_emergency_phrase_ids": 1})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    return {"saved_emergency_phrase_ids": guest.get("saved_emergency_phrase_ids", [])}
+
+
+@api_router.post("/guests/{guest_id}/saved-phrases")
+async def add_saved_phrase(guest_id: str, payload: SavedPhrase):
+    if payload.phrase_id not in emergency.PHRASE_IDS:
+        raise HTTPException(status_code=422, detail="Unknown phrase_id")
+    result = await db.guests.update_one(
+        {"id": guest_id}, {"$addToSet": {"saved_emergency_phrase_ids": payload.phrase_id}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0, "saved_emergency_phrase_ids": 1})
+    return {"saved_emergency_phrase_ids": guest.get("saved_emergency_phrase_ids", [])}
+
+
+@api_router.delete("/guests/{guest_id}/saved-phrases/{phrase_id}")
+async def remove_saved_phrase(guest_id: str, phrase_id: str):
+    result = await db.guests.update_one(
+        {"id": guest_id}, {"$pull": {"saved_emergency_phrase_ids": phrase_id}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0, "saved_emergency_phrase_ids": 1})
+    return {"saved_emergency_phrase_ids": guest.get("saved_emergency_phrase_ids", [])}
 
 
 app.include_router(api_router)

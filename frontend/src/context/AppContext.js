@@ -119,6 +119,30 @@ export function AppProvider({ children }) {
     }
   };
 
+  // Emergency Phrases: backend is source of truth; optimistic local update so the
+  // UI reacts instantly. Survives language/role changes and refresh.
+  const saveEmergencyPhrase = async (phraseId) => {
+    const id = await ensureGuest();
+    setGuest((g) => (g ? { ...g, saved_emergency_phrase_ids: Array.from(new Set([...(g.saved_emergency_phrase_ids || []), phraseId])) } : g));
+    try {
+      const r = await api.saveEmergencyPhrase(id, phraseId);
+      setGuest((g) => (g ? { ...g, saved_emergency_phrase_ids: r.saved_emergency_phrase_ids } : g));
+    } catch (e) {
+      console.error("Save phrase failed", e);
+    }
+  };
+
+  const removeEmergencyPhrase = async (phraseId) => {
+    const id = await ensureGuest();
+    setGuest((g) => (g ? { ...g, saved_emergency_phrase_ids: (g.saved_emergency_phrase_ids || []).filter((x) => x !== phraseId) } : g));
+    try {
+      const r = await api.removeEmergencyPhrase(id, phraseId);
+      setGuest((g) => (g ? { ...g, saved_emergency_phrase_ids: r.saved_emergency_phrase_ids } : g));
+    } catch (e) {
+      console.error("Remove phrase failed", e);
+    }
+  };
+
   const profile = guest?.professional_profile || null;
   const legacyOnboarding = guest?.onboarding || null;
 
@@ -137,6 +161,9 @@ export function AppProvider({ children }) {
     completeProfile,
     logFlashcard,
     logCompletion,
+    savedPhraseIds: guest?.saved_emergency_phrase_ids || [],
+    saveEmergencyPhrase,
+    removeEmergencyPhrase,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

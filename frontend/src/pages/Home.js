@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, ClipboardCheck } from "lucide-react";
+import { ArrowRight, Play, ClipboardCheck, LifeBuoy } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
-import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta } from "@/lib/api";
+import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta, getEmergency } from "@/lib/api";
 import { roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
 import { getLocalizedField, getText } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
@@ -21,6 +21,7 @@ export default function Home() {
   const [recommended, setRecommended] = useState([]);
   const [assessment, setAssessment] = useState(null);
   const [assessmentMeta, setAssessmentMeta] = useState(null);
+  const [emergencyUi, setEmergencyUi] = useState(null);
 
   // Send users with an incomplete professional profile through onboarding first.
   useEffect(() => {
@@ -73,6 +74,9 @@ export default function Home() {
   // Assessment entry point (non-blocking): localized meta + the guest's summary.
   useEffect(() => {
     getAssessmentMeta().then(setAssessmentMeta).catch(() => {});
+  }, []);
+  useEffect(() => {
+    getEmergency().then((d) => setEmergencyUi(d.ui)).catch(() => {});
   }, []);
   useEffect(() => {
     if (!guestId) return;
@@ -140,6 +144,27 @@ export default function Home() {
                   <ClipboardCheck className="w-6 h-6" />
                 </span>
               )}
+            </button>
+          </section>
+        )}
+
+        {/* Emergency Phrases entry point */}
+        {emergencyUi && (
+          <section className="mt-4">
+            <button
+              data-testid="emergency-entry-card"
+              onClick={() => navigate("/emergency")}
+              className="group w-full text-left rounded-2xl bg-white border border-brand-terracotta/25 p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-between gap-5"
+            >
+              <div>
+                <p className="text-lg font-serif text-brand-espresso">{getText(emergencyUi.title, language)}</p>
+                <p className="mt-1 text-sm text-brand-charcoal/60 leading-relaxed max-w-md">
+                  {getText(emergencyUi.subtitle, language)}
+                </p>
+              </div>
+              <span className="shrink-0 grid place-items-center w-12 h-12 rounded-xl bg-brand-terracotta/15 text-brand-terracotta-hover">
+                <LifeBuoy className="w-6 h-6" />
+              </span>
             </button>
           </section>
         )}

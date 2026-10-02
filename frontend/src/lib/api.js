@@ -56,6 +56,13 @@ export const completeAssessment = (attemptId) =>
   client.post(`/assessment-attempts/${attemptId}/complete`).then((r) => r.data);
 export const getAssessmentSummary = (guestId) =>
   client.get(`/guests/${guestId}/assessment-summary`).then((r) => r.data);
+
+// Emergency Phrases
+export const getEmergency = () => client.get("/emergency").then((r) => r.data);
+export const saveEmergencyPhrase = (guestId, phrase_id) =>
+  client.post(`/guests/${guestId}/saved-phrases`, { phrase_id }).then((r) => r.data);
+export const removeEmergencyPhrase = (guestId, phrase_id) =>
+  client.delete(`/guests/${guestId}/saved-phrases/${phrase_id}`).then((r) => r.data);
 export const updateLanguage = (id, interface_language) =>
   client.put(`/guests/${id}/language`, { interface_language }).then((r) => r.data);
 export const getLanguages = () => client.get("/languages").then((r) => r.data);

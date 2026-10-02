@@ -1,0 +1,1676 @@
+{
+  "name": "Hospitality English — Emergency Phrases Import Pack — VERIFIED",
+  "version": 1,
+  "status": "READY_FOR_IMPLEMENTATION",
+  "learning_language": "en",
+  "interface_languages": [
+    "es",
+    "it",
+    "fr",
+    "pt",
+    "de",
+    "pl",
+    "ro",
+    "uk",
+    "nl",
+    "en"
+  ],
+  "content_count": 32,
+  "categories_count": 8,
+  "categories": {
+    "didnt_understand": {
+      "order": 1,
+      "translations": {
+        "es": "No he entendido",
+        "it": "Non ho capito",
+        "fr": "Je n’ai pas compris",
+        "pt": "Não percebi",
+        "de": "Ich habe es nicht verstanden",
+        "pl": "Nie zrozumiałem/am",
+        "ro": "Nu am înțeles",
+        "uk": "Я не зрозумів/зрозуміла",
+        "nl": "Ik heb het niet begrepen",
+        "en": "I didn't understand"
+      }
+    },
+    "need_time": {
+      "order": 2,
+      "translations": {
+        "es": "Necesito un momento",
+        "it": "Mi serve un momento",
+        "fr": "J’ai besoin d’un instant",
+        "pt": "Preciso de um momento",
+        "de": "Ich brauche einen Moment",
+        "pl": "Potrzebuję chwili",
+        "ro": "Am nevoie de un moment",
+        "uk": "Мені потрібна хвилина",
+        "nl": "Ik heb even tijd nodig",
+        "en": "I need a moment"
+      }
+    },
+    "need_help": {
+      "order": 3,
+      "translations": {
+        "es": "Necesito ayuda",
+        "it": "Ho bisogno di aiuto",
+        "fr": "J’ai besoin d’aide",
+        "pt": "Preciso de ajuda",
+        "de": "Ich brauche Hilfe",
+        "pl": "Potrzebuję pomocy",
+        "ro": "Am nevoie de ajutor",
+        "uk": "Мені потрібна допомога",
+        "nl": "Ik heb hulp nodig",
+        "en": "I need help"
+      }
+    },
+    "checking_information": {
+      "order": 4,
+      "translations": {
+        "es": "Comprobar información",
+        "it": "Controllare le informazioni",
+        "fr": "Vérifier une information",
+        "pt": "Confirmar informação",
+        "de": "Informationen prüfen",
+        "pl": "Sprawdzanie informacji",
+        "ro": "Verificarea informațiilor",
+        "uk": "Перевірка інформації",
+        "nl": "Informatie controleren",
+        "en": "Checking information"
+      }
+    },
+    "problems_complaints": {
+      "order": 5,
+      "translations": {
+        "es": "Problemas y quejas",
+        "it": "Problemi e reclami",
+        "fr": "Problèmes et réclamations",
+        "pt": "Problemas e reclamações",
+        "de": "Probleme & Beschwerden",
+        "pl": "Problemy i skargi",
+        "ro": "Probleme și reclamații",
+        "uk": "Проблеми та скарги",
+        "nl": "Problemen & klachten",
+        "en": "Problems & complaints"
+      }
+    },
+    "allergies_safety": {
+      "order": 6,
+      "translations": {
+        "es": "Alergias y seguridad",
+        "it": "Allergie e sicurezza",
+        "fr": "Allergies et sécurité",
+        "pt": "Alergias e segurança",
+        "de": "Allergien & Sicherheit",
+        "pl": "Alergie i bezpieczeństwo",
+        "ro": "Alergii și siguranță",
+        "uk": "Алергії та безпека",
+        "nl": "Allergieën & veiligheid",
+        "en": "Allergies & safety"
+      }
+    },
+    "payments": {
+      "order": 7,
+      "translations": {
+        "es": "Pagos",
+        "it": "Pagamenti",
+        "fr": "Paiements",
+        "pt": "Pagamentos",
+        "de": "Zahlungen",
+        "pl": "Płatności",
+        "ro": "Plăți",
+        "uk": "Оплата",
+        "nl": "Betalingen",
+        "en": "Payments"
+      }
+    },
+    "colleagues": {
+      "order": 8,
+      "translations": {
+        "es": "Con compañeros",
+        "it": "Con i colleghi",
+        "fr": "Avec les collègues",
+        "pt": "Com colegas",
+        "de": "Mit Kolleginnen und Kollegen",
+        "pl": "Z kolegami z pracy",
+        "ro": "Cu colegii",
+        "uk": "З колегами",
+        "nl": "Met collega's",
+        "en": "With colleagues"
+      }
+    }
+  },
+  "ui_translations": {
+    "title": {
+      "es": "Frases de emergencia",
+      "it": "Frasi di emergenza",
+      "fr": "Phrases de secours",
+      "pt": "Frases de emergência",
+      "de": "Notfall-Sätze",
+      "pl": "Zwroty awaryjne",
+      "ro": "Expresii de urgență",
+      "uk": "Екстрені фрази",
+      "nl": "Noodzinnen",
+      "en": "Emergency Phrases"
+    },
+    "subtitle": {
+      "es": "Inglés rápido para cuando necesitas una frase ya.",
+      "it": "Inglese rapido quando ti serve subito una frase.",
+      "fr": "De l’anglais rapide quand vous avez besoin d’une phrase tout de suite.",
+      "pt": "Inglês rápido para quando precisas de uma frase imediatamente.",
+      "de": "Schnelles Englisch, wenn du sofort einen Satz brauchst.",
+      "pl": "Szybki angielski, gdy potrzebujesz zwrotu od razu.",
+      "ro": "Engleză rapidă când ai nevoie imediat de o expresie.",
+      "uk": "Швидка англійська, коли фраза потрібна просто зараз.",
+      "nl": "Snel Engels wanneer je direct een zin nodig hebt.",
+      "en": "Quick English for when you need a phrase right now."
+    },
+    "search_placeholder": {
+      "es": "Buscar frases",
+      "it": "Cerca frasi",
+      "fr": "Rechercher des phrases",
+      "pt": "Pesquisar frases",
+      "de": "Sätze suchen",
+      "pl": "Szukaj zwrotów",
+      "ro": "Caută expresii",
+      "uk": "Шукати фрази",
+      "nl": "Zinnen zoeken",
+      "en": "Search phrases"
+    },
+    "saved": {
+      "es": "Guardadas",
+      "it": "Salvate",
+      "fr": "Enregistrées",
+      "pt": "Guardadas",
+      "de": "Gespeichert",
+      "pl": "Zapisane",
+      "ro": "Salvate",
+      "uk": "Збережені",
+      "nl": "Opgeslagen",
+      "en": "Saved"
+    },
+    "save": {
+      "es": "Guardar",
+      "it": "Salva",
+      "fr": "Enregistrer",
+      "pt": "Guardar",
+      "de": "Speichern",
+      "pl": "Zapisz",
+      "ro": "Salvează",
+      "uk": "Зберегти",
+      "nl": "Opslaan",
+      "en": "Save"
+    },
+    "remove_saved": {
+      "es": "Quitar de guardadas",
+      "it": "Rimuovi dai salvati",
+      "fr": "Retirer des favoris",
+      "pt": "Remover das guardadas",
+      "de": "Aus Gespeichert entfernen",
+      "pl": "Usuń z zapisanych",
+      "ro": "Elimină din salvate",
+      "uk": "Прибрати зі збережених",
+      "nl": "Verwijderen uit opgeslagen",
+      "en": "Remove from saved"
+    },
+    "all_categories": {
+      "es": "Todas",
+      "it": "Tutte",
+      "fr": "Toutes",
+      "pt": "Todas",
+      "de": "Alle",
+      "pl": "Wszystkie",
+      "ro": "Toate",
+      "uk": "Усі",
+      "nl": "Alle",
+      "en": "All"
+    },
+    "for_you": {
+      "es": "Para ti",
+      "it": "Per te",
+      "fr": "Pour vous",
+      "pt": "Para ti",
+      "de": "Für dich",
+      "pl": "Dla ciebie",
+      "ro": "Pentru tine",
+      "uk": "Для тебе",
+      "nl": "Voor jou",
+      "en": "For you"
+    },
+    "meaning": {
+      "es": "Significado",
+      "it": "Significato",
+      "fr": "Signification",
+      "pt": "Significado",
+      "de": "Bedeutung",
+      "pl": "Znaczenie",
+      "ro": "Semnificație",
+      "uk": "Значення",
+      "nl": "Betekenis",
+      "en": "Meaning"
+    },
+    "when_to_use": {
+      "es": "Cuándo usarla",
+      "it": "Quando usarla",
+      "fr": "Quand l’utiliser",
+      "pt": "Quando usar",
+      "de": "Wann verwenden",
+      "pl": "Kiedy użyć",
+      "ro": "Când o folosești",
+      "uk": "Коли використовувати",
+      "nl": "Wanneer gebruiken",
+      "en": "When to use"
+    },
+    "empty_saved": {
+      "es": "Aún no has guardado ninguna frase.",
+      "it": "Non hai ancora salvato nessuna frase.",
+      "fr": "Vous n’avez encore enregistré aucune phrase.",
+      "pt": "Ainda não guardaste nenhuma frase.",
+      "de": "Du hast noch keine Sätze gespeichert.",
+      "pl": "Nie masz jeszcze zapisanych zwrotów.",
+      "ro": "Nu ai salvat încă nicio expresie.",
+      "uk": "Ти ще не зберіг/зберегла жодної фрази.",
+      "nl": "Je hebt nog geen zinnen opgeslagen.",
+      "en": "You haven't saved any phrases yet."
+    }
+  },
+  "phrases": [
+    {
+      "id": "ep_understand_repeat",
+      "category": "didnt_understand",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 1,
+      "service_register": "polite",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Sorry, could you say that again, please?",
+      "meaning": {
+        "es": "Perdona, ¿podrías repetirlo, por favor?",
+        "it": "Scusi, potrebbe ripeterlo, per favore?",
+        "fr": "Désolé, pourriez-vous répéter, s’il vous plaît ?",
+        "pt": "Desculpe, pode repetir, por favor?",
+        "de": "Entschuldigung, könnten Sie das bitte noch einmal sagen?",
+        "pl": "Przepraszam, czy może Pan/Pani powtórzyć?",
+        "ro": "Scuzați-mă, puteți repeta, vă rog?",
+        "uk": "Перепрошую, можете повторити, будь ласка?",
+        "nl": "Sorry, kunt u dat nog een keer zeggen?",
+        "en": "Sorry, could you say that again, please?"
+      },
+      "use_note": {
+        "es": "Cuando no has entendido lo que ha dicho el cliente.",
+        "it": "Quando non hai capito cosa ha detto il cliente.",
+        "fr": "Quand vous n’avez pas compris ce que le client a dit.",
+        "pt": "Quando não percebeste o que o cliente disse.",
+        "de": "Wenn du nicht verstanden hast, was der Gast gesagt hat.",
+        "pl": "Gdy nie zrozumiałeś/-aś, co powiedział gość.",
+        "ro": "Când nu ai înțeles ce a spus clientul.",
+        "uk": "Коли ти не зрозумів/зрозуміла, що сказав гість.",
+        "nl": "Als je niet hebt begrepen wat de gast zei.",
+        "en": "When you didn't understand what the guest said."
+      }
+    },
+    {
+      "id": "ep_understand_slowly",
+      "category": "didnt_understand",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 2,
+      "service_register": "polite",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Could you speak a little more slowly, please?",
+      "meaning": {
+        "es": "¿Podrías hablar un poco más despacio, por favor?",
+        "it": "Potrebbe parlare un po’ più lentamente, per favore?",
+        "fr": "Pourriez-vous parler un peu plus lentement, s’il vous plaît ?",
+        "pt": "Pode falar um pouco mais devagar, por favor?",
+        "de": "Könnten Sie bitte etwas langsamer sprechen?",
+        "pl": "Czy może Pan/Pani mówić trochę wolniej?",
+        "ro": "Puteți vorbi puțin mai încet, vă rog?",
+        "uk": "Можете говорити трохи повільніше, будь ласка?",
+        "nl": "Kunt u iets langzamer spreken, alstublieft?",
+        "en": "Could you speak a little more slowly, please?"
+      },
+      "use_note": {
+        "es": "Cuando entiendes algo de inglés, pero la otra persona habla demasiado rápido.",
+        "it": "Quando capisci un po’ d’inglese ma l’altra persona parla troppo velocemente.",
+        "fr": "Quand vous comprenez un peu l’anglais mais que la personne parle trop vite.",
+        "pt": "Quando percebes algum inglês, mas a outra pessoa fala demasiado depressa.",
+        "de": "Wenn du etwas Englisch verstehst, die andere Person aber zu schnell spricht.",
+        "pl": "Gdy trochę rozumiesz angielski, ale druga osoba mówi za szybko.",
+        "ro": "Când înțelegi puțină engleză, dar cealaltă persoană vorbește prea repede.",
+        "uk": "Коли ти трохи розумієш англійську, але людина говорить надто швидко.",
+        "nl": "Als je wat Engels begrijpt, maar de ander te snel praat.",
+        "en": "When you understand some English but the other person is speaking too fast."
+      }
+    },
+    {
+      "id": "ep_understand_last_part",
+      "category": "didnt_understand",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 3,
+      "service_register": "neutral",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Sorry, I didn't catch the last part.",
+      "meaning": {
+        "es": "Perdona, no he entendido la última parte.",
+        "it": "Scusi, non ho capito l’ultima parte.",
+        "fr": "Désolé, je n’ai pas compris la dernière partie.",
+        "pt": "Desculpe, não percebi a última parte.",
+        "de": "Entschuldigung, den letzten Teil habe ich nicht verstanden.",
+        "pl": "Przepraszam, nie zrozumiałem/am ostatniej części.",
+        "ro": "Scuzați-mă, nu am înțeles ultima parte.",
+        "uk": "Перепрошую, я не зрозумів/зрозуміла останню частину.",
+        "nl": "Sorry, ik heb het laatste deel niet verstaan.",
+        "en": "Sorry, I didn't catch the last part."
+      },
+      "use_note": {
+        "es": "Cuando has entendido casi todo y solo necesitas que repitan el final.",
+        "it": "Quando hai capito quasi tutto e ti serve solo che ripetano la fine.",
+        "fr": "Quand vous avez presque tout compris et avez seulement besoin de faire répéter la fin.",
+        "pt": "Quando percebeste quase tudo e só precisas que repitam o fim.",
+        "de": "Wenn du fast alles verstanden hast und nur den letzten Teil noch einmal brauchst.",
+        "pl": "Gdy zrozumiałeś/-aś prawie wszystko i potrzebujesz powtórzenia końcówki.",
+        "ro": "Când ai înțeles aproape tot și trebuie repetată doar ultima parte.",
+        "uk": "Коли ти зрозумів/зрозуміла майже все й потрібно повторити лише кінець.",
+        "nl": "Als je bijna alles begreep en alleen het laatste deel nog eens nodig hebt.",
+        "en": "When you understood almost everything and only need the last part repeated."
+      }
+    },
+    {
+      "id": "ep_understand_confirm",
+      "category": "didnt_understand",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 4,
+      "service_register": "polite",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Just to make sure I understood, is that correct?",
+      "meaning": {
+        "es": "Solo para asegurarme de haber entendido, ¿es correcto?",
+        "it": "Solo per essere sicuro di aver capito, è corretto?",
+        "fr": "Juste pour être sûr d’avoir bien compris, c’est bien ça ?",
+        "pt": "Só para confirmar que percebi, está correto?",
+        "de": "Nur um sicherzugehen, dass ich es richtig verstanden habe: Stimmt das?",
+        "pl": "Żeby upewnić się, że dobrze zrozumiałem/am: zgadza się?",
+        "ro": "Doar ca să mă asigur că am înțeles corect, este așa?",
+        "uk": "Щоб переконатися, що я правильно зрозумів/зрозуміла: так?",
+        "nl": "Om zeker te weten dat ik het goed begrepen heb, klopt dat?",
+        "en": "Just to make sure I understood, is that correct?"
+      },
+      "use_note": {
+        "es": "Cuando quieres confirmar un pedido o una petición antes de actuar.",
+        "it": "Quando vuoi confermare un ordine o una richiesta prima di procedere.",
+        "fr": "Quand vous voulez confirmer une commande ou une demande avant d’agir.",
+        "pt": "Quando queres confirmar um pedido antes de avançar.",
+        "de": "Wenn du eine Bestellung oder Bitte bestätigen möchtest, bevor du handelst.",
+        "pl": "Gdy chcesz potwierdzić zamówienie lub prośbę przed działaniem.",
+        "ro": "Când vrei să confirmi o comandă sau o cerere înainte de a acționa.",
+        "uk": "Коли хочеш підтвердити замовлення або прохання перед тим, як діяти.",
+        "nl": "Als je een bestelling of verzoek wilt bevestigen voordat je handelt.",
+        "en": "When you want to confirm an order or request before acting."
+      }
+    },
+    {
+      "id": "ep_time_one_moment",
+      "category": "need_time",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 1,
+      "service_register": "polite",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "One moment, please. I'll be right with you.",
+      "meaning": {
+        "es": "Un momento, por favor. Ahora mismo estoy contigo.",
+        "it": "Un momento, per favore. Arrivo subito da lei.",
+        "fr": "Un instant, s’il vous plaît. Je suis à vous tout de suite.",
+        "pt": "Um momento, por favor. Já vou ter consigo.",
+        "de": "Einen Moment bitte. Ich bin gleich bei Ihnen.",
+        "pl": "Chwileczkę, proszę. Zaraz do Pana/Pani podejdę.",
+        "ro": "Un moment, vă rog. Vin imediat la dumneavoastră.",
+        "uk": "Хвилинку, будь ласка. Я зараз до вас підійду.",
+        "nl": "Een moment alstublieft. Ik kom zo bij u.",
+        "en": "One moment, please. I'll be right with you."
+      },
+      "use_note": {
+        "es": "Cuando estás ocupado pero quieres reconocer al cliente inmediatamente.",
+        "it": "Quando sei occupato ma vuoi far capire subito al cliente che l’hai visto.",
+        "fr": "Quand vous êtes occupé mais voulez montrer au client que vous l’avez vu.",
+        "pt": "Quando estás ocupado, mas queres reconhecer o cliente de imediato.",
+        "de": "Wenn du beschäftigt bist, dem Gast aber sofort zeigen möchtest, dass du ihn gesehen hast.",
+        "pl": "Gdy jesteś zajęty/-a, ale chcesz od razu pokazać gościowi, że go zauważyłeś/-aś.",
+        "ro": "Când ești ocupat, dar vrei să arăți imediat clientului că l-ai observat.",
+        "uk": "Коли ти зайнятий/зайнята, але хочеш одразу показати гостю, що ти його помітив/помітила.",
+        "nl": "Als je bezig bent maar de gast meteen wilt laten weten dat je hem of haar gezien hebt.",
+        "en": "When you're busy but want to acknowledge the guest immediately."
+      }
+    },
+    {
+      "id": "ep_time_check",
+      "category": "need_time",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 2,
+      "service_register": "polite",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Give me just a moment and I'll check that for you.",
+      "meaning": {
+        "es": "Dame un momento y te lo compruebo.",
+        "it": "Mi dia solo un momento e controllo per lei.",
+        "fr": "Donnez-moi juste un instant et je vérifie cela pour vous.",
+        "pt": "Dê-me só um momento e eu confirmo isso para si.",
+        "de": "Geben Sie mir einen Moment, dann prüfe ich das für Sie.",
+        "pl": "Proszę dać mi chwilę, sprawdzę to dla Pana/Pani.",
+        "ro": "Dați-mi doar un moment și verific pentru dumneavoastră.",
+        "uk": "Дайте мені хвилинку, і я це перевірю для вас.",
+        "nl": "Geeft u me een moment, dan controleer ik het voor u.",
+        "en": "Give me just a moment and I'll check that for you."
+      },
+      "use_note": {
+        "es": "Cuando necesitas tiempo para verificar una respuesta antes de contestar.",
+        "it": "Quando ti serve un momento per verificare una risposta prima di rispondere.",
+        "fr": "Quand vous avez besoin d’un moment pour vérifier avant de répondre.",
+        "pt": "Quando precisas de um momento para confirmar algo antes de responder.",
+        "de": "Wenn du kurz Zeit brauchst, um etwas zu prüfen, bevor du antwortest.",
+        "pl": "Gdy potrzebujesz chwili, żeby coś sprawdzić przed odpowiedzią.",
+        "ro": "Când ai nevoie de un moment să verifici înainte de a răspunde.",
+        "uk": "Коли тобі потрібна хвилинка, щоб щось перевірити перед відповіддю.",
+        "nl": "Als je even tijd nodig hebt om iets te controleren voordat je antwoordt.",
+        "en": "When you need a moment to verify something before answering."
+      }
+    },
+    {
+      "id": "ep_time_asap",
+      "category": "need_time",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 3,
+      "service_register": "neutral",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I'll be with you as soon as I can.",
+      "meaning": {
+        "es": "Estaré contigo en cuanto pueda.",
+        "it": "Sarò da lei appena possibile.",
+        "fr": "Je m’occupe de vous dès que possible.",
+        "pt": "Já vou ter consigo assim que puder.",
+        "de": "Ich bin so schnell wie möglich bei Ihnen.",
+        "pl": "Podejdę do Pana/Pani tak szybko, jak tylko będę mógł/mogła.",
+        "ro": "Vin la dumneavoastră cât de repede pot.",
+        "uk": "Я підійду до вас, щойно зможу.",
+        "nl": "Ik kom zo snel mogelijk bij u.",
+        "en": "I'll be with you as soon as I can."
+      },
+      "use_note": {
+        "es": "Cuando hay mucha actividad y el cliente tendrá que esperar un poco.",
+        "it": "Quando c’è molto da fare e il cliente dovrà aspettare un po’.",
+        "fr": "Quand il y a beaucoup de travail et que le client devra attendre un peu.",
+        "pt": "Quando está muito movimentado e o cliente terá de esperar um pouco.",
+        "de": "Wenn viel los ist und der Gast etwas warten muss.",
+        "pl": "Gdy jest bardzo dużo pracy i gość musi chwilę poczekać.",
+        "ro": "Când este foarte aglomerat și clientul trebuie să aștepte puțin.",
+        "uk": "Коли дуже зайнято й гостю доведеться трохи зачекати.",
+        "nl": "Als het druk is en de gast even moet wachten.",
+        "en": "When it's very busy and the guest will need to wait a little."
+      }
+    },
+    {
+      "id": "ep_time_thanks_waiting",
+      "category": "need_time",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 4,
+      "service_register": "polite",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Thanks for waiting.",
+      "meaning": {
+        "es": "Gracias por esperar.",
+        "it": "Grazie per aver aspettato.",
+        "fr": "Merci d’avoir patienté.",
+        "pt": "Obrigado por esperar.",
+        "de": "Danke fürs Warten.",
+        "pl": "Dziękuję za cierpliwość.",
+        "ro": "Vă mulțumesc că ați așteptat.",
+        "uk": "Дякую, що зачекали.",
+        "nl": "Bedankt voor het wachten.",
+        "en": "Thanks for waiting."
+      },
+      "use_note": {
+        "es": "Cuando vuelves con un cliente que ha tenido que esperar.",
+        "it": "Quando torni da un cliente che ha dovuto aspettare.",
+        "fr": "Quand vous revenez vers un client qui a dû patienter.",
+        "pt": "Quando voltas para um cliente que teve de esperar.",
+        "de": "Wenn du zu einem Gast zurückkommst, der warten musste.",
+        "pl": "Gdy wracasz do gościa, który musiał poczekać.",
+        "ro": "Când revii la un client care a trebuit să aștepte.",
+        "uk": "Коли повертаєшся до гостя, який чекав.",
+        "nl": "Als je terugkomt bij een gast die heeft moeten wachten.",
+        "en": "When you return to a guest who has had to wait."
+      }
+    },
+    {
+      "id": "ep_help_manager",
+      "category": "need_help",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 1,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Let me check with my manager.",
+      "meaning": {
+        "es": "Déjame consultarlo con mi manager.",
+        "it": "Mi lasci controllare con il mio responsabile.",
+        "fr": "Laissez-moi vérifier avec mon responsable.",
+        "pt": "Deixe-me confirmar com o meu responsável.",
+        "de": "Lassen Sie mich das mit meiner Leitung klären.",
+        "pl": "Pozwoli Pan/Pani, że sprawdzę to z moim kierownikiem.",
+        "ro": "Lăsați-mă să verific cu managerul meu.",
+        "uk": "Дозвольте, я уточню це в менеджера.",
+        "nl": "Laat me dit even met mijn manager checken.",
+        "en": "Let me check with my manager."
+      },
+      "use_note": {
+        "es": "Cuando necesitas autorización o una respuesta que no puedes dar tú solo.",
+        "it": "Quando ti serve un’autorizzazione o una risposta che non puoi dare da solo.",
+        "fr": "Quand vous avez besoin d’une autorisation ou d’une réponse que vous ne pouvez pas donner seul.",
+        "pt": "Quando precisas de autorização ou de uma resposta que não podes dar sozinho.",
+        "de": "Wenn du eine Freigabe oder Antwort brauchst, die du nicht selbst geben kannst.",
+        "pl": "Gdy potrzebujesz zgody lub odpowiedzi, której nie możesz udzielić samodzielnie.",
+        "ro": "Când ai nevoie de aprobare sau de un răspuns pe care nu îl poți da singur.",
+        "uk": "Коли потрібне схвалення або відповідь, яку ти не можеш дати самостійно.",
+        "nl": "Als je toestemming of een antwoord nodig hebt dat je niet zelf kunt geven.",
+        "en": "When you need approval or an answer you can't give on your own."
+      }
+    },
+    {
+      "id": "ep_help_colleague",
+      "category": "need_help",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 2,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Let me ask a colleague and I'll come back to you.",
+      "meaning": {
+        "es": "Déjame preguntarle a un compañero y vuelvo contigo.",
+        "it": "Mi lasci chiedere a un collega e torno da lei.",
+        "fr": "Je vais demander à un collègue et je reviens vers vous.",
+        "pt": "Vou perguntar a um colega e já volto consigo.",
+        "de": "Ich frage kurz einen Kollegen und komme dann zu Ihnen zurück.",
+        "pl": "Zapytam kolegę lub koleżankę i zaraz do Pana/Pani wrócę.",
+        "ro": "Voi întreba un coleg și revin la dumneavoastră.",
+        "uk": "Я запитаю колегу й повернуся до вас із відповіддю.",
+        "nl": "Ik vraag het even aan een collega en kom bij u terug.",
+        "en": "Let me ask a colleague and I'll come back to you."
+      },
+      "use_note": {
+        "es": "Cuando otro miembro del equipo puede tener la información que necesitas.",
+        "it": "Quando un altro membro del team può avere l’informazione che ti serve.",
+        "fr": "Quand un autre membre de l’équipe peut avoir l’information dont vous avez besoin.",
+        "pt": "Quando outro membro da equipa pode ter a informação de que precisas.",
+        "de": "Wenn ein anderes Teammitglied die nötige Information haben könnte.",
+        "pl": "Gdy inny członek zespołu może znać potrzebną informację.",
+        "ro": "Când un alt coleg ar putea avea informația de care ai nevoie.",
+        "uk": "Коли інший член команди може мати потрібну інформацію.",
+        "nl": "Als een ander teamlid waarschijnlijk de informatie heeft die je nodig hebt.",
+        "en": "When another team member may have the information you need."
+      }
+    },
+    {
+      "id": "ep_help_not_sure",
+      "category": "need_help",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 3,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I'm not completely sure, so let me check.",
+      "meaning": {
+        "es": "No estoy completamente seguro, así que déjame comprobarlo.",
+        "it": "Non ne sono del tutto sicuro, quindi controllo.",
+        "fr": "Je ne suis pas tout à fait sûr, alors laissez-moi vérifier.",
+        "pt": "Não tenho a certeza, por isso deixe-me confirmar.",
+        "de": "Ich bin mir nicht ganz sicher, deshalb prüfe ich das lieber.",
+        "pl": "Nie mam całkowitej pewności, więc sprawdzę.",
+        "ro": "Nu sunt complet sigur, așa că voi verifica.",
+        "uk": "Я не зовсім упевнений/упевнена, тому краще перевірю.",
+        "nl": "Ik weet het niet helemaal zeker, dus laat me het controleren.",
+        "en": "I'm not completely sure, so let me check."
+      },
+      "use_note": {
+        "es": "Cuando no estás seguro y quieres evitar dar información incorrecta.",
+        "it": "Quando non sei sicuro e vuoi evitare di dare un’informazione sbagliata.",
+        "fr": "Quand vous n’êtes pas sûr et voulez éviter de donner une mauvaise information.",
+        "pt": "Quando não tens a certeza e queres evitar dar informação errada.",
+        "de": "Wenn du nicht sicher bist und keine falsche Auskunft geben möchtest.",
+        "pl": "Gdy nie masz pewności i chcesz uniknąć podania błędnej informacji.",
+        "ro": "Când nu ești sigur și vrei să eviți să dai informații greșite.",
+        "uk": "Коли ти не впевнений/упевнена й хочеш уникнути неправильної інформації.",
+        "nl": "Als je het niet zeker weet en verkeerde informatie wilt voorkomen.",
+        "en": "When you're unsure and want to avoid giving incorrect information."
+      }
+    },
+    {
+      "id": "ep_help_find_someone",
+      "category": "need_help",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 4,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I'll find someone who can help you.",
+      "meaning": {
+        "es": "Voy a buscar a alguien que pueda ayudarte.",
+        "it": "Troverò qualcuno che possa aiutarla.",
+        "fr": "Je vais trouver quelqu’un qui pourra vous aider.",
+        "pt": "Vou chamar alguém que o possa ajudar.",
+        "de": "Ich hole jemanden, der Ihnen helfen kann.",
+        "pl": "Znajdę kogoś, kto będzie mógł Panu/Pani pomóc.",
+        "ro": "Voi găsi pe cineva care vă poate ajuta.",
+        "uk": "Я знайду когось, хто зможе вам допомогти.",
+        "nl": "Ik zoek iemand die u kan helpen.",
+        "en": "I'll find someone who can help you."
+      },
+      "use_note": {
+        "es": "Cuando la petición está fuera de tu responsabilidad o conocimiento.",
+        "it": "Quando la richiesta è fuori dalla tua responsabilità o competenza.",
+        "fr": "Quand la demande dépasse votre rôle ou vos connaissances.",
+        "pt": "Quando o pedido está fora da tua responsabilidade ou conhecimento.",
+        "de": "Wenn die Bitte außerhalb deiner Zuständigkeit oder deines Wissens liegt.",
+        "pl": "Gdy prośba wykracza poza twoją odpowiedzialność lub wiedzę.",
+        "ro": "Când solicitarea depășește responsabilitatea sau cunoștințele tale.",
+        "uk": "Коли прохання виходить за межі твоєї відповідальності або знань.",
+        "nl": "Als het verzoek buiten jouw verantwoordelijkheid of kennis valt.",
+        "en": "When the request is outside your responsibility or knowledge."
+      }
+    },
+    {
+      "id": "ep_check_generic",
+      "category": "checking_information",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 1,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Let me check that for you.",
+      "meaning": {
+        "es": "Déjame comprobarlo por ti.",
+        "it": "Mi lasci controllare per lei.",
+        "fr": "Laissez-moi vérifier cela pour vous.",
+        "pt": "Deixe-me confirmar isso para si.",
+        "de": "Lassen Sie mich das für Sie prüfen.",
+        "pl": "Sprawdzę to dla Pana/Pani.",
+        "ro": "Lăsați-mă să verific pentru dumneavoastră.",
+        "uk": "Дозвольте, я це перевірю для вас.",
+        "nl": "Laat me dat voor u controleren.",
+        "en": "Let me check that for you."
+      },
+      "use_note": {
+        "es": "Respuesta segura cuando necesitas verificar cualquier dato antes de responder.",
+        "it": "Una risposta sicura quando devi verificare qualcosa prima di rispondere.",
+        "fr": "Une réponse sûre quand vous devez vérifier une information avant de répondre.",
+        "pt": "Uma resposta segura quando precisas de confirmar algo antes de responder.",
+        "de": "Eine sichere Antwort, wenn du etwas prüfen musst, bevor du antwortest.",
+        "pl": "Bezpieczna odpowiedź, gdy musisz coś sprawdzić przed udzieleniem odpowiedzi.",
+        "ro": "Un răspuns sigur când trebuie să verifici ceva înainte de a răspunde.",
+        "uk": "Безпечна фраза, коли треба щось перевірити перед відповіддю.",
+        "nl": "Een veilige reactie wanneer je iets moet controleren voordat je antwoordt.",
+        "en": "A safe response when you need to verify something before answering."
+      }
+    },
+    {
+      "id": "ep_check_kitchen",
+      "category": "checking_information",
+      "roles": [
+        "waiter"
+      ],
+      "priority": 2,
+      "service_register": "professional",
+      "venue_types": [
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I'll confirm that with the kitchen.",
+      "meaning": {
+        "es": "Lo confirmaré con cocina.",
+        "it": "Lo confermo con la cucina.",
+        "fr": "Je vais confirmer cela avec la cuisine.",
+        "pt": "Vou confirmar isso com a cozinha.",
+        "de": "Ich kläre das mit der Küche.",
+        "pl": "Potwierdzę to z kuchnią.",
+        "ro": "Voi confirma cu bucătăria.",
+        "uk": "Я уточню це на кухні.",
+        "nl": "Ik bevestig dat even met de keuken.",
+        "en": "I'll confirm that with the kitchen."
+      },
+      "use_note": {
+        "es": "Cuando una pregunta sobre un plato, ingrediente o cambio necesita confirmación de cocina.",
+        "it": "Quando una domanda su un piatto, ingrediente o modifica deve essere confermata dalla cucina.",
+        "fr": "Quand une question sur un plat, un ingrédient ou une modification doit être confirmée par la cuisine.",
+        "pt": "Quando uma questão sobre um prato, ingrediente ou alteração precisa de confirmação da cozinha.",
+        "de": "Wenn eine Frage zu einem Gericht, einer Zutat oder Änderung von der Küche bestätigt werden muss.",
+        "pl": "Gdy pytanie o danie, składnik lub zmianę wymaga potwierdzenia z kuchnią.",
+        "ro": "Când o întrebare despre un preparat, ingredient sau modificare trebuie confirmată cu bucătăria.",
+        "uk": "Коли питання про страву, інгредієнт або зміну потрібно уточнити на кухні.",
+        "nl": "Als een vraag over een gerecht, ingrediënt of wijziging door de keuken moet worden bevestigd.",
+        "en": "When a question about a dish, ingredient or modification needs confirmation from the kitchen."
+      }
+    },
+    {
+      "id": "ep_check_available",
+      "category": "checking_information",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 3,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I'll check whether we still have that available.",
+      "meaning": {
+        "es": "Comprobaré si todavía nos queda.",
+        "it": "Controllo se è ancora disponibile.",
+        "fr": "Je vais vérifier si nous en avons encore.",
+        "pt": "Vou verificar se ainda temos disponível.",
+        "de": "Ich prüfe, ob wir das noch verfügbar haben.",
+        "pl": "Sprawdzę, czy nadal mamy to dostępne.",
+        "ro": "Voi verifica dacă mai avem disponibil.",
+        "uk": "Я перевірю, чи це ще є в наявності.",
+        "nl": "Ik controleer of we dat nog beschikbaar hebben.",
+        "en": "I'll check whether we still have that available."
+      },
+      "use_note": {
+        "es": "Cuando no estás seguro de si un producto, plato o bebida sigue disponible.",
+        "it": "Quando non sei sicuro che un prodotto, piatto o bevanda sia ancora disponibile.",
+        "fr": "Quand vous n’êtes pas sûr qu’un produit, plat ou boisson soit encore disponible.",
+        "pt": "Quando não tens a certeza se um produto, prato ou bebida ainda está disponível.",
+        "de": "Wenn du nicht sicher bist, ob ein Produkt, Gericht oder Getränk noch verfügbar ist.",
+        "pl": "Gdy nie masz pewności, czy produkt, danie lub napój jest jeszcze dostępny.",
+        "ro": "Când nu ești sigur dacă un produs, preparat sau băutură mai este disponibil.",
+        "uk": "Коли не впевнений/впевнена, чи продукт, страва або напій ще доступні.",
+        "nl": "Als je niet zeker weet of een product, gerecht of drankje nog beschikbaar is.",
+        "en": "When you're not sure whether a product, dish or drink is still available."
+      }
+    },
+    {
+      "id": "ep_check_price",
+      "category": "checking_information",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 4,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Let me check the price for you.",
+      "meaning": {
+        "es": "Déjame comprobar el precio.",
+        "it": "Mi lasci controllare il prezzo.",
+        "fr": "Laissez-moi vérifier le prix pour vous.",
+        "pt": "Deixe-me confirmar o preço.",
+        "de": "Lassen Sie mich den Preis für Sie prüfen.",
+        "pl": "Sprawdzę dla Pana/Pani cenę.",
+        "ro": "Lăsați-mă să verific prețul pentru dumneavoastră.",
+        "uk": "Дозвольте, я перевірю ціну.",
+        "nl": "Laat me de prijs voor u controleren.",
+        "en": "Let me check the price for you."
+      },
+      "use_note": {
+        "es": "Cuando no recuerdas el precio exacto o hay que verificarlo.",
+        "it": "Quando non ricordi il prezzo esatto o devi verificarlo.",
+        "fr": "Quand vous ne vous souvenez pas du prix exact ou devez le vérifier.",
+        "pt": "Quando não te lembras do preço exato ou precisas de o confirmar.",
+        "de": "Wenn du den genauen Preis nicht weißt oder ihn überprüfen musst.",
+        "pl": "Gdy nie pamiętasz dokładnej ceny albo trzeba ją sprawdzić.",
+        "ro": "Când nu îți amintești prețul exact sau trebuie să îl verifici.",
+        "uk": "Коли не пам’ятаєш точну ціну або треба її перевірити.",
+        "nl": "Als je de exacte prijs niet weet of die moet controleren.",
+        "en": "When you don't remember the exact price or need to verify it."
+      }
+    },
+    {
+      "id": "ep_problem_apology",
+      "category": "problems_complaints",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 1,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I'm sorry about that.",
+      "meaning": {
+        "es": "Lo siento por eso.",
+        "it": "Mi dispiace per questo.",
+        "fr": "Je suis désolé pour cela.",
+        "pt": "Lamento por isso.",
+        "de": "Das tut mir leid.",
+        "pl": "Przepraszam za to.",
+        "ro": "Îmi pare rău pentru asta.",
+        "uk": "Мені шкода, що так сталося.",
+        "nl": "Het spijt me daarvan.",
+        "en": "I'm sorry about that."
+      },
+      "use_note": {
+        "es": "Primera respuesta sencilla cuando un cliente te comunica un problema.",
+        "it": "Una prima risposta semplice quando un cliente segnala un problema.",
+        "fr": "Une première réponse simple lorsqu’un client signale un problème.",
+        "pt": "Uma primeira resposta simples quando um cliente comunica um problema.",
+        "de": "Eine einfache erste Reaktion, wenn ein Gast ein Problem meldet.",
+        "pl": "Prosta pierwsza reakcja, gdy gość zgłasza problem.",
+        "ro": "Un prim răspuns simplu când un client semnalează o problemă.",
+        "uk": "Проста перша реакція, коли гість повідомляє про проблему.",
+        "nl": "Een eenvoudige eerste reactie wanneer een gast een probleem meldt.",
+        "en": "A simple first response when a guest tells you about a problem."
+      }
+    },
+    {
+      "id": "ep_problem_understand",
+      "category": "problems_complaints",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 2,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I understand. Let me see what I can do.",
+      "meaning": {
+        "es": "Entiendo. Déjame ver qué puedo hacer.",
+        "it": "Capisco. Mi lasci vedere cosa posso fare.",
+        "fr": "Je comprends. Laissez-moi voir ce que je peux faire.",
+        "pt": "Compreendo. Deixe-me ver o que posso fazer.",
+        "de": "Ich verstehe. Lassen Sie mich sehen, was ich tun kann.",
+        "pl": "Rozumiem. Zobaczę, co mogę zrobić.",
+        "ro": "Înțeleg. Lăsați-mă să văd ce pot face.",
+        "uk": "Розумію. Дозвольте, я подивлюся, що можу зробити.",
+        "nl": "Ik begrijp het. Laat me kijken wat ik kan doen.",
+        "en": "I understand. Let me see what I can do."
+      },
+      "use_note": {
+        "es": "Cuando quieres reconocer la queja sin prometer una solución que aún no conoces.",
+        "it": "Quando vuoi riconoscere il reclamo senza promettere una soluzione che ancora non conosci.",
+        "fr": "Quand vous voulez reconnaître la réclamation sans promettre une solution que vous ne connaissez pas encore.",
+        "pt": "Quando queres reconhecer a reclamação sem prometer uma solução que ainda não conheces.",
+        "de": "Wenn du die Beschwerde anerkennen möchtest, ohne eine Lösung zu versprechen, die du noch nicht kennst.",
+        "pl": "Gdy chcesz uznać skargę bez obiecywania rozwiązania, którego jeszcze nie znasz.",
+        "ro": "Când vrei să recunoști reclamația fără să promiți o soluție pe care încă nu o cunoști.",
+        "uk": "Коли хочеш визнати скаргу, не обіцяючи рішення, якого ще не знаєш.",
+        "nl": "Als je de klacht wilt erkennen zonder een oplossing te beloven die je nog niet kent.",
+        "en": "When you want to acknowledge the complaint without promising a solution you don't yet know."
+      }
+    },
+    {
+      "id": "ep_problem_sort",
+      "category": "problems_complaints",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 3,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I'll get this sorted for you.",
+      "meaning": {
+        "es": "Me ocuparé de solucionarlo.",
+        "it": "Me ne occupo e risolvo per lei.",
+        "fr": "Je vais régler cela pour vous.",
+        "pt": "Vou tratar de resolver isto para si.",
+        "de": "Ich kümmere mich darum.",
+        "pl": "Zajmę się tym i postaram się to rozwiązać.",
+        "ro": "Mă ocup de asta pentru dumneavoastră.",
+        "uk": "Я цим займуся й постараюся все вирішити.",
+        "nl": "Ik regel dit voor u.",
+        "en": "I'll get this sorted for you."
+      },
+      "use_note": {
+        "es": "Cuando ya sabes que puedes encargarte del problema o iniciar la solución.",
+        "it": "Quando sai già che puoi occuparti del problema o avviare la soluzione.",
+        "fr": "Quand vous savez que vous pouvez prendre en charge le problème ou lancer la solution.",
+        "pt": "Quando já sabes que podes tratar do problema ou iniciar a solução.",
+        "de": "Wenn du weißt, dass du das Problem übernehmen oder die Lösung einleiten kannst.",
+        "pl": "Gdy wiesz, że możesz zająć się problemem lub rozpocząć jego rozwiązanie.",
+        "ro": "Când știi că te poți ocupa de problemă sau poți începe rezolvarea.",
+        "uk": "Коли знаєш, що можеш узяти проблему на себе або почати її вирішувати.",
+        "nl": "Als je weet dat je het probleem kunt oppakken of de oplossing kunt starten.",
+        "en": "When you know you can take ownership of the problem or start the solution."
+      }
+    },
+    {
+      "id": "ep_problem_manager",
+      "category": "problems_complaints",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 4,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Let me speak to my manager so we can resolve this.",
+      "meaning": {
+        "es": "Déjame hablar con mi manager para que podamos resolverlo.",
+        "it": "Mi lasci parlare con il mio responsabile così possiamo risolvere la situazione.",
+        "fr": "Laissez-moi parler à mon responsable afin que nous puissions régler cela.",
+        "pt": "Deixe-me falar com o meu responsável para podermos resolver isto.",
+        "de": "Lassen Sie mich mit meiner Leitung sprechen, damit wir das klären können.",
+        "pl": "Porozmawiam z moim kierownikiem, żebyśmy mogli to rozwiązać.",
+        "ro": "Lăsați-mă să vorbesc cu managerul meu ca să putem rezolva situația.",
+        "uk": "Дозвольте, я поговорю з менеджером, щоб ми могли це вирішити.",
+        "nl": "Laat me met mijn manager overleggen zodat we dit kunnen oplossen.",
+        "en": "Let me speak to my manager so we can resolve this."
+      },
+      "use_note": {
+        "es": "Cuando una queja necesita una decisión, compensación o autoridad superior.",
+        "it": "Quando un reclamo richiede una decisione, un rimborso o un’autorità superiore.",
+        "fr": "Quand une réclamation nécessite une décision, un geste commercial ou l’intervention d’un responsable.",
+        "pt": "Quando uma reclamação precisa de uma decisão, compensação ou autoridade superior.",
+        "de": "Wenn eine Beschwerde eine Entscheidung, Entschädigung oder höhere Zuständigkeit braucht.",
+        "pl": "Gdy skarga wymaga decyzji, rekompensaty lub wyższych uprawnień.",
+        "ro": "Când o reclamație necesită o decizie, compensație sau autoritate superioară.",
+        "uk": "Коли скарга потребує рішення, компенсації або втручання керівника.",
+        "nl": "Als een klacht een beslissing, compensatie of hogere bevoegdheid vereist.",
+        "en": "When a complaint needs a decision, compensation or higher authority."
+      }
+    },
+    {
+      "id": "ep_allergy_ask",
+      "category": "allergies_safety",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 1,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Do you have any allergies or dietary requirements?",
+      "meaning": {
+        "es": "¿Tienes alguna alergia o requisito dietético?",
+        "it": "Ha allergie o esigenze alimentari?",
+        "fr": "Avez-vous des allergies ou des restrictions alimentaires ?",
+        "pt": "Tem alguma alergia ou requisito alimentar?",
+        "de": "Haben Sie Allergien oder besondere Ernährungsbedürfnisse?",
+        "pl": "Czy ma Pan/Pani alergie lub specjalne wymagania dietetyczne?",
+        "ro": "Aveți alergii sau cerințe alimentare speciale?",
+        "uk": "У вас є алергії або особливі дієтичні потреби?",
+        "nl": "Heeft u allergieën of dieetwensen?",
+        "en": "Do you have any allergies or dietary requirements?"
+      },
+      "use_note": {
+        "es": "Cuando necesitas comprobar alergias o necesidades dietéticas antes de tomar o confirmar un pedido.",
+        "it": "Quando devi verificare allergie o esigenze alimentari prima di prendere o confermare un ordine.",
+        "fr": "Quand vous devez vérifier les allergies ou restrictions alimentaires avant de prendre ou confirmer une commande.",
+        "pt": "Quando precisas de confirmar alergias ou necessidades alimentares antes de registar ou confirmar um pedido.",
+        "de": "Wenn du Allergien oder Ernährungsbedürfnisse prüfen musst, bevor du eine Bestellung aufnimmst oder bestätigst.",
+        "pl": "Gdy musisz sprawdzić alergie lub wymagania dietetyczne przed przyjęciem albo potwierdzeniem zamówienia.",
+        "ro": "Când trebuie să verifici alergiile sau cerințele alimentare înainte de a lua sau confirma comanda.",
+        "uk": "Коли потрібно уточнити алергії або дієтичні потреби перед прийняттям чи підтвердженням замовлення.",
+        "nl": "Als je allergieën of dieetwensen moet controleren voordat je een bestelling opneemt of bevestigt.",
+        "en": "When you need to check allergies or dietary requirements before taking or confirming an order."
+      }
+    },
+    {
+      "id": "ep_allergy_info",
+      "category": "allergies_safety",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 2,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I'll check the allergen information for you.",
+      "meaning": {
+        "es": "Comprobaré la información de alérgenos para ti.",
+        "it": "Controllo le informazioni sugli allergeni per lei.",
+        "fr": "Je vais vérifier les informations sur les allergènes pour vous.",
+        "pt": "Vou confirmar a informação sobre alergénios para si.",
+        "de": "Ich prüfe die Allergeninformationen für Sie.",
+        "pl": "Sprawdzę dla Pana/Pani informacje o alergenach.",
+        "ro": "Voi verifica informațiile despre alergeni pentru dumneavoastră.",
+        "uk": "Я перевірю для вас інформацію про алергени.",
+        "nl": "Ik controleer de allergeneninformatie voor u.",
+        "en": "I'll check the allergen information for you."
+      },
+      "use_note": {
+        "es": "Cuando el cliente pregunta por un alérgeno y necesitas consultar la información oficial.",
+        "it": "Quando il cliente chiede di un allergene e devi consultare le informazioni ufficiali.",
+        "fr": "Quand le client pose une question sur un allergène et que vous devez vérifier l’information officielle.",
+        "pt": "Quando o cliente pergunta por um alergénio e precisas de consultar a informação oficial.",
+        "de": "Wenn ein Gast nach einem Allergen fragt und du die offiziellen Angaben prüfen musst.",
+        "pl": "Gdy gość pyta o alergen i musisz sprawdzić oficjalne informacje.",
+        "ro": "Când clientul întreabă despre un alergen și trebuie să verifici informațiile oficiale.",
+        "uk": "Коли гість питає про алерген і потрібно перевірити офіційну інформацію.",
+        "nl": "Als een gast naar een allergeen vraagt en je de officiële informatie moet controleren.",
+        "en": "When the guest asks about an allergen and you need to check the official information."
+      }
+    },
+    {
+      "id": "ep_allergy_no_guess",
+      "category": "allergies_safety",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 3,
+      "service_register": "professional",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I don't want to guess — let me confirm that for you.",
+      "meaning": {
+        "es": "No quiero adivinar; déjame confirmarlo.",
+        "it": "Non voglio tirare a indovinare: mi lasci confermare.",
+        "fr": "Je ne veux pas deviner ; laissez-moi vérifier pour vous.",
+        "pt": "Não quero adivinhar; deixe-me confirmar.",
+        "de": "Ich möchte nicht raten – lassen Sie mich das für Sie bestätigen.",
+        "pl": "Nie chcę zgadywać — pozwoli Pan/Pani, że to potwierdzę.",
+        "ro": "Nu vreau să presupun — lăsați-mă să confirm.",
+        "uk": "Я не хочу здогадуватися — дозвольте, я це уточню.",
+        "nl": "Ik wil niet gokken; laat me het voor u bevestigen.",
+        "en": "I don't want to guess — let me confirm that for you."
+      },
+      "use_note": {
+        "es": "Especialmente útil cuando la pregunta afecta a alergias, ingredientes o seguridad.",
+        "it": "Particolarmente utile quando la domanda riguarda allergie, ingredienti o sicurezza.",
+        "fr": "Particulièrement utile lorsque la question concerne les allergies, les ingrédients ou la sécurité.",
+        "pt": "Especialmente útil quando a pergunta envolve alergias, ingredientes ou segurança.",
+        "de": "Besonders nützlich bei Fragen zu Allergien, Zutaten oder Sicherheit.",
+        "pl": "Szczególnie przydatne przy pytaniach dotyczących alergii, składników lub bezpieczeństwa.",
+        "ro": "Deosebit de util când întrebarea ține de alergii, ingrediente sau siguranță.",
+        "uk": "Особливо корисно, коли питання стосується алергій, інгредієнтів або безпеки.",
+        "nl": "Vooral nuttig bij vragen over allergieën, ingrediënten of veiligheid.",
+        "en": "Especially useful when the question involves allergies, ingredients or safety."
+      }
+    },
+    {
+      "id": "ep_allergy_wait",
+      "category": "allergies_safety",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 4,
+      "service_register": "urgent",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Please don't eat or drink that until I check.",
+      "meaning": {
+        "es": "Por favor, no comas ni bebas eso hasta que lo compruebe.",
+        "it": "Per favore, non mangi o beva quello finché non controllo.",
+        "fr": "S’il vous plaît, ne mangez ni ne buvez cela avant que je vérifie.",
+        "pt": "Por favor, não coma nem beba isso até eu confirmar.",
+        "de": "Bitte essen oder trinken Sie das nicht, bis ich es geprüft habe.",
+        "pl": "Proszę tego nie jeść ani nie pić, dopóki tego nie sprawdzę.",
+        "ro": "Vă rog să nu mâncați și să nu beți asta până nu verific.",
+        "uk": "Будь ласка, не їжте й не пийте це, поки я не перевірю.",
+        "nl": "Eet of drink dat alstublieft niet totdat ik het heb gecontroleerd.",
+        "en": "Please don't eat or drink that until I check."
+      },
+      "use_note": {
+        "es": "Cuando existe una posible duda de seguridad y necesitas detener el consumo mientras confirmas la información.",
+        "it": "Quando c’è un possibile dubbio di sicurezza e devi fermare il consumo mentre verifichi.",
+        "fr": "Lorsqu’il y a un doute de sécurité et que vous devez interrompre la consommation le temps de vérifier.",
+        "pt": "Quando existe uma possível dúvida de segurança e precisas de interromper o consumo enquanto confirmas.",
+        "de": "Wenn ein mögliches Sicherheitsrisiko besteht und der Gast warten soll, bis du es geprüft hast.",
+        "pl": "Gdy istnieje możliwe ryzyko bezpieczeństwa i gość powinien poczekać, aż wszystko sprawdzisz.",
+        "ro": "Când există o posibilă problemă de siguranță și trebuie oprit consumul până verifici.",
+        "uk": "Коли є можлива загроза безпеці й потрібно зупинити споживання, доки ти все перевіриш.",
+        "nl": "Als er mogelijk een veiligheidsrisico is en de gast moet wachten totdat je het hebt gecontroleerd.",
+        "en": "When there may be a safety issue and consumption should stop while you confirm the information."
+      }
+    },
+    {
+      "id": "ep_payment_together_separate",
+      "category": "payments",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 1,
+      "service_register": "neutral",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Would you like to pay together or separately?",
+      "meaning": {
+        "es": "¿Queréis pagar juntos o por separado?",
+        "it": "Volete pagare insieme o separatamente?",
+        "fr": "Souhaitez-vous payer ensemble ou séparément ?",
+        "pt": "Querem pagar juntos ou em separado?",
+        "de": "Möchten Sie zusammen oder getrennt zahlen?",
+        "pl": "Czy chcą Państwo zapłacić razem czy osobno?",
+        "ro": "Doriți să plătiți împreună sau separat?",
+        "uk": "Бажаєте заплатити разом чи окремо?",
+        "nl": "Wilt u samen of apart betalen?",
+        "en": "Would you like to pay together or separately?"
+      },
+      "use_note": {
+        "es": "Cuando una mesa o grupo pide pagar y necesitas saber cómo dividir la cuenta.",
+        "it": "Quando un tavolo o gruppo vuole pagare e devi sapere come dividere il conto.",
+        "fr": "Quand une table ou un groupe veut payer et que vous devez savoir comment diviser l’addition.",
+        "pt": "Quando uma mesa ou grupo quer pagar e precisas de saber como dividir a conta.",
+        "de": "Wenn eine Gruppe zahlen möchte und du wissen musst, wie die Rechnung aufgeteilt werden soll.",
+        "pl": "Gdy stół lub grupa chce zapłacić i musisz wiedzieć, jak podzielić rachunek.",
+        "ro": "Când o masă sau un grup vrea să plătească și trebuie să știi cum să împarți nota.",
+        "uk": "Коли стіл або група хоче заплатити й потрібно знати, як розділити рахунок.",
+        "nl": "Als een tafel of groep wil betalen en je moet weten hoe de rekening verdeeld moet worden.",
+        "en": "When a table or group wants to pay and you need to know how to split the bill."
+      }
+    },
+    {
+      "id": "ep_payment_declined",
+      "category": "payments",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 2,
+      "service_register": "discreet",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "The card hasn't gone through. Would you like to try again?",
+      "meaning": {
+        "es": "La tarjeta no ha pasado. ¿Quieres intentarlo otra vez?",
+        "it": "La carta non è andata a buon fine. Vuole riprovare?",
+        "fr": "La carte n’est pas passée. Voulez-vous réessayer ?",
+        "pt": "O cartão não passou. Quer tentar novamente?",
+        "de": "Die Karte wurde nicht angenommen. Möchten Sie es noch einmal versuchen?",
+        "pl": "Płatność kartą nie przeszła. Czy chce Pan/Pani spróbować ponownie?",
+        "ro": "Cardul nu a fost acceptat. Doriți să încercați din nou?",
+        "uk": "Картка не пройшла. Хочете спробувати ще раз?",
+        "nl": "De kaart is niet verwerkt. Wilt u het nog een keer proberen?",
+        "en": "The card hasn't gone through. Would you like to try again?"
+      },
+      "use_note": {
+        "es": "Forma discreta de comunicar un pago rechazado sin decir que el cliente no tiene fondos.",
+        "it": "Un modo discreto per comunicare un pagamento non riuscito senza dire che il cliente non ha fondi.",
+        "fr": "Une façon discrète de signaler qu’un paiement n’a pas abouti sans parler de fonds insuffisants.",
+        "pt": "Uma forma discreta de comunicar um pagamento recusado sem dizer que o cliente não tem saldo.",
+        "de": "Eine diskrete Formulierung für eine nicht erfolgreiche Kartenzahlung, ohne über fehlendes Guthaben zu sprechen.",
+        "pl": "Dyskretny sposób poinformowania o nieudanej płatności bez sugerowania braku środków.",
+        "ro": "O formulare discretă pentru o plată nereușită, fără a spune că clientul nu are fonduri.",
+        "uk": "Делікатний спосіб повідомити про невдалу оплату, не говорячи про відсутність коштів.",
+        "nl": "Een discrete manier om te zeggen dat een betaling niet is gelukt zonder te suggereren dat er geen saldo is.",
+        "en": "A discreet way to communicate a failed payment without saying the guest has insufficient funds."
+      }
+    },
+    {
+      "id": "ep_payment_other_method",
+      "category": "payments",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 3,
+      "service_register": "discreet",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Would you like to try another card or payment method?",
+      "meaning": {
+        "es": "¿Quieres probar con otra tarjeta o método de pago?",
+        "it": "Vuole provare un’altra carta o un altro metodo di pagamento?",
+        "fr": "Souhaitez-vous essayer une autre carte ou un autre moyen de paiement ?",
+        "pt": "Quer tentar outro cartão ou método de pagamento?",
+        "de": "Möchten Sie eine andere Karte oder Zahlungsmethode versuchen?",
+        "pl": "Czy chce Pan/Pani spróbować innej karty lub metody płatności?",
+        "ro": "Doriți să încercați un alt card sau o altă metodă de plată?",
+        "uk": "Хочете спробувати іншу картку або спосіб оплати?",
+        "nl": "Wilt u een andere kaart of betaalmethode proberen?",
+        "en": "Would you like to try another card or payment method?"
+      },
+      "use_note": {
+        "es": "Cuando el primer intento de pago no funciona.",
+        "it": "Quando il primo tentativo di pagamento non funziona.",
+        "fr": "Quand la première tentative de paiement ne fonctionne pas.",
+        "pt": "Quando a primeira tentativa de pagamento não funciona.",
+        "de": "Wenn der erste Zahlungsversuch nicht funktioniert.",
+        "pl": "Gdy pierwsza próba płatności nie działa.",
+        "ro": "Când prima încercare de plată nu funcționează.",
+        "uk": "Коли перша спроба оплати не спрацювала.",
+        "nl": "Als de eerste betaalpoging niet lukt.",
+        "en": "When the first payment attempt doesn't work."
+      }
+    },
+    {
+      "id": "ep_payment_machine",
+      "category": "payments",
+      "roles": [
+        "waiter"
+      ],
+      "priority": 4,
+      "service_register": "neutral",
+      "venue_types": [
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I'll bring the card machine over.",
+      "meaning": {
+        "es": "Te traeré el datáfono.",
+        "it": "Porto il terminale per il pagamento.",
+        "fr": "Je vais vous apporter le terminal de paiement.",
+        "pt": "Vou trazer o terminal de pagamento.",
+        "de": "Ich bringe das Kartenlesegerät vorbei.",
+        "pl": "Przyniosę terminal płatniczy.",
+        "ro": "Voi aduce terminalul de plată.",
+        "uk": "Я принесу платіжний термінал.",
+        "nl": "Ik breng het pinapparaat naar u toe.",
+        "en": "I'll bring the card machine over."
+      },
+      "use_note": {
+        "es": "Cuando el cliente quiere pagar en la mesa.",
+        "it": "Quando il cliente vuole pagare al tavolo.",
+        "fr": "Quand le client souhaite payer à table.",
+        "pt": "Quando o cliente quer pagar à mesa.",
+        "de": "Wenn der Gast am Tisch zahlen möchte.",
+        "pl": "Gdy gość chce zapłacić przy stoliku.",
+        "ro": "Când clientul vrea să plătească la masă.",
+        "uk": "Коли гість хоче заплатити за столом.",
+        "nl": "Als de gast aan tafel wil betalen.",
+        "en": "When the guest wants to pay at the table."
+      }
+    },
+    {
+      "id": "ep_colleague_hand",
+      "category": "colleagues",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 1,
+      "service_register": "colleague",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Could you give me a hand for a moment?",
+      "meaning": {
+        "es": "¿Puedes echarme una mano un momento?",
+        "it": "Puoi darmi una mano un momento?",
+        "fr": "Tu peux me donner un coup de main un instant ?",
+        "pt": "Podes dar-me uma ajuda um momento?",
+        "de": "Kannst du mir kurz helfen?",
+        "pl": "Możesz mi na chwilę pomóc?",
+        "ro": "Poți să mă ajuți un moment?",
+        "uk": "Можеш мені на хвилинку допомогти?",
+        "nl": "Kun je me even helpen?",
+        "en": "Could you give me a hand for a moment?"
+      },
+      "use_note": {
+        "es": "Cuando necesitas ayuda rápida de un compañero durante el servicio.",
+        "it": "Quando ti serve un aiuto rapido da un collega durante il servizio.",
+        "fr": "Quand vous avez besoin d’un coup de main rapide d’un collègue pendant le service.",
+        "pt": "Quando precisas de ajuda rápida de um colega durante o serviço.",
+        "de": "Wenn du während des Services kurz Hilfe von einem Kollegen brauchst.",
+        "pl": "Gdy podczas serwisu potrzebujesz szybkiej pomocy od współpracownika.",
+        "ro": "Când ai nevoie de ajutor rapid de la un coleg în timpul serviciului.",
+        "uk": "Коли під час зміни потрібна швидка допомога колеги.",
+        "nl": "Als je tijdens de service snel hulp van een collega nodig hebt.",
+        "en": "When you need quick help from a colleague during service."
+      }
+    },
+    {
+      "id": "ep_colleague_show",
+      "category": "colleagues",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 2,
+      "service_register": "colleague",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "Can you show me how you want this done?",
+      "meaning": {
+        "es": "¿Puedes enseñarme cómo quieres que haga esto?",
+        "it": "Puoi mostrarmi come vuoi che lo faccia?",
+        "fr": "Tu peux me montrer comment tu veux que ce soit fait ?",
+        "pt": "Podes mostrar-me como queres que isto seja feito?",
+        "de": "Kannst du mir zeigen, wie du möchtest, dass ich das mache?",
+        "pl": "Możesz mi pokazać, jak mam to zrobić?",
+        "ro": "Poți să-mi arăți cum vrei să fac asta?",
+        "uk": "Можеш показати, як ти хочеш, щоб я це зробив/зробила?",
+        "nl": "Kun je me laten zien hoe je wilt dat ik dit doe?",
+        "en": "Can you show me how you want this done?"
+      },
+      "use_note": {
+        "es": "Cuando estás aprendiendo un procedimiento o no estás seguro del estándar del local.",
+        "it": "Quando stai imparando una procedura o non sei sicuro dello standard del locale.",
+        "fr": "Quand vous apprenez une procédure ou n’êtes pas sûr du standard de l’établissement.",
+        "pt": "Quando estás a aprender um procedimento ou não tens a certeza do padrão do local.",
+        "de": "Wenn du einen Ablauf lernst oder dir beim Standard des Betriebs unsicher bist.",
+        "pl": "Gdy uczysz się procedury lub nie masz pewności co do standardu lokalu.",
+        "ro": "Când înveți o procedură sau nu ești sigur de standardul locației.",
+        "uk": "Коли вчиш процедуру або не впевнений/впевнена у стандарті закладу.",
+        "nl": "Als je een procedure leert of niet zeker bent van de standaard van de zaak.",
+        "en": "When you're learning a procedure or aren't sure about the venue's standard."
+      }
+    },
+    {
+      "id": "ep_colleague_instruction",
+      "category": "colleagues",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 3,
+      "service_register": "colleague",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I didn't catch that. Could you repeat the instruction?",
+      "meaning": {
+        "es": "No lo he entendido. ¿Puedes repetir la instrucción?",
+        "it": "Non ho capito. Puoi ripetere l’istruzione?",
+        "fr": "Je n’ai pas compris. Tu peux répéter la consigne ?",
+        "pt": "Não percebi. Podes repetir a instrução?",
+        "de": "Das habe ich nicht verstanden. Kannst du die Anweisung wiederholen?",
+        "pl": "Nie zrozumiałem/am. Możesz powtórzyć instrukcję?",
+        "ro": "Nu am înțeles. Poți repeta instrucțiunea?",
+        "uk": "Я не зрозумів/зрозуміла. Можеш повторити інструкцію?",
+        "nl": "Ik heb het niet begrepen. Kun je de instructie herhalen?",
+        "en": "I didn't catch that. Could you repeat the instruction?"
+      },
+      "use_note": {
+        "es": "Cuando un manager o compañero te da una instrucción que no has entendido.",
+        "it": "Quando un responsabile o collega ti dà un’istruzione che non hai capito.",
+        "fr": "Quand un responsable ou un collègue vous donne une consigne que vous n’avez pas comprise.",
+        "pt": "Quando um responsável ou colega te dá uma instrução que não percebeste.",
+        "de": "Wenn ein Manager oder Kollege dir eine Anweisung gibt, die du nicht verstanden hast.",
+        "pl": "Gdy manager lub współpracownik daje ci instrukcję, której nie zrozumiałeś/-aś.",
+        "ro": "Când un manager sau coleg îți dă o instrucțiune pe care nu ai înțeles-o.",
+        "uk": "Коли менеджер або колега дає інструкцію, яку ти не зрозумів/зрозуміла.",
+        "nl": "Als een manager of collega een instructie geeft die je niet hebt begrepen.",
+        "en": "When a manager or colleague gives you an instruction you didn't understand."
+      }
+    },
+    {
+      "id": "ep_colleague_divide",
+      "category": "colleagues",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "priority": 4,
+      "service_register": "colleague",
+      "venue_types": [
+        "pub",
+        "cafe",
+        "casual restaurant",
+        "fine dining",
+        "cocktail bar",
+        "hotel 4–5 star"
+      ],
+      "phrase_en": "I'll take care of this. Could you handle that one?",
+      "meaning": {
+        "es": "Yo me encargo de esto. ¿Puedes encargarte tú de aquello?",
+        "it": "Mi occupo io di questo. Puoi occuparti tu di quello?",
+        "fr": "Je m’occupe de ça. Tu peux t’occuper de l’autre ?",
+        "pt": "Eu trato disto. Podes tratar daquilo?",
+        "de": "Ich kümmere mich darum. Kannst du das andere übernehmen?",
+        "pl": "Ja zajmę się tym. Możesz zająć się tamtym?",
+        "ro": "Mă ocup eu de asta. Poți să te ocupi de cealaltă?",
+        "uk": "Я займуся цим. Можеш узяти те інше?",
+        "nl": "Ik pak dit op. Kun jij dat andere doen?",
+        "en": "I'll take care of this. Could you handle that one?"
+      },
+      "use_note": {
+        "es": "Cuando quieres dividir tareas claramente con un compañero durante un momento ocupado.",
+        "it": "Quando vuoi dividere chiaramente i compiti con un collega durante un momento intenso.",
+        "fr": "Quand vous voulez répartir clairement les tâches avec un collègue pendant un moment chargé.",
+        "pt": "Quando queres dividir claramente as tarefas com um colega num momento movimentado.",
+        "de": "Wenn du in einer stressigen Phase Aufgaben klar mit einem Kollegen aufteilen möchtest.",
+        "pl": "Gdy w trakcie dużego ruchu chcesz jasno podzielić zadania ze współpracownikiem.",
+        "ro": "Când vrei să împarți clar sarcinile cu un coleg într-un moment aglomerat.",
+        "uk": "Коли під час завантаженого моменту хочеш чітко розподілити завдання з колегою.",
+        "nl": "Als je tijdens een druk moment taken duidelijk met een collega wilt verdelen.",
+        "en": "When you want to divide tasks clearly with a colleague during a busy moment."
+      }
+    }
+  ],
+  "assessment_disclaimer_patch": {
+    "es": "Esta es una evaluación práctica de entrenamiento, no una certificación oficial.",
+    "it": "Questa è una valutazione pratica di allenamento, non una certificazione ufficiale.",
+    "fr": "Il s’agit d’une évaluation pratique d’entraînement, et non d’une certification officielle.",
+    "pt": "Esta é uma avaliação prática de treino, não uma certificação oficial.",
+    "de": "Dies ist ein praktisches Trainings-Assessment, keine offizielle Zertifizierung.",
+    "pl": "To praktyczna ocena treningowa, a nie oficjalny certyfikat.",
+    "ro": "Aceasta este o evaluare practică de antrenament, nu o certificare oficială.",
+    "uk": "Це практичне навчальне оцінювання, а не офіційна сертифікація.",
+    "nl": "Dit is een praktische trainingstest, geen officiële certificering.",
+    "en": "This is a practical training assessment, not an official certification."
+  },
+  "implementation_contract": {
+    "home_entry_point": true,
+    "mobile_first": true,
+    "search_client_side": true,
+    "filter_by_category": true,
+    "filter_personalization_by_role": true,
+    "full_catalog_still_accessible": true,
+    "saved_phrases": true,
+    "saved_storage_suggestion": "guest.saved_emergency_phrase_ids",
+    "audio": false,
+    "speaking": false,
+    "ai_generation": false,
+    "separate_srs": false,
+    "gamification": false,
+    "do_not_deploy": true
+  }
+}

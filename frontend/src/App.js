@@ -12,6 +12,7 @@ import Practice from "@/pages/Practice";
 import Category from "@/pages/Category";
 import Lesson from "@/pages/Lesson";
 import Assessment from "@/pages/Assessment";
+import EmergencyPhrases from "@/pages/EmergencyPhrases";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/category/:slug" element={<Category />} />
             <Route path="/lesson/:slug" element={<Lesson />} />
             <Route path="/assessment" element={<Assessment />} />
+            <Route path="/emergency" element={<EmergencyPhrases />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-center" />
