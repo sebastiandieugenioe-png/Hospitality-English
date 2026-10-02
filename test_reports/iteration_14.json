@@ -1,0 +1,26 @@
+{
+  "summary": "Independently verified First Week at Work feature end-to-end. Backend: 15 pytest tests covering meta, 10-scenario payload, i18n (10 languages) with English-fields invariance, example_by_role (bartender vs waiter), role-missing (needs_role, example null for by_role, example_en still shown), grading via server-held answer_index (not exposed), retake overwrite without duplicating in completed_scenario_ids, full completion sets completed_at and practice_correct_count=10, language change preserves progress, open updates last_opened — ALL PASS. Regression: 50 situations (25 bartender + 25 waiter), Assessment meta (no CEFR), Emergency 32 phrases / 8 categories, Job Interview meta=10, Tonight's Shift meta, Recommended 3-5 — ALL PASS. Frontend (mobile 390x844): Home shows first-week-entry-card prioritized (border-2 highlight + 'Recommended for you' badge) above Can I Work card for employment_status=starting_new_job; appears below for non-priority guests. /first-week stepper 'Situation X of 10', all sections (situation/need/phrases/example/practice), MC options with correct/incorrect feedback, next advances, reload resumes at last_opened, completion screen 10/10 with retake button that returns to scenario view. All data-testids present and functional.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/first-week after Retake", "issues": ["Top progress bar briefly animates from 100% back to 0% after retake because Shell receives progress=100 on completion screen then 0 on first scenario; purely cosmetic (CSS transition-all duration-500)."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_first_week.py", "/app/test_reports/pytest/first_week_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "First Week backend endpoints are clean: _id excluded, async/await consistent, upsert with $setOnInsert idempotent, answer_index server-held and never leaked in GET.",
+    "FirstWeek.js correctly hides fw-section-example when example is null (role-missing + example_by_role case), as required.",
+    "Minor: retake() resets idx/phase but Shell progress prop keeps its 100 for one frame — if a visual snap is desired, consider setting progress=0 explicitly before transitioning phases.",
+    "unique index on first_week_progress(guest_id, role) created at startup — good."
+  ],
+  "updated_files": ["/app/backend/tests/test_first_week.py (new)"],
+  "success_rate": {"backend": "100% (15/15)", "frontend": "100% (all critical flows)"},
+  "test_credentials": "Anonymous guest via POST /api/guests then PUT /api/guests/{id}/profile (role, venue_type=pub, target_country=ireland, employment_status, goal). localStorage keys iph_guest_id and iph_lang.",
+  "seed_data_creation": "Test guests created via API (ephemeral, prefixed only in logic — no DB cleanup required; collection first_week_progress uniquely keyed by (guest_id, role)).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend tests at /app/backend/tests/test_first_week.py are reusable regression (run with `pytest backend/tests/test_first_week.py -o 'addopts='`). BASE_URL auto-loaded from /app/frontend/.env. Frontend test flow: create guest via API -> PUT profile with required fields (venue_type, target_country, role, employment_status, goal) -> set localStorage iph_guest_id + iph_lang -> navigate /home or /first-week. Priority card renders twice initially (before/after profile load) — wait for `.border-2` class or small delay before asserting highlight."
+}
