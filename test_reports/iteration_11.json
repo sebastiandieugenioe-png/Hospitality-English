@@ -1,0 +1,23 @@
+{
+  "summary": "End-to-end tested the new Emergency Phrases feature (backend + frontend/mobile 390x844) and the assessment disclaimer patch. 15/15 backend pytest tests pass (counts, 4-per-category, 10-lang maps, save/remove, 422/404 edge cases, legacy-guest default [], role/language-change preservation, 50/25/25 catalog intact, idempotent GET /api/emergency, assessment UI note has no CEFR/A1-C2 in all 10 langs). Frontend: Home shows emergency-entry-card (localized), navigates to /emergency; title/subtitle/search/All+8 category chips/sections (foryou/all; saved appears only after saving) all render with correct data-testids; all 32 cards in All section regardless of role; bartender For You shows 30 role-compatible phrases (2 waiter-only phrases are correctly still accessible via All catalog), waiter For You shows all 32; phrase_en stays identical when switching language, meaning/use_note localize correctly (es->it verified); search by English token and by Spanish meaning word both filter correctly; Save → persists through reload AND through language change; Remove works; backend saved_emergency_phrase_ids verified via GET /api/guests/{id} end-to-end.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_emergency_phrases.py",
+    "/app/test_reports/pytest/emergency_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "EmergencyPhrases.js PhraseCard: the save element is a <span role='button'> nested inside the outer card <button>; HTML forbids interactive descendants inside <button>. It currently works because onClick calls e.stopPropagation(), but it is invalid HTML and may trip accessibility auditors. Consider restructuring the card so the expand toggle and the save control are siblings instead of nested buttons.",
+    "EmergencyPhrases.js: the useMemo for `results` disables exhaustive-deps and manually lists [phrases, q, category, language] but omits `matches` (closure captures `category`/`q`/`language`). Fine today but fragile; prefer inlining the predicate or memoizing it.",
+    "Server GET /api/emergency serves the full static pack (ui/categories/phrases) on every request; this is 32 phrases × 10 languages × 2 maps ≈ small, but consider setting Cache-Control to allow client caching since the pack is immutable per deploy.",
+    "Backend save endpoint returns {saved_emergency_phrase_ids: [...]} on POST but create_guest also returns the full guest; consistent, but DELETE returning only the list is fine. Minor: 422 for unknown phrase_id is correct; also validate phrase_id length/charset to avoid odd ids being stored if the whitelist ever drifts (currently guarded by PHRASE_IDS set — OK)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "Anonymous guests created on the fly via POST /api/guests + PUT /api/guests/{id}/profile. Example from this run: bartender guest 95ed986b-2e02-4802-be56-0922ce0be248.",
+  "seed_data_creation": "Created ~6 ephemeral test guests during pytest + Playwright runs (bartender + waiter profiles, venue=pub, country=ireland, goal=work_abroad, employment_status=looking_for_job).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend contract verified: GET /api/emergency -> {ui, categories[8 sorted by order], phrases[32], content_count:32, categories_count:8}; each phrase has phrase_en:str plus meaning/use_note dicts with all 10 langs (es,it,fr,pt,de,pl,ro,uk,nl,en). Data distribution: 30 phrases have roles=['bartender','waiter'], 2 phrases are waiter-only (so bartender For You = 30, waiter For You = 32). Full catalog (All section) = 32 for every role. Save/Remove endpoints: POST /api/guests/{id}/saved-phrases (422 unknown phrase, 404 unknown guest, addToSet idempotent), DELETE /api/guests/{id}/saved-phrases/{phrase_id} ($pull). Legacy guests → saved_emergency_phrase_ids defaults to [] on GET. Assessment UI note is fully patched: zero CEFR/A1-C2 occurrences across 10 languages. 50 situations / 25 bartender / 25 waiter intact. Navbar has language-switcher-btn data-testid (useful for a future language-switch click flow instead of PUT /language + reload)."
+}
