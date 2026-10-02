@@ -17,6 +17,7 @@ import seed_catalog
 import seed_pack
 import seed_pack_v2
 import seed_i18n
+import assessment_data as assessment
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -91,6 +92,15 @@ class ReviewAnswer(BaseModel):
 
 class ReviewRate(BaseModel):
     rating: str  # again | hard | good | easy
+
+
+class AssessmentStart(BaseModel):
+    guest_id: str
+
+
+class AssessmentResponse(BaseModel):
+    question_id: str
+    submitted_answer: object
 
 
 # ---------- Mastery + SRS constants ----------
@@ -874,6 +884,8 @@ async def recommended_situations(guest_id: str, limit: int = Query(5, ge=1, le=1
     stats = await _compute_situation_stats(guest_id)
     review = await db.review_items.find({"guest_id": guest_id}, {"_id": 0, "primary_skill": 1}).to_list(2000)
     weak_skills = {it.get("primary_skill") for it in review if it.get("primary_skill")}
+    # Assessment weaknesses also influence ranking (Can I Work in English?).
+    weak_skills |= {s for s in (guest.get("assessment_weak_skills") or []) if s}
 
     scored = []
     for s in situations:
@@ -882,8 +894,10 @@ async def recommended_situations(guest_id: str, limit: int = Query(5, ge=1, le=1
     # Highest score first; ties broken by lower order (stable, interpretable).
     scored.sort(key=lambda x: (-x[0], x[1]))
 
+    # Explicit contract: always between 3 and 5 recommendations.
+    n = min(5, max(3, limit))
     out = []
-    for sc, _order, s, reasons in scored[:limit]:
+    for sc, _order, s, reasons in scored[:n]:
         out.append({
             "slug": s["slug"],
             "title": _loc_field(s, "title", lang) or s.get("title_en"),
@@ -1000,6 +1014,264 @@ async def rate_review_item(item_id: str, payload: ReviewRate):
     return await db.review_items.find_one({"id": item_id}, {"_id": 0})
 
 
+# ---------- "Can I Work in English?" Assessment ----------
+def _assessment_public_q(q, lang):
+    """Localized, answer-free question for the client. Options honour the pack's
+    per-question localization policy (preserve_english_target_verbatim keeps the 4
+    English options; translate_from_es uses localized_options). answer_index/order
+    are never exposed or changed."""
+    tr = q.get("translations") or {}
+
+    def loc(field):
+        if isinstance(tr.get(lang), dict) and tr[lang].get(field) is not None:
+            return tr[lang][field]
+        if isinstance(tr.get("es"), dict):
+            return tr["es"].get(field)
+        return None
+
+    out = {"id": q["id"], "type": q["type"], "area": q["area"], "prompt": loc("prompt")}
+    if q["type"] == "multiple_choice":
+        lo = q.get("localized_options") or {}
+        out["options"] = lo.get(lang) or q.get("options") or []
+    elif q["type"] == "fill_gap":
+        out["sentence"] = q.get("sentence_en")
+    elif q["type"] == "word_ordering":
+        out["words"] = q.get("words", [])
+    return out
+
+
+def _score_assessment(role, responses):
+    """Score EXACTLY per the pack's scoring block. Returns area_scores, overall,
+    weak_areas (lowest 2), weak_skills (up to 3), strong_areas (top 2), incorrect ids."""
+    qs = assessment.questions_for_role(role)
+    latest = {}
+    for r in responses:
+        latest[r["question_id"]] = r  # push order: later submissions win
+
+    order = assessment.AREA_ORDER
+    correct_in = {k: 0 for k in order}
+    total_in = {k: 0 for k in order}
+    incorrect_ids = []
+    last_incorrect_at = {k: "" for k in order}
+
+    for q in qs:
+        area = q["area"]
+        total_in[area] += 1
+        r = latest.get(q["id"])
+        ok = bool(r and _check_answer(q, r.get("submitted_answer")))
+        if ok:
+            correct_in[area] += 1
+        else:
+            incorrect_ids.append(q["id"])
+            at = (r or {}).get("answered_at", "")
+            if at > last_incorrect_at[area]:
+                last_incorrect_at[area] = at
+
+    area_scores = {k: (round(100 * correct_in[k] / total_in[k]) if total_in[k] else 0) for k in order}
+    overall = round(sum(area_scores[k] * assessment.AREA_WEIGHT[k] for k in order))
+
+    # Weak areas: lowest 2 scores; ties → more recent incorrect, then fixed order.
+    ranked = list(order)                                       # fixed order (stable base)
+    ranked.sort(key=lambda k: last_incorrect_at[k], reverse=True)
+    ranked.sort(key=lambda k: area_scores[k])
+    weak_areas = ranked[:2]
+
+    # Strong areas: top 2 scores; fixed order as tie-break.
+    strong = list(order)
+    strong.sort(key=lambda k: area_scores[k], reverse=True)
+    strong_areas = strong[:2]
+
+    # Weak skills: count primary_skill/skills on incorrect answers inside weak areas.
+    counts = {}
+    first_seen = {}
+    seq = 0
+    weak_set = set(weak_areas)
+    incorrect_set = set(incorrect_ids)
+    for q in qs:
+        if q["area"] in weak_set and q["id"] in incorrect_set:
+            for sk in [q.get("primary_skill")] + (q.get("skills") or []):
+                if not sk:
+                    continue
+                counts[sk] = counts.get(sk, 0) + 1
+                if sk not in first_seen:
+                    first_seen[sk] = seq
+                    seq += 1
+    weak_skills = [s for s, _c in sorted(counts.items(), key=lambda kv: (-kv[1], first_seen[kv[0]]))][:3]
+
+    return {
+        "area_scores": area_scores,
+        "overall": overall,
+        "weak_areas": weak_areas,
+        "strong_areas": strong_areas,
+        "weak_skills": weak_skills,
+        "incorrect_ids": incorrect_ids,
+    }
+
+
+def _assessment_result_payload(attempt, baseline_score, current_score):
+    band = assessment.result_band(attempt.get("overall_score", 0))
+    return {
+        "attempt_id": attempt["id"],
+        "role": attempt["role"],
+        "overall_score": attempt.get("overall_score", 0),
+        "area_scores": attempt.get("area_scores", {}),
+        "band_key": band["key"],
+        "weak_areas": attempt.get("weak_areas", []),
+        "strong_areas": attempt.get("strong_areas", []),
+        "weak_skills": attempt.get("weak_skills", []),
+        "incorrect_question_ids": attempt.get("incorrect_question_ids", []),
+        "is_baseline": attempt.get("is_baseline", False),
+        "baseline_score": baseline_score,
+        "current_score": current_score,
+    }
+
+
+@api_router.get("/assessment/meta")
+async def assessment_meta():
+    """Static assessment metadata (not mandatory). UI strings, areas, bands — all
+    localized client-side from the per-language maps."""
+    return {
+        "mandatory": False,
+        "estimated_minutes": assessment.ESTIMATED_MINUTES,
+        "questions_per_role": assessment.QUESTIONS_PER_ROLE,
+        "supported_languages": assessment.SUPPORTED_LANGUAGES,
+        "ui": assessment.UI,
+        "areas": assessment.AREAS,
+        "result_bands": assessment.RESULT_BANDS,
+    }
+
+
+@api_router.post("/assessment/start")
+async def assessment_start(payload: AssessmentStart):
+    guest = await db.guests.find_one({"id": payload.guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    role = (guest.get("professional_profile") or {}).get("role")
+    if role not in ("bartender", "waiter"):
+        raise HTTPException(status_code=400, detail="Assessment requires a role (bartender or waiter)")
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
+    qs = assessment.questions_for_role(role)
+
+    existing = await db.assessment_attempts.find_one(
+        {"guest_id": payload.guest_id, "status": "in_progress"}, {"_id": 0}
+    )
+    if existing:
+        attempt_id = existing["id"]
+        role = existing["role"]
+        qs = assessment.questions_for_role(role)
+    else:
+        attempt = {
+            "id": str(uuid.uuid4()),
+            "guest_id": payload.guest_id,
+            "role": role,
+            "status": "in_progress",
+            "started_at": now_iso(),
+            "completed_at": None,
+            "responses": [],
+        }
+        await db.assessment_attempts.insert_one(dict(attempt))
+        attempt_id = attempt["id"]
+
+    return {
+        "attempt_id": attempt_id,
+        "role": role,
+        "total": len(qs),
+        "questions": [_assessment_public_q(q, lang) for q in qs],
+    }
+
+
+@api_router.put("/assessment-attempts/{attempt_id}/response")
+async def assessment_response(attempt_id: str, payload: AssessmentResponse):
+    attempt = await db.assessment_attempts.find_one({"id": attempt_id})
+    if not attempt:
+        raise HTTPException(status_code=404, detail="Attempt not found")
+    if attempt["status"] != "in_progress":
+        raise HTTPException(status_code=409, detail="Attempt is not in progress")
+    q = assessment.QUESTIONS_BY_ID.get(payload.question_id)
+    if not q or q.get("role") != attempt["role"]:
+        raise HTTPException(status_code=422, detail="Question does not belong to this assessment")
+
+    resp = {
+        "question_id": payload.question_id,
+        "submitted_answer": payload.submitted_answer,
+        "answered_at": now_iso(),
+    }
+    await db.assessment_attempts.update_one(
+        {"id": attempt_id}, {"$pull": {"responses": {"question_id": payload.question_id}}}
+    )
+    await db.assessment_attempts.update_one(
+        {"id": attempt_id}, {"$push": {"responses": resp}}
+    )
+    updated = await db.assessment_attempts.find_one({"id": attempt_id}, {"_id": 0, "responses": 1})
+    return {"ok": True, "answered": len(updated.get("responses", []))}
+
+
+@api_router.post("/assessment-attempts/{attempt_id}/complete")
+async def assessment_complete(attempt_id: str):
+    attempt = await db.assessment_attempts.find_one({"id": attempt_id}, {"_id": 0})
+    if not attempt:
+        raise HTTPException(status_code=404, detail="Attempt not found")
+    guest_id = attempt["guest_id"]
+
+    if attempt["status"] != "completed":
+        prior_completed = await db.assessment_attempts.count_documents(
+            {"guest_id": guest_id, "status": "completed"}
+        )
+        is_baseline = prior_completed == 0
+        scores = _score_assessment(attempt["role"], attempt.get("responses", []))
+        await db.assessment_attempts.update_one(
+            {"id": attempt_id},
+            {"$set": {
+                "status": "completed",
+                "completed_at": now_iso(),
+                "overall_score": scores["overall"],
+                "area_scores": scores["area_scores"],
+                "incorrect_question_ids": scores["incorrect_ids"],
+                "weak_areas": scores["weak_areas"],
+                "strong_areas": scores["strong_areas"],
+                "weak_skills": scores["weak_skills"],
+                "is_baseline": is_baseline,
+            }},
+        )
+        # Profile summary (baseline set once; current updated every completion).
+        guest_set = {
+            "assessment_current_score": scores["overall"],
+            "assessment_last_completed_at": now_iso(),
+            "assessment_weak_areas": scores["weak_areas"],
+            "assessment_weak_skills": scores["weak_skills"],
+        }
+        if is_baseline:
+            guest_set["assessment_baseline_score"] = scores["overall"]
+        await db.guests.update_one({"id": guest_id}, {"$set": guest_set})
+        attempt = await db.assessment_attempts.find_one({"id": attempt_id}, {"_id": 0})
+
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0}) or {}
+    return _assessment_result_payload(
+        attempt,
+        baseline_score=guest.get("assessment_baseline_score"),
+        current_score=guest.get("assessment_current_score"),
+    )
+
+
+@api_router.get("/guests/{guest_id}/assessment-summary")
+async def assessment_summary(guest_id: str):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    latest = await db.assessment_attempts.find_one(
+        {"guest_id": guest_id, "status": "completed"}, {"_id": 0}, sort=[("completed_at", -1)]
+    )
+    return {
+        "has_assessment": guest.get("assessment_baseline_score") is not None,
+        "baseline_score": guest.get("assessment_baseline_score"),
+        "current_score": guest.get("assessment_current_score"),
+        "last_completed_at": guest.get("assessment_last_completed_at"),
+        "weak_areas": guest.get("assessment_weak_areas", []),
+        "weak_skills": guest.get("assessment_weak_skills", []),
+        "latest": latest,
+    }
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -1038,6 +1310,9 @@ async def startup_seed():
             [("guest_id", 1), ("source_type", 1), ("source_id", 1), ("situation_slug", 1)],
             unique=True,
         )
+        await db.assessment_attempts.create_index("guest_id")
+        await db.assessment_attempts.create_index([("guest_id", 1), ("status", 1)])
+        await db.assessment_attempts.create_index([("guest_id", 1), ("completed_at", -1)])
     except Exception as e:
         logger.warning(f"Index creation skipped: {e}")
     logger.info("Content + reference data seeded.")

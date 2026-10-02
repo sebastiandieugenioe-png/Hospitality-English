@@ -45,6 +45,17 @@ export const rateReviewItem = (itemId, rating) =>
 
 export const createGuest = (payload = {}) => client.post("/guests", payload).then((r) => r.data);
 export const getGuest = (id) => client.get(`/guests/${id}`).then((r) => r.data);
+
+// "Can I Work in English?" assessment
+export const getAssessmentMeta = () => client.get("/assessment/meta").then((r) => r.data);
+export const startAssessment = (guest_id) =>
+  client.post("/assessment/start", { guest_id }).then((r) => r.data);
+export const submitAssessmentResponse = (attemptId, payload) =>
+  client.put(`/assessment-attempts/${attemptId}/response`, payload).then((r) => r.data);
+export const completeAssessment = (attemptId) =>
+  client.post(`/assessment-attempts/${attemptId}/complete`).then((r) => r.data);
+export const getAssessmentSummary = (guestId) =>
+  client.get(`/guests/${guestId}/assessment-summary`).then((r) => r.data);
 export const updateLanguage = (id, interface_language) =>
   client.put(`/guests/${id}/language`, { interface_language }).then((r) => r.data);
 export const getLanguages = () => client.get("/languages").then((r) => r.data);

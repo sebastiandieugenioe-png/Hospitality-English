@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Play, ClipboardCheck } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
-import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations } from "@/lib/api";
+import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta } from "@/lib/api";
 import { roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
-import { getLocalizedField } from "@/lib/i18n";
+import { getLocalizedField, getText } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
 
 export default function Home() {
@@ -19,6 +19,8 @@ export default function Home() {
   const [resume, setResume] = useState(null);
   const [masteredCount, setMasteredCount] = useState(0);
   const [recommended, setRecommended] = useState([]);
+  const [assessment, setAssessment] = useState(null);
+  const [assessmentMeta, setAssessmentMeta] = useState(null);
 
   // Send users with an incomplete professional profile through onboarding first.
   useEffect(() => {
@@ -68,6 +70,15 @@ export default function Home() {
     getRecommendedSituations(guestId, { limit: 5 }).then(setRecommended).catch(() => {});
   }, [guestId, language, profile]);
 
+  // Assessment entry point (non-blocking): localized meta + the guest's summary.
+  useEffect(() => {
+    getAssessmentMeta().then(setAssessmentMeta).catch(() => {});
+  }, []);
+  useEffect(() => {
+    if (!guestId) return;
+    getAssessmentSummary(guestId).then(setAssessment).catch(() => {});
+  }, [guestId]);
+
   return (
     <div className="min-h-screen bg-brand-sand">
       <Navbar />
@@ -96,6 +107,42 @@ export default function Home() {
           )}
         </motion.div>
 
+
+        {/* Assessment entry point (optional, non-blocking) */}
+        {assessmentMeta && (
+          <section className="mt-8">
+            <button
+              data-testid="assessment-entry-card"
+              onClick={() => navigate("/assessment")}
+              className="group w-full text-left rounded-2xl bg-white border border-brand-forest/20 p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-between gap-5"
+            >
+              <div>
+                <p className="text-lg font-serif text-brand-espresso">
+                  {getText(assessmentMeta.ui.title, language)}
+                </p>
+                <p className="mt-1 text-sm text-brand-charcoal/60 leading-relaxed max-w-md">
+                  {getText(assessmentMeta.ui.subtitle, language)}
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-forest">
+                  {assessment?.has_assessment ? getText(assessmentMeta.ui.retake, language) : getText(assessmentMeta.ui.start, language)}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+              {assessment?.has_assessment && assessment.current_score != null ? (
+                <div className="shrink-0 text-center" data-testid="assessment-entry-score">
+                  <p className="text-3xl font-serif text-brand-forest">{assessment.current_score}%</p>
+                  <p className="text-[10px] uppercase tracking-[0.15em] text-brand-charcoal/45">
+                    {getText(assessmentMeta.ui.current, language)}
+                  </p>
+                </div>
+              ) : (
+                <span className="shrink-0 grid place-items-center w-12 h-12 rounded-xl bg-brand-success-muted text-brand-forest">
+                  <ClipboardCheck className="w-6 h-6" />
+                </span>
+              )}
+            </button>
+          </section>
+        )}
 
         {/* Resume + progress teaser */}
         {(resume || masteredCount > 0) && (

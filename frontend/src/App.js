@@ -11,6 +11,7 @@ import Progress from "@/pages/Progress";
 import Practice from "@/pages/Practice";
 import Category from "@/pages/Category";
 import Lesson from "@/pages/Lesson";
+import Assessment from "@/pages/Assessment";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/practice" element={<Practice />} />
             <Route path="/category/:slug" element={<Category />} />
             <Route path="/lesson/:slug" element={<Lesson />} />
+            <Route path="/assessment" element={<Assessment />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-center" />
