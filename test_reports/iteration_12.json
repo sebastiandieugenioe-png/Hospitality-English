@@ -1,0 +1,26 @@
+{
+  "summary": "End-to-end verified Tonight's Shift (preview, no deploy): 20/20 backend pytest tests pass covering 5-item invariant, bartender/waiter role-compat, due_review slot1, assessment_weakness slots 2/3, recommended slot4, dedupe, daily/language stability, resume, read-only completed, different-role new session, scoring 3/5 + focus_skill, NO side-effects on review_items/situation_attempts, 10-language meta, and regressions (assessment meta, emergency 32/8, 50/25/25 catalog, recommended 3-5). Frontend mobile 390x844 flow: Home shift-entry-card localized -> navigates to /tonights-shift -> shift-title/shift-start-btn -> all 3 item types (multiple_choice shift-option-i, fill_gap shift-gap-input, word_ordering shift-answer-area) answerable with immediate shift-feedback -> continue -> result screen with shift-score '3 / 5' and shift-focus-skill 'Taking Orders'. Reopen after completion from Home correctly shows the completed/read-only result with X/5 on the card and score page. All data-testids present and functional.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_tonights_shift.py",
+    "/app/test_reports/pytest/tonights_shift_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py _select_shift_items: slot4 'recommended' fallback chain is [recommended_incomplete, venue_relevant, variety]. Spec permits that, but when recommended_incomplete returns an item it may still be filtered out by dedupe (already-used slug). The current flow then moves on with reason='recommended' via venue_relevant/variety — the selection_reason label stays 'recommended' even if the actually taken item is a venue/variety fallback. Consider updating selection_reason per fallback list so downstream labels truthfully reflect why that item was chosen.",
+  "server.py tonights_shift_response L1653: `lang = session.get('role') and await _guest_language(session['guest_id'])` conflates role-presence with language — if role is empty string / None this skips the language fetch and falls back to DEFAULT_LANGUAGE. Minor since role is always set after onboarding, but logically should just `await _guest_language(...)`.",
+    "server.py: Growing file size (>1760 lines). Tonight's Shift block (~380 lines) could be extracted to backend/tonights_shift_service.py to keep server.py below the 700-line guideline.",
+    "TonightsShift.js localDateStr() returns the browser-local calendar date which is correct for spec ('local_date from the browser'); however since Date.now() is read once with useMemo at mount, a user crossing midnight mid-session will not switch date — acceptable but worth a note."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_tonights_shift.py (new)"
+  ],
+  "success_rate": {"backend": "100% (20/20)", "frontend": "100% (full happy path incl. all 3 item types, score, focus skill, reopen)"},
+  "test_credentials": "Anonymous guest via POST /api/guests + PUT /api/guests/{id}/profile role=bartender|waiter. Localstorage keys: iph_guest_id, iph_lang.",
+  "seed_data_creation": "~15 ephemeral bartender/waiter guests created during pytest and one for frontend run. Shift sessions and seeded review_items cleaned up per-fixture via Mongo (DB_NAME from backend/.env).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend contract: POST /api/guests/{id}/tonights-shift/start {local_date:'YYYY-MM-DD'} -> {session_id,status,local_date,role,total,items[5],answered_count,correct_count,focus_skill}; items[i] carries id,type,prompt,options|sentence|answer-shape,situation_slug,selection_reason,answered. GET /api/guests/{id}/tonights-shift?local_date=&role= returns same + exists flag. PUT /api/shift-sessions/{id}/response {item_id,submitted_answer} -> {correct,feedback,correct_answer}. POST /api/shift-sessions/{id}/complete -> session payload with correct_count & focus_skill. GET /api/tonights-shift/meta -> {ui,session_size:5,languages[10]}. UI test-ids: shift-entry-card, shift-title, shift-start-btn, shift-progress, shift-option-{i}, shift-gap-input, shift-answer-area, shift-feedback, shift-continue-btn, shift-complete-title, shift-score, shift-focus-skill, shift-close-btn. No writes to review_items/situation_attempts/mastery were observed in a full session. Content pack version loaded from /app/backend/data/tonights_shift.json. Pytest suite: /app/backend/tests/test_tonights_shift.py (run with `-o 'addopts='` to avoid pytest-xdist loadscope issue in the project's pytest.ini).",
+  "rca of the issue": "N/A — no bugs found."
+}

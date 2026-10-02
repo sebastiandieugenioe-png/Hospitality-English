@@ -157,8 +157,16 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - **i18n**: añadidas claves `onboarding.employment.*` y `home.recommendedEmpty` a los 10 locales.
 - **Tests**: `tests/test_phase2_recommendations.py` (15/15 PASS) + `test_onboarding.py` actualizado. testing_agent iteración 9: 100% backend (15/15) + 100% frontend (6/6 detección idioma, onboarding 6 pasos, elección manual no sobrescrita, Home recomendaciones). Confirmado **50/25/25 intacto**. Sin deploy.
 
+### Fase 4 (2026-06) — Tonight's Shift MVP (PREVIEW, SIN deploy)
+- Práctica diaria de 5 preguntas (3–5 min) que REUTILIZA items existentes de `lessons.exercises` + `lessons.quiz` (400 items únicos). No crea contenido nuevo ni duplica filas.
+- **Selección** (`_select_shift_items`) implementa `algorithm.slot_order` exacto: slot1 due_review → slot2/3 assessment_weakness → slot4 recommended → slot5 variety, con fallbacks. Dedupe: sin item_id repetido, prefiere situaciones distintas y ≤2 del mismo type. Desempate determinista = `sha256(guest_id|local_date|item_id)`; sin IA ni random. `local_date` del navegador.
+- **Persistencia**: colección `shift_sessions`, índice único `(guest_id, local_date, role)`. Reanuda in_progress; completed es read-only ese día; distinto role = sesión distinta.
+- **Scoring**: 5 preguntas, X/5, `focus_skill` = skill con más errores (empate por orden de slot; si todo correcto usa primer weak skill del assessment o nulo). NO toca mastery, situation completion, attempts ni review_items (SRS solo lectura).
+- Endpoints: `POST /api/guests/{id}/tonights-shift/start`, `GET /api/guests/{id}/tonights-shift`, `PUT /api/shift-sessions/{id}/response`, `POST /api/shift-sessions/{id}/complete`, `GET /api/tonights-shift/meta`. Refactor: `_rank_situations_for_guest` compartido con Recommended.
+- Frontend: `TonightsShift.js` (/tonights-shift) con feedback inmediato; card en Home (`shift-entry-card`, estado "completed today").
+- i18n: `tonights_shift_data.py` + `data/tonights_shift.json` (ui en 10 idiomas).
+- **Tests** (iteración 12): 20/20 backend + frontend happy path completo. Sin bugs. Confirmado: 5 items, estabilidad diaria/idioma, no-SRS/mastery, 10 idiomas, Assessment+Emergency intactos, 50/25/25.
+
 ## Next Tasks
 - (Backlog) Integrar flashcards legacy en el motor `review_items`.
-- (Backlog) Shift/Daily Practice; Job Readiness global.
-- (Backlog) Features futuras habilitadas por el perfil: Job Interview English, First Week at Work, Tonight's Shift (perfil ya preparado; contenido país-específico vía `country_variants`).
 
