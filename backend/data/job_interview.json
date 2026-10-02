@@ -1,0 +1,843 @@
+{
+  "name": "Hospitality English — Job Interview English MVP — VERIFIED",
+  "version": 1,
+  "status": "READY_FOR_IMPLEMENTATION",
+  "learning_language": "en",
+  "interface_languages": [
+    "es",
+    "it",
+    "fr",
+    "pt",
+    "de",
+    "pl",
+    "ro",
+    "uk",
+    "nl",
+    "en"
+  ],
+  "scenario_count": 10,
+  "roles": [
+    "bartender",
+    "waiter"
+  ],
+  "ui_translations": {
+    "title": {
+      "es": "Inglés para entrevistas",
+      "it": "Inglese per i colloqui",
+      "fr": "Anglais pour les entretiens",
+      "pt": "Inglês para entrevistas",
+      "de": "Englisch für Vorstellungsgespräche",
+      "pl": "Angielski na rozmowę kwalifikacyjną",
+      "ro": "Engleză pentru interviuri",
+      "uk": "Англійська для співбесід",
+      "nl": "Engels voor sollicitatiegesprekken",
+      "en": "Job Interview English"
+    },
+    "subtitle": {
+      "es": "Prepárate para responder las preguntas más comunes en entrevistas de hospitality.",
+      "it": "Preparati a rispondere alle domande più comuni nei colloqui per l’hospitality.",
+      "fr": "Préparez-vous à répondre aux questions les plus courantes des entretiens en hôtellerie-restauration.",
+      "pt": "Prepara-te para responder às perguntas mais comuns em entrevistas de hotelaria e restauração.",
+      "de": "Bereite dich auf die häufigsten Fragen in Vorstellungsgesprächen in der Gastronomie vor.",
+      "pl": "Przygotuj się do najczęstszych pytań na rozmowach w hospitality.",
+      "ro": "Pregătește-te pentru cele mai frecvente întrebări din interviurile pentru ospitalitate.",
+      "uk": "Підготуйся до найпоширеніших запитань на співбесідах у сфері гостинності.",
+      "nl": "Bereid je voor op de meest voorkomende vragen in sollicitatiegesprekken in de hospitality.",
+      "en": "Prepare for the most common hospitality interview questions."
+    },
+    "interviewer_wants": {
+      "es": "Qué quiere saber el entrevistador",
+      "it": "Cosa vuole capire l’intervistatore",
+      "fr": "Ce que l’intervieweur veut savoir",
+      "pt": "O que o entrevistador quer saber",
+      "de": "Was der Interviewer wissen möchte",
+      "pl": "Czego chce się dowiedzieć rekruter",
+      "ro": "Ce vrea să afle intervievatorul",
+      "uk": "Що хоче дізнатися інтерв’юер",
+      "nl": "Wat de interviewer wil weten",
+      "en": "What the interviewer wants"
+    },
+    "answer_structure": {
+      "es": "Cómo estructurar tu respuesta",
+      "it": "Come strutturare la risposta",
+      "fr": "Comment structurer votre réponse",
+      "pt": "Como estruturar a resposta",
+      "de": "So strukturierst du deine Antwort",
+      "pl": "Jak ułożyć odpowiedź",
+      "ro": "Cum să-ți structurezi răspunsul",
+      "uk": "Як структурувати відповідь",
+      "nl": "Hoe je je antwoord opbouwt",
+      "en": "How to structure your answer"
+    },
+    "useful_phrases": {
+      "es": "Frases útiles",
+      "it": "Frasi utili",
+      "fr": "Phrases utiles",
+      "pt": "Frases úteis",
+      "de": "Nützliche Sätze",
+      "pl": "Przydatne zwroty",
+      "ro": "Expresii utile",
+      "uk": "Корисні фрази",
+      "nl": "Handige zinnen",
+      "en": "Useful phrases"
+    },
+    "model_answer": {
+      "es": "Respuesta modelo",
+      "it": "Risposta modello",
+      "fr": "Réponse modèle",
+      "pt": "Resposta modelo",
+      "de": "Beispielantwort",
+      "pl": "Przykładowa odpowiedź",
+      "ro": "Răspuns model",
+      "uk": "Приклад відповіді",
+      "nl": "Voorbeeldantwoord",
+      "en": "Model answer"
+    },
+    "practice": {
+      "es": "Práctica",
+      "it": "Pratica",
+      "fr": "Entraînement",
+      "pt": "Prática",
+      "de": "Übung",
+      "pl": "Praktyka",
+      "ro": "Practică",
+      "uk": "Практика",
+      "nl": "Oefening",
+      "en": "Practice"
+    },
+    "next": {
+      "es": "Siguiente",
+      "it": "Avanti",
+      "fr": "Suivant",
+      "pt": "Seguinte",
+      "de": "Weiter",
+      "pl": "Dalej",
+      "ro": "Următorul",
+      "uk": "Далі",
+      "nl": "Volgende",
+      "en": "Next"
+    },
+    "complete": {
+      "es": "Completar",
+      "it": "Completa",
+      "fr": "Terminer",
+      "pt": "Concluir",
+      "de": "Abschließen",
+      "pl": "Zakończ",
+      "ro": "Finalizează",
+      "uk": "Завершити",
+      "nl": "Voltooien",
+      "en": "Complete"
+    },
+    "progress": {
+      "es": "Pregunta {current} de {total}",
+      "it": "Domanda {current} di {total}",
+      "fr": "Question {current} sur {total}",
+      "pt": "Pergunta {current} de {total}",
+      "de": "Frage {current} von {total}",
+      "pl": "Pytanie {current} z {total}",
+      "ro": "Întrebarea {current} din {total}",
+      "uk": "Запитання {current} з {total}",
+      "nl": "Vraag {current} van {total}",
+      "en": "Question {current} of {total}"
+    },
+    "completed": {
+      "es": "Módulo completado",
+      "it": "Modulo completato",
+      "fr": "Module terminé",
+      "pt": "Módulo concluído",
+      "de": "Modul abgeschlossen",
+      "pl": "Moduł ukończony",
+      "ro": "Modul finalizat",
+      "uk": "Модуль завершено",
+      "nl": "Module voltooid",
+      "en": "Module complete"
+    }
+  },
+  "scenarios": [
+    {
+      "id": "ji_01_tell_me_about_yourself",
+      "order": 1,
+      "question_en": "Tell me about yourself.",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "interviewer_wants": {
+        "es": "Una presentación breve y profesional: quién eres, experiencia relevante, tus fortalezas y qué buscas ahora.",
+        "it": "Una presentazione breve e professionale: chi sei, esperienza rilevante, punti di forza e cosa cerchi ora.",
+        "fr": "Une présentation courte et professionnelle : qui vous êtes, votre expérience pertinente, vos points forts et ce que vous recherchez.",
+        "pt": "Uma apresentação breve e profissional: quem és, experiência relevante, pontos fortes e o que procuras agora.",
+        "de": "Eine kurze professionelle Vorstellung: wer du bist, relevante Erfahrung, Stärken und was du jetzt suchst.",
+        "pl": "Krótkie, profesjonalne przedstawienie się: kim jesteś, jakie masz doświadczenie, mocne strony i czego szukasz.",
+        "ro": "O prezentare scurtă și profesională: cine ești, experiență relevantă, puncte forte și ce cauți acum.",
+        "uk": "Коротке професійне представлення: хто ти, релевантний досвід, сильні сторони й що шукаєш зараз.",
+        "nl": "Een korte professionele introductie: wie je bent, relevante ervaring, sterke punten en wat je nu zoekt.",
+        "en": "A short, professional introduction: who you are, relevant experience, strengths and what you're looking for now."
+      },
+      "answer_structure": {
+        "es": "Situación actual → experiencia relevante → 1–2 fortalezas → qué buscas.",
+        "it": "Situazione attuale → esperienza rilevante → 1–2 punti di forza → cosa cerchi.",
+        "fr": "Situation actuelle → expérience pertinente → 1–2 points forts → ce que vous recherchez.",
+        "pt": "Situação atual → experiência relevante → 1–2 pontos fortes → o que procuras.",
+        "de": "Aktuelle Situation → relevante Erfahrung → 1–2 Stärken → was du suchst.",
+        "pl": "Obecna sytuacja → istotne doświadczenie → 1–2 mocne strony → czego szukasz.",
+        "ro": "Situația actuală → experiență relevantă → 1–2 puncte forte → ce cauți.",
+        "uk": "Поточна ситуація → релевантний досвід → 1–2 сильні сторони → що шукаєш.",
+        "nl": "Huidige situatie → relevante ervaring → 1–2 sterke punten → wat je zoekt.",
+        "en": "Current situation → relevant experience → 1–2 strengths → what you're looking for."
+      },
+      "useful_phrases_en": [
+        "I have experience in…",
+        "I’m comfortable working in busy environments.",
+        "I’m now looking for a role where I can…"
+      ],
+      "model_answer": {
+        "bartender": "I have experience working in busy hospitality environments, especially behind the bar. I’m comfortable dealing with guests, working under pressure and keeping service organised. I’m now looking for a role where I can keep developing my bartending and customer-service skills.",
+        "waiter": "I have experience working in busy hospitality environments and looking after guests throughout service. I’m comfortable taking orders, communicating clearly and working as part of a team. I’m now looking for a role where I can keep developing my service skills."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué respuesta es la más adecuada para una entrevista?",
+          "it": "Quale risposta è più adatta a un colloquio?",
+          "fr": "Quelle réponse convient le mieux à un entretien ?",
+          "pt": "Qual é a resposta mais adequada para uma entrevista?",
+          "de": "Welche Antwort passt am besten zu einem Vorstellungsgespräch?",
+          "pl": "Która odpowiedź najlepiej pasuje do rozmowy kwalifikacyjnej?",
+          "ro": "Care răspuns este cel mai potrivit pentru un interviu?",
+          "uk": "Яка відповідь найкраще підходить для співбесіди?",
+          "nl": "Welk antwoord past het best bij een sollicitatiegesprek?",
+          "en": "Which answer is most suitable for an interview?"
+        },
+        "options_en": [
+          "I’m friendly and I like going out.",
+          "I have hospitality experience, I work well under pressure and I’m looking to keep developing my skills.",
+          "I just need a job at the moment."
+        ],
+        "answer_index": 1
+      }
+    },
+    {
+      "id": "ji_02_why_here",
+      "order": 2,
+      "question_en": "Why do you want to work here?",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "interviewer_wants": {
+        "es": "Que entiendes el tipo de negocio y que tienes una razón concreta para querer trabajar allí.",
+        "it": "Che conosci il tipo di attività e hai una ragione concreta per voler lavorare lì.",
+        "fr": "Que vous comprenez le type d’établissement et que vous avez une raison concrète de vouloir y travailler.",
+        "pt": "Que compreendes o tipo de negócio e tens uma razão concreta para querer trabalhar lá.",
+        "de": "Dass du den Betrieb verstehst und einen konkreten Grund hast, dort arbeiten zu wollen.",
+        "pl": "Że rozumiesz charakter lokalu i masz konkretny powód, by chcieć tam pracować.",
+        "ro": "Că înțelegi tipul de locație și ai un motiv concret pentru care vrei să lucrezi acolo.",
+        "uk": "Що ти розумієш формат закладу й маєш конкретну причину хотіти там працювати.",
+        "nl": "Dat je het type zaak begrijpt en een concrete reden hebt om er te willen werken.",
+        "en": "That you understand the business and have a specific reason for wanting to work there."
+      },
+      "answer_structure": {
+        "es": "Qué te gusta del lugar → cómo encaja con tu experiencia/objetivos → qué puedes aportar.",
+        "it": "Cosa ti piace del posto → come si collega alla tua esperienza/obiettivi → cosa puoi offrire.",
+        "fr": "Ce que vous aimez de l’établissement → lien avec votre expérience/objectifs → ce que vous pouvez apporter.",
+        "pt": "O que gostas no local → como se liga à tua experiência/objetivos → o que podes trazer.",
+        "de": "Was dir am Betrieb gefällt → Bezug zu deiner Erfahrung/Zielen → was du beitragen kannst.",
+        "pl": "Co podoba ci się w lokalu → jak pasuje do twojego doświadczenia/celów → co możesz wnieść.",
+        "ro": "Ce îți place la locație → legătura cu experiența/obiectivele → ce poți aduce.",
+        "uk": "Що тобі подобається в закладі → як це пов’язано з твоїм досвідом/цілями → що можеш дати команді.",
+        "nl": "Wat je aanspreekt → hoe het past bij je ervaring/doelen → wat je kunt bijdragen.",
+        "en": "What you like about the venue → how it fits your experience/goals → what you can contribute."
+      },
+      "useful_phrases_en": [
+        "I like the focus on…",
+        "This role fits well with my experience in…",
+        "I’d like to develop further in…"
+      ],
+      "model_answer": {
+        "bartender": "I like that the venue has a strong focus on service and quality drinks. That fits well with my experience behind the bar, and I’d like to keep improving my product knowledge while contributing to a professional team.",
+        "waiter": "I like that the venue focuses on good service and guest experience. That fits well with my background in front-of-house work, and I’d like to keep developing in a professional service environment."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué debes evitar?",
+          "it": "Cosa dovresti evitare?",
+          "fr": "Que devez-vous éviter ?",
+          "pt": "O que deves evitar?",
+          "de": "Was solltest du vermeiden?",
+          "pl": "Czego należy unikać?",
+          "ro": "Ce ar trebui să eviți?",
+          "uk": "Чого варто уникати?",
+          "nl": "Wat moet je vermijden?",
+          "en": "What should you avoid?"
+        },
+        "options_en": [
+          "Giving a specific reason linked to the venue.",
+          "Explaining how the role fits your goals.",
+          "Saying you applied only because you need any job."
+        ],
+        "answer_index": 2
+      }
+    },
+    {
+      "id": "ji_03_experience",
+      "order": 3,
+      "question_en": "Tell me about your hospitality experience.",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "interviewer_wants": {
+        "es": "Qué has hecho, en qué tipo de lugares y qué responsabilidades puedes asumir.",
+        "it": "Cosa hai fatto, in che tipo di locali e quali responsabilità sai gestire.",
+        "fr": "Ce que vous avez fait, dans quels types d’établissements et quelles responsabilités vous pouvez assumer.",
+        "pt": "O que fizeste, em que tipos de locais e que responsabilidades consegues assumir.",
+        "de": "Was du gemacht hast, in welchen Betrieben und welche Verantwortung du übernehmen kannst.",
+        "pl": "Co robiłeś/-aś, w jakich miejscach i jakie obowiązki możesz przejąć.",
+        "ro": "Ce ai făcut, în ce tipuri de locații și ce responsabilități poți prelua.",
+        "uk": "Що ти робив/робила, у яких закладах і яку відповідальність можеш брати.",
+        "nl": "Wat je hebt gedaan, in welk type zaken en welke verantwoordelijkheden je aankunt.",
+        "en": "What you've done, what types of venues you've worked in and what responsibilities you can handle."
+      },
+      "answer_structure": {
+        "es": "Años/tiempo → tipos de local → responsabilidades clave → logro o fortaleza.",
+        "it": "Durata → tipi di locale → responsabilità principali → risultato o punto di forza.",
+        "fr": "Durée → types d’établissement → responsabilités clés → réussite ou point fort.",
+        "pt": "Tempo → tipos de local → responsabilidades principais → conquista ou ponto forte.",
+        "de": "Dauer → Betriebstypen → Hauptaufgaben → Erfolg oder Stärke.",
+        "pl": "Czas doświadczenia → typy lokali → kluczowe obowiązki → osiągnięcie lub mocna strona.",
+        "ro": "Durată → tipuri de locații → responsabilități cheie → rezultat sau punct forte.",
+        "uk": "Тривалість → типи закладів → ключові обов’язки → досягнення або сильна сторона.",
+        "nl": "Duur → type zaken → belangrijkste verantwoordelijkheden → prestatie of sterk punt.",
+        "en": "Length of experience → venue types → key responsibilities → achievement or strength."
+      },
+      "useful_phrases_en": [
+        "I’ve worked in…",
+        "My main responsibilities included…",
+        "I became confident in…"
+      ],
+      "model_answer": {
+        "bartender": "I’ve worked in busy bars and restaurants. My main responsibilities included preparing drinks, taking orders, handling payments, keeping the bar organised and communicating with guests. I became especially confident working under pressure during busy service.",
+        "waiter": "I’ve worked in busy restaurants and front-of-house teams. My responsibilities included welcoming guests, taking orders, explaining menu items, handling payments and coordinating with the kitchen. I became especially confident managing several tables during busy service."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué hace una respuesta más fuerte?",
+          "it": "Cosa rende una risposta più forte?",
+          "fr": "Qu’est-ce qui rend une réponse plus forte ?",
+          "pt": "O que torna uma resposta mais forte?",
+          "de": "Was macht eine Antwort stärker?",
+          "pl": "Co wzmacnia odpowiedź?",
+          "ro": "Ce face răspunsul mai puternic?",
+          "uk": "Що робить відповідь сильнішою?",
+          "nl": "Wat maakt een antwoord sterker?",
+          "en": "What makes an answer stronger?"
+        },
+        "options_en": [
+          "Listing responsibilities and giving context.",
+          "Only naming your previous workplace.",
+          "Saying you did everything."
+        ],
+        "answer_index": 0
+      }
+    },
+    {
+      "id": "ji_04_difficult_guest",
+      "order": 4,
+      "question_en": "How would you deal with a difficult guest?",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "interviewer_wants": {
+        "es": "Que mantengas la calma, escuches, seas profesional y sepas cuándo escalar el problema.",
+        "it": "Che tu rimanga calmo, ascolti, sia professionale e sappia quando coinvolgere un responsabile.",
+        "fr": "Que vous restiez calme, écoutiez, soyez professionnel et sachiez quand faire appel à un responsable.",
+        "pt": "Que mantenhas a calma, ouças, sejas profissional e saibas quando envolver um responsável.",
+        "de": "Dass du ruhig bleibst, zuhörst, professionell handelst und weißt, wann du eskalieren musst.",
+        "pl": "Że zachowujesz spokój, słuchasz, jesteś profesjonalny/-a i wiesz, kiedy eskalować problem.",
+        "ro": "Că rămâi calm, asculți, ești profesionist și știi când să escaladezi problema.",
+        "uk": "Що ти зберігаєш спокій, слухаєш, дієш професійно й знаєш, коли залучити менеджера.",
+        "nl": "Dat je rustig blijft, luistert, professioneel handelt en weet wanneer je moet escaleren.",
+        "en": "That you stay calm, listen, remain professional and know when to escalate."
+      },
+      "answer_structure": {
+        "es": "Escuchar → reconocer el problema → ofrecer solución dentro de tu autoridad → manager si hace falta.",
+        "it": "Ascoltare → riconoscere il problema → offrire una soluzione nei tuoi limiti → responsabile se serve.",
+        "fr": "Écouter → reconnaître le problème → proposer une solution dans votre rôle → responsable si nécessaire.",
+        "pt": "Ouvir → reconhecer o problema → oferecer solução dentro da tua autoridade → responsável se necessário.",
+        "de": "Zuhören → Problem anerkennen → Lösung im eigenen Rahmen anbieten → bei Bedarf Manager holen.",
+        "pl": "Wysłuchać → uznać problem → zaproponować rozwiązanie w swoich kompetencjach → w razie potrzeby kierownik.",
+        "ro": "Ascultă → recunoaște problema → oferă o soluție în limita rolului → manager dacă e nevoie.",
+        "uk": "Вислухати → визнати проблему → запропонувати рішення в межах повноважень → менеджер за потреби.",
+        "nl": "Luisteren → probleem erkennen → oplossing binnen je bevoegdheid → manager indien nodig.",
+        "en": "Listen → acknowledge the problem → offer a solution within your authority → involve a manager if needed."
+      },
+      "useful_phrases_en": [
+        "I’d stay calm and listen first.",
+        "I’d acknowledge the problem.",
+        "If necessary, I’d involve my manager."
+      ],
+      "model_answer": {
+        "bartender": "I’d stay calm and listen to the guest first. I’d acknowledge the problem and try to resolve it within my role, for example by replacing a drink if appropriate. If the issue needed a higher decision, I’d involve my manager.",
+        "waiter": "I’d stay calm and let the guest explain the problem. I’d acknowledge it, apologise where appropriate and try to find a solution, for example replacing a dish or checking with the kitchen. If necessary, I’d involve my manager."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Cuál es el mejor primer paso?",
+          "it": "Qual è il primo passo migliore?",
+          "fr": "Quelle est la meilleure première étape ?",
+          "pt": "Qual é o melhor primeiro passo?",
+          "de": "Was ist der beste erste Schritt?",
+          "pl": "Jaki jest najlepszy pierwszy krok?",
+          "ro": "Care este cel mai bun prim pas?",
+          "uk": "Який найкращий перший крок?",
+          "nl": "Wat is de beste eerste stap?",
+          "en": "What is the best first step?"
+        },
+        "options_en": [
+          "Argue your point.",
+          "Listen calmly and understand the problem.",
+          "Immediately offer a refund."
+        ],
+        "answer_index": 1
+      }
+    },
+    {
+      "id": "ji_05_mistake",
+      "order": 5,
+      "question_en": "What would you do if you made a mistake during service?",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "interviewer_wants": {
+        "es": "Responsabilidad, honestidad y capacidad para corregir errores rápidamente.",
+        "it": "Responsabilità, onestà e capacità di correggere rapidamente gli errori.",
+        "fr": "Responsabilité, honnêteté et capacité à corriger rapidement les erreurs.",
+        "pt": "Responsabilidade, honestidade e capacidade de corrigir erros rapidamente.",
+        "de": "Verantwortungsbewusstsein, Ehrlichkeit und die Fähigkeit, Fehler schnell zu korrigieren.",
+        "pl": "Odpowiedzialność, uczciwość i umiejętność szybkiego naprawiania błędów.",
+        "ro": "Responsabilitate, onestitate și capacitatea de a corecta rapid greșelile.",
+        "uk": "Відповідальність, чесність і здатність швидко виправляти помилки.",
+        "nl": "Verantwoordelijkheid, eerlijkheid en het vermogen fouten snel te herstellen.",
+        "en": "Responsibility, honesty and the ability to correct mistakes quickly."
+      },
+      "answer_structure": {
+        "es": "Reconocerlo → informar si es necesario → corregirlo → aprender para evitar repetirlo.",
+        "it": "Riconoscerlo → informare se necessario → correggerlo → imparare per non ripeterlo.",
+        "fr": "Le reconnaître → informer si nécessaire → le corriger → apprendre pour éviter qu’il se reproduise.",
+        "pt": "Reconhecer → informar se necessário → corrigir → aprender para não repetir.",
+        "de": "Fehler erkennen → falls nötig informieren → korrigieren → daraus lernen.",
+        "pl": "Przyznać błąd → poinformować, jeśli trzeba → naprawić → wyciągnąć wnioski.",
+        "ro": "Recunoaște → informează dacă e nevoie → corectează → învață pentru a nu repeta.",
+        "uk": "Визнати → повідомити за потреби → виправити → зробити висновки.",
+        "nl": "Erkennen → indien nodig melden → herstellen → ervan leren.",
+        "en": "Acknowledge it → inform someone if needed → correct it → learn from it."
+      },
+      "useful_phrases_en": [
+        "I’d take responsibility for it.",
+        "I’d correct it as quickly as possible.",
+        "I’d make sure I understood how to avoid the same mistake again."
+      ],
+      "model_answer": {
+        "bartender": "I’d take responsibility for the mistake and correct it as quickly as possible. If it affected the guest or the team, I’d communicate it immediately. Afterwards, I’d make sure I understood what caused it so I could avoid repeating it.",
+        "waiter": "I’d take responsibility and try to correct the mistake quickly. If I sent the wrong order or gave incorrect information, I’d tell the relevant colleague or manager immediately and make sure the guest was looked after."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué enfoque es mejor?",
+          "it": "Qual è l’approccio migliore?",
+          "fr": "Quelle approche est la meilleure ?",
+          "pt": "Qual é a melhor abordagem?",
+          "de": "Welcher Ansatz ist am besten?",
+          "pl": "Które podejście jest najlepsze?",
+          "ro": "Care abordare este cea mai bună?",
+          "uk": "Який підхід найкращий?",
+          "nl": "Welke aanpak is het best?",
+          "en": "Which approach is best?"
+        },
+        "options_en": [
+          "Hide the mistake if possible.",
+          "Blame another team member.",
+          "Take responsibility, fix it and learn from it."
+        ],
+        "answer_index": 2
+      }
+    },
+    {
+      "id": "ji_06_pressure",
+      "order": 6,
+      "question_en": "How do you work under pressure?",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "interviewer_wants": {
+        "es": "Que puedas mantener organización, prioridades y comunicación cuando el servicio está muy ocupado.",
+        "it": "Che tu sappia mantenere organizzazione, priorità e comunicazione durante i momenti molto intensi.",
+        "fr": "Que vous sachiez rester organisé, prioriser et communiquer pendant les services très chargés.",
+        "pt": "Que consigas manter organização, prioridades e comunicação durante momentos muito movimentados.",
+        "de": "Dass du bei hohem Tempo organisiert bleibst, Prioritäten setzt und kommunizierst.",
+        "pl": "Że potrafisz zachować organizację, priorytety i komunikację podczas dużego ruchu.",
+        "ro": "Că poți rămâne organizat, prioritiza și comunica în perioade foarte aglomerate.",
+        "uk": "Що ти можеш зберігати організованість, пріоритети й комунікацію під час дуже завантаженої зміни.",
+        "nl": "Dat je georganiseerd blijft, prioriteiten stelt en communiceert tijdens drukke service.",
+        "en": "That you can stay organised, prioritise and communicate during very busy service."
+      },
+      "answer_structure": {
+        "es": "Mantener calma → priorizar → comunicar → ejemplo breve.",
+        "it": "Rimanere calmo → dare priorità → comunicare → breve esempio.",
+        "fr": "Rester calme → prioriser → communiquer → bref exemple.",
+        "pt": "Manter a calma → priorizar → comunicar → exemplo breve.",
+        "de": "Ruhig bleiben → priorisieren → kommunizieren → kurzes Beispiel.",
+        "pl": "Zachować spokój → ustalać priorytety → komunikować → krótki przykład.",
+        "ro": "Rămâi calm → prioritizează → comunică → exemplu scurt.",
+        "uk": "Зберігати спокій → розставляти пріоритети → комунікувати → короткий приклад.",
+        "nl": "Rustig blijven → prioriteiten stellen → communiceren → kort voorbeeld.",
+        "en": "Stay calm → prioritise → communicate → brief example."
+      },
+      "useful_phrases_en": [
+        "I stay calm and focus on priorities.",
+        "I communicate clearly with the team.",
+        "I try to stay one step ahead."
+      ],
+      "model_answer": {
+        "bartender": "I stay calm and focus on priorities. During busy service I keep my station organised, communicate clearly with the team and work through orders in the right sequence. That helps me stay fast without losing accuracy.",
+        "waiter": "I stay calm, prioritise what needs immediate attention and communicate with the team. During busy service I keep track of my tables and make sure guests are acknowledged even if I can’t help them immediately."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué demuestra mejor que trabajas bien bajo presión?",
+          "it": "Cosa dimostra meglio che lavori bene sotto pressione?",
+          "fr": "Qu’est-ce qui montre le mieux que vous travaillez bien sous pression ?",
+          "pt": "O que demonstra melhor que trabalhas bem sob pressão?",
+          "de": "Was zeigt am besten, dass du unter Druck gut arbeitest?",
+          "pl": "Co najlepiej pokazuje, że dobrze pracujesz pod presją?",
+          "ro": "Ce arată cel mai bine că lucrezi bine sub presiune?",
+          "uk": "Що найкраще показує, що ти добре працюєш під тиском?",
+          "nl": "Wat laat het best zien dat je goed onder druk werkt?",
+          "en": "What best shows that you work well under pressure?"
+        },
+        "options_en": [
+          "I just work faster.",
+          "I stay organised, prioritise and communicate.",
+          "I ignore everything until it becomes urgent."
+        ],
+        "answer_index": 1
+      }
+    },
+    {
+      "id": "ji_07_recommendation",
+      "order": 7,
+      "question_en": "How would you recommend something to a guest?",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "interviewer_wants": {
+        "es": "Que preguntes primero por preferencias y hagas una recomendación relevante, no una venta agresiva.",
+        "it": "Che tu chieda prima le preferenze e faccia una raccomandazione pertinente, non una vendita aggressiva.",
+        "fr": "Que vous commenciez par comprendre les préférences du client et fassiez une recommandation pertinente, sans vente agressive.",
+        "pt": "Que primeiro percebas as preferências do cliente e faças uma recomendação relevante, sem venda agressiva.",
+        "de": "Dass du zuerst nach Vorlieben fragst und passend empfiehlst, statt aggressiv zu verkaufen.",
+        "pl": "Że najpierw pytasz o preferencje i proponujesz coś trafnego, a nie nachalnie sprzedajesz.",
+        "ro": "Că întrebi mai întâi despre preferințe și faci o recomandare relevantă, nu o vânzare agresivă.",
+        "uk": "Що ти спочатку з’ясовуєш уподобання гостя й даєш доречну рекомендацію, а не тиснеш продажем.",
+        "nl": "Dat je eerst naar voorkeuren vraagt en iets relevants aanbeveelt, zonder hard te verkopen.",
+        "en": "That you first understand the guest's preferences and then make a relevant recommendation rather than pushing a sale."
+      },
+      "answer_structure": {
+        "es": "Preguntar preferencias → reducir opciones → recomendar → explicar brevemente por qué.",
+        "it": "Chiedere le preferenze → restringere le opzioni → raccomandare → spiegare brevemente il perché.",
+        "fr": "Demander les préférences → réduire les options → recommander → expliquer brièvement pourquoi.",
+        "pt": "Perguntar preferências → reduzir opções → recomendar → explicar brevemente porquê.",
+        "de": "Vorlieben erfragen → Auswahl eingrenzen → empfehlen → kurz begründen.",
+        "pl": "Zapytać o preferencje → zawęzić wybór → polecić → krótko uzasadnić.",
+        "ro": "Întreabă preferințele → restrânge opțiunile → recomandă → explică pe scurt de ce.",
+        "uk": "Запитати про вподобання → звузити вибір → рекомендувати → коротко пояснити чому.",
+        "nl": "Voorkeuren vragen → opties beperken → aanbevelen → kort uitleggen waarom.",
+        "en": "Ask preferences → narrow the options → recommend → briefly explain why."
+      },
+      "useful_phrases_en": [
+        "What kind of flavours do you usually like?",
+        "If you prefer something lighter, I’d recommend…",
+        "A good option would be…"
+      ],
+      "model_answer": {
+        "bartender": "I’d first ask what kind of drinks or flavours they usually enjoy. Then I’d give one or two options and explain the difference. For example, if they wanted something fresh and not too sweet, I’d recommend a lighter cocktail that fits that preference.",
+        "waiter": "I’d ask what kind of food or flavours they prefer and whether they have any dietary requirements. Then I’d recommend one or two dishes and explain briefly why they might suit them."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Cuál es la mejor forma de empezar una recomendación?",
+          "it": "Qual è il modo migliore per iniziare una raccomandazione?",
+          "fr": "Quelle est la meilleure façon de commencer une recommandation ?",
+          "pt": "Qual é a melhor forma de começar uma recomendação?",
+          "de": "Wie beginnt man am besten eine Empfehlung?",
+          "pl": "Jak najlepiej zacząć rekomendację?",
+          "ro": "Care este cel mai bun mod de a începe o recomandare?",
+          "uk": "Як найкраще почати рекомендацію?",
+          "nl": "Wat is de beste manier om een aanbeveling te beginnen?",
+          "en": "What is the best way to begin a recommendation?"
+        },
+        "options_en": [
+          "Ask about the guest's preferences.",
+          "Recommend the most expensive item.",
+          "List every option available."
+        ],
+        "answer_index": 0
+      }
+    },
+    {
+      "id": "ji_08_teamwork",
+      "order": 8,
+      "question_en": "Tell me about working as part of a team.",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "interviewer_wants": {
+        "es": "Que te comuniques, ayudes al equipo y entiendas que un buen servicio depende de coordinación.",
+        "it": "Che tu comunichi, aiuti il team e capisca che un buon servizio dipende dalla coordinazione.",
+        "fr": "Que vous communiquiez, aidiez l’équipe et compreniez qu’un bon service dépend de la coordination.",
+        "pt": "Que comuniques, ajudes a equipa e compreendas que um bom serviço depende da coordenação.",
+        "de": "Dass du kommunizierst, das Team unterstützt und verstehst, dass guter Service Koordination braucht.",
+        "pl": "Że komunikujesz się, wspierasz zespół i rozumiesz, że dobra obsługa wymaga współpracy.",
+        "ro": "Că comunici, ajuți echipa și înțelegi că un serviciu bun depinde de coordonare.",
+        "uk": "Що ти комунікуєш, допомагаєш команді й розумієш, що хороший сервіс залежить від координації.",
+        "nl": "Dat je communiceert, het team helpt en begrijpt dat goede service samenwerking vereist.",
+        "en": "That you communicate, support the team and understand that good service depends on coordination."
+      },
+      "answer_structure": {
+        "es": "Cómo te comunicas → cómo ayudas → ejemplo concreto de coordinación.",
+        "it": "Come comunichi → come aiuti → esempio concreto di coordinazione.",
+        "fr": "Comment vous communiquez → comment vous aidez → exemple concret de coordination.",
+        "pt": "Como comunicas → como ajudas → exemplo concreto de coordenação.",
+        "de": "Wie du kommunizierst → wie du hilfst → konkretes Beispiel für Teamkoordination.",
+        "pl": "Jak się komunikujesz → jak pomagasz → konkretny przykład współpracy.",
+        "ro": "Cum comunici → cum ajuți → exemplu concret de coordonare.",
+        "uk": "Як комунікуєш → як допомагаєш → конкретний приклад координації.",
+        "nl": "Hoe je communiceert → hoe je helpt → concreet voorbeeld van samenwerking.",
+        "en": "How you communicate → how you help → specific example of coordination."
+      },
+      "useful_phrases_en": [
+        "I communicate clearly with the team.",
+        "If I see a colleague struggling, I try to help.",
+        "Good service depends on everyone working together."
+      ],
+      "model_answer": {
+        "bartender": "I think good service depends on the whole team. I communicate clearly with floor staff, support other bartenders when needed and try to keep shared areas organised. If someone is under pressure, I’ll help where I can without losing control of my own station.",
+        "waiter": "I communicate closely with the kitchen and the rest of the floor team. If another section gets very busy, I’ll help where possible, and I make sure important information about guests or orders is passed on clearly."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué ejemplo demuestra mejor trabajo en equipo?",
+          "it": "Quale esempio dimostra meglio il lavoro di squadra?",
+          "fr": "Quel exemple montre le mieux le travail d’équipe ?",
+          "pt": "Qual exemplo demonstra melhor trabalho de equipa?",
+          "de": "Welches Beispiel zeigt Teamarbeit am besten?",
+          "pl": "Który przykład najlepiej pokazuje pracę zespołową?",
+          "ro": "Care exemplu arată cel mai bine munca în echipă?",
+          "uk": "Який приклад найкраще показує командну роботу?",
+          "nl": "Welk voorbeeld laat teamwork het best zien?",
+          "en": "Which example best demonstrates teamwork?"
+        },
+        "options_en": [
+          "Only focusing on your own tasks.",
+          "Helping colleagues and sharing important information clearly.",
+          "Waiting for a manager to solve every problem."
+        ],
+        "answer_index": 1
+      }
+    },
+    {
+      "id": "ji_09_availability",
+      "order": 9,
+      "question_en": "What is your availability?",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "interviewer_wants": {
+        "es": "Una respuesta clara y honesta sobre días, horarios y posibles limitaciones.",
+        "it": "Una risposta chiara e onesta su giorni, orari ed eventuali limiti.",
+        "fr": "Une réponse claire et honnête sur vos jours, horaires et éventuelles contraintes.",
+        "pt": "Uma resposta clara e honesta sobre dias, horários e possíveis limitações.",
+        "de": "Eine klare und ehrliche Antwort zu Tagen, Zeiten und möglichen Einschränkungen.",
+        "pl": "Jasna i uczciwa odpowiedź o dniach, godzinach i ewentualnych ograniczeniach.",
+        "ro": "Un răspuns clar și sincer despre zile, ore și eventuale limitări.",
+        "uk": "Чітка й чесна відповідь про дні, години та можливі обмеження.",
+        "nl": "Een duidelijk en eerlijk antwoord over dagen, tijden en eventuele beperkingen.",
+        "en": "A clear and honest answer about days, hours and any limitations."
+      },
+      "answer_structure": {
+        "es": "Disponibilidad principal → flexibilidad real → limitaciones concretas.",
+        "it": "Disponibilità principale → flessibilità reale → limiti concreti.",
+        "fr": "Disponibilité principale → flexibilité réelle → contraintes concrètes.",
+        "pt": "Disponibilidade principal → flexibilidade real → limitações concretas.",
+        "de": "Hauptverfügbarkeit → echte Flexibilität → konkrete Einschränkungen.",
+        "pl": "Główna dyspozycyjność → realna elastyczność → konkretne ograniczenia.",
+        "ro": "Disponibilitate principală → flexibilitate reală → limitări concrete.",
+        "uk": "Основна доступність → реальна гнучкість → конкретні обмеження.",
+        "nl": "Belangrijkste beschikbaarheid → echte flexibiliteit → concrete beperkingen.",
+        "en": "Main availability → genuine flexibility → specific limitations."
+      },
+      "useful_phrases_en": [
+        "I’m available…",
+        "I can be flexible with…",
+        "The only time I’m not available is…"
+      ],
+      "model_answer": {
+        "bartender": "I’m available for evening and weekend shifts, and I can be flexible when the rota changes with reasonable notice. The only time I’m not available is Tuesday morning.",
+        "waiter": "I’m available most evenings and weekends, and I can also work daytime shifts depending on the rota. I prefer to be clear in advance about any days I can’t work."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué tipo de respuesta es mejor?",
+          "it": "Quale tipo di risposta è migliore?",
+          "fr": "Quel type de réponse est préférable ?",
+          "pt": "Que tipo de resposta é melhor?",
+          "de": "Welche Art von Antwort ist besser?",
+          "pl": "Jaki typ odpowiedzi jest najlepszy?",
+          "ro": "Ce tip de răspuns este mai bun?",
+          "uk": "Який тип відповіді кращий?",
+          "nl": "Welk type antwoord is beter?",
+          "en": "What type of answer is best?"
+        },
+        "options_en": [
+          "A clear, honest description of your real availability.",
+          "Saying you're always available even when you're not.",
+          "Avoiding the question."
+        ],
+        "answer_index": 0
+      }
+    },
+    {
+      "id": "ji_10_why_hire",
+      "order": 10,
+      "question_en": "Why should we hire you?",
+      "roles": [
+        "bartender",
+        "waiter"
+      ],
+      "interviewer_wants": {
+        "es": "Una síntesis de tus fortalezas más relevantes para ese puesto, con confianza pero sin exagerar.",
+        "it": "Una sintesi dei tuoi punti di forza più rilevanti per il ruolo, con sicurezza ma senza esagerare.",
+        "fr": "Une synthèse de vos points forts les plus pertinents pour le poste, avec confiance mais sans exagération.",
+        "pt": "Um resumo dos teus pontos fortes mais relevantes para a função, com confiança mas sem exagerar.",
+        "de": "Eine Zusammenfassung deiner für die Stelle wichtigsten Stärken, selbstbewusst aber ohne Übertreibung.",
+        "pl": "Podsumowanie najważniejszych dla stanowiska mocnych stron, pewnie, ale bez przesady.",
+        "ro": "Un rezumat al punctelor tale forte relevante pentru rol, cu încredere, fără exagerare.",
+        "uk": "Короткий підсумок твоїх найважливіших для посади сильних сторін, упевнено, але без перебільшення.",
+        "nl": "Een samenvatting van je meest relevante sterke punten voor de functie, zelfverzekerd maar zonder te overdrijven.",
+        "en": "A summary of your strengths that are most relevant to the role, confident but not exaggerated."
+      },
+      "answer_structure": {
+        "es": "2–3 fortalezas relevantes → evidencia breve → cómo ayudarán al equipo.",
+        "it": "2–3 punti di forza rilevanti → breve prova → come aiuteranno il team.",
+        "fr": "2–3 points forts pertinents → preuve brève → comment ils aideront l’équipe.",
+        "pt": "2–3 pontos fortes relevantes → evidência breve → como ajudarão a equipa.",
+        "de": "2–3 relevante Stärken → kurzer Beleg → wie sie dem Team helfen.",
+        "pl": "2–3 istotne mocne strony → krótki dowód → jak pomogą zespołowi.",
+        "ro": "2–3 puncte forte relevante → dovadă scurtă → cum vor ajuta echipa.",
+        "uk": "2–3 релевантні сильні сторони → короткий доказ → як вони допоможуть команді.",
+        "nl": "2–3 relevante sterke punten → kort bewijs → hoe ze het team helpen.",
+        "en": "2–3 relevant strengths → brief evidence → how they will help the team."
+      },
+      "useful_phrases_en": [
+        "I think I’d be a good fit because…",
+        "One of my strengths is…",
+        "I can contribute by…"
+      ],
+      "model_answer": {
+        "bartender": "I think I’d be a good fit because I’m reliable, comfortable in busy service and focused on guest experience. I’m used to staying organised behind the bar and communicating with the wider team. I’d bring a positive attitude and I’m also keen to keep learning.",
+        "waiter": "I think I’d be a good fit because I’m reliable, calm during busy service and comfortable communicating with guests. I work well with a team and pay attention to details that affect the guest experience. I’m also motivated to keep improving."
+      },
+      "practice": {
+        "type": "multiple_choice",
+        "prompt": {
+          "es": "¿Qué hace que esta respuesta funcione?",
+          "it": "Cosa rende efficace questa risposta?",
+          "fr": "Pourquoi cette réponse fonctionne-t-elle ?",
+          "pt": "O que torna esta resposta eficaz?",
+          "de": "Was macht diese Antwort wirksam?",
+          "pl": "Co sprawia, że ta odpowiedź jest skuteczna?",
+          "ro": "Ce face acest răspuns eficient?",
+          "uk": "Що робить цю відповідь ефективною?",
+          "nl": "Wat maakt dit antwoord effectief?",
+          "en": "What makes this answer effective?"
+        },
+        "options_en": [
+          "It gives relevant strengths and links them to the role.",
+          "It says you're better than every other candidate.",
+          "It repeats your CV word for word."
+        ],
+        "answer_index": 0
+      }
+    }
+  ],
+  "personalization": {
+    "home_priority_conditions": [
+      "profile.goal == prepare_for_an_interview",
+      "profile.employment_status == interview_soon"
+    ],
+    "role_variant": "Use current profile.role to choose model_answer; if missing, default to waiter only as a safe neutral UI fallback is NOT allowed—show role selector or generic shared explanation instead.",
+    "venue_type": "May affect Home ranking only; do not rewrite interview content by venue in MVP.",
+    "english_level": "May order scenarios but must never block them."
+  },
+  "persistence": {
+    "collection": "job_interview_progress",
+    "unique_key": [
+      "guest_id",
+      "role"
+    ],
+    "fields": [
+      "guest_id",
+      "role",
+      "completed_scenario_ids",
+      "last_opened_scenario_id",
+      "practice_answers",
+      "practice_correct_count",
+      "started_at",
+      "completed_at",
+      "updated_at"
+    ],
+    "resume": true,
+    "retake_allowed": true
+  },
+  "ux_contract": [
+    "Optional Home entry point.",
+    "10-scenario module, one scenario per screen/page.",
+    "Always show question_en as target English.",
+    "Localized explanation sections: interviewer_wants and answer_structure.",
+    "Useful phrases and model answer always remain English.",
+    "Show role-specific model answer.",
+    "One lightweight multiple-choice practice item per scenario.",
+    "Show progress 1/10…10/10.",
+    "Completion page shows completed 10/10 and practice score X/10.",
+    "No Speaking or audio in MVP; keep structure reusable for future Speaking."
+  ],
+  "future_hooks": {
+    "speaking": "Each question_en can later become an interviewer audio prompt; user response can be evaluated against answer_structure, not exact wording.",
+    "listening": "Question audio can be added later without changing scenario IDs.",
+    "ai_feedback": "Future only; not part of MVP."
+  },
+  "regression_contract": [
+    "Do not change 50 situations.",
+    "Do not change assessment scoring.",
+    "Do not change Tonight's Shift algorithm.",
+    "Do not change Emergency Phrases.",
+    "Do not change Practice/SRS.",
+    "No deploy."
+  ]
+}

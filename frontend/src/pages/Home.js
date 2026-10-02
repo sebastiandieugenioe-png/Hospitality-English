@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, ClipboardCheck, LifeBuoy, Moon } from "lucide-react";
+import { ArrowRight, Play, ClipboardCheck, LifeBuoy, Moon, Briefcase } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
-import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta, getEmergency, getTonightsShiftMeta, getTonightsShiftToday } from "@/lib/api";
+import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta, getEmergency, getTonightsShiftMeta, getTonightsShiftToday, getJobInterviewMeta, getJobInterview } from "@/lib/api";
 import { roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
 import { getLocalizedField, getText } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
@@ -24,6 +24,8 @@ export default function Home() {
   const [emergencyUi, setEmergencyUi] = useState(null);
   const [shiftMeta, setShiftMeta] = useState(null);
   const [shiftToday, setShiftToday] = useState(null);
+  const [jobMeta, setJobMeta] = useState(null);
+  const [jobData, setJobData] = useState(null);
 
   // Send users with an incomplete professional profile through onboarding first.
   useEffect(() => {
@@ -84,6 +86,13 @@ export default function Home() {
     getTonightsShiftMeta().then(setShiftMeta).catch(() => {});
   }, []);
   useEffect(() => {
+    getJobInterviewMeta().then(setJobMeta).catch(() => {});
+  }, []);
+  useEffect(() => {
+    if (!guestId) return;
+    getJobInterview(guestId).then(setJobData).catch(() => {});
+  }, [guestId]);
+  useEffect(() => {
     if (!guestId) return;
     const d = new Date();
     const p = (n) => String(n).padStart(2, "0");
@@ -94,6 +103,40 @@ export default function Home() {
     if (!guestId) return;
     getAssessmentSummary(guestId).then(setAssessment).catch(() => {});
   }, [guestId]);
+
+  const jobInterviewPriority =
+    profile?.goal === "prepare_for_interview" || profile?.employment_status === "interview_soon";
+  const jobCompleted = (jobData?.progress?.completed_scenario_ids || []).length;
+  const jobCard = jobMeta ? (
+    <section className="mt-4" key="job-interview-card">
+      <button
+        data-testid="job-interview-entry-card"
+        onClick={() => navigate("/job-interview")}
+        className={`group w-full text-left rounded-2xl bg-white p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-between gap-5 ${
+          jobInterviewPriority ? "border-2 border-brand-forest/40" : "border border-brand-forest/15"
+        }`}
+      >
+        <div>
+          {jobInterviewPriority && (
+            <span className="inline-block text-[10px] uppercase tracking-[0.15em] font-semibold text-brand-forest bg-brand-success-muted rounded-full px-2.5 py-1 mb-2">
+              {t("home.recommendedForYou")}
+            </span>
+          )}
+          <p className="text-lg font-serif text-brand-espresso">{getText(jobMeta.ui.title, language)}</p>
+          <p className="mt-1 text-sm text-brand-charcoal/60 leading-relaxed max-w-md">
+            {getText(jobMeta.ui.subtitle, language)}
+          </p>
+          <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-forest">
+            {jobCompleted > 0 ? `${jobCompleted} / ${jobMeta.scenario_count}` : t("intro.start")}
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </span>
+        </div>
+        <span className="shrink-0 grid place-items-center w-12 h-12 rounded-xl bg-brand-forest/10 text-brand-forest">
+          <Briefcase className="w-6 h-6" />
+        </span>
+      </button>
+    </section>
+  ) : null;
 
   return (
     <div className="min-h-screen bg-brand-sand">
@@ -123,6 +166,9 @@ export default function Home() {
           )}
         </motion.div>
 
+
+        {/* Job Interview English — prioritized when goal/employment signals an interview */}
+        {jobInterviewPriority && jobCard}
 
         {/* Assessment entry point (optional, non-blocking) */}
         {assessmentMeta && (
@@ -211,6 +257,9 @@ export default function Home() {
             </button>
           </section>
         )}
+
+        {/* Job Interview English — optional module when not prioritized */}
+        {!jobInterviewPriority && jobCard}
 
         {/* Resume + progress teaser */}
         {(resume || masteredCount > 0) && (

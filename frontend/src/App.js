@@ -14,6 +14,7 @@ import Lesson from "@/pages/Lesson";
 import Assessment from "@/pages/Assessment";
 import EmergencyPhrases from "@/pages/EmergencyPhrases";
 import TonightsShift from "@/pages/TonightsShift";
+import JobInterview from "@/pages/JobInterview";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="/assessment" element={<Assessment />} />
             <Route path="/emergency" element={<EmergencyPhrases />} />
             <Route path="/tonights-shift" element={<TonightsShift />} />
+            <Route path="/job-interview" element={<JobInterview />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-center" />

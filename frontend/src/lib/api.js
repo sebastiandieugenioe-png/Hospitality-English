@@ -74,6 +74,15 @@ export const submitShiftResponse = (sessionId, payload) =>
   client.put(`/shift-sessions/${sessionId}/response`, payload).then((r) => r.data);
 export const completeTonightsShift = (sessionId) =>
   client.post(`/shift-sessions/${sessionId}/complete`).then((r) => r.data);
+
+// Job Interview English
+export const getJobInterviewMeta = () => client.get("/job-interview/meta").then((r) => r.data);
+export const getJobInterview = (guestId) =>
+  client.get(`/guests/${guestId}/job-interview`).then((r) => r.data);
+export const openJobInterviewScenario = (guestId, scenario_id) =>
+  client.put(`/guests/${guestId}/job-interview/open`, { scenario_id }).then((r) => r.data);
+export const submitJobInterviewPractice = (guestId, payload) =>
+  client.post(`/guests/${guestId}/job-interview/practice`, payload).then((r) => r.data);
 export const updateLanguage = (id, interface_language) =>
   client.put(`/guests/${id}/language`, { interface_language }).then((r) => r.data);
 export const getLanguages = () => client.get("/languages").then((r) => r.data);

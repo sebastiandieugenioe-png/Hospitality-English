@@ -21,6 +21,7 @@ import seed_i18n
 import assessment_data as assessment
 import emergency_data as emergency
 import tonights_shift_data as shift
+import job_interview_data as jobint
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -117,6 +118,15 @@ class ShiftStart(BaseModel):
 class ShiftResponse(BaseModel):
     item_id: str
     submitted_answer: object
+
+
+class JobInterviewPractice(BaseModel):
+    scenario_id: str
+    answer_index: int
+
+
+class JobInterviewOpen(BaseModel):
+    scenario_id: str
 
 
 # ---------- Mastery + SRS constants ----------
@@ -1711,6 +1721,134 @@ async def tonights_shift_meta():
     return {"ui": shift.UI, "session_size": shift.SESSION_SIZE, "languages": shift.INTERFACE_LANGUAGES}
 
 
+# ---------- Job Interview English ----------
+async def _job_interview_progress(guest_id, role):
+    return await db.job_interview_progress.find_one(
+        {"guest_id": guest_id, "role": role}, {"_id": 0}
+    )
+
+
+def _job_interview_payload(guest, lang):
+    role = (guest.get("professional_profile") or {}).get("role")
+    needs_role = role not in jobint.ROLES
+    scenarios = [jobint.public_scenario(s, lang, role) for s in jobint.SCENARIOS]
+    return role, needs_role, scenarios
+
+
+@api_router.get("/job-interview/meta")
+async def job_interview_meta():
+    return {"ui": jobint.UI, "scenario_count": jobint.SCENARIO_COUNT, "languages": jobint.INTERFACE_LANGUAGES}
+
+
+@api_router.get("/guests/{guest_id}/job-interview")
+async def job_interview_get(guest_id: str):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
+    role, needs_role, scenarios = _job_interview_payload(guest, lang)
+
+    progress = None
+    if not needs_role:
+        progress = await _job_interview_progress(guest_id, role)
+        if not progress:
+            # Lazily start progress on first open (resume-friendly, upsert-safe).
+            progress = {
+                "guest_id": guest_id, "role": role,
+                "completed_scenario_ids": [], "last_opened_scenario_id": None,
+                "practice_answers": {}, "practice_correct_count": 0,
+                "started_at": now_iso(), "completed_at": None, "updated_at": now_iso(),
+                "content_version": jobint.CONTENT_VERSION,
+            }
+            await db.job_interview_progress.update_one(
+                {"guest_id": guest_id, "role": role}, {"$setOnInsert": progress}, upsert=True
+            )
+            progress = await _job_interview_progress(guest_id, role)
+    return {
+        "role": role,
+        "needs_role": needs_role,
+        "scenario_count": jobint.SCENARIO_COUNT,
+        "scenarios": scenarios,
+        "progress": progress,
+    }
+
+
+@api_router.put("/guests/{guest_id}/job-interview/open")
+async def job_interview_open(guest_id: str, payload: JobInterviewOpen):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    role = (guest.get("professional_profile") or {}).get("role")
+    if role not in jobint.ROLES:
+        raise HTTPException(status_code=400, detail="Job Interview requires a role")
+    if payload.scenario_id not in jobint.SCENARIO_BY_ID:
+        raise HTTPException(status_code=422, detail="Unknown scenario_id")
+    await db.job_interview_progress.update_one(
+        {"guest_id": guest_id, "role": role},
+        {"$set": {"last_opened_scenario_id": payload.scenario_id, "updated_at": now_iso()},
+         "$setOnInsert": {
+             "guest_id": guest_id, "role": role, "completed_scenario_ids": [],
+             "practice_answers": {}, "practice_correct_count": 0,
+             "started_at": now_iso(), "completed_at": None,
+             "content_version": jobint.CONTENT_VERSION,
+         }},
+        upsert=True,
+    )
+    return await _job_interview_progress(guest_id, role)
+
+
+@api_router.post("/guests/{guest_id}/job-interview/practice")
+async def job_interview_practice(guest_id: str, payload: JobInterviewPractice):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    role = (guest.get("professional_profile") or {}).get("role")
+    if role not in jobint.ROLES:
+        raise HTTPException(status_code=400, detail="Job Interview requires a role")
+    scenario = jobint.SCENARIO_BY_ID.get(payload.scenario_id)
+    if not scenario:
+        raise HTTPException(status_code=422, detail="Unknown scenario_id")
+
+    correct_index = scenario["practice"]["answer_index"]
+    correct = payload.answer_index == correct_index
+
+    progress = await _job_interview_progress(guest_id, role) or {
+        "guest_id": guest_id, "role": role, "completed_scenario_ids": [],
+        "last_opened_scenario_id": None, "practice_answers": {}, "practice_correct_count": 0,
+        "started_at": now_iso(), "completed_at": None, "content_version": jobint.CONTENT_VERSION,
+    }
+    answers = dict(progress.get("practice_answers") or {})
+    answers[payload.scenario_id] = {"answer_index": payload.answer_index, "correct": correct}
+    correct_count = sum(1 for a in answers.values() if a.get("correct"))
+    completed_ids = list(dict.fromkeys((progress.get("completed_scenario_ids") or []) + [payload.scenario_id]))
+    completed_at = progress.get("completed_at")
+    if len(completed_ids) >= jobint.SCENARIO_COUNT and not completed_at:
+        completed_at = now_iso()
+
+    await db.job_interview_progress.update_one(
+        {"guest_id": guest_id, "role": role},
+        {"$set": {
+            "practice_answers": answers,
+            "practice_correct_count": correct_count,
+            "completed_scenario_ids": completed_ids,
+            "last_opened_scenario_id": payload.scenario_id,
+            "completed_at": completed_at,
+            "updated_at": now_iso(),
+        },
+         "$setOnInsert": {
+             "guest_id": guest_id, "role": role,
+             "started_at": progress.get("started_at") or now_iso(),
+             "content_version": jobint.CONTENT_VERSION,
+         }},
+        upsert=True,
+    )
+    return {
+        "correct": correct,
+        "correct_index": correct_index,
+        "progress": await _job_interview_progress(guest_id, role),
+    }
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -1754,6 +1892,9 @@ async def startup_seed():
         await db.assessment_attempts.create_index([("guest_id", 1), ("completed_at", -1)])
         await db.shift_sessions.create_index(
             [("guest_id", 1), ("local_date", 1), ("role", 1)], unique=True
+        )
+        await db.job_interview_progress.create_index(
+            [("guest_id", 1), ("role", 1)], unique=True
         )
     except Exception as e:
         logger.warning(f"Index creation skipped: {e}")
