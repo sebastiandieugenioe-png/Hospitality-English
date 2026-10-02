@@ -167,6 +167,16 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - i18n: `tonights_shift_data.py` + `data/tonights_shift.json` (ui en 10 idiomas).
 - **Tests** (iteración 12): 20/20 backend + frontend happy path completo. Sin bugs. Confirmado: 5 items, estabilidad diaria/idioma, no-SRS/mastery, 10 idiomas, Assessment+Emergency intactos, 50/25/25.
 
+### Fase 7 (2026-06) — Listening MVP (WorkEnglish-compatible) (PREVIEW, SIN deploy)
+- **Contenido**: `backend/data/listening.json` (source of truth, read-only) = 50 listening items (25 bartender / 25 waiter), `profession_id="hospitality"`, 10 idiomas. 50 situation_slugs únicos = 1:1 con las 50 situations activas. `transcript_en` / `model_response_en` servidos verbatim (nunca traducidos/reescritos); `answer_index` nunca expuesto antes de responder.
+- **Audio**: adapter aislado `tts_elevenlabs.py` (ElevenLabs `eleven_multilingual_v2`, mp3_44100_128, VoiceSettings stability=0.5/similarity=0.75). Script idempotente `generate_listening_audio.py` → 50 MP3 en `frontend/public/listening/<slug>.mp3` (servidos estáticamente). Reproducción normal NUNCA llama a ElevenLabs. 4 voice profiles (irish/british/american/international) desde `ELEVENLABS_VOICE_*`.
+- **Backend** (`listening_data.py` + endpoints en `server.py`): `GET /api/listening/meta`, `GET /api/listening/item/{slug}?lang=` (answer-free, localizado), `GET /api/guests/{id}/listening-practice` (5 items, ranking determinista), `POST /api/guests/{id}/listening-attempts` (scoring + reveal), `GET /api/guests/{id}/listening-summary`.
+- **Ranking de Practice** (`_rank_listening_items_for_guest`): reusa `_rank_situations_for_guest` + boosts: not-yet-correct (+500), nuevo (+100), role match (+400), voice_profile↔target_country (señal suave +20). Determinista, sesión = 5, filtro profession=hospitality.
+- **Persistencia**: colección `listening_attempts` (id, guest_id, profession_id='hospitality', listening_item_id, situation_slug, selected_index, correct, attempted_at, interface_language) + contadores en guest (listening_attempted_count/correct_count). NO toca review_items/SRS ni mastery/completion existentes. Cambio de idioma conserva intentos.
+- **Lesson integration**: nuevo step `listening` en `Lesson.js` STEPS (después de flashcards, antes de exercises/quiz/completion) en las 50 lessons. Resultado listening independiente (no altera mastery/grading del lesson).
+- **Frontend**: `components/ListeningQuestion.js` (audio-first, transcript/translation/model_response ocultos hasta responder, reveal después), `pages/ListeningPractice.js` (/listening-practice, sesión de 5 + summary), card en Home (`listening-entry-card`). UI en 10 idiomas desde `/listening/meta`.
+- **Tests**: `tests/test_listening.py` 20/20 PASS (content, audio existente/HTTP/idempotente, answer-free, scoring, persistencia profession_id, cambio idioma, practice=5, role influence, regresión módulos + recommended 3-5). Suites existentes (first_week/job_interview/tonights_shift/emergency/assessment/phase2) 100/100 PASS → sin regresiones. **50/25/25 intacto. Sin deploy.**
+
 ## Next Tasks
 - (Backlog) Integrar flashcards legacy en el motor `review_items`.
 

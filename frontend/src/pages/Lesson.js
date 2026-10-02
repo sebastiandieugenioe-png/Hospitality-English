@@ -13,23 +13,27 @@ import {
   BookOpen,
 } from "lucide-react";
 import { toast } from "sonner";
-import { getLesson, startAttempt, submitResponse, completeAttempt } from "@/lib/api";
+import { getLesson, startAttempt, submitResponse, completeAttempt, getListeningMeta, getListeningItem } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
 import { getLocalizedField, getText, getLocalizedOptions } from "@/lib/i18n";
 import { ServiceNote } from "@/components/ServiceNote";
+import { ListeningQuestion } from "@/components/ListeningQuestion";
 
-const STEPS = ["intro", "phrases", "dialogue", "flashcards", "exercises", "quiz", "completion"];
+const STEPS = ["intro", "phrases", "dialogue", "flashcards", "listening", "exercises", "quiz", "completion"];
 
 export default function Lesson() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { logCompletion, ensureGuest, t } = useApp();
+  const { logCompletion, ensureGuest, language, t } = useApp();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stepIdx, setStepIdx] = useState(0);
   const [score, setScore] = useState({ correct: 0, total: 0 });
   const [attemptId, setAttemptId] = useState(null);
   const [attemptResult, setAttemptResult] = useState(null);
+  const [guestId, setGuestId] = useState(null);
+  const [listeningMeta, setListeningMeta] = useState(null);
+  const [listeningItem, setListeningItem] = useState(null);
   const recordedRef = useRef(false);
 
   useEffect(() => {
@@ -43,6 +47,7 @@ export default function Lesson() {
     if (!data?.available) return;
     (async () => {
       const gid = await ensureGuest();
+      setGuestId(gid);
       try {
         const a = await startAttempt(gid, slug);
         setAttemptId(a.attempt_id);
@@ -51,6 +56,26 @@ export default function Lesson() {
       }
     })();
   }, [data, slug, ensureGuest]);
+
+  // Listening step content (pre-generated audio; answer-free, localized).
+  useEffect(() => {
+    if (!data?.available) return;
+    let active = true;
+    (async () => {
+      try {
+        const [m, it] = await Promise.all([
+          listeningMeta ? Promise.resolve(listeningMeta) : getListeningMeta(),
+          getListeningItem(slug, language),
+        ]);
+        if (!active) return;
+        setListeningMeta(m);
+        setListeningItem(it);
+      } catch (e) {
+        if (active) setListeningItem(null); // no item → step auto-skips
+      }
+    })();
+    return () => { active = false; };
+  }, [data, slug, language]); // eslint-disable-line
 
   const sendResponse = async (question, section, submitted) => {
     if (!attemptId) return;
@@ -106,7 +131,7 @@ export default function Lesson() {
   const progress = (stepIdx / (STEPS.length - 1)) * 100;
 
   return (
-    <Shell onClose={() => navigate("/home")} progress={progress} label={t(`lesson.step.${step}`)}>
+    <Shell onClose={() => navigate("/home")} progress={progress} label={step === "listening" && listeningMeta ? getText(listeningMeta.ui.section_title, language) : t(`lesson.step.${step}`)}>
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -119,6 +144,21 @@ export default function Lesson() {
           {step === "phrases" && <Phrases lesson={lesson} onNext={next} onBack={prev} />}
           {step === "dialogue" && <Dialogue lesson={lesson} situation={data.situation} onNext={next} onBack={prev} />}
           {step === "flashcards" && <Flashcards lesson={lesson} onNext={next} />}
+          {step === "listening" && (
+            listeningItem && listeningMeta ? (
+              <ListeningQuestion
+                item={listeningItem}
+                ui={listeningMeta.ui}
+                language={language}
+                guestId={guestId}
+                onContinue={next}
+                submitLabel={t("question.next")}
+                continueLabel={t("question.next")}
+              />
+            ) : (
+              <SkipListening onDone={next} failed={listeningItem === null} />
+            )
+          )}
           {step === "exercises" && <Exercises lesson={lesson} onNext={next} onSubmit={sendResponse} />}
           {step === "quiz" && (
             <Quiz
@@ -145,6 +185,17 @@ export default function Lesson() {
       </AnimatePresence>
     </Shell>
   );
+}
+
+
+// Edge-case safety: if a situation has no listening item (should not happen for the
+// 50 active hospitality situations), auto-advance so the lesson never gets stuck.
+function SkipListening({ onDone, failed }) {
+  const { t } = useApp();
+  useEffect(() => {
+    if (failed) onDone();
+  }, [failed, onDone]);
+  return <p className="text-brand-charcoal/50">{t("lesson.loading")}</p>;
 }
 
 /* ---------- Layout ---------- */

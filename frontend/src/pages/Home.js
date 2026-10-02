@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, ClipboardCheck, LifeBuoy, Moon, Briefcase, CalendarDays } from "lucide-react";
+import { ArrowRight, Play, ClipboardCheck, LifeBuoy, Moon, Briefcase, CalendarDays, Headphones } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
-import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta, getEmergency, getTonightsShiftMeta, getTonightsShiftToday, getJobInterviewMeta, getJobInterview, getFirstWeekMeta, getFirstWeek } from "@/lib/api";
+import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta, getEmergency, getTonightsShiftMeta, getTonightsShiftToday, getJobInterviewMeta, getJobInterview, getFirstWeekMeta, getFirstWeek, getListeningMeta, getListeningSummary } from "@/lib/api";
 import { roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
 import { getLocalizedField, getText } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
@@ -28,6 +28,8 @@ export default function Home() {
   const [jobData, setJobData] = useState(null);
   const [fwMeta, setFwMeta] = useState(null);
   const [fwData, setFwData] = useState(null);
+  const [listeningMeta, setListeningMeta] = useState(null);
+  const [listeningSummary, setListeningSummary] = useState(null);
 
   // Send users with an incomplete professional profile through onboarding first.
   useEffect(() => {
@@ -93,6 +95,13 @@ export default function Home() {
   useEffect(() => {
     getFirstWeekMeta().then(setFwMeta).catch(() => {});
   }, []);
+  useEffect(() => {
+    getListeningMeta().then(setListeningMeta).catch(() => {});
+  }, []);
+  useEffect(() => {
+    if (!guestId) return;
+    getListeningSummary(guestId).then(setListeningSummary).catch(() => {});
+  }, [guestId]);
   useEffect(() => {
     if (!guestId) return;
     getJobInterview(guestId).then(setJobData).catch(() => {});
@@ -297,6 +306,33 @@ export default function Home() {
               </div>
               <span className="shrink-0 grid place-items-center w-12 h-12 rounded-xl bg-brand-espresso/10 text-brand-espresso">
                 <Moon className="w-6 h-6" />
+              </span>
+            </button>
+          </section>
+        )}
+
+        {/* Listening Practice entry point */}
+        {listeningMeta && (
+          <section className="mt-4">
+            <button
+              data-testid="listening-entry-card"
+              onClick={() => navigate("/listening-practice")}
+              className="group w-full text-left rounded-2xl bg-white border border-brand-espresso/15 p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-between gap-5"
+            >
+              <div>
+                <p className="text-lg font-serif text-brand-espresso">{getText(listeningMeta.ui.practice_title, language)}</p>
+                <p className="mt-1 text-sm text-brand-charcoal/60 leading-relaxed max-w-md">
+                  {getText(listeningMeta.ui.listen_prompt, language)}
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-forest">
+                  {listeningSummary && listeningSummary.attempted > 0
+                    ? `${listeningSummary.correct} / ${listeningSummary.attempted}`
+                    : getText(listeningMeta.ui.play, language)}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+              <span className="shrink-0 grid place-items-center w-12 h-12 rounded-xl bg-brand-espresso/10 text-brand-espresso">
+                <Headphones className="w-6 h-6" />
               </span>
             </button>
           </section>

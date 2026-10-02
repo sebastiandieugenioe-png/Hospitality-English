@@ -23,6 +23,7 @@ import emergency_data as emergency
 import tonights_shift_data as shift
 import job_interview_data as jobint
 import first_week_data as firstweek
+import listening_data as listening
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -128,6 +129,11 @@ class JobInterviewPractice(BaseModel):
 
 class JobInterviewOpen(BaseModel):
     scenario_id: str
+
+
+class ListeningAnswer(BaseModel):
+    listening_item_id: str
+    selected_index: int
 
 
 # ---------- Mastery + SRS constants ----------
@@ -1967,6 +1973,150 @@ async def first_week_practice(guest_id: str, payload: JobInterviewPractice):
     }
 
 
+# ---------- Listening MVP (WorkEnglish-compatible, vertical = hospitality) ----------
+async def _situation_titles(slugs, lang):
+    """Map of {slug: localized situation title} for option labels."""
+    docs = await db.situations.find(
+        {"slug": {"$in": list(slugs)}}, {"_id": 0, "slug": 1, "title_en": 1, "translations": 1, "title": 1}
+    ).to_list(1000)
+    out = {}
+    for d in docs:
+        out[d["slug"]] = _loc_field(d, "title", lang) or d.get("title_en") or d["slug"]
+    return out
+
+
+async def _listening_item_public(item, lang):
+    titles = await _situation_titles(item["option_situation_slugs"], lang)
+    return listening.public_item(item, lang, titles)
+
+
+async def _rank_listening_items_for_guest(guest):
+    """Deterministic ranking of the 50 (hospitality) listening items for a guest.
+
+    Priority: not-yet-correct in listening > situation relevance (role/progress/
+    weakness/goal via the shared ranker) > role match > voice_profile soft signal.
+    """
+    guest_id = guest["id"]
+    profile = guest.get("professional_profile") or {}
+    role = profile.get("role")
+    target_country = profile.get("target_country")
+
+    # Situation relevance score (reuses the shared, deterministic ranker).
+    scored = await _rank_situations_for_guest(guest)
+    sit_score = {s["slug"]: sc for sc, _o, s, _r in scored}
+    sit_order = {s["slug"]: (s.get("order") or 0) for _sc, _o, s, _r in scored}
+
+    # Prior listening performance per item.
+    attempts = await db.listening_attempts.find(
+        {"guest_id": guest_id}, {"_id": 0, "listening_item_id": 1, "correct": 1}
+    ).to_list(5000)
+    correct_ids = {a["listening_item_id"] for a in attempts if a.get("correct")}
+    attempted_ids = {a["listening_item_id"] for a in attempts}
+
+    country_profile = {
+        "ireland": "irish_clear", "uk": "british_clear", "united_kingdom": "british_clear",
+        "usa": "american_clear", "united_states": "american_clear",
+    }.get((target_country or "").lower())
+
+    ranked = []
+    for item in listening.ITEMS:
+        slug = item["situation_slug"]
+        score = sit_score.get(slug, 0.0)
+        if item["id"] not in correct_ids:
+            score += 500.0  # prefer not-yet-correct
+        if item["id"] not in attempted_ids:
+            score += 100.0  # slight preference for brand-new items
+        if role and item["role"] == role:
+            score += 400.0
+        if country_profile and item["voice_profile"] == country_profile:
+            score += 20.0  # soft signal only; never blocks
+        ranked.append((score, sit_order.get(slug, 0), item))
+    ranked.sort(key=lambda x: (-x[0], x[1]))
+    return [it for _s, _o, it in ranked]
+
+
+@api_router.get("/listening/meta")
+async def listening_meta():
+    return {
+        "ui": listening.UI,
+        "item_count": listening.ITEM_COUNT,
+        "languages": listening.INTERFACE_LANGUAGES,
+        "profession_id": listening.PROFESSION_ID,
+        "session_size": listening.SESSION_SIZE,
+    }
+
+
+@api_router.get("/listening/item/{situation_slug}")
+async def listening_item(situation_slug: str, lang: str = Query(DEFAULT_LANGUAGE)):
+    item = listening.ITEM_BY_SLUG.get(situation_slug)
+    if not item:
+        raise HTTPException(status_code=404, detail="No listening item for this situation")
+    if lang not in SUPPORTED_LANG_CODES:
+        lang = DEFAULT_LANGUAGE
+    return await _listening_item_public(item, lang)
+
+
+@api_router.get("/guests/{guest_id}/listening-practice")
+async def listening_practice(guest_id: str):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
+    ranked = await _rank_listening_items_for_guest(guest)
+    chosen = ranked[: listening.SESSION_SIZE]
+    items = [await _listening_item_public(it, lang) for it in chosen]
+    return {"session_size": listening.SESSION_SIZE, "profession_id": listening.PROFESSION_ID, "items": items}
+
+
+@api_router.post("/guests/{guest_id}/listening-attempts")
+async def listening_attempt(guest_id: str, payload: ListeningAnswer):
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    item = listening.ITEM_BY_ID.get(payload.listening_item_id)
+    if not item:
+        raise HTTPException(status_code=422, detail="Unknown listening_item_id")
+
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
+    correct = payload.selected_index == item["answer_index"]
+    attempt = {
+        "id": str(uuid.uuid4()),
+        "guest_id": guest_id,
+        "profession_id": listening.PROFESSION_ID,  # hospitality in V1
+        "listening_item_id": item["id"],
+        "situation_slug": item["situation_slug"],
+        "selected_index": payload.selected_index,
+        "correct": correct,
+        "attempted_at": now_iso(),
+        "interface_language": lang,
+    }
+    await db.listening_attempts.insert_one(dict(attempt))
+
+    # Maintain summary counters on the guest (recomputed to avoid drift).
+    attempted_count = await db.listening_attempts.count_documents({"guest_id": guest_id})
+    correct_count = await db.listening_attempts.count_documents({"guest_id": guest_id, "correct": True})
+    await db.guests.update_one(
+        {"id": guest_id},
+        {"$set": {"listening_attempted_count": attempted_count, "listening_correct_count": correct_count}},
+    )
+
+    return {
+        "correct": correct,
+        "correct_index": item["answer_index"],
+        "correct_slug": item["situation_slug"],
+        "reveal": listening.reveal_payload(item, lang),
+        "summary": {"attempted": attempted_count, "correct": correct_count},
+    }
+
+
+@api_router.get("/guests/{guest_id}/listening-summary")
+async def listening_summary(guest_id: str):
+    attempted = await db.listening_attempts.count_documents({"guest_id": guest_id})
+    correct = await db.listening_attempts.count_documents({"guest_id": guest_id, "correct": True})
+    return {"attempted": attempted, "correct": correct, "item_count": listening.ITEM_COUNT}
+
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -2017,6 +2167,9 @@ async def startup_seed():
         await db.first_week_progress.create_index(
             [("guest_id", 1), ("role", 1)], unique=True
         )
+        await db.listening_attempts.create_index("guest_id")
+        await db.listening_attempts.create_index([("guest_id", 1), ("listening_item_id", 1)])
+        await db.listening_attempts.create_index([("guest_id", 1), ("correct", 1)])
     except Exception as e:
         logger.warning(f"Index creation skipped: {e}")
     logger.info("Content + reference data seeded.")

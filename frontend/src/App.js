@@ -16,6 +16,7 @@ import EmergencyPhrases from "@/pages/EmergencyPhrases";
 import TonightsShift from "@/pages/TonightsShift";
 import JobInterview from "@/pages/JobInterview";
 import FirstWeek from "@/pages/FirstWeek";
+import ListeningPractice from "@/pages/ListeningPractice";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="/tonights-shift" element={<TonightsShift />} />
             <Route path="/job-interview" element={<JobInterview />} />
             <Route path="/first-week" element={<FirstWeek />} />
+            <Route path="/listening-practice" element={<ListeningPractice />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-center" />

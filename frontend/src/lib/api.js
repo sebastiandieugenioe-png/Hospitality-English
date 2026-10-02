@@ -92,6 +92,17 @@ export const openFirstWeekScenario = (guestId, scenario_id) =>
   client.put(`/guests/${guestId}/first-week/open`, { scenario_id }).then((r) => r.data);
 export const submitFirstWeekPractice = (guestId, payload) =>
   client.post(`/guests/${guestId}/first-week/practice`, payload).then((r) => r.data);
+// Listening MVP
+export const getListeningMeta = () => client.get("/listening/meta").then((r) => r.data);
+export const getListeningItem = (situationSlug, lang) =>
+  client.get(`/listening/item/${situationSlug}`, { params: { lang } }).then((r) => r.data);
+export const getListeningPractice = (guestId) =>
+  client.get(`/guests/${guestId}/listening-practice`).then((r) => r.data);
+export const submitListeningAttempt = (guestId, payload) =>
+  client.post(`/guests/${guestId}/listening-attempts`, payload).then((r) => r.data);
+export const getListeningSummary = (guestId) =>
+  client.get(`/guests/${guestId}/listening-summary`).then((r) => r.data);
+
 export const updateLanguage = (id, interface_language) =>
   client.put(`/guests/${id}/language`, { interface_language }).then((r) => r.data);
 export const getLanguages = () => client.get("/languages").then((r) => r.data);
