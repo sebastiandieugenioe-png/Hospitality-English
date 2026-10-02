@@ -31,10 +31,10 @@ class TestOnboarding:
         assert r.status_code == 200, r.text
         g = r.json()
         assert g["onboarding_completed"] is True
-        assert g["professional_profile"] == {**VALID, "english_level": None}
+        assert g["professional_profile"] == {**VALID, "english_level": None, "employment_status": None}
         # Persistence: re-fetch.
         g2 = requests.get(f"{API}/guests/{gid}").json()
-        assert g2["professional_profile"] == {**VALID, "english_level": None}
+        assert g2["professional_profile"] == {**VALID, "english_level": None, "employment_status": None}
         assert g2["onboarding_completed"] is True
 
     def test_invalid_role_rejected(self):

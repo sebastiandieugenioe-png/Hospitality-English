@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
-import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats } from "@/lib/api";
-import { recommendationMap, roleToCategory, roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
+import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations } from "@/lib/api";
+import { roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
 import { getLocalizedField } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
 
@@ -18,6 +18,7 @@ export default function Home() {
   const [featured, setFeatured] = useState(null);
   const [resume, setResume] = useState(null);
   const [masteredCount, setMasteredCount] = useState(0);
+  const [recommended, setRecommended] = useState([]);
 
   // Send users with an incomplete professional profile through onboarding first.
   useEffect(() => {
@@ -60,10 +61,12 @@ export default function Home() {
       .catch(() => {});
   }, [profile, language]);
 
-  const primaryCategory = roleToCategory[profile?.role] || "general";
-  const recSlugs = recommendationMap[primaryCategory] || recommendationMap.other;
-  const bySlug = (slug) => categories.find((c) => c.slug === slug);
-  const recommended = recSlugs.map(bySlug).filter(Boolean);
+  // Personalized "Recommended for you" situations (deterministic backend ranking).
+  // Refetch on language change so titles/descriptions stay localized.
+  useEffect(() => {
+    if (!guestId) return;
+    getRecommendedSituations(guestId, { limit: 5 }).then(setRecommended).catch(() => {});
+  }, [guestId, language, profile]);
 
   return (
     <div className="min-h-screen bg-brand-sand">
@@ -164,11 +167,15 @@ export default function Home() {
           <h2 className="text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50 mb-4">
             {t("home.recommendedForYou")}
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {recommended.map((cat, i) => (
-              <CategoryCard key={cat.slug} cat={cat} highlight index={i} testIdPrefix="recommended-card" language={language} t={t} />
-            ))}
-          </div>
+          {recommended.length === 0 ? (
+            <p data-testid="recommended-empty" className="text-brand-charcoal/50">{t("home.recommendedEmpty")}</p>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="recommended-situations">
+              {recommended.map((s, i) => (
+                <RecommendedSituationCard key={s.slug} situation={s} index={i} t={t} navigate={navigate} />
+              ))}
+            </div>
+          )}
         </section>
 
         {/* Explore categories */}
@@ -188,6 +195,42 @@ export default function Home() {
         </section>
       </main>
     </div>
+  );
+}
+
+function RecommendedSituationCard({ situation, index, t, navigate }) {
+  const statusKey = `status.${situation.status}`;
+  const showStatus = situation.status && situation.status !== "not_started";
+  return (
+    <motion.button
+      data-testid={`recommended-situation-${situation.slug}`}
+      onClick={() => navigate(`/lesson/${situation.slug}`)}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: index * 0.05 }}
+      className="group text-left h-full w-full rounded-2xl bg-white border border-black/5 p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all flex flex-col"
+    >
+      <div className="flex items-start justify-between">
+        <span className="grid place-items-center w-12 h-12 rounded-xl bg-brand-forest text-white">
+          <Play className="w-5 h-5 ml-0.5" fill="currentColor" />
+        </span>
+        {showStatus && (
+          <span className="text-[10px] uppercase tracking-[0.15em] font-semibold text-brand-forest bg-brand-success-muted rounded-full px-2.5 py-1">
+            {t(statusKey)}
+          </span>
+        )}
+      </div>
+      <h3 className="mt-5 text-xl font-serif text-brand-espresso">{situation.title}</h3>
+      {situation.description && (
+        <p className="mt-1 text-sm text-brand-charcoal/60 leading-relaxed line-clamp-2">
+          {situation.description}
+        </p>
+      )}
+      <span className="mt-4 inline-flex items-center gap-1 text-sm text-brand-forest font-medium">
+        {t("intro.start")}
+        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+      </span>
+    </motion.button>
   );
 }
 

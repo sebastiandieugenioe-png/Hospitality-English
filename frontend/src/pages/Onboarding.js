@@ -14,15 +14,19 @@ import { legacyWorkplaceToRole } from "@/lib/content";
 import { getLocalizedField, SUPPORTED_LANGUAGES } from "@/lib/i18n";
 import { useApp, DRAFT_KEY } from "@/context/AppContext";
 
-const emptySelections = { interface_language: "", role: "", venue_type: "", target_country: "", goal: "" };
+const emptySelections = { interface_language: "", role: "", venue_type: "", target_country: "", goal: "", employment_status: "" };
 
-// 5 functional steps: language first, then the professional profile.
+// Employment status is a fixed set (not a backend taxonomy); labels come from i18n.
+const EMPLOYMENT_OPTIONS = ["looking_for_job", "interview_soon", "starting_new_job", "already_working"];
+
+// 6 functional steps: language first, then the professional profile.
 const STEPS = [
   { id: "language", field: "interface_language" },
   { id: "role", field: "role" },
   { id: "venue", field: "venue_type" },
   { id: "country", field: "target_country" },
   { id: "goal", field: "goal" },
+  { id: "employment", field: "employment_status" },
 ];
 
 function loadDraft() {
@@ -77,6 +81,8 @@ export default function Onboarding() {
   let currentOptions = [];
   if (current.id === "language") {
     currentOptions = SUPPORTED_LANGUAGES.map((l) => ({ value: l.code, label: l.native_name, flag: l.flag }));
+  } else if (current.id === "employment") {
+    currentOptions = EMPLOYMENT_OPTIONS.map((id) => ({ value: id, label: t(`onboarding.employment.${id}`) }));
   } else if (taxonomies) {
     currentOptions = (taxonomies[current.field] || []).map((item) => ({
       value: item.slug || item.id,
@@ -112,6 +118,7 @@ export default function Onboarding() {
         venue_type: selections.venue_type,
         target_country: selections.target_country,
         goal: selections.goal,
+        employment_status: selections.employment_status,
       });
       navigate("/home", { replace: true });
     } catch (e) {
@@ -157,10 +164,10 @@ export default function Onboarding() {
             </p>
 
             <div className="mt-8 grid gap-3" data-testid={`onboarding-options-${current.field}`}>
-              {optionsError && current.id !== "language" && (
+              {optionsError && current.id !== "language" && current.id !== "employment" && (
                 <p className="text-brand-terracotta">{t("onboarding.optionsError")}</p>
               )}
-              {current.id !== "language" && !taxonomies && !optionsError && (
+              {current.id !== "language" && current.id !== "employment" && !taxonomies && !optionsError && (
                 <p className="text-brand-charcoal/50">{t("onboarding.optionsLoading")}</p>
               )}
               {currentOptions.map((opt) => {

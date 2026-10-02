@@ -29,8 +29,17 @@ export const DEFAULT_LANGUAGE = "es";
 const LOCALES = { es, it, fr, pt, de, pl, ro, uk, nl, en };
 
 export function detectBrowserLanguage() {
-  const code = (navigator.language || "es").toLowerCase().split("-")[0];
-  return SUPPORTED_CODES.includes(code) ? code : DEFAULT_LANGUAGE;
+  // First use only: pick the first device language we support, normalizing
+  // regional variants (es-AR → es, en-IE → en, pt-BR → pt). Fallback to Spanish.
+  const list =
+    navigator.languages && navigator.languages.length
+      ? navigator.languages
+      : [navigator.language || DEFAULT_LANGUAGE];
+  for (const raw of list) {
+    const code = String(raw).toLowerCase().split("-")[0];
+    if (SUPPORTED_CODES.includes(code)) return code;
+  }
+  return DEFAULT_LANGUAGE;
 }
 
 // Builds a t(key, vars) function for the given language, falling back to Spanish

@@ -30,6 +30,8 @@ export const completeAttempt = (attemptId) =>
 export const getAttempts = (guestId) => client.get(`/guests/${guestId}/attempts`).then((r) => r.data);
 export const getSituationStats = (guestId) =>
   client.get(`/guests/${guestId}/situation-stats`).then((r) => r.data);
+export const getRecommendedSituations = (guestId, params = {}) =>
+  client.get(`/guests/${guestId}/recommended-situations`, { params }).then((r) => r.data);
 
 // Spaced repetition / Mistake Bank
 export const getReviewItems = (guestId, params = {}) =>

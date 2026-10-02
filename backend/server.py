@@ -59,6 +59,8 @@ class ProfileUpdate(BaseModel):
     target_country: str
     goal: str
     english_level: Optional[str] = None
+    # Phase 2: current employment situation (optional for backwards compatibility).
+    employment_status: Optional[str] = None
 
 
 class FlashcardInteraction(BaseModel):
@@ -99,6 +101,13 @@ DEFAULT_EASE = 2.5
 MIN_EASE = 1.3
 AGAIN_DELAY_MINUTES = 10
 VALID_RATINGS = {"again", "hard", "good", "easy"}
+
+# ---------- Recommendation (Phase 2) constants ----------
+EMPLOYMENT_STATUSES = {"looking_for_job", "interview_soon", "starting_new_job", "already_working"}
+LEVEL_ORDER = {"a1": 1, "a2": 2, "b1": 3, "b2": 4, "c1": 5, "c2": 6}
+# Skill buckets used only to bias ranking (never to hide content).
+REC_COMMUNICATION_SKILLS = {"greeting-guests", "recommendations", "complaints", "service-recovery"}
+REC_PRACTICAL_SKILLS = {"taking-orders", "seating-guests", "payments", "menu-knowledge", "drink-knowledge"}
 
 # ---------- i18n ----------
 # Central language registry. Add a new language here (+ data/locale files) to
@@ -492,6 +501,7 @@ async def create_guest(payload: GuestCreate):
             "target_country": None,
             "goal": None,
             "english_level": None,
+            "employment_status": None,
         },
         "onboarding_completed": False,
         # Existing progress (must never be reset).
@@ -519,6 +529,8 @@ async def update_profile(guest_id: str, payload: ProfileUpdate):
         invalid.append("target_country")
     if not await db.learning_goals.find_one({"id": payload.goal}):
         invalid.append("goal")
+    if payload.employment_status is not None and payload.employment_status not in EMPLOYMENT_STATUSES:
+        invalid.append("employment_status")
     if invalid:
         raise HTTPException(status_code=422, detail=f"Invalid values for: {', '.join(invalid)}")
 
@@ -528,6 +540,7 @@ async def update_profile(guest_id: str, payload: ProfileUpdate):
         "target_country": payload.target_country,
         "goal": payload.goal,
         "english_level": payload.english_level,
+        "employment_status": payload.employment_status,
     }
     await db.guests.update_one(
         {"id": guest_id},
@@ -745,6 +758,10 @@ async def list_attempts(guest_id: str):
 
 @api_router.get("/guests/{guest_id}/situation-stats")
 async def situation_stats(guest_id: str):
+    return await _compute_situation_stats(guest_id)
+
+
+async def _compute_situation_stats(guest_id):
     attempts = await db.situation_attempts.find({"guest_id": guest_id}, {"_id": 0}).to_list(1000)
     stats = {}
     for a in attempts:
@@ -773,6 +790,113 @@ async def situation_stats(guest_id: str):
         else:
             s["status"] = "in_progress"
     return stats
+
+
+# ---------- Recommendations (Phase 2: onboarding with real consequences) ----------
+def _rec_score(sit, profile, stats, weak_skills):
+    """Deterministic, interpretable ranking score for a situation given a guest profile.
+
+    Weight tiers are banded so each criterion dominates the next, in the required order:
+    role > progress > weaknesses > goal/employment > venue > english level.
+    Never hides content (every active situation is still scored & reachable via catalog).
+    """
+    role = profile.get("role")
+    venue = profile.get("venue_type")
+    goal = profile.get("goal")
+    emp = profile.get("employment_status")
+    level = profile.get("english_level")
+    sit_skills = set(sit.get("skills") or [])
+    primary = sit.get("primary_skill")
+    difficulty = sit.get("difficulty") or 1
+    score = 0.0
+    reasons = []
+
+    # 1) Role: the strongest signal.
+    if role and role in (sit.get("roles") or []):
+        score += 1000.0
+        reasons.append("role")
+
+    # 2) Progress: surface what is not completed yet; demote mastered.
+    status = stats.get(sit["slug"], {}).get("status", "not_started")
+    score += {"not_started": 200.0, "in_progress": 120.0, "completed": 40.0, "mastered": 0.0}.get(status, 200.0)
+    if status in ("not_started", "in_progress"):
+        reasons.append("new")
+
+    # 3) Weaknesses from the mistake bank.
+    if primary and primary in weak_skills:
+        score += 80.0
+        reasons.append("weakness")
+    elif sit_skills & weak_skills:
+        score += 40.0
+        reasons.append("weakness")
+
+    # 4) Goal + employment status bias practice focus (never a hard filter).
+    focus = set()
+    if goal == "prepare_for_interview" or emp == "interview_soon" or goal == "improve_guest_communication":
+        focus |= REC_COMMUNICATION_SKILLS
+    if emp == "starting_new_job":
+        focus |= REC_PRACTICAL_SKILLS
+    if emp == "already_working" or goal == "improve_current_job":
+        score += difficulty * 15.0  # bias towards more advanced service situations
+    if emp == "looking_for_job" or goal == "first_hospitality_job":
+        focus |= REC_PRACTICAL_SKILLS
+        score += max(0, 3 - difficulty) * 15.0  # bias towards fundamentals
+    if focus and (primary in focus or (sit_skills & focus)):
+        score += 60.0
+        reasons.append("goal")
+
+    # 5) Venue: match when metadata exists; empty venue_types stays neutral.
+    vt = sit.get("venue_types") or []
+    if venue and vt and venue in vt:
+        score += 30.0
+        reasons.append("venue")
+
+    # 6) English level: prefer situations near the guest's level.
+    if level and sit.get("level"):
+        want, have = LEVEL_ORDER.get(level), LEVEL_ORDER.get(sit.get("level"))
+        if want and have:
+            score += max(0.0, 20.0 - abs(want - have) * 10.0)
+
+    return score, reasons
+
+
+@api_router.get("/guests/{guest_id}/recommended-situations")
+async def recommended_situations(guest_id: str, limit: int = Query(5, ge=1, le=10)):
+    """~3-5 situations ranked for this guest. Deterministic and localized.
+    The full catalog always stays reachable; this is personalization only."""
+    guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    lang = guest.get("interface_language", DEFAULT_LANGUAGE)
+    profile = guest.get("professional_profile") or {}
+
+    situations = await db.situations.find({"active": True}, {"_id": 0}).to_list(500)
+    stats = await _compute_situation_stats(guest_id)
+    review = await db.review_items.find({"guest_id": guest_id}, {"_id": 0, "primary_skill": 1}).to_list(2000)
+    weak_skills = {it.get("primary_skill") for it in review if it.get("primary_skill")}
+
+    scored = []
+    for s in situations:
+        sc, reasons = _rec_score(s, profile, stats, weak_skills)
+        scored.append((sc, s.get("order") or 0, s, reasons))
+    # Highest score first; ties broken by lower order (stable, interpretable).
+    scored.sort(key=lambda x: (-x[0], x[1]))
+
+    out = []
+    for sc, _order, s, reasons in scored[:limit]:
+        out.append({
+            "slug": s["slug"],
+            "title": _loc_field(s, "title", lang) or s.get("title_en"),
+            "description": _loc_field(s, "description", lang),
+            "category": s.get("category"),
+            "primary_skill": s.get("primary_skill"),
+            "level": s.get("level"),
+            "roles": s.get("roles") or [],
+            "status": stats.get(s["slug"], {}).get("status", "not_started"),
+            "score": round(sc, 1),
+            "reasons": reasons,
+        })
+    return out
 
 
 # ---------- Spaced Repetition / Mistake Bank ----------

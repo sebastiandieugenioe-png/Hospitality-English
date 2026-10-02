@@ -93,9 +93,9 @@ export function AppProvider({ children }) {
   };
 
   // Persists the completed professional profile to MongoDB (source of truth).
-  const completeProfile = async ({ role, venue_type, target_country, goal }) => {
+  const completeProfile = async ({ role, venue_type, target_country, goal, employment_status }) => {
     const id = await ensureGuest();
-    const updated = await api.updateProfile(id, { role, venue_type, target_country, goal });
+    const updated = await api.updateProfile(id, { role, venue_type, target_country, goal, employment_status });
     setGuest(updated);
     localStorage.removeItem(DRAFT_KEY);
     return updated;
