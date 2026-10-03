@@ -3,7 +3,8 @@ import * as api from "@/lib/api";
 import { makeT, detectBrowserLanguage, DEFAULT_LANGUAGE, SUPPORTED_CODES } from "@/lib/i18n";
 import {
   ensureAnonymous, getIdToken, watchAuth, signInWithGoogle as fbSignInGoogle,
-  firebaseSignOut, deleteFirebaseUser, reauthenticateGoogle,
+  firebaseSignOut, deleteFirebaseUser,
+  connectGoogleCredential, reauthWithGoogleCredential,
 } from "@/lib/firebase";
 
 const AppContext = createContext(null);
@@ -198,8 +199,11 @@ export function AppProvider({ children }) {
   const legacyOnboarding = guest?.onboarding || null;
 
   // ---- Accounts/Auth actions ----
-  const signInWithGoogle = async () => {
-    await fbSignInGoogle(); // links to anon user or signs into existing account
+  // GIS path (popup-free). Takes a Google ID token from Google Identity Services,
+  // links it to the anonymous user (or signs in to an existing account), then
+  // reconciles with the backend. Progress is never copied/migrated.
+  const connectGoogle = async (googleIdToken) => {
+    const res = await connectGoogleCredential(googleIdToken);
     const token = await getIdToken(true);
     const local = localStorage.getItem(GUEST_KEY);
     const r = await api.authCompleteLink(token, { current_guest_id: local, profession_id: "hospitality" });
@@ -211,7 +215,29 @@ export function AppProvider({ children }) {
       const me = await api.authMe(token);
       setAccount(me.user);
     } catch {}
-    return r; // { loaded_existing_account, canonical_guest_id, ... }
+    return { ...r, mode: res.mode };
+  };
+
+  // Recent-login reauthentication via a fresh GIS credential (for deletion).
+  const reauthGoogle = async (googleIdToken) => {
+    await reauthWithGoogleCredential(googleIdToken);
+  };
+
+  // Legacy popup flow kept only for rollback — NOT used by Continue with Google.
+  const signInWithGoogle = async () => {
+    await fbSignInGoogle();
+    const token = await getIdToken(true);
+    const local = localStorage.getItem(GUEST_KEY);
+    const r = await api.authCompleteLink(token, { current_guest_id: local, profession_id: "hospitality" });
+    if (r.canonical_guest_id && r.canonical_guest_id !== local) {
+      localStorage.setItem(GUEST_KEY, r.canonical_guest_id);
+      setGuestId(r.canonical_guest_id);
+    }
+    try {
+      const me = await api.authMe(token);
+      setAccount(me.user);
+    } catch {}
+    return r;
   };
 
   const logout = async () => {
@@ -229,19 +255,8 @@ export function AppProvider({ children }) {
   };
 
   const deleteAccount = async () => {
-    let token = await getIdToken(true);
-    try {
-      await api.deleteAccount(token);
-    } catch (e) {
-      // If Firebase requires a recent login for a sensitive op, reauthenticate and retry.
-      if (e?.response?.status === 401) {
-        await reauthenticateGoogle();
-        token = await getIdToken(true);
-        await api.deleteAccount(token);
-      } else {
-        throw e;
-      }
-    }
+    const token = await getIdToken(true);
+    await api.deleteAccount(token); // backend deletes learning data + user + Firebase Auth user
     try { await deleteFirebaseUser(); } catch {}
     try { await firebaseSignOut(); } catch {}
     localStorage.removeItem(GUEST_KEY);
@@ -277,6 +292,8 @@ export function AppProvider({ children }) {
     account,
     authReady,
     isAuthenticated: !!account,
+    connectGoogle,
+    reauthGoogle,
     signInWithGoogle,
     logout,
     deleteAccount,

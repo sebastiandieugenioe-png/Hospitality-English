@@ -1,52 +1,100 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, LogOut, Trash2, Mail, ShieldCheck, Loader2, AlertTriangle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
-import { APPLE_ENABLED } from "@/lib/firebase";
+import { APPLE_ENABLED, renderGisButton, GOOGLE_CLIENT_ID } from "@/lib/firebase";
 
 export default function Account() {
   const navigate = useNavigate();
-  const { account, isAuthenticated, signInWithGoogle, logout, deleteAccount } = useApp();
+  const { account, isAuthenticated, connectGoogle, reauthGoogle, logout, deleteAccount } = useApp();
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
   const [err, setErr] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [gisUnavailable, setGisUnavailable] = useState(false);
 
-  const handleGoogle = async () => {
+  const googleBtnRef = useRef(null);
+  const reauthBtnRef = useRef(null);
+  // Latest auth state for the single shared GIS callback.
+  const stateRef = useRef({ isAuthenticated, confirmDelete });
+  stateRef.current = { isAuthenticated, confirmDelete };
+
+  const friendly = (e) => {
+    const code = e?.code || "";
+    if (code.includes("popup") || code.includes("cancelled") || e?.type === "gis_cancelled") return null; // user cancelled
+    if (code === "auth/network-request-failed" || e?.message === "gis_unavailable") return "Network problem. Please check your connection and try again.";
+    if (code === "auth/invalid-credential") return "That Google sign-in could not be verified. Please try again.";
+    return "Could not complete Google sign-in. Please try again.";
+  };
+
+  // Single GIS credential callback. Purpose inferred from current state:
+  // authenticated + confirming delete -> reauth+delete; otherwise -> link/sign-in.
+  const onCredential = async (response) => {
+    const googleIdToken = response?.credential; // kept only in memory
+    if (!googleIdToken) return;
     setBusy(true); setErr(null); setMsg(null);
     try {
-      const r = await signInWithGoogle();
-      if (r?.loaded_existing_account) setMsg("Your saved account progress has been loaded.");
-      else setMsg("Your progress is now saved to your account.");
-    } catch (e) {
-      if (e?.code === "auth/popup-closed-by-user" || e?.code === "auth/cancelled-popup-request") {
-        setErr(null);
+      if (stateRef.current.isAuthenticated && stateRef.current.confirmDelete) {
+        await reauthGoogle(googleIdToken);
+        await deleteAccount();
+        setConfirmDelete(false);
+        setMsg("Your account and learning data have been deleted.");
       } else {
-        setErr("Could not complete Google sign-in. Please try again.");
+        const r = await connectGoogle(googleIdToken);
+        setMsg(r?.loaded_existing_account
+          ? "Your saved account progress has been loaded."
+          : "Your progress is now saved to your account.");
       }
+    } catch (e) {
+      const m = friendly(e);
+      if (m) setErr(m);
     } finally {
       setBusy(false);
     }
   };
+
+  // Render the GIS button for the guest "Continue with Google" entry point.
+  useEffect(() => {
+    if (isAuthenticated || !GOOGLE_CLIENT_ID) {
+      if (!GOOGLE_CLIENT_ID) setGisUnavailable(true);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        if (googleBtnRef.current) {
+          googleBtnRef.current.innerHTML = "";
+          await renderGisButton(googleBtnRef.current, onCredential, { width: 300 });
+        }
+      } catch (e) {
+        if (!cancelled) setGisUnavailable(true);
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line
+  }, [isAuthenticated]);
+
+  // Render a GIS button to confirm deletion (recent-login reauthentication).
+  useEffect(() => {
+    if (!isAuthenticated || !confirmDelete || !GOOGLE_CLIENT_ID) return;
+    (async () => {
+      try {
+        if (reauthBtnRef.current) {
+          reauthBtnRef.current.innerHTML = "";
+          await renderGisButton(reauthBtnRef.current, onCredential, { width: 300 });
+        }
+      } catch (e) {
+        setGisUnavailable(true);
+      }
+    })();
+    // eslint-disable-next-line
+  }, [isAuthenticated, confirmDelete]);
 
   const handleLogout = async () => {
     setBusy(true); setErr(null); setMsg(null);
-    try { await logout(); setMsg(null); } catch (e) { setErr("Sign out failed. Please try again."); }
+    try { await logout(); } catch (e) { setErr("Sign out failed. Please try again."); }
     finally { setBusy(false); }
-  };
-
-  const handleDelete = async () => {
-    setBusy(true); setErr(null);
-    try {
-      await deleteAccount();
-      setConfirmDelete(false);
-      setMsg("Your account and learning data have been deleted.");
-    } catch (e) {
-      setErr("Could not delete the account. Please try again.");
-    } finally {
-      setBusy(false);
-    }
   };
 
   return (
@@ -110,26 +158,24 @@ export default function Account() {
               {!confirmDelete ? (
                 <button
                   data-testid="account-delete-btn"
-                  onClick={() => setConfirmDelete(true)}
+                  onClick={() => { setErr(null); setMsg(null); setConfirmDelete(true); }}
                   className="mt-4 inline-flex items-center gap-2 rounded-lg bg-brand-terracotta text-white px-5 py-2.5 font-medium hover:opacity-90 transition-opacity"
                 >
                   <Trash2 className="w-4 h-4" /> Delete account
                 </button>
               ) : (
-                <div className="mt-4 flex flex-col sm:flex-row gap-3">
-                  <button
-                    data-testid="account-delete-confirm-btn"
-                    disabled={busy}
-                    onClick={handleDelete}
-                    className="inline-flex items-center justify-center gap-2 flex-1 rounded-lg bg-brand-terracotta text-white px-5 py-2.5 font-medium hover:opacity-90 disabled:opacity-40 transition-opacity"
-                  >
-                    {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />} Yes, delete everything
-                  </button>
+                <div className="mt-4 space-y-3">
+                  <p className="text-sm text-brand-charcoal/70">For your security, confirm it's you with Google, then your account will be deleted:</p>
+                  {busy ? (
+                    <p className="flex items-center gap-2 text-sm text-brand-charcoal/60"><Loader2 className="w-4 h-4 animate-spin" /> Deleting…</p>
+                  ) : (
+                    <div ref={reauthBtnRef} data-testid="account-reauth-google" className="min-h-[44px]" />
+                  )}
                   <button
                     data-testid="account-delete-cancel-btn"
                     disabled={busy}
                     onClick={() => setConfirmDelete(false)}
-                    className="flex-1 rounded-lg border border-black/10 text-brand-charcoal/70 px-5 py-2.5 font-medium hover:bg-brand-sand transition-colors"
+                    className="rounded-lg border border-black/10 text-brand-charcoal/70 px-5 py-2.5 font-medium hover:bg-brand-sand transition-colors"
                   >
                     Cancel
                   </button>
@@ -143,14 +189,15 @@ export default function Account() {
             <div className="rounded-2xl bg-white border border-black/5 p-6 shadow-sm">
               <p className="text-lg font-serif text-brand-espresso">Save your progress</p>
               <p className="mt-1 text-sm text-brand-charcoal/60">Save your progress and continue on another device.</p>
-              <button
-                data-testid="account-google-btn"
-                disabled={busy}
-                onClick={handleGoogle}
-                className="mt-5 inline-flex items-center justify-center gap-3 w-full rounded-lg bg-brand-forest text-white px-6 py-3.5 font-medium hover:bg-brand-forest-hover disabled:opacity-40 transition-colors"
-              >
-                {busy ? <Loader2 className="w-5 h-5 animate-spin" /> : <GoogleGlyph />} Continue with Google
-              </button>
+
+              {busy ? (
+                <p className="mt-5 flex items-center gap-2 text-brand-charcoal/60"><Loader2 className="w-5 h-5 animate-spin" /> Connecting…</p>
+              ) : gisUnavailable ? (
+                <p data-testid="account-gis-unavailable" className="mt-5 text-sm text-brand-terracotta-hover">Google sign-in is temporarily unavailable. Please try again later.</p>
+              ) : (
+                <div ref={googleBtnRef} data-testid="account-google-gis" className="mt-5 min-h-[44px]" />
+              )}
+
               <button
                 data-testid="account-apple-btn"
                 disabled
@@ -168,16 +215,5 @@ export default function Account() {
         )}
       </main>
     </div>
-  );
-}
-
-function GoogleGlyph() {
-  return (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.3 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>
-      <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.3 6.1 29.4 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-      <path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.2C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/>
-      <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4 5.6l6.3 5.2C41.9 35.5 44 30.1 44 24c0-1.3-.1-2.3-.4-3.5z"/>
-    </svg>
   );
 }

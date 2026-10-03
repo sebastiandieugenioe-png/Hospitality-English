@@ -2,10 +2,14 @@ import { initializeApp, getApps } from "firebase/app";
 import {
   getAuth, signInAnonymously, onAuthStateChanged, GoogleAuthProvider,
   signInWithPopup, linkWithPopup, signOut, deleteUser, reauthenticateWithPopup,
+  signInWithCredential, linkWithCredential, reauthenticateWithCredential,
 } from "firebase/auth";
 
 // CRA does not strip surrounding quotes from .env values; do it defensively.
 const clean = (v) => (v || "").replace(/^['"]|['"]$/g, "").trim();
+
+export const GOOGLE_CLIENT_ID = clean(process.env.REACT_APP_GOOGLE_CLIENT_ID);
+export const GIS_SRC = "https://accounts.google.com/gsi/client";
 
 const firebaseConfig = {
   apiKey: clean(process.env.REACT_APP_FIREBASE_API_KEY),
@@ -73,4 +77,78 @@ export async function reauthenticateGoogle() {
 export async function deleteFirebaseUser() {
   const u = fbAuth().currentUser;
   if (u) await deleteUser(u);
+}
+
+// ---------- Google Identity Services (GIS) — popup-free, Safari/iOS friendly ----------
+let _gisPromise;
+export function loadGis() {
+  if (_gisPromise) return _gisPromise;
+  _gisPromise = new Promise((resolve, reject) => {
+    if (window.google && window.google.accounts && window.google.accounts.id) {
+      return resolve(window.google);
+    }
+    const s = document.createElement("script");
+    s.src = GIS_SRC;
+    s.async = true;
+    s.defer = true;
+    s.onload = () => {
+      if (window.google && window.google.accounts && window.google.accounts.id) resolve(window.google);
+      else reject(new Error("gis_unavailable"));
+    };
+    s.onerror = () => reject(new Error("gis_unavailable"));
+    document.head.appendChild(s);
+  });
+  return _gisPromise;
+}
+
+export async function initGis(callback) {
+  if (!GOOGLE_CLIENT_ID) throw new Error("gis_unavailable");
+  const google = await loadGis();
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback, // receives { credential } — a Google ID token (kept only in memory)
+    auto_select: false,
+    cancel_on_tap_outside: true,
+    use_fedcm_for_prompt: true,
+  });
+  return google;
+}
+
+export async function renderGisButton(el, callback, opts = {}) {
+  const google = await initGis(callback);
+  google.accounts.id.renderButton(el, {
+    type: "standard", theme: "outline", size: "large",
+    text: "continue_with", shape: "pill", logo_alignment: "left",
+    width: opts.width || 300,
+  });
+  return google;
+}
+
+// Exchange a Google ID token for a Firebase session WITHOUT any popup/redirect.
+// Anonymous user -> link (preserves uid + guest); if the Google account already
+// exists -> sign in to it (caller keeps the temporary guest separate).
+export async function connectGoogleCredential(googleIdToken) {
+  const auth = fbAuth();
+  const cred = GoogleAuthProvider.credential(googleIdToken);
+  if (auth.currentUser && auth.currentUser.isAnonymous) {
+    try {
+      const res = await linkWithCredential(auth.currentUser, cred);
+      return { mode: "linked", user: res.user };
+    } catch (e) {
+      if (e.code === "auth/credential-already-in-use" || e.code === "auth/email-already-in-use") {
+        const res = await signInWithCredential(auth, cred);
+        return { mode: "signin", user: res.user };
+      }
+      throw e; // unexpected: caller must NOT destroy guest data
+    }
+  }
+  const res = await signInWithCredential(auth, cred);
+  return { mode: "signin", user: res.user };
+}
+
+// Recent-login reauthentication for sensitive ops (e.g. account deletion), popup-free.
+export async function reauthWithGoogleCredential(googleIdToken) {
+  const auth = fbAuth();
+  const cred = GoogleAuthProvider.credential(googleIdToken);
+  if (auth.currentUser) await reauthenticateWithCredential(auth.currentUser, cred);
 }
