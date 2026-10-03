@@ -6,6 +6,7 @@ import {
   firebaseSignOut, deleteFirebaseUser,
   connectGoogleCredential, reauthWithGoogleCredential,
 } from "@/lib/firebase";
+import { reportAuthDebug } from "@/lib/authDebug";
 
 const AppContext = createContext(null);
 
@@ -204,9 +205,26 @@ export function AppProvider({ children }) {
   // reconciles with the backend. Progress is never copied/migrated.
   const connectGoogle = async (googleIdToken) => {
     const res = await connectGoogleCredential(googleIdToken);
-    const token = await getIdToken(true);
+    let token;
+    try {
+      token = await getIdToken(true);
+      reportAuthDebug("FIREBASE_ID_TOKEN_REFRESH", { code: "ok" });
+    } catch (e) {
+      reportAuthDebug("FIREBASE_ID_TOKEN_REFRESH", { code: e.code, name: e.name, message: e.message });
+      throw e;
+    }
     const local = localStorage.getItem(GUEST_KEY);
-    const r = await api.authCompleteLink(token, { current_guest_id: local, profession_id: "hospitality" });
+    let r;
+    try {
+      r = await api.authCompleteLink(token, { current_guest_id: local, profession_id: "hospitality" });
+      reportAuthDebug("COMPLETE_LINK_BACKEND", { code: "ok", http_status: 200 });
+    } catch (e) {
+      reportAuthDebug("COMPLETE_LINK_BACKEND", {
+        code: e?.response?.data?.detail || e.code, name: e.name,
+        message: e.message, http_status: e?.response?.status,
+      });
+      throw e;
+    }
     if (r.canonical_guest_id && r.canonical_guest_id !== local) {
       localStorage.setItem(GUEST_KEY, r.canonical_guest_id);
       setGuestId(r.canonical_guest_id);
@@ -214,7 +232,13 @@ export function AppProvider({ children }) {
     try {
       const me = await api.authMe(token);
       setAccount(me.user);
-    } catch {}
+      reportAuthDebug("AUTH_ME_BACKEND", { code: "ok", http_status: 200 });
+    } catch (e) {
+      reportAuthDebug("AUTH_ME_BACKEND", {
+        code: e?.response?.data?.detail || e.code, name: e.name,
+        message: e.message, http_status: e?.response?.status,
+      });
+    }
     return { ...r, mode: res.mode };
   };
 
