@@ -4,7 +4,7 @@ import { ArrowLeft, LogOut, Trash2, Mail, ShieldCheck, Loader2, AlertTriangle } 
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
 import { APPLE_ENABLED, renderGisButton, GOOGLE_CLIENT_ID } from "@/lib/firebase";
-import { reportAuthDebug, subscribeAuthDebug, IS_PREVIEW } from "@/lib/authDebug";
+import { reportAuthDebug, subscribeAuthDebug, inspectGoogleIdToken, IS_PREVIEW } from "@/lib/authDebug";
 
 export default function Account() {
   const navigate = useNavigate();
@@ -38,6 +38,7 @@ export default function Account() {
     const googleIdToken = response?.credential; // kept only in memory
     reportAuthDebug("GIS_CALLBACK", { code: googleIdToken ? "ok" : "no_credential" });
     if (!googleIdToken) return;
+    inspectGoogleIdToken(googleIdToken, GOOGLE_CLIENT_ID); // records PASS/FAIL booleans only
     setBusy(true); setErr(null); setMsg(null);
     try {
       if (stateRef.current.isAuthenticated && stateRef.current.confirmDelete) {
@@ -132,7 +133,7 @@ export default function Account() {
 {`GOOGLE_AUTH_DEBUG
 operation: ${dbg.operation}
 code: ${dbg.code ?? "-"}
-name: ${dbg.name ?? "-"}${dbg.http_status != null ? `\nhttp_status: ${dbg.http_status}` : ""}${dbg.message ? `\nmessage: ${dbg.message}` : ""}`}
+name: ${dbg.name ?? "-"}${dbg.http_status != null ? `\nhttp_status: ${dbg.http_status}` : ""}${dbg.message ? `\nmessage: ${dbg.message}` : ""}${dbg.jwt ? `\nJWT_FORMAT: ${dbg.jwt.format ? "PASS" : "FAIL"}\nJWT_ISSUER: ${dbg.jwt.issuer ? "PASS" : "FAIL"}\nJWT_AUDIENCE_MATCH: ${dbg.jwt.audience ? "PASS" : "FAIL"}\nJWT_NOT_EXPIRED: ${dbg.jwt.notExpired ? "PASS" : "FAIL"}` : ""}`}
           </pre>
         )}
 

@@ -7,6 +7,7 @@ export const IS_PREVIEW =
   /(^|\.)preview\.emergentagent\.com$/.test(window.location.hostname);
 
 let _last = null;
+let _lastJwt = null;
 const _subs = new Set();
 
 // Drop anything that looks like a token / JWT / email / long id.
@@ -27,9 +28,39 @@ export function reportAuthDebug(operation, info = {}) {
     name: info.name != null ? info.name : null,
     message: sanitize(info.message),
     http_status: info.http_status !== undefined ? info.http_status : null,
+    jwt: _lastJwt,
     ts: Date.now(),
   };
   _subs.forEach((cb) => { try { cb(_last); } catch {} });
+}
+
+// Safe base64url decode (payload only; never logged).
+function b64urlDecode(s) {
+  s = s.replace(/-/g, "+").replace(/_/g, "/");
+  const pad = s.length % 4;
+  if (pad) s += "=".repeat(4 - pad);
+  return atob(s);
+}
+
+// Inspect a Google ID token locally and record ONLY PASS/FAIL booleans.
+// Claim values (aud, iss, exp, email, sub...) are never stored or emitted.
+export function inspectGoogleIdToken(token, expectedAud) {
+  const flags = { format: false, issuer: false, audience: false, notExpired: false };
+  try {
+    const parts = String(token || "").split(".");
+    flags.format = parts.length === 3;
+    if (flags.format) {
+      const payload = JSON.parse(b64urlDecode(parts[1]));
+      const iss = payload.iss;
+      flags.issuer = iss === "accounts.google.com" || iss === "https://accounts.google.com";
+      flags.audience = !!expectedAud && payload.aud === expectedAud;
+      const now = Math.floor(Date.now() / 1000);
+      flags.notExpired = typeof payload.exp === "number" && payload.exp > now;
+    }
+  } catch { /* keep flags false */ }
+  _lastJwt = flags;
+  reportAuthDebug("JWT_INSPECT", { code: "ok" });
+  return flags;
 }
 
 export function subscribeAuthDebug(cb) {
