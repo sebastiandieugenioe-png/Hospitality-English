@@ -195,8 +195,15 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - **Seguridad**: Admin creds solo backend; no se loguean tokens/secrets; no se guardan OAuth access tokens; errores auth sin filtrar internals; rate limiting.
 - **Tests**: `tests/test_accounts_auth.py` 9/9 PASS con tokens Firebase REALES (anonymous REST + Admin custom token): guest sin cuenta, 401 token inválido, bootstrap anónimo conserva guest_id, uid del cliente ignorado, link crea user y preserva guest_id + resuelve canonical (refresh/cross-device), existing-account no sobrescrito, deletion elimina solo datos del test user e idempotente, regresiones learning. Suites previas: listening 20/20, speaking 14/14, módulos 100/100 → **143 tests PASS, 0 regresiones**. 50/25/25 intacto. SRS/mastery intactos. Sin deploy.
 
+### Fase 10 (2026-06) — Google Auth móvil fix: Google Identity Services (GIS) (PREVIEW, SIN deploy)
+- **Problema**: Google Sign-In fallaba en Safari/iOS por usar Firebase popup (`signInWithPopup`/`linkWithPopup`); el hosting Emergent no permite reverse-proxy de `/__/auth/*`.
+- **Fix**: Migrado "Continue with Google" a **Google Identity Services** (sin popup/redirect, sin `/__/auth/*`). `lib/firebase.js`: `loadGis()`/`initGis()` (carga `https://accounts.google.com/gsi/client`, `google.accounts.id.initialize` idempotente con dispatcher estable), `renderGisButton()`; el callback entrega el Google ID token (solo en memoria) → `GoogleAuthProvider.credential(idToken)` → `linkWithCredential` (anónimo, preserva uid+guest) o `signInWithCredential` (cuenta existente). `reauthWithGoogleCredential()` para recent-login en delete.
+- **Account.js**: botón GIS para guest; reauth con GIS antes de borrar cuenta; callback compartido que infiere link vs reauth por estado (stateRef). Sin popup/redirect. Funciones popup legacy conservadas solo para rollback (no usadas).
+- **AppContext**: `connectGoogle(idToken)` y `reauthGoogle(idToken)` (credential-based) son el path activo; `deleteAccount` sin popup; bootstrap sigue con `signInAnonymously`. Backend `/auth/*` sin cambios (verify token agnóstico de proveedor).
+- **Config**: `REACT_APP_GOOGLE_CLIENT_ID` (público) en frontend/.env. `authDomain` sin cambios. Apple OFF.
+- **Seguridad**: no se persisten Google ID/access tokens ni Firebase ID token (solo Bearer temporal); no logs de tokens.
+- **Tests**: `tests/test_gis_frontend.py` 7/7 (GIS presente, sin popup/redirect, sin `/__/auth`, tokens no persistidos, client id OK) + `tests/test_accounts_auth.py` 9/9 (tokens Firebase reales). **testing_agent (iteration_15): 100% en ítems GIS, 0 issues, retest_needed=False** — GIS script cargado, botón GIS renderizado, sin Firebase popup/redirect, guest usable, navbar→/account. No se pudo completar OAuth real de Google en automatización (esperado). Regresiones learning intactas; 50/25/25 intacto; SRS/mastery intactos.
+
 ## Next Tasks
 - (Config) APPLE_CONFIG_REQUIRED: habilitar Apple Sign In cuando haya credenciales (feature flag OFF hoy).
-- (Backlog) Merge engine opcional guest→account si analytics lo justifican.
-- (Backlog) Integrar flashcards legacy en el motor `review_items`.
 

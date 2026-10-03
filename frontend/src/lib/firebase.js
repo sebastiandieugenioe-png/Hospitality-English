@@ -101,16 +101,23 @@ export function loadGis() {
   return _gisPromise;
 }
 
+let _gisInitialized = false;
+let _gisCallback = null;
+
 export async function initGis(callback) {
   if (!GOOGLE_CLIENT_ID) throw new Error("gis_unavailable");
   const google = await loadGis();
-  google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback, // receives { credential } — a Google ID token (kept only in memory)
-    auto_select: false,
-    cancel_on_tap_outside: true,
-    use_fedcm_for_prompt: true,
-  });
+  _gisCallback = callback; // always use the latest callback
+  if (!_gisInitialized) {
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: (resp) => { if (_gisCallback) _gisCallback(resp); }, // kept only in memory
+      auto_select: false,
+      cancel_on_tap_outside: true,
+      use_fedcm_for_prompt: true,
+    });
+    _gisInitialized = true;
+  }
   return google;
 }
 
