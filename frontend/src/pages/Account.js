@@ -4,7 +4,6 @@ import { ArrowLeft, LogOut, Trash2, Mail, ShieldCheck, Loader2, AlertTriangle } 
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
 import { APPLE_ENABLED, renderGisButton, GOOGLE_CLIENT_ID } from "@/lib/firebase";
-import { reportAuthDebug, subscribeAuthDebug, inspectGoogleIdToken, IS_PREVIEW } from "@/lib/authDebug";
 
 export default function Account() {
   const navigate = useNavigate();
@@ -14,9 +13,6 @@ export default function Account() {
   const [err, setErr] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [gisUnavailable, setGisUnavailable] = useState(false);
-  const [dbg, setDbg] = useState(null);
-
-  useEffect(() => subscribeAuthDebug(setDbg), []);
 
   const googleBtnRef = useRef(null);
   const reauthBtnRef = useRef(null);
@@ -36,9 +32,7 @@ export default function Account() {
   // authenticated + confirming delete -> reauth+delete; otherwise -> link/sign-in.
   const onCredential = async (response) => {
     const googleIdToken = response?.credential; // kept only in memory
-    reportAuthDebug("GIS_CALLBACK", { code: googleIdToken ? "ok" : "no_credential" });
     if (!googleIdToken) return;
-    inspectGoogleIdToken(googleIdToken, GOOGLE_CLIENT_ID); // records PASS/FAIL booleans only
     setBusy(true); setErr(null); setMsg(null);
     try {
       if (stateRef.current.isAuthenticated && stateRef.current.confirmDelete) {
@@ -126,15 +120,6 @@ export default function Account() {
           <p data-testid="account-error" className="mt-5 rounded-xl bg-brand-terracotta/10 border border-brand-terracotta/20 text-brand-terracotta-hover px-4 py-3 text-sm">
             {err}
           </p>
-        )}
-
-        {IS_PREVIEW && dbg && (
-          <pre data-testid="google-auth-debug" className="mt-5 rounded-xl bg-brand-espresso text-brand-sand/90 px-4 py-3 text-xs overflow-x-auto font-mono">
-{`GOOGLE_AUTH_DEBUG
-operation: ${dbg.operation}
-code: ${dbg.code ?? "-"}
-name: ${dbg.name ?? "-"}${dbg.http_status != null ? `\nhttp_status: ${dbg.http_status}` : ""}${dbg.message ? `\nmessage: ${dbg.message}` : ""}${dbg.jwt ? `\nJWT_FORMAT: ${dbg.jwt.format ? "PASS" : "FAIL"}\nJWT_ISSUER: ${dbg.jwt.issuer ? "PASS" : "FAIL"}\nJWT_AUDIENCE_MATCH: ${dbg.jwt.audience ? "PASS" : "FAIL"}\nJWT_NOT_EXPIRED: ${dbg.jwt.notExpired ? "PASS" : "FAIL"}` : ""}`}
-          </pre>
         )}
 
         {isAuthenticated ? (

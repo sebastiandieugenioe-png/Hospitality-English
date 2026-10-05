@@ -5,9 +5,6 @@ import {
   signInWithCredential, linkWithCredential, reauthenticateWithCredential,
 } from "firebase/auth";
 
-import { reportAuthDebug } from "@/lib/authDebug";
-
-// CRA does not strip surrounding quotes from .env values; do it defensively.
 const clean = (v) => (v || "").replace(/^['"]|['"]$/g, "").trim();
 
 export const GOOGLE_CLIENT_ID = clean(process.env.REACT_APP_GOOGLE_CLIENT_ID);
@@ -138,42 +135,21 @@ export async function renderGisButton(el, callback, opts = {}) {
 // exists -> sign in to it (caller keeps the temporary guest separate).
 export async function connectGoogleCredential(googleIdToken) {
   const auth = fbAuth();
-  let cred;
-  try {
-    cred = GoogleAuthProvider.credential(googleIdToken);
-    reportAuthDebug("FIREBASE_CREDENTIAL_CREATE", { code: "ok" });
-  } catch (e) {
-    reportAuthDebug("FIREBASE_CREDENTIAL_CREATE", { code: e.code, name: e.name, message: e.message });
-    throw e;
-  }
+  const cred = GoogleAuthProvider.credential(googleIdToken);
   if (auth.currentUser && auth.currentUser.isAnonymous) {
     try {
       const res = await linkWithCredential(auth.currentUser, cred);
-      reportAuthDebug("LINK_WITH_CREDENTIAL", { code: "ok" });
       return { mode: "linked", user: res.user };
     } catch (e) {
-      reportAuthDebug("LINK_WITH_CREDENTIAL", { code: e.code, name: e.name, message: e.message });
       if (e.code === "auth/credential-already-in-use" || e.code === "auth/email-already-in-use") {
-        try {
-          const res = await signInWithCredential(auth, cred);
-          reportAuthDebug("SIGN_IN_WITH_CREDENTIAL", { code: "ok" });
-          return { mode: "signin", user: res.user };
-        } catch (e2) {
-          reportAuthDebug("SIGN_IN_WITH_CREDENTIAL", { code: e2.code, name: e2.name, message: e2.message });
-          throw e2;
-        }
+        const res = await signInWithCredential(auth, cred);
+        return { mode: "signin", user: res.user };
       }
       throw e; // unexpected: caller must NOT destroy guest data
     }
   }
-  try {
-    const res = await signInWithCredential(auth, cred);
-    reportAuthDebug("SIGN_IN_WITH_CREDENTIAL", { code: "ok" });
-    return { mode: "signin", user: res.user };
-  } catch (e) {
-    reportAuthDebug("SIGN_IN_WITH_CREDENTIAL", { code: e.code, name: e.name, message: e.message });
-    throw e;
-  }
+  const res = await signInWithCredential(auth, cred);
+  return { mode: "signin", user: res.user };
 }
 
 // Recent-login reauthentication for sensitive ops (e.g. account deletion), popup-free.
