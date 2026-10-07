@@ -2,7 +2,7 @@ import { initializeApp, getApps } from "firebase/app";
 import {
   getAuth, signInAnonymously, onAuthStateChanged, GoogleAuthProvider, OAuthProvider,
   signInWithPopup, linkWithPopup, signOut, deleteUser, reauthenticateWithPopup,
-  signInWithCredential, linkWithCredential, reauthenticateWithCredential,
+  signInWithCredential, linkWithCredential, reauthenticateWithCredential, revokeAccessToken,
 } from "firebase/auth";
 
 const clean = (v) => (v || "").replace(/^['"]|['"]$/g, "").trim();
@@ -175,6 +175,30 @@ export async function connectAppleProvider() {
     }
     throw e; // unexpected: caller must NOT destroy guest data
   }
+}
+
+// Apple account deletion — step 1: fresh recent reauthentication + Apple access
+// revocation. Forces a NEW Apple credential (never reuses an old session); extracts
+// the Apple access token from the result and revokes it via Firebase BEFORE the
+// account is deleted. The token is used in memory only — never stored or logged.
+// Throws on cancel (caller must not delete) and with code APPLE_REVOKE_TOKEN_MISSING
+// if Apple/Firebase returns no access token (abort safely, delete nothing).
+export async function reauthAndRevokeApple() {
+  const auth = fbAuth();
+  const u = auth.currentUser;
+  if (!u) { const e = new Error("no_current_user"); e.code = "auth/no-current-user"; throw e; }
+  const provider = new OAuthProvider("apple.com");
+  provider.addScope("email");
+  provider.addScope("name");
+  const result = await reauthenticateWithPopup(u, provider); // fresh credential; throws if cancelled
+  const credential = OAuthProvider.credentialFromResult(result);
+  const accessToken = credential && credential.accessToken;
+  if (!accessToken) {
+    const e = new Error("apple_revoke_token_missing");
+    e.code = "APPLE_REVOKE_TOKEN_MISSING";
+    throw e;
+  }
+  await revokeAccessToken(auth, accessToken); // revoke Apple access before deletion
 }
 
 // Recent-login reauthentication for sensitive ops (e.g. account deletion), popup-free.

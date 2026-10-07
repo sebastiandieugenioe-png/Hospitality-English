@@ -14,7 +14,7 @@ const AppleIcon = () => (
 
 export default function Account() {
   const navigate = useNavigate();
-  const { account, isAuthenticated, connectGoogle, connectApple, reauthGoogle, logout, deleteAccount } = useApp();
+  const { account, isAuthenticated, connectGoogle, connectApple, reauthGoogle, reauthRevokeApple, logout, deleteAccount } = useApp();
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
   const [err, setErr] = useState(null);
@@ -74,6 +74,29 @@ export default function Account() {
     } catch (e) {
       const m = friendly(e);
       if (m) setErr(m);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  // Apple account deletion: fresh reauth + Apple access revocation, then delete.
+  // On cancel or missing revoke token, nothing is deleted.
+  const handleAppleDelete = async () => {
+    setBusy(true); setErr(null); setMsg(null);
+    try {
+      await reauthRevokeApple();          // reauth + revoke; throws on cancel / missing token
+      await deleteAccount();              // backend delete + firebase delete + fresh anon guest
+      setConfirmDelete(false);
+      setMsg("Your account and learning data have been deleted.");
+    } catch (e) {
+      const code = e?.code || "";
+      if (code.includes("popup") || code.includes("cancelled") || code.includes("user-cancelled")) {
+        setErr("Account deletion was cancelled. No data was deleted.");
+      } else if (code === "APPLE_REVOKE_TOKEN_MISSING") {
+        setErr("We couldn't securely revoke Apple access, so nothing was deleted. Please try again.");
+      } else {
+        setErr("Could not delete your account. Please try again.");
+      }
     } finally {
       setBusy(false);
     }
@@ -190,11 +213,27 @@ export default function Account() {
                 </button>
               ) : (
                 <div className="mt-4 space-y-3">
-                  <p className="text-sm text-brand-charcoal/70">For your security, confirm it's you with Google, then your account will be deleted:</p>
+                  <p className="text-sm text-brand-charcoal/70">For your security, confirm it's you, then your account will be deleted:</p>
                   {busy ? (
                     <p className="flex items-center gap-2 text-sm text-brand-charcoal/60"><Loader2 className="w-4 h-4 animate-spin" /> Deleting…</p>
                   ) : (
-                    <div ref={reauthBtnRef} data-testid="account-reauth-google" className="min-h-[44px]" />
+                    <>
+                      {(account?.providers || []).includes("google.com") && (
+                        <div ref={reauthBtnRef} data-testid="account-reauth-google" className="min-h-[44px]" />
+                      )}
+                      {(account?.providers || []).includes("apple.com") && (
+                        <button
+                          data-testid="account-reauth-apple-btn"
+                          onClick={handleAppleDelete}
+                          className="inline-flex items-center justify-center gap-2 rounded-lg bg-black text-white px-5 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
+                        >
+                          <AppleIcon /> Confirm with Apple &amp; delete
+                        </button>
+                      )}
+                      {!(account?.providers || []).some((p) => p === "google.com" || p === "apple.com") && (
+                        <div ref={reauthBtnRef} data-testid="account-reauth-google" className="min-h-[44px]" />
+                      )}
+                    </>
                   )}
                   <button
                     data-testid="account-delete-cancel-btn"

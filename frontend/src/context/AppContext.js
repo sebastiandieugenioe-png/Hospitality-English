@@ -4,7 +4,7 @@ import { makeT, detectBrowserLanguage, DEFAULT_LANGUAGE, SUPPORTED_CODES } from 
 import {
   ensureAnonymous, getIdToken, watchAuth, signInWithGoogle as fbSignInGoogle,
   firebaseSignOut, deleteFirebaseUser,
-  connectGoogleCredential, reauthWithGoogleCredential, connectAppleProvider,
+  connectGoogleCredential, reauthWithGoogleCredential, connectAppleProvider, reauthAndRevokeApple,
 } from "@/lib/firebase";
 
 const AppContext = createContext(null);
@@ -223,6 +223,12 @@ export function AppProvider({ children }) {
     await reauthWithGoogleCredential(googleIdToken);
   };
 
+  // Apple account deletion reauth+revoke (popup). Throws on cancel / missing token
+  // so the caller deletes nothing. Must run BEFORE deleteAccount().
+  const reauthRevokeApple = async () => {
+    await reauthAndRevokeApple();
+  };
+
   // Sign in with Apple (Firebase popup). Links Apple to the anonymous user (or signs
   // in to an existing Apple account), then reconciles with the backend. The backend
   // is provider-agnostic, so users.providers will include "apple.com" automatically.
@@ -315,6 +321,7 @@ export function AppProvider({ children }) {
     connectGoogle,
     connectApple,
     reauthGoogle,
+    reauthRevokeApple,
     signInWithGoogle,
     logout,
     deleteAccount,

@@ -205,7 +205,14 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - **Tests**: `tests/test_gis_frontend.py` 7/7 (GIS presente, sin popup/redirect, sin `/__/auth`, tokens no persistidos, client id OK) + `tests/test_accounts_auth.py` 9/9 (tokens Firebase reales). **testing_agent (iteration_15): 100% en ítems GIS, 0 issues, retest_needed=False** — GIS script cargado, botón GIS renderizado, sin Firebase popup/redirect, guest usable, navbar→/account. No se pudo completar OAuth real de Google en automatización (esperado). Regresiones learning intactas; 50/25/25 intacto; SRS/mastery intactos.
 
 ## Next Tasks
-- (Config) APPLE delete/revoke: implementar reauth Apple + token revoke en delete account (no hecho en Fase 11).
+- (Manual) Confirmar en Safari/iPhone real el flujo completo de Apple: login y delete (reauth popup + revokeAccessToken no automatizables).
+
+### Fase 12 (2026-06) — Apple delete account: reauth + token revocation (PREVIEW, SIN deploy)
+- **Backend**: SIN cambios. `DELETE /api/account` ya borra learning data (todas las `LEARNING_COLLECTIONS`) del/los canonical guest(s), el `users` doc y el Firebase user (Admin), idempotente, solo datos del propio uid.
+- **Frontend**: `lib/firebase.js` `reauthAndRevokeApple()`: `reauthenticateWithPopup(user, OAuthProvider("apple.com"))` (credencial Apple NUEVA, nunca sesión antigua) → `OAuthProvider.credentialFromResult(result).accessToken` → si falta token lanza `APPLE_REVOKE_TOKEN_MISSING` (aborta sin borrar) → `revokeAccessToken(auth, accessToken)` (solo en memoria, sin guardar/loguear). `context/AppContext.js` `reauthRevokeApple()`. `pages/Account.js` `handleAppleDelete()`: reauth+revoke → `deleteAccount()` (orden: Apple reauth → revoke → DELETE /api/account → learning data → mongo user/guest → firebase user → limpiar local → fresh anonymous → fresh guest). UI de borrado provider-aware: botón GIS (Google) o botón negro HIG "Confirm with Apple & delete" según `account.providers`. Cancel Apple → "Account deletion was cancelled. No data was deleted.".
+- **Google**: flujo delete/reauth (GIS `reauthWithGoogleCredential`) SIN cambios.
+- **Seguridad**: no se persisten/loguean Apple access/ID token, authorization code ni Firebase ID token. Firebase v12.19.0 (`revokeAccessToken` verificado como función).
+- **Tests**: 18 PASS (`test_apple_auth.py` 2 + `test_accounts_auth.py` 9 incl. deletion idempotente/aislada + `test_gis_frontend.py` 7), 0 regresiones. Compila. Smoke screenshot OK. **Popup de Apple reauth/revoke NO automatizable → falta 1 prueba manual Safari/iPhone del delete end-to-end.** Sin deploy.
 
 ### Fase 11 (2026-06) — Sign in with Apple (login + guest linking) (PREVIEW, SIN deploy)
 - **Contexto**: Apple provider ya configurado/habilitado en Firebase (Services ID `app.hospitalityenglish.web`, key, return URL `https://hospitalityenglish-bf82d.firebaseapp.com/__/auth/handler`). Diagnóstico previo: `auth/invalid-credential` de Google resuelto alineando `REACT_APP_GOOGLE_CLIENT_ID` (Preview) con el clientId del proveedor google.com de Firebase (debug panel/authDebug.js eliminado tras validar).
