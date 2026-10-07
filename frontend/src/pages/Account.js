@@ -5,14 +5,22 @@ import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
 import { APPLE_ENABLED, renderGisButton, GOOGLE_CLIENT_ID } from "@/lib/firebase";
 
+// Apple logo (white) for the HIG-compliant "Continue with Apple" button.
+const AppleIcon = () => (
+  <svg viewBox="0 0 384 512" aria-hidden="true" className="w-4 h-4 fill-current">
+    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+  </svg>
+);
+
 export default function Account() {
   const navigate = useNavigate();
-  const { account, isAuthenticated, connectGoogle, reauthGoogle, logout, deleteAccount } = useApp();
+  const { account, isAuthenticated, connectGoogle, connectApple, reauthGoogle, logout, deleteAccount } = useApp();
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
   const [err, setErr] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [gisUnavailable, setGisUnavailable] = useState(false);
+  const [appleConsent, setAppleConsent] = useState(false);
 
   const googleBtnRef = useRef(null);
   const reauthBtnRef = useRef(null);
@@ -20,12 +28,29 @@ export default function Account() {
   const stateRef = useRef({ isAuthenticated, confirmDelete });
   stateRef.current = { isAuthenticated, confirmDelete };
 
-  const friendly = (e) => {
+  const friendly = (e, label = "Google") => {
     const code = e?.code || "";
     if (code.includes("popup") || code.includes("cancelled") || e?.type === "gis_cancelled") return null; // user cancelled
     if (code === "auth/network-request-failed" || e?.message === "gis_unavailable") return "Network problem. Please check your connection and try again.";
-    if (code === "auth/invalid-credential") return "That Google sign-in could not be verified. Please try again.";
-    return "Could not complete Google sign-in. Please try again.";
+    if (code === "auth/invalid-credential") return `That ${label} sign-in could not be verified. Please try again.`;
+    return `Could not complete ${label} sign-in. Please try again.`;
+  };
+
+  // Apple linking (popup). Consent is confirmed before this runs.
+  const handleApple = async () => {
+    setAppleConsent(false);
+    setBusy(true); setErr(null); setMsg(null);
+    try {
+      const r = await connectApple();
+      setMsg(r?.loaded_existing_account
+        ? "Your saved account progress has been loaded."
+        : "Your progress is now saved to your account.");
+    } catch (e) {
+      const m = friendly(e, "Apple");
+      if (m) setErr(m);
+    } finally {
+      setBusy(false);
+    }
   };
 
   // Single GIS credential callback. Purpose inferred from current state:
@@ -198,16 +223,41 @@ export default function Account() {
                 <div ref={googleBtnRef} data-testid="account-google-gis" className="mt-5 min-h-[44px]" />
               )}
 
-              <button
-                data-testid="account-apple-btn"
-                disabled
-                title="Apple Sign In is not available yet."
-                className="mt-3 inline-flex items-center justify-center gap-3 w-full rounded-lg border border-black/10 text-brand-charcoal/40 px-6 py-3.5 font-medium cursor-not-allowed"
-              >
-                Continue with Apple
-              </button>
-              {!APPLE_ENABLED && (
-                <p className="mt-2 text-xs text-brand-charcoal/40">Apple Sign In coming soon.</p>
+              {APPLE_ENABLED && (
+                appleConsent ? (
+                  <div data-testid="account-apple-consent" className="mt-3 rounded-lg border border-black/10 bg-brand-sand/60 p-4">
+                    <p className="text-sm text-brand-charcoal/80">
+                      Your current HospitalityEnglish progress will be linked to your Apple account and available across devices.
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        data-testid="account-apple-confirm-btn"
+                        disabled={busy}
+                        onClick={handleApple}
+                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-black text-white px-5 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-40 transition-opacity"
+                      >
+                        <AppleIcon /> Continue with Apple
+                      </button>
+                      <button
+                        data-testid="account-apple-cancel-btn"
+                        disabled={busy}
+                        onClick={() => setAppleConsent(false)}
+                        className="rounded-lg border border-black/10 text-brand-charcoal/70 px-5 py-2.5 text-sm font-medium hover:bg-brand-sand transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    data-testid="account-apple-btn"
+                    disabled={busy}
+                    onClick={() => { setErr(null); setMsg(null); setAppleConsent(true); }}
+                    className="mt-3 inline-flex items-center justify-center gap-3 w-full rounded-lg bg-black text-white px-6 py-3.5 font-medium hover:opacity-90 disabled:opacity-40 transition-opacity"
+                  >
+                    <AppleIcon /> Continue with Apple
+                  </button>
+                )
               )}
             </div>
             <p className="text-center text-sm text-brand-charcoal/50">No account is required to keep learning.</p>

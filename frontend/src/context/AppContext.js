@@ -4,7 +4,7 @@ import { makeT, detectBrowserLanguage, DEFAULT_LANGUAGE, SUPPORTED_CODES } from 
 import {
   ensureAnonymous, getIdToken, watchAuth, signInWithGoogle as fbSignInGoogle,
   firebaseSignOut, deleteFirebaseUser,
-  connectGoogleCredential, reauthWithGoogleCredential,
+  connectGoogleCredential, reauthWithGoogleCredential, connectAppleProvider,
 } from "@/lib/firebase";
 
 const AppContext = createContext(null);
@@ -223,6 +223,26 @@ export function AppProvider({ children }) {
     await reauthWithGoogleCredential(googleIdToken);
   };
 
+  // Sign in with Apple (Firebase popup). Links Apple to the anonymous user (or signs
+  // in to an existing Apple account), then reconciles with the backend. The backend
+  // is provider-agnostic, so users.providers will include "apple.com" automatically.
+  // Progress is never copied/migrated; the canonical guest is resolved, not merged.
+  const connectApple = async () => {
+    const res = await connectAppleProvider();
+    const token = await getIdToken(true);
+    const local = localStorage.getItem(GUEST_KEY);
+    const r = await api.authCompleteLink(token, { current_guest_id: local, profession_id: "hospitality" });
+    if (r.canonical_guest_id && r.canonical_guest_id !== local) {
+      localStorage.setItem(GUEST_KEY, r.canonical_guest_id);
+      setGuestId(r.canonical_guest_id);
+    }
+    try {
+      const me = await api.authMe(token);
+      setAccount(me.user);
+    } catch (e) { /* account fetch best-effort */ }
+    return { ...r, mode: res.mode };
+  };
+
   // Legacy popup flow kept only for rollback — NOT used by Continue with Google.
   const signInWithGoogle = async () => {
     await fbSignInGoogle();
@@ -293,6 +313,7 @@ export function AppProvider({ children }) {
     authReady,
     isAuthenticated: !!account,
     connectGoogle,
+    connectApple,
     reauthGoogle,
     signInWithGoogle,
     logout,

@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import {
-  getAuth, signInAnonymously, onAuthStateChanged, GoogleAuthProvider,
+  getAuth, signInAnonymously, onAuthStateChanged, GoogleAuthProvider, OAuthProvider,
   signInWithPopup, linkWithPopup, signOut, deleteUser, reauthenticateWithPopup,
   signInWithCredential, linkWithCredential, reauthenticateWithCredential,
 } from "firebase/auth";
@@ -19,7 +19,7 @@ const firebaseConfig = {
   appId: clean(process.env.REACT_APP_FIREBASE_APP_ID),
 };
 
-export const APPLE_ENABLED = false; // Apple Sign In not configured yet (APPLE_CONFIG_REQUIRED).
+export const APPLE_ENABLED = true; // Apple provider configured & enabled in Firebase.
 
 let _app;
 export function fbApp() {
@@ -150,6 +150,31 @@ export async function connectGoogleCredential(googleIdToken) {
   }
   const res = await signInWithCredential(auth, cred);
   return { mode: "signin", user: res.user };
+}
+
+// ---------- Sign in with Apple (Firebase OAuthProvider, popup) ----------
+// Link Apple to the current anonymous user (preserving uid + guest); if the Apple
+// account already belongs to another Firebase user, sign in to it instead.
+// Only email + name scopes are requested; no Apple/OAuth tokens are persisted.
+export async function connectAppleProvider() {
+  const auth = fbAuth();
+  const provider = new OAuthProvider("apple.com");
+  provider.addScope("email");
+  provider.addScope("name");
+  try {
+    if (auth.currentUser && auth.currentUser.isAnonymous) {
+      const res = await linkWithPopup(auth.currentUser, provider);
+      return { mode: "linked", user: res.user };
+    }
+    const res = await signInWithPopup(auth, provider);
+    return { mode: "signin", user: res.user };
+  } catch (e) {
+    if (e.code === "auth/credential-already-in-use" || e.code === "auth/email-already-in-use") {
+      const res = await signInWithPopup(auth, provider); // existing Apple account
+      return { mode: "signin", user: res.user };
+    }
+    throw e; // unexpected: caller must NOT destroy guest data
+  }
 }
 
 // Recent-login reauthentication for sensitive ops (e.g. account deletion), popup-free.
