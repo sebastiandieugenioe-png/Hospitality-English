@@ -96,8 +96,8 @@ export const submitFirstWeekPractice = (guestId, payload) =>
 export const getListeningMeta = () => client.get("/listening/meta").then((r) => r.data);
 export const getListeningItem = (situationSlug, lang) =>
   client.get(`/listening/item/${situationSlug}`, { params: { lang } }).then((r) => r.data);
-export const getListeningPractice = (guestId) =>
-  client.get(`/guests/${guestId}/listening-practice`).then((r) => r.data);
+export const getListeningPractice = (guestId, params = {}) =>
+  client.get(`/guests/${guestId}/listening-practice`, { params }).then((r) => r.data);
 export const submitListeningAttempt = (guestId, payload) =>
   client.post(`/guests/${guestId}/listening-attempts`, payload).then((r) => r.data);
 export const getListeningSummary = (guestId) =>
@@ -107,8 +107,8 @@ export const getListeningSummary = (guestId) =>
 export const getSpeakingMeta = () => client.get("/speaking/meta").then((r) => r.data);
 export const getSpeakingItem = (situationSlug, lang) =>
   client.get(`/speaking/item/${situationSlug}`, { params: { lang } }).then((r) => r.data);
-export const getSpeakingPractice = (guestId) =>
-  client.get(`/guests/${guestId}/speaking-practice`).then((r) => r.data);
+export const getSpeakingPractice = (guestId, params = {}) =>
+  client.get(`/guests/${guestId}/speaking-practice`, { params }).then((r) => r.data);
 export const getSpeakingSummary = (guestId) =>
   client.get(`/guests/${guestId}/speaking-summary`).then((r) => r.data);
 export const submitSpeakingAttempt = (guestId, { speaking_item_id, duration_ms, blob, filename }) => {

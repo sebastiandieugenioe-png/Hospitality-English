@@ -19,6 +19,7 @@ import {
 } from "@/lib/api";
 import { getLocalizedField } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
+import { useBilling } from "@/context/BillingContext";
 
 const FILTER_KEYS = ["all", "english", "comprehension", "service"];
 const RATING_DEFS = [
@@ -31,6 +32,8 @@ const RATING_DEFS = [
 export default function Practice() {
   const navigate = useNavigate();
   const { loading: guestLoading, onboardingCompleted, guestId, language, t } = useApp();
+  const billing = useBilling();
+  const premiumParam = () => ({ premium: billing.isPremium("hospitality") });
   const [summary, setSummary] = useState(null);
   const [items, setItems] = useState([]);
   const [skillsMap, setSkillsMap] = useState({});
@@ -50,7 +53,7 @@ export default function Practice() {
     try {
       const [sum, all, sk] = await Promise.all([
         getReviewSummary(guestId),
-        getReviewItems(guestId, {}),
+        getReviewItems(guestId, premiumParam()),
         getSkills({}),
       ]);
       setSummary(sum);
@@ -70,7 +73,7 @@ export default function Practice() {
   }, [guestId, onboardingCompleted, language]);
 
   const startSession = async () => {
-    const due = await getReviewItems(guestId, { due: true, limit: 10 });
+    const due = await getReviewItems(guestId, { due: true, limit: 10, ...premiumParam() });
     if (!due.length) return;
     setSession({ queue: due, index: 0 });
   };

@@ -27,6 +27,7 @@ import listening_data as listening
 import speaking_data as speaking
 import stt_elevenlabs
 import speaking_evaluator
+import billing_access
 import firebase_admin_setup
 
 ROOT_DIR = Path(__file__).parent
@@ -454,6 +455,10 @@ async def get_lesson(situation_slug: str):
     situation = await db.situations.find_one({"slug": situation_slug}, {"_id": 0})
     if not situation:
         raise HTTPException(status_code=404, detail="Situation not found")
+    # Freemium: expose whether this situation is free so the client can gate the
+    # Learn flow (route-level) for non-premium users. Other modules (Tonight's Shift,
+    # First Week, etc.) consume lessons unchanged.
+    situation["is_free"] = billing_access.is_free_situation(situation_slug, "hospitality")
     lesson = await db.lessons.find_one({"situation_slug": situation_slug}, {"_id": 0})
     if not lesson:
         # Situation exists but the full lesson is not authored yet in this phase.
@@ -530,6 +535,9 @@ async def list_situations(role: str = Query(None), skill: str = Query(None), ven
     situations = await db.situations.find(query, {"_id": 0}).sort("order", 1).to_list(500)
     if venue_type:
         situations = [s for s in situations if not s.get("venue_types") or venue_type in s["venue_types"]]
+    # Freemium: expose whether each situation is free (UI shows a Premium lock otherwise).
+    for s in situations:
+        s["is_free"] = billing_access.is_free_situation(s["slug"], "hospitality")
     return situations
 
 
@@ -987,6 +995,7 @@ async def get_review_items(
     guest_id: str,
     due: bool = Query(False),
     limit: int = Query(50, ge=1, le=200),
+    premium: bool = Query(False),
 ):
     """Review items for a guest with canonical content resolved (no N+1).
 
@@ -994,7 +1003,7 @@ async def get_review_items(
     - due=false → all active review items (the Mistake Bank / history).
     Orphan items (content no longer exists) are skipped from the response.
     """
-    guest = await db.guests.find_one({"id": guest_id}, {"interface_language": 1})
+    guest = await db.guests.find_one({"id": guest_id}, {"interface_language": 1, "professional_profile": 1})
     if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
     lang = guest.get("interface_language", DEFAULT_LANGUAGE)
@@ -1003,6 +1012,13 @@ async def get_review_items(
     if due:
         query["next_review_at"] = {"$lte": now_iso()}
     items = await db.review_items.find(query, {"_id": 0}).sort("next_review_at", 1).to_list(1000)
+
+    # Freemium: free users never receive items derived from Premium situations.
+    # Items are not deleted, only excluded from selection; premium restores them.
+    if not premium:
+        role = (guest.get("professional_profile") or {}).get("role")
+        allowed = billing_access.free_slugs("hospitality", role)
+        items = [it for it in items if it.get("situation_slug") in allowed]
 
     resolved = await _resolve_review_content(items)
     out = []
@@ -2081,12 +2097,16 @@ async def listening_item(situation_slug: str, lang: str = Query(DEFAULT_LANGUAGE
 
 
 @api_router.get("/guests/{guest_id}/listening-practice")
-async def listening_practice(guest_id: str):
+async def listening_practice(guest_id: str, premium: bool = Query(False)):
     guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
     if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
     lang = guest.get("interface_language", DEFAULT_LANGUAGE)
     ranked = await _rank_listening_items_for_guest(guest)
+    if not premium:
+        role = (guest.get("professional_profile") or {}).get("role")
+        allowed = billing_access.free_slugs("hospitality", role)
+        ranked = [it for it in ranked if it["situation_slug"] in allowed]
     chosen = ranked[: listening.SESSION_SIZE]
     items = [await _listening_item_public(it, lang) for it in chosen]
     return {"session_size": listening.SESSION_SIZE, "profession_id": listening.PROFESSION_ID, "items": items}
@@ -2201,12 +2221,16 @@ async def speaking_item(situation_slug: str, lang: str = Query(DEFAULT_LANGUAGE)
 
 
 @api_router.get("/guests/{guest_id}/speaking-practice")
-async def speaking_practice(guest_id: str):
+async def speaking_practice(guest_id: str, premium: bool = Query(False)):
     guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
     if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
     lang = guest.get("interface_language", DEFAULT_LANGUAGE)
     ranked = await _rank_speaking_items_for_guest(guest)
+    if not premium:
+        role = (guest.get("professional_profile") or {}).get("role")
+        allowed = billing_access.free_slugs("hospitality", role)
+        ranked = [it for it in ranked if it["situation_slug"] in allowed]
     items = [speaking.public_item(it, lang) for it in ranked[: speaking.SESSION_SIZE]]
     return {"session_size": speaking.SESSION_SIZE, "profession_id": speaking.PROFESSION_ID, "items": items}
 

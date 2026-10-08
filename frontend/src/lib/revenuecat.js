@@ -56,3 +56,16 @@ export function revenueCatSnapshot() {
   const rc = getRevenueCat();
   return { appUserId: rc.getAppUserId(), anonymous: rc.isAnonymous() };
 }
+
+// Purchase a package via the Test Store. Returns the resulting CustomerInfo.
+// Throws PurchasesError; UserCancelledError (errorCode 1) signals cancellation.
+export async function purchaseRevenueCatPackage(rcPackage) {
+  const rc = getRevenueCat();
+  const res = await rc.purchase({ rcPackage });
+  return res.customerInfo;
+}
+
+export async function refreshCustomerInfo() {
+  const rc = getRevenueCat();
+  return rc.getCustomerInfo();
+}

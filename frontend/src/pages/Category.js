@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft, Lock, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CategoryIcon from "@/components/CategoryIcon";
 import { getCategory } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
+import { useBilling } from "@/context/BillingContext";
+import { usePremium } from "@/components/PremiumGate";
+import { canAccessSituation } from "@/lib/accessConfig";
 import { getLocalizedField } from "@/lib/i18n";
 
 const levelLabel = { a1: "A1", a2: "A2", b1: "B1", b2: "B2" };
@@ -74,7 +77,15 @@ export default function Category() {
 }
 
 function SituationRow({ sit, index }) {
-  const { t } = useApp();
+  const { t, profile } = useApp();
+  const billing = useBilling();
+  const { requestPremium } = usePremium();
+  const navigate = useNavigate();
+  const role = profile?.role;
+  const isPremium = billing.isPremium("hospitality");
+  const accessible = canAccessSituation({ professionId: "hospitality", role, situationSlug: sit.slug, isPremium });
+  const locked = sit.is_full && !accessible; // authored but requires Premium
+
   const content = (
     <div
       className={`flex items-center justify-between gap-4 rounded-xl border px-5 py-4 transition-all ${
@@ -86,9 +97,14 @@ function SituationRow({ sit, index }) {
       <div className="min-w-0">
         <div className="flex items-center gap-2 flex-wrap min-w-0">
           <h3 className="text-lg font-serif text-brand-espresso">{sit.title_en}</h3>
-          {sit.is_full && (
+          {sit.is_full && accessible && (
             <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-brand-forest bg-brand-success-muted px-2 py-0.5 rounded-full">
               <Sparkles className="w-3 h-3" /> {t("category.available")}
+            </span>
+          )}
+          {locked && (
+            <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-brand-forest bg-brand-forest/10 px-2 py-0.5 rounded-full">
+              <Lock className="w-3 h-3" /> Premium
             </span>
           )}
         </div>
@@ -97,7 +113,11 @@ function SituationRow({ sit, index }) {
         </p>
       </div>
       {sit.is_full ? (
-        <ArrowRight className="w-5 h-5 text-brand-forest shrink-0" />
+        locked ? (
+          <Lock className="w-5 h-5 text-brand-forest shrink-0" />
+        ) : (
+          <ArrowRight className="w-5 h-5 text-brand-forest shrink-0" />
+        )
       ) : (
         <span className="inline-flex items-center gap-1 text-xs text-brand-charcoal/40 shrink-0">
           <Lock className="w-4 h-4" /> {t("category.comingSoon")}
@@ -112,10 +132,18 @@ function SituationRow({ sit, index }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.04 }}
     >
-      {sit.is_full ? (
+      {sit.is_full && accessible ? (
         <Link data-testid={`situation-${sit.slug}`} to={`/lesson/${sit.slug}`}>
           {content}
         </Link>
+      ) : locked ? (
+        <button
+          data-testid={`situation-${sit.slug}`}
+          className="w-full text-left"
+          onClick={() => requestPremium({ resume: () => navigate(`/lesson/${sit.slug}`) })}
+        >
+          {content}
+        </button>
       ) : (
         <div data-testid={`situation-${sit.slug}`} aria-disabled="true">
           {content}

@@ -6,6 +6,7 @@ import { PROFESSION_BILLING_CONFIG, billingConfigFor } from "@/lib/billingConfig
 import {
   isRevenueCatConfigured, configureRevenueCat, getRevenueCat,
   switchRevenueCatIdentity, revenueCatSnapshot,
+  purchaseRevenueCatPackage, refreshCustomerInfo,
 } from "@/lib/revenuecat";
 
 const BillingContext = createContext(null);
@@ -76,6 +77,21 @@ export function BillingProvider({ children }) {
     catch { setStatus("error"); }
   };
 
+  // Purchase a package (Test Store). On success, update CustomerInfo immediately so
+  // entitlement unlocks without a manual refresh. If the entitlement is still
+  // inactive after purchase, refresh once; if still inactive, do NOT unlock.
+  const purchase = async (rcPackage, professionId = "hospitality") => {
+    const cfg = billingConfigFor(professionId);
+    let info = await purchaseRevenueCatPackage(rcPackage);
+    let active = Boolean(info?.entitlements?.active?.[cfg?.entitlementId]);
+    if (!active) {
+      try { info = await refreshCustomerInfo(); } catch { /* keep first result */ }
+      active = Boolean(info?.entitlements?.active?.[cfg?.entitlementId]);
+    }
+    setCustomerInfo(info);
+    return { customerInfo: info, premium: active };
+  };
+
   const value = useMemo(() => ({
     status,
     ready: status === "ready",
@@ -85,6 +101,7 @@ export function BillingProvider({ children }) {
     getProfessionAccess,
     currentOffering,
     refresh,
+    purchase,
   }), [status, customerInfo, offerings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Test Store env only: expose a read-only snapshot for integration self-tests.
@@ -104,6 +121,9 @@ export function BillingProvider({ children }) {
     snap.annualProductId = pid(annual);
     snap.isPremiumHospitality = isPremium("hospitality");
     snap.professionAware = !!PROFESSION_BILLING_CONFIG.hospitality;
+    const pkgPrice = (p) => { const pr = p ? ((p.webBillingProduct || p.rcBillingProduct)?.price) : null; return pr ? pr.formattedPrice : null; };
+    snap.monthlyPrice = pkgPrice(off?.monthly);
+    snap.annualPrice = pkgPrice(off?.annual);
     window.__BILLING__ = snap;
   }, [status, offerings, customerInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 

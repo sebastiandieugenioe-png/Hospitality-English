@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Mic, ArrowRight } from "lucide-react";
 import { useApp } from "@/context/AppContext";
+import { useBilling } from "@/context/BillingContext";
 import { getText } from "@/lib/i18n";
 import { getSpeakingMeta, getSpeakingPractice } from "@/lib/api";
 import { SpeakingQuestion } from "@/components/SpeakingQuestion";
@@ -10,6 +11,7 @@ import { SpeakingQuestion } from "@/components/SpeakingQuestion";
 export default function SpeakingPractice() {
   const navigate = useNavigate();
   const { language, ensureGuest, loading, onboardingCompleted, t } = useApp();
+  const billing = useBilling();
   const [meta, setMeta] = useState(null);
   const [items, setItems] = useState([]);
   const [idx, setIdx] = useState(0);
@@ -27,7 +29,7 @@ export default function SpeakingPractice() {
       try {
         const m = await getSpeakingMeta();
         const gid = await ensureGuest();
-        const d = await getSpeakingPractice(gid);
+        const d = await getSpeakingPractice(gid, { premium: billing.isPremium("hospitality") });
         if (!active) return;
         setMeta(m); setGuestId(gid); setItems(d.items || []); setIdx(0); setStrong(0);
         setPhase((d.items || []).length ? "question" : "complete");
@@ -45,7 +47,7 @@ export default function SpeakingPractice() {
   const goNext = () => { if (idx + 1 >= items.length) setPhase("complete"); else setIdx((i) => i + 1); };
   const restart = async () => {
     setPhase("loading");
-    const d = await getSpeakingPractice(guestId);
+    const d = await getSpeakingPractice(guestId, { premium: billing.isPremium("hospitality") });
     setItems(d.items || []); setIdx(0); setStrong(0);
     setPhase((d.items || []).length ? "question" : "complete");
   };

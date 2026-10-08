@@ -15,6 +15,9 @@ import {
 import { toast } from "sonner";
 import { getLesson, startAttempt, submitResponse, completeAttempt, getListeningMeta, getListeningItem, getSpeakingMeta, getSpeakingItem } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
+import { useBilling } from "@/context/BillingContext";
+import { usePremium } from "@/components/PremiumGate";
+import { Lock } from "lucide-react";
 import { getLocalizedField, getText, getLocalizedOptions } from "@/lib/i18n";
 import { ServiceNote } from "@/components/ServiceNote";
 import { ListeningQuestion } from "@/components/ListeningQuestion";
@@ -26,6 +29,8 @@ export default function Lesson() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { logCompletion, ensureGuest, language, t } = useApp();
+  const billing = useBilling();
+  const { requestPremium } = usePremium();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stepIdx, setStepIdx] = useState(0);
@@ -41,10 +46,19 @@ export default function Lesson() {
 
   useEffect(() => {
     setLoading(true);
+    const premium = billing.isPremium("hospitality");
     getLesson(slug)
-      .then(setData)
+      .then((d) => {
+        // Route-level freemium gate: non-free situation requires premium entitlement.
+        if (d?.situation && d.situation.is_free === false && !premium) {
+          setData({ locked: true });
+        } else {
+          setData(d);
+        }
+      })
+      .catch(() => setData(null))
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [slug, billing.status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!data?.available) return;
@@ -124,6 +138,29 @@ export default function Lesson() {
     return (
       <Shell onClose={() => navigate(-1)} progress={0} label="">
         <p className="text-brand-charcoal/50">{t("lesson.loading")}</p>
+      </Shell>
+    );
+  }
+
+  if (data?.locked) {
+    return (
+      <Shell onClose={() => navigate("/home")} progress={0} label="">
+        <div className="text-center py-16" data-testid="lesson-locked">
+          <span className="grid place-items-center w-16 h-16 mx-auto rounded-full bg-brand-forest/10 text-brand-forest">
+            <Lock className="w-8 h-8" />
+          </span>
+          <h1 className="mt-6 text-2xl font-serif text-brand-espresso">Premium situation</h1>
+          <p className="mt-3 text-brand-charcoal/60 max-w-sm mx-auto">
+            Unlock all 25 situations for your role with Hospitality Premium.
+          </p>
+          <button
+            data-testid="lesson-unlock-btn"
+            onClick={() => requestPremium({ resume: () => { setLoading(true); getLesson(slug).then((d) => setData(d)).catch(() => {}).finally(() => setLoading(false)); } })}
+            className="mt-8 inline-flex items-center gap-2 bg-brand-forest text-white rounded-lg px-6 py-3 font-medium hover:bg-brand-forest-hover transition-colors"
+          >
+            <Lock className="w-4 h-4" /> Unlock Premium
+          </button>
+        </div>
       </Shell>
     );
   }

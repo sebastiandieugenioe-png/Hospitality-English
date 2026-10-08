@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Headphones, ArrowRight } from "lucide-react";
 import { useApp } from "@/context/AppContext";
+import { useBilling } from "@/context/BillingContext";
 import { getText } from "@/lib/i18n";
 import { getListeningMeta, getListeningPractice } from "@/lib/api";
 import { ListeningQuestion } from "@/components/ListeningQuestion";
@@ -10,6 +11,7 @@ import { ListeningQuestion } from "@/components/ListeningQuestion";
 export default function ListeningPractice() {
   const navigate = useNavigate();
   const { language, ensureGuest, loading, onboardingCompleted, t } = useApp();
+  const billing = useBilling();
   const [meta, setMeta] = useState(null);
   const [items, setItems] = useState([]);
   const [idx, setIdx] = useState(0);
@@ -27,7 +29,7 @@ export default function ListeningPractice() {
       try {
         const m = await getListeningMeta();
         const gid = await ensureGuest();
-        const d = await getListeningPractice(gid);
+        const d = await getListeningPractice(gid, { premium: billing.isPremium("hospitality") });
         if (!active) return;
         setMeta(m);
         setGuestId(gid);
@@ -52,7 +54,7 @@ export default function ListeningPractice() {
   };
   const restart = async () => {
     setPhase("loading");
-    const d = await getListeningPractice(guestId);
+    const d = await getListeningPractice(guestId, { premium: billing.isPremium("hospitality") });
     setItems(d.items || []);
     setIdx(0);
     setCorrect(0);
