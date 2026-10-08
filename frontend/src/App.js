@@ -2,6 +2,7 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { AppProvider } from "@/context/AppContext";
+import { BillingProvider } from "@/context/BillingContext";
 import Landing from "@/pages/Landing";
 import Onboarding from "@/pages/Onboarding";
 import Home from "@/pages/Home";
@@ -24,6 +25,7 @@ function App() {
   return (
     <div className="App">
       <AppProvider>
+        <BillingProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
@@ -46,6 +48,7 @@ function App() {
           </Routes>
         </BrowserRouter>
         <Toaster position="top-center" />
+        </BillingProvider>
       </AppProvider>
     </div>
   );
