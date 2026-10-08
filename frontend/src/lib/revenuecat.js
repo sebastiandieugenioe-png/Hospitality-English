@@ -57,8 +57,9 @@ export function revenueCatSnapshot() {
   return { appUserId: rc.getAppUserId(), anonymous: rc.isAnonymous() };
 }
 
-// Purchase a package via the Test Store. Returns the resulting CustomerInfo.
-// Throws PurchasesError; UserCancelledError (errorCode 1) signals cancellation.
+// Purchase a package via the Test Store. Returns the resulting CustomerInfo
+// (the PRIMARY confirmation of entitlement). Throws PurchasesError; UserCancelled
+// (errorCode 1) signals cancellation.
 export async function purchaseRevenueCatPackage(rcPackage) {
   const rc = getRevenueCat();
   const res = await rc.purchase({ rcPackage });
@@ -68,4 +69,19 @@ export async function purchaseRevenueCatPackage(rcPackage) {
 export async function refreshCustomerInfo() {
   const rc = getRevenueCat();
   return rc.getCustomerInfo();
+}
+
+// Current App User ID kind for safe diagnostics (never logs the raw id).
+export function appUserIdKind() {
+  try {
+    const rc = getRevenueCat();
+    return rc.isAnonymous() ? "anonymous" : "internal-user";
+  } catch { return "unconfigured"; }
+}
+
+// Safe diagnostic logger (Test env only). Never logs API keys, tokens or raw ids.
+export function rcDiag(stage, extra = {}) {
+  if ((process.env.REACT_APP_REVENUECAT_ENV || "") !== "test") return;
+  try { console.log("[RC_DIAG]", stage, { appUser: appUserIdKind(), ...extra }); }
+  catch { /* noop */ }
 }

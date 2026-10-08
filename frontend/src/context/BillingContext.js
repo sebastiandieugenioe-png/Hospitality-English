@@ -6,7 +6,7 @@ import { PROFESSION_BILLING_CONFIG, billingConfigFor } from "@/lib/billingConfig
 import {
   isRevenueCatConfigured, configureRevenueCat, getRevenueCat,
   switchRevenueCatIdentity, revenueCatSnapshot,
-  purchaseRevenueCatPackage, refreshCustomerInfo,
+  purchaseRevenueCatPackage, refreshCustomerInfo, rcDiag,
 } from "@/lib/revenuecat";
 
 const BillingContext = createContext(null);
@@ -77,18 +77,29 @@ export function BillingProvider({ children }) {
     catch { setStatus("error"); }
   };
 
-  // Purchase a package (Test Store). On success, update CustomerInfo immediately so
-  // entitlement unlocks without a manual refresh. If the entitlement is still
-  // inactive after purchase, refresh once; if still inactive, do NOT unlock.
+  // Purchase a package (Test Store). purchaseResult.customerInfo is the PRIMARY
+  // confirmation. If the entitlement is not yet reflected (Test Store propagation
+  // lag), retry getCustomerInfo a few times with short delays before giving up —
+  // a slow/failed secondary read must NOT mark a real success as failed.
   const purchase = async (rcPackage, professionId = "hospitality") => {
     const cfg = billingConfigFor(professionId);
-    let info = await purchaseRevenueCatPackage(rcPackage);
-    let active = Boolean(info?.entitlements?.active?.[cfg?.entitlementId]);
-    if (!active) {
-      try { info = await refreshCustomerInfo(); } catch { /* keep first result */ }
-      active = Boolean(info?.entitlements?.active?.[cfg?.entitlementId]);
+    const entId = cfg?.entitlementId;
+    const hasEnt = (ci) => Boolean(ci?.entitlements?.active?.[entId]);
+
+    let info = await purchaseRevenueCatPackage(rcPackage); // primary confirmation
+    let active = hasEnt(info);
+    rcDiag("PURCHASE_RESOLVED", { stage: "after_purchase", entitlementActive: active });
+
+    for (let i = 0; !active && i < 3; i++) {
+      await new Promise((r) => setTimeout(r, 700));
+      try {
+        const refreshed = await refreshCustomerInfo();
+        if (refreshed) { info = refreshed; active = hasEnt(refreshed); }
+      } catch (e) { rcDiag("REFRESH_FAILED", { attempt: i + 1 }); }
     }
-    setCustomerInfo(info);
+
+    if (info) setCustomerInfo(info);
+    if (!active) rcDiag("ENTITLEMENT_MISSING_AFTER_SUCCESS", { entitlement: entId });
     return { customerInfo: info, premium: active };
   };
 

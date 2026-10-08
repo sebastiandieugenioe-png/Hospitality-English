@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
 import { useBilling } from "@/context/BillingContext";
 import { renderGisButton, GOOGLE_CLIENT_ID, APPLE_ENABLED } from "@/lib/firebase";
+import { rcDiag } from "@/lib/revenuecat";
 
 const PremiumContext = createContext(null);
 const PROFESSION = "hospitality";
@@ -188,20 +189,30 @@ function Paywall({ billing, onClose, onUnlocked }) {
 
   const buy = async () => {
     if (!chosenPkg) return;
+    const product = productOf(chosenPkg);
+    const productId = product?.identifier || null;
     setState("purchasing"); setErr(null);
+    rcDiag("PURCHASE_START", { stage: "before_checkout", product: productId });
     try {
       const { premium } = await billing.purchase(chosenPkg, PROFESSION);
       if (premium) {
         toast.success("Premium unlocked.");
         onUnlocked();
       } else {
+        // purchase() resolved but entitlement not active even after retries.
+        rcDiag("CONFIRM_FAILED", { stage: "after_purchase", product: productId });
         setState("error");
-        setErr("Your purchase could not be confirmed yet. Please try again.");
+        setErr("We couldn't confirm your Premium access yet. Please try again.");
       }
     } catch (e) {
-      if (e?.errorCode === 1) { setState("idle"); return; } // UserCancelledError: no error, no unlock
+      const code = e?.errorCode;
+      rcDiag("PURCHASE_ERROR", { stage: "during_purchase", code, message: e?.message, product: productId });
+      if (code === 1) { setState("idle"); return; } // UserCancelledError: no error, no unlock
+      const isNetwork = code === 10 || String(e?.message || "").toLowerCase().includes("network");
       setState("error");
-      setErr("Something went wrong with the purchase. Please try again.");
+      setErr(isNetwork
+        ? "Network problem. Please check your connection and try again."
+        : "Something went wrong with the purchase. Please try again.");
     }
   };
 
