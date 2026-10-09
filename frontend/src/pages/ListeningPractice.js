@@ -29,7 +29,7 @@ export default function ListeningPractice() {
       try {
         const m = await getListeningMeta();
         const gid = await ensureGuest();
-        const d = await getListeningPractice(gid, { premium: billing.isPremium("hospitality") });
+        const d = await getListeningPractice(gid, { free_only: !billing.isPremium("hospitality") });
         if (!active) return;
         setMeta(m);
         setGuestId(gid);
@@ -54,7 +54,7 @@ export default function ListeningPractice() {
   };
   const restart = async () => {
     setPhase("loading");
-    const d = await getListeningPractice(guestId, { premium: billing.isPremium("hospitality") });
+    const d = await getListeningPractice(guestId, { free_only: !billing.isPremium("hospitality") });
     setItems(d.items || []);
     setIdx(0);
     setCorrect(0);

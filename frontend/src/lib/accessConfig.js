@@ -31,6 +31,10 @@ export function isFreeSituation(situationSlug, professionId = "hospitality", rol
   return freeSlugs(professionId, role).has(situationSlug);
 }
 
+export function requiresPremium(professionId = "hospitality", role = null, situationSlug = null) {
+  return !isFreeSituation(situationSlug, professionId, role);
+}
+
 // Central access rule. Premium entitlement unlocks everything; otherwise only the
 // role's 5 free situations are accessible.
 export function canAccessSituation({ professionId = "hospitality", role, situationSlug, isPremium }) {

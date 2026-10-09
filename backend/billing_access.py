@@ -49,6 +49,10 @@ def is_free_situation(slug, profession_id="hospitality", role=None):
     return slug in free_slugs(profession_id, role)
 
 
+def requires_premium(profession_id="hospitality", role=None, situation_slug=None):
+    return not is_free_situation(situation_slug, profession_id, role)
+
+
 def can_access_situation(role, situation_slug, is_premium, profession_id="hospitality"):
     """Central access rule. Premium entitlement unlocks everything; otherwise only
     the role's free situations are accessible."""

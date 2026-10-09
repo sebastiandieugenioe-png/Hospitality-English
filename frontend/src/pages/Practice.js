@@ -33,7 +33,7 @@ export default function Practice() {
   const navigate = useNavigate();
   const { loading: guestLoading, onboardingCompleted, guestId, language, t } = useApp();
   const billing = useBilling();
-  const premiumParam = () => ({ premium: billing.isPremium("hospitality") });
+  const premiumParam = () => ({ free_only: !billing.isPremium("hospitality") });
   const [summary, setSummary] = useState(null);
   const [items, setItems] = useState([]);
   const [skillsMap, setSkillsMap] = useState({});

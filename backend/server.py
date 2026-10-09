@@ -995,7 +995,7 @@ async def get_review_items(
     guest_id: str,
     due: bool = Query(False),
     limit: int = Query(50, ge=1, le=200),
-    premium: bool = Query(False),
+    free_only: bool = Query(False),
 ):
     """Review items for a guest with canonical content resolved (no N+1).
 
@@ -1015,7 +1015,7 @@ async def get_review_items(
 
     # Freemium: free users never receive items derived from Premium situations.
     # Items are not deleted, only excluded from selection; premium restores them.
-    if not premium:
+    if free_only:
         role = (guest.get("professional_profile") or {}).get("role")
         allowed = billing_access.free_slugs("hospitality", role)
         items = [it for it in items if it.get("situation_slug") in allowed]
@@ -2097,13 +2097,13 @@ async def listening_item(situation_slug: str, lang: str = Query(DEFAULT_LANGUAGE
 
 
 @api_router.get("/guests/{guest_id}/listening-practice")
-async def listening_practice(guest_id: str, premium: bool = Query(False)):
+async def listening_practice(guest_id: str, free_only: bool = Query(False)):
     guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
     if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
     lang = guest.get("interface_language", DEFAULT_LANGUAGE)
     ranked = await _rank_listening_items_for_guest(guest)
-    if not premium:
+    if free_only:
         role = (guest.get("professional_profile") or {}).get("role")
         allowed = billing_access.free_slugs("hospitality", role)
         ranked = [it for it in ranked if it["situation_slug"] in allowed]
@@ -2221,13 +2221,13 @@ async def speaking_item(situation_slug: str, lang: str = Query(DEFAULT_LANGUAGE)
 
 
 @api_router.get("/guests/{guest_id}/speaking-practice")
-async def speaking_practice(guest_id: str, premium: bool = Query(False)):
+async def speaking_practice(guest_id: str, free_only: bool = Query(False)):
     guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
     if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
     lang = guest.get("interface_language", DEFAULT_LANGUAGE)
     ranked = await _rank_speaking_items_for_guest(guest)
-    if not premium:
+    if free_only:
         role = (guest.get("professional_profile") or {}).get("role")
         allowed = billing_access.free_slugs("hospitality", role)
         ranked = [it for it in ranked if it["situation_slug"] in allowed]

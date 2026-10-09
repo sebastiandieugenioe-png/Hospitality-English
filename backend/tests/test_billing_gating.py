@@ -54,22 +54,19 @@ def test_lesson_exposes_is_free_flag():
 def test_listening_speaking_free_pool_only_free_situations():
     gid = _make_guest("bartender")
     for ep in ("listening-practice", "speaking-practice"):
-        free = requests.get(f"{API}/guests/{gid}/{ep}", params={"premium": "false"}).json()["items"]
-        prem = requests.get(f"{API}/guests/{gid}/{ep}", params={"premium": "true"}).json()["items"]
-        # free pool must be a subset of free situations (where slug is exposed)
-        # speaking items expose situation_slug; listening hides the answer slug, so
-        # we assert the free pool is not larger than premium and premium >= free.
-        assert len(prem) >= len(free)
+        free = requests.get(f"{API}/guests/{gid}/{ep}", params={"free_only": "true"}).json()["items"]
+        full = requests.get(f"{API}/guests/{gid}/{ep}", params={"free_only": "false"}).json()["items"]
+        assert len(full) >= len(free)
         assert len(free) <= 5
 
 
 def test_review_items_free_filtering_does_not_delete():
     gid = _make_guest("waiter")
-    # No premium items exist yet for a fresh guest; both calls succeed and free<=premium.
-    free = requests.get(f"{API}/guests/{gid}/review-items", params={"premium": "false"}).json()
-    prem = requests.get(f"{API}/guests/{gid}/review-items", params={"premium": "true"}).json()
-    assert isinstance(free, list) and isinstance(prem, list)
-    assert len(free) <= len(prem) + 0  # free is a filtered subset
+    # No premium items exist yet for a fresh guest; both calls succeed and free<=full.
+    free = requests.get(f"{API}/guests/{gid}/review-items", params={"free_only": "true"}).json()
+    full = requests.get(f"{API}/guests/{gid}/review-items", params={"free_only": "false"}).json()
+    assert isinstance(free, list) and isinstance(full, list)
+    assert len(free) <= len(full)
 
 
 def test_access_rule_helper():

@@ -105,4 +105,5 @@ class TestNoRegressions:
     def test_lesson_endpoints_ok(self):
         assert requests.get(f"{API}/categories").status_code == 200
         assert requests.get(f"{API}/lessons/taking-an-order").json()["available"] is True
-        assert requests.get(f"{API}/lessons/welcoming-guests").json()["available"] is False
+        # welcoming-guests is a free waiter situation and is fully authored.
+        assert requests.get(f"{API}/lessons/welcoming-guests").json()["available"] is True

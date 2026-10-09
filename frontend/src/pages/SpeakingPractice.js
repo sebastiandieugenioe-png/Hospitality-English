@@ -29,7 +29,7 @@ export default function SpeakingPractice() {
       try {
         const m = await getSpeakingMeta();
         const gid = await ensureGuest();
-        const d = await getSpeakingPractice(gid, { premium: billing.isPremium("hospitality") });
+        const d = await getSpeakingPractice(gid, { free_only: !billing.isPremium("hospitality") });
         if (!active) return;
         setMeta(m); setGuestId(gid); setItems(d.items || []); setIdx(0); setStrong(0);
         setPhase((d.items || []).length ? "question" : "complete");
@@ -47,7 +47,7 @@ export default function SpeakingPractice() {
   const goNext = () => { if (idx + 1 >= items.length) setPhase("complete"); else setIdx((i) => i + 1); };
   const restart = async () => {
     setPhase("loading");
-    const d = await getSpeakingPractice(guestId, { premium: billing.isPremium("hospitality") });
+    const d = await getSpeakingPractice(guestId, { free_only: !billing.isPremium("hospitality") });
     setItems(d.items || []); setIdx(0); setStrong(0);
     setPhase((d.items || []).length ? "question" : "complete");
   };
