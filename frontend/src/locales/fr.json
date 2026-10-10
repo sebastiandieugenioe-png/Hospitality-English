@@ -221,5 +221,18 @@
   "home.speakingSub": "Répondez à voix haute",
   "home.premiumEyebrow": "Hôtellerie Premium",
   "home.premiumBody": "Débloquez les 25 situations et toute la pratique d'écoute et d'expression orale.",
-  "home.seePremium": "Voir Premium"
+  "home.seePremium": "Voir Premium",
+  "learn.newUserSub": "Commencez par des situations réelles que vous vivrez au travail.",
+  "learn.recommendedFirst": "Recommandée pour commencer",
+  "learn.start": "Commencer",
+  "learn.progressOf": "{n} sur {total} pratiquées",
+  "learn.practicedOne": "1 situation pratiquée",
+  "learn.practicedOther": "{n} situations pratiquées",
+  "learn.allFreeDone": "Vous avez terminé toutes les situations gratuites.",
+  "learn.stateInProgress": "En cours",
+  "learn.statePracticed": "Pratiquée",
+  "learn.statePremium": "Premium",
+  "learn.minutes": "~{n} min",
+  "learn.skillProgressAria": "{skill} : {n} sur {total} pratiquées",
+  "learn.lockedAria": "Verrouillée, nécessite Premium"
 }

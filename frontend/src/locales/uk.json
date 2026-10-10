@@ -221,5 +221,18 @@
   "home.speakingSub": "Відповідайте вголос",
   "home.premiumEyebrow": "Гостинність Premium",
   "home.premiumBody": "Відкрийте всі 25 ситуацій і повну практику аудіювання та говоріння.",
-  "home.seePremium": "Переглянути Premium"
+  "home.seePremium": "Переглянути Premium",
+  "learn.newUserSub": "Почніть із реальних ситуацій, які знадобляться на роботі.",
+  "learn.recommendedFirst": "Рекомендовано для початку",
+  "learn.start": "Почати",
+  "learn.progressOf": "{n} з {total} опрацьовано",
+  "learn.practicedOne": "1 ситуацію опрацьовано",
+  "learn.practicedOther": "{n} ситуацій опрацьовано",
+  "learn.allFreeDone": "Ви завершили всі безкоштовні ситуації.",
+  "learn.stateInProgress": "Триває",
+  "learn.statePracticed": "Опрацьовано",
+  "learn.statePremium": "Premium",
+  "learn.minutes": "~{n} хв",
+  "learn.skillProgressAria": "{skill}: {n} з {total} опрацьовано",
+  "learn.lockedAria": "Заблоковано, потрібен Premium"
 }

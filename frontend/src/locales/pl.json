@@ -221,5 +221,18 @@
   "home.speakingSub": "Odpowiadaj na głos",
   "home.premiumEyebrow": "Gastronomia Premium",
   "home.premiumBody": "Odblokuj wszystkie 25 sytuacji oraz pełne ćwiczenia słuchania i mówienia.",
-  "home.seePremium": "Zobacz Premium"
+  "home.seePremium": "Zobacz Premium",
+  "learn.newUserSub": "Zacznij od prawdziwych sytuacji, które spotkasz w pracy.",
+  "learn.recommendedFirst": "Polecana na początek",
+  "learn.start": "Zacznij",
+  "learn.progressOf": "{n} z {total} przećwiczonych",
+  "learn.practicedOne": "1 sytuacja przećwiczona",
+  "learn.practicedOther": "{n} przećwiczonych sytuacji",
+  "learn.allFreeDone": "Ukończyłeś wszystkie darmowe sytuacje.",
+  "learn.stateInProgress": "W toku",
+  "learn.statePracticed": "Przećwiczona",
+  "learn.statePremium": "Premium",
+  "learn.minutes": "~{n} min",
+  "learn.skillProgressAria": "{skill}: {n} z {total} przećwiczonych",
+  "learn.lockedAria": "Zablokowana, wymaga Premium"
 }

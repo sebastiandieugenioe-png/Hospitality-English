@@ -221,5 +221,18 @@
   "home.speakingSub": "Răspunde cu voce tare",
   "home.premiumEyebrow": "Ospitalitate Premium",
   "home.premiumBody": "Deblochează toate cele 25 de situații și exercițiile complete de ascultare și vorbire.",
-  "home.seePremium": "Vezi Premium"
+  "home.seePremium": "Vezi Premium",
+  "learn.newUserSub": "Începe cu situații reale pe care le vei folosi la muncă.",
+  "learn.recommendedFirst": "Recomandată pentru început",
+  "learn.start": "Începe",
+  "learn.progressOf": "{n} din {total} exersate",
+  "learn.practicedOne": "1 situație exersată",
+  "learn.practicedOther": "{n} situații exersate",
+  "learn.allFreeDone": "Ai finalizat toate situațiile gratuite.",
+  "learn.stateInProgress": "În curs",
+  "learn.statePracticed": "Exersată",
+  "learn.statePremium": "Premium",
+  "learn.minutes": "~{n} min",
+  "learn.skillProgressAria": "{skill}: {n} din {total} exersate",
+  "learn.lockedAria": "Blocată, necesită Premium"
 }

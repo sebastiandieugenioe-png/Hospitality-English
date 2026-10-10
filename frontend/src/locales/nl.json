@@ -221,5 +221,18 @@
   "home.speakingSub": "Antwoord hardop",
   "home.premiumEyebrow": "Horeca Premium",
   "home.premiumBody": "Ontgrendel alle 25 situaties en volledige luister- en spreekoefeningen.",
-  "home.seePremium": "Bekijk Premium"
+  "home.seePremium": "Bekijk Premium",
+  "learn.newUserSub": "Begin met echte situaties die je op het werk gebruikt.",
+  "learn.recommendedFirst": "Aanbevolen om mee te beginnen",
+  "learn.start": "Starten",
+  "learn.progressOf": "{n} van {total} geoefend",
+  "learn.practicedOne": "1 situatie geoefend",
+  "learn.practicedOther": "{n} situaties geoefend",
+  "learn.allFreeDone": "Je hebt alle gratis situaties voltooid.",
+  "learn.stateInProgress": "Bezig",
+  "learn.statePracticed": "Geoefend",
+  "learn.statePremium": "Premium",
+  "learn.minutes": "~{n} min",
+  "learn.skillProgressAria": "{skill}: {n} van {total} geoefend",
+  "learn.lockedAria": "Vergrendeld, vereist Premium"
 }

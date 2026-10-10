@@ -221,5 +221,18 @@
   "home.speakingSub": "Rispondi ad alta voce",
   "home.premiumEyebrow": "Ristorazione Premium",
   "home.premiumBody": "Sblocca tutte le 25 situazioni e la pratica completa di ascolto e parlato.",
-  "home.seePremium": "Vedi Premium"
+  "home.seePremium": "Vedi Premium",
+  "learn.newUserSub": "Inizia con situazioni reali che userai al lavoro.",
+  "learn.recommendedFirst": "Consigliata per iniziare",
+  "learn.start": "Inizia",
+  "learn.progressOf": "{n} di {total} praticate",
+  "learn.practicedOne": "1 situazione praticata",
+  "learn.practicedOther": "{n} situazioni praticate",
+  "learn.allFreeDone": "Hai completato tutte le situazioni gratuite.",
+  "learn.stateInProgress": "In corso",
+  "learn.statePracticed": "Praticata",
+  "learn.statePremium": "Premium",
+  "learn.minutes": "~{n} min",
+  "learn.skillProgressAria": "{skill}: {n} di {total} praticate",
+  "learn.lockedAria": "Bloccata, richiede Premium"
 }

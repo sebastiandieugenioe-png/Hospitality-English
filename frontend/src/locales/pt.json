@@ -221,5 +221,18 @@
   "home.speakingSub": "Responde em voz alta",
   "home.premiumEyebrow": "Hotelaria Premium",
   "home.premiumBody": "Desbloqueia as 25 situações e toda a prática de compreensão e expressão oral.",
-  "home.seePremium": "Ver Premium"
+  "home.seePremium": "Ver Premium",
+  "learn.newUserSub": "Começa com situações reais que vais usar no trabalho.",
+  "learn.recommendedFirst": "Recomendada para começar",
+  "learn.start": "Começar",
+  "learn.progressOf": "{n} de {total} praticadas",
+  "learn.practicedOne": "1 situação praticada",
+  "learn.practicedOther": "{n} situações praticadas",
+  "learn.allFreeDone": "Concluíste todas as situações gratuitas.",
+  "learn.stateInProgress": "Em curso",
+  "learn.statePracticed": "Praticada",
+  "learn.statePremium": "Premium",
+  "learn.minutes": "~{n} min",
+  "learn.skillProgressAria": "{skill}: {n} de {total} praticadas",
+  "learn.lockedAria": "Bloqueada, requer Premium"
 }

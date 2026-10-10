@@ -221,5 +221,18 @@
   "home.speakingSub": "Answer out loud",
   "home.premiumEyebrow": "Hospitality Premium",
   "home.premiumBody": "Unlock all 25 situations, full Listening and Speaking practice.",
-  "home.seePremium": "See Premium"
+  "home.seePremium": "See Premium",
+  "learn.newUserSub": "Start with real situations you'll use at work.",
+  "learn.recommendedFirst": "Recommended first",
+  "learn.start": "Start",
+  "learn.progressOf": "{n} of {total} practiced",
+  "learn.practicedOne": "1 situation practiced",
+  "learn.practicedOther": "{n} situations practiced",
+  "learn.allFreeDone": "You've completed all free situations.",
+  "learn.stateInProgress": "In progress",
+  "learn.statePracticed": "Practiced",
+  "learn.statePremium": "Premium",
+  "learn.minutes": "~{n} min",
+  "learn.skillProgressAria": "{skill}: {n} of {total} practiced",
+  "learn.lockedAria": "Locked, requires Premium"
 }

@@ -221,5 +221,18 @@
   "home.speakingSub": "Antworte laut",
   "home.premiumEyebrow": "Gastronomie Premium",
   "home.premiumBody": "Schalte alle 25 Situationen und das komplette Hör- und Sprechtraining frei.",
-  "home.seePremium": "Premium ansehen"
+  "home.seePremium": "Premium ansehen",
+  "learn.newUserSub": "Starte mit echten Situationen, die du bei der Arbeit erlebst.",
+  "learn.recommendedFirst": "Empfohlen für den Start",
+  "learn.start": "Starten",
+  "learn.progressOf": "{n} von {total} geübt",
+  "learn.practicedOne": "1 Situation geübt",
+  "learn.practicedOther": "{n} Situationen geübt",
+  "learn.allFreeDone": "Du hast alle kostenlosen Situationen abgeschlossen.",
+  "learn.stateInProgress": "In Bearbeitung",
+  "learn.statePracticed": "Geübt",
+  "learn.statePremium": "Premium",
+  "learn.minutes": "~{n} Min.",
+  "learn.skillProgressAria": "{skill}: {n} von {total} geübt",
+  "learn.lockedAria": "Gesperrt, erfordert Premium"
 }
