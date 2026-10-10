@@ -1,0 +1,43 @@
+{
+  "summary": "Frontend-only UI/UX testing of the redesigned authenticated /home for 'Inglés para Hostelería'. All critical acceptance criteria from the review request pass: brand-new guest, returning guest, review section, listening/speaking shortcuts, premium gate (guest sheet), banned tool cards removed, /more lists all 5 tools, no horizontal overflow at 390px, desktop fine, 10 locales (es/en/fr sampled) render without raw i18n keys, and Practice.js session-complete uses AppShell showBottomNav={false} (no undefined Navbar).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "new_guest_bartender_es": "PASS - greeting='Bienvenido', subline='Bartender · Hostelería', data-state='first-step', title='Tomar un pedido de bebidas' (free bartender situation), no review section rendered, no banned tool cards, premium card visible, CTA -> /lesson/taking-a-drinks-order",
+    "returning_guest_waiter": "PASS - data-state='continue', title='Recibir a los clientes', CTA -> /lesson/welcoming-guests; review status '1 elemento pendiente', 'Repasar ahora' -> /practice",
+    "listening_shortcut": "PASS - navigates to /listening-practice (page loads, no crash)",
+    "speaking_shortcut": "PASS - navigates to /speaking-practice (page loads, no crash)",
+    "premium_gate_guest": "PASS - 'Ver Premium' opens account-gate sheet with 'Continue with Google / Apple / Not now' (guest flow)",
+    "home_banned_cards": "PASS - assessment/emergency/shift/job-interview/first-week entry cards absent from /home",
+    "more_lists_tools": "PASS - /more shows 5 tool rows (¿Puedo trabajar en inglés?, El turno de esta noche, Entrevista de trabajo, Primera semana de trabajo, Frases de emergencia)",
+    "mobile_390_overflow": "PASS - no horizontal overflow",
+    "desktop_1920": "PASS - layout centered, no overflow",
+    "bottom_nav": "PASS - Home tab active on mobile; content not clipped",
+    "i18n_en": "PASS - greeting='Welcome back', subline='Waiter · Hospitality', no raw home.* keys visible",
+    "i18n_fr": "PASS - greeting='Bon retour', subline='Serveur/serveuse en salle · Hôtellerie-restauration', no raw keys",
+    "all_10_locales_have_home_keys": "PASS - 48 home.* keys present in each of de/en/es/fr/it/nl/pl/pt/ro/uk",
+    "regression_routes": "PASS - /learn, /practice, /progress, /listening-practice, /speaking-practice all load without crash",
+    "practice_session_complete_code_review": "PASS - Practice.js:335 uses <AppShell showBottomNav={false}> on session-complete screen; no Navbar reference anywhere in the file"
+  },
+  "notes": [
+    "Could not drive a full practice-review session to completion through the UI headlessly (card interaction labels for grading not reliably located). Verified fix via code review per guidance that main agent has no business-logic changes."
+  ],
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Home.js is clean and well-structured: good separation into PrimaryAction/ReviewSection/PracticeShortcuts/PremiumCard; proper data-testid coverage; billing.ready gate on PremiumCard matches spec.",
+    "ReviewSection shown when due!==null && !isNewUser — consistent with 'hidden for brand-new users'.",
+    "Minor: Home.js:65 defines isNewUser = attempts.length===0 && !due; relies on `!due` where `due` can be null during loading — currently harmless because section is guarded by `due !== null && !isNewUser`, but worth a comment."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "skipped", "frontend": "100% on specified acceptance criteria"},
+  "test_credentials": "Guests via localStorage iph_guest_id. New: a3f1d161-6a6f-468f-b414-fb36c18427bc (bartender/es); Returning: fa5e0512-6021-459d-ab51-edb53f728fcf (waiter/es, in_progress welcoming-guests + 1 due).",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Home redesign verified end-to-end. If retesting Practice session-complete, use returning-guest localStorage, click 'Repasar ahora' on home, then grade cards (Fácil/Bueno/Difícil) until done — screen should render 'Sesión completada' inside AppShell with bottom nav hidden."
+}

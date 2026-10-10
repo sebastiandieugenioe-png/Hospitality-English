@@ -249,3 +249,9 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - **Seguridad**: no se guardan/loguean Apple access/ID token, authorization code ni Firebase ID token; Team ID/Key ID/private key solo en Firebase.
 - **Tests**: `tests/test_apple_auth.py` 2/2 (mapping `apple.com` vía identities + fallback sign_in_provider; pipeline compartido preserva guest_id, resuelve canonical, protege guest temporal) + `test_accounts_auth.py` 9/9 + `test_gis_frontend.py` 7/7 → **18 PASS, 0 regresiones Google**. Screenshot: botón Apple + consent + Google GIS OK. **Popup OAuth de Apple NO automatizable → falta 1 prueba manual en Safari/iPhone.** Sin deploy. Delete/revoke Apple y Apple redirect NO implementados (fuera de alcance de esta fase).
 
+
+## UX/UI Implementation 2 — Home Redesign (Jun 2026) — DONE
+- `pages/Home.js` rewritten: greeting (display_name) + role · Hospitality; single primary card (continue → up next/first step from existing recommendations, free-filtered for Free → fallback /learn); Review (due via review-items?due&free_only, hidden for new users) → /practice; Listening/Speaking tiles; Premium card only for Free → existing requestPremium().
+- Weekly activity OMITTED (no reliable weekly metrics). Tool cards + recommended/category grids removed from Home (tools in /more).
+- 31 new `home.*` keys in 10 locales. Fixed Practice.js session-complete undefined `Navbar` (now AppShell showBottomNav={false}).
+- Tested: testing_agent iteration_16 (100% frontend), pytest billing/apple 7/7.
