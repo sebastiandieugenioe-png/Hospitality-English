@@ -332,8 +332,7 @@ function ReviewSession({ session, setSession, onEnd, t }) {
 
   if (session.done) {
     return (
-      <div className="min-h-screen bg-brand-sand">
-        <Navbar />
+      <AppShell showBottomNav={false}>
         <main className="max-w-2xl mx-auto px-5 sm:px-8 py-16 text-center">
           <motion.div
             initial={{ scale: 0.6, opacity: 0 }}
@@ -357,7 +356,7 @@ function ReviewSession({ session, setSession, onEnd, t }) {
             {t("session.done")} <ArrowRight className="w-4 h-4" />
           </button>
         </main>
-      </div>
+      </AppShell>
     );
   }
 
