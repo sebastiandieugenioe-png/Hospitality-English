@@ -179,5 +179,16 @@
   "skill.empty": "Aucune situation n’est encore disponible ici pour votre poste.",
   "status.completed": "Terminée",
   "status.in_progress": "En cours",
-  "status.mastered": "Maîtrisée ✓"
+  "status.mastered": "Maîtrisée ✓",
+  "nav.more": "Plus",
+  "more.title": "Plus",
+  "more.tools": "Outils",
+  "more.account": "Compte",
+  "more.assessment": "Puis-je travailler en anglais ?",
+  "more.tonightsShift": "Le service de ce soir",
+  "more.jobInterview": "Entretien d'embauche",
+  "more.firstWeek": "Première semaine de travail",
+  "more.emergency": "Phrases d'urgence",
+  "more.accountProfile": "Compte et profil",
+  "more.language": "Langue"
 }

@@ -179,5 +179,16 @@
   "skill.empty": "Aún no hay situaciones disponibles para tu puesto aquí.",
   "status.completed": "Completada",
   "status.in_progress": "En curso",
-  "status.mastered": "Dominada ✓"
+  "status.mastered": "Dominada ✓",
+  "nav.more": "Más",
+  "more.title": "Más",
+  "more.tools": "Herramientas",
+  "more.account": "Cuenta",
+  "more.assessment": "¿Puedo trabajar en inglés?",
+  "more.tonightsShift": "El turno de esta noche",
+  "more.jobInterview": "Entrevista de trabajo",
+  "more.firstWeek": "Primera semana de trabajo",
+  "more.emergency": "Frases de emergencia",
+  "more.accountProfile": "Cuenta y perfil",
+  "more.language": "Idioma"
 }

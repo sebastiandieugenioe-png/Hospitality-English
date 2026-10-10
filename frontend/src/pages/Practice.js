@@ -9,7 +9,7 @@ import {
   Brain,
   RotateCw,
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import { AppShell } from "@/components/AppShell";
 import {
   getReviewItems,
   getReviewSummary,
@@ -101,8 +101,7 @@ export default function Practice() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-sand">
-      <Navbar />
+    <AppShell title={t("nav.practice")}>
       <main className="max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
         <motion.header initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <p className="text-xs uppercase tracking-[0.2em] font-semibold text-brand-terracotta mb-3">
@@ -260,7 +259,7 @@ export default function Practice() {
           </>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }
 

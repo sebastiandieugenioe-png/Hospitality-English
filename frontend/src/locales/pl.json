@@ -179,5 +179,16 @@
   "skill.empty": "Nie ma jeszcze dostępnych sytuacji dla twojego stanowiska w tej sekcji.",
   "status.completed": "Ukończona",
   "status.in_progress": "W trakcie",
-  "status.mastered": "Opanowana ✓"
+  "status.mastered": "Opanowana ✓",
+  "nav.more": "Więcej",
+  "more.title": "Więcej",
+  "more.tools": "Narzędzia",
+  "more.account": "Konto",
+  "more.assessment": "Czy mogę pracować po angielsku?",
+  "more.tonightsShift": "Dzisiejsza zmiana",
+  "more.jobInterview": "Rozmowa kwalifikacyjna",
+  "more.firstWeek": "Pierwszy tydzień pracy",
+  "more.emergency": "Zwroty awaryjne",
+  "more.accountProfile": "Konto i profil",
+  "more.language": "Język"
 }

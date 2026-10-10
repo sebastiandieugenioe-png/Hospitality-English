@@ -179,5 +179,16 @@
   "skill.empty": "There are no situations available for your role here yet.",
   "status.completed": "Completed",
   "status.in_progress": "In progress",
-  "status.mastered": "Mastered ✓"
+  "status.mastered": "Mastered ✓",
+  "nav.more": "More",
+  "more.title": "More",
+  "more.tools": "Tools",
+  "more.account": "Account",
+  "more.assessment": "Can I Work in English?",
+  "more.tonightsShift": "Tonight's Shift",
+  "more.jobInterview": "Job Interview",
+  "more.firstWeek": "First Week at Work",
+  "more.emergency": "Emergency Phrases",
+  "more.accountProfile": "Account & Profile",
+  "more.language": "Language"
 }

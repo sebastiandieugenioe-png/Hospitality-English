@@ -179,5 +179,16 @@
   "skill.empty": "Тут поки немає доступних ситуацій для твоєї посади.",
   "status.completed": "Завершено",
   "status.in_progress": "У процесі",
-  "status.mastered": "Опановано ✓"
+  "status.mastered": "Опановано ✓",
+  "nav.more": "Більше",
+  "more.title": "Більше",
+  "more.tools": "Інструменти",
+  "more.account": "Обліковий запис",
+  "more.assessment": "Чи можу я працювати англійською?",
+  "more.tonightsShift": "Сьогоднішня зміна",
+  "more.jobInterview": "Співбесіда",
+  "more.firstWeek": "Перший тиждень роботи",
+  "more.emergency": "Екстрені фрази",
+  "more.accountProfile": "Обліковий запис і профіль",
+  "more.language": "Мова"
 }

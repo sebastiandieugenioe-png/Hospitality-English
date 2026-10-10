@@ -179,5 +179,16 @@
   "skill.empty": "Für deine Position sind hier noch keine Situationen verfügbar.",
   "status.completed": "Abgeschlossen",
   "status.in_progress": "In Bearbeitung",
-  "status.mastered": "Gemeistert ✓"
+  "status.mastered": "Gemeistert ✓",
+  "nav.more": "Mehr",
+  "more.title": "Mehr",
+  "more.tools": "Werkzeuge",
+  "more.account": "Konto",
+  "more.assessment": "Kann ich auf Englisch arbeiten?",
+  "more.tonightsShift": "Die heutige Schicht",
+  "more.jobInterview": "Vorstellungsgespräch",
+  "more.firstWeek": "Erste Arbeitswoche",
+  "more.emergency": "Notfallsätze",
+  "more.accountProfile": "Konto & Profil",
+  "more.language": "Sprache"
 }

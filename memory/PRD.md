@@ -40,6 +40,15 @@ login obligatorio, Google/Apple login, ads, subscriptions, payments, analytics a
 
 ## Next Tasks
 - Autorizar contenido para más situaciones (mismo esquema que `taking-an-order`).
+- (UX Fase 2) Rediseño interno de Home/Learn/Practice/Progress + /more completo usando designTokens.
+- (Manual) Confirmar compra real Test Store (checkout web no headless).
+
+### Fase 15 (2026-06) — UX/UI base: Design System + App Shell + Bottom Nav (PREVIEW, SIN deploy)
+- Solo base visual + navegación (sin rediseñar pantallas internas; sin tocar learning/auth/billing/SRS). Genérico reutilizable por EnglishToWork (`AppShell`, `BottomNavigation`, `AppHeader`, `designTokens`).
+- Creados: `lib/designTokens.js`, `components/AppShell.js` (+`AppHeader`, prop `showBottomNav` para focus mode), `components/BottomNavigation.js` (+`DesktopNavigation`, `ROOT_TABS`), `pages/More.js`, ruta `/more`. Añadido `nav.more`+`more.*` a los 10 locales.
+- IA 5 secciones (Inicio/Aprender/Práctica/Progreso/Más): móvil bottom nav fija (safe-area, tap≥44px, aria-current, iconos Lucide); desktop top-nav con misma IA. Root pages envueltas en `AppShell`, Navbar superior antiguo eliminado de ellas; Language+Account movidos a /more. Páginas focus/públicas intactas.
+- Verificado en navegador (390px y 1280px): 5 rutas con tab activo correcto, sin navbar antiguo, contenido no tapado, /more con tools+account+language, i18n ES OK. Sin regresiones (auth/billing/learning sin cambios).
+
 
 ---
 

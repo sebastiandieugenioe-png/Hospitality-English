@@ -179,5 +179,16 @@
   "skill.empty": "Încă nu există situații disponibile aici pentru rolul tău.",
   "status.completed": "Finalizată",
   "status.in_progress": "În desfășurare",
-  "status.mastered": "Stăpânită ✓"
+  "status.mastered": "Stăpânită ✓",
+  "nav.more": "Mai multe",
+  "more.title": "Mai multe",
+  "more.tools": "Instrumente",
+  "more.account": "Cont",
+  "more.assessment": "Pot să lucrez în engleză?",
+  "more.tonightsShift": "Tura de diseară",
+  "more.jobInterview": "Interviu de angajare",
+  "more.firstWeek": "Prima săptămână de muncă",
+  "more.emergency": "Fraze de urgență",
+  "more.accountProfile": "Cont și profil",
+  "more.language": "Limbă"
 }

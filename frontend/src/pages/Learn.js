@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import { AppShell } from "@/components/AppShell";
 import { getSkills, getProfessionalProfiles, getTargetCountries } from "@/lib/api";
 import { getLocalizedField } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
@@ -36,8 +36,7 @@ export default function Learn() {
   }, [profile, language]);
 
   return (
-    <div className="min-h-screen bg-brand-sand">
-      <Navbar />
+    <AppShell title={t("nav.learn")}>
       <main className="max-w-5xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
         <motion.header
           initial={{ opacity: 0, y: 10 }}
@@ -96,6 +95,6 @@ export default function Learn() {
           )}
         </section>
       </main>
-    </div>
+    </AppShell>
   );
 }

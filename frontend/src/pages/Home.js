@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Play, ClipboardCheck, LifeBuoy, Moon, Briefcase, CalendarDays, Headphones, Mic } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import { AppShell } from "@/components/AppShell";
 import CategoryIcon from "@/components/CategoryIcon";
 import { getCategories, getProfessionalProfiles, getTargetCountries, getSituation, getAttempts, getSituationStats, getRecommendedSituations, getAssessmentSummary, getAssessmentMeta, getEmergency, getTonightsShiftMeta, getTonightsShiftToday, getJobInterviewMeta, getJobInterview, getFirstWeekMeta, getFirstWeek, getListeningMeta, getListeningSummary, getSpeakingMeta, getSpeakingSummary } from "@/lib/api";
 import { roleToFeaturedSituation, FEATURED_SITUATION } from "@/lib/content";
@@ -195,8 +195,7 @@ export default function Home() {
   ) : null;
 
   return (
-    <div className="min-h-screen bg-brand-sand">
-      <Navbar />
+    <AppShell>
       <main className="max-w-6xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -474,7 +473,7 @@ export default function Home() {
           )}
         </section>
       </main>
-    </div>
+    </AppShell>
   );
 }
 

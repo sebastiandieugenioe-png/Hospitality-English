@@ -179,5 +179,16 @@
   "skill.empty": "Er zijn hier nog geen situaties beschikbaar voor jouw functie.",
   "status.completed": "Voltooid",
   "status.in_progress": "Bezig",
-  "status.mastered": "Beheerst ✓"
+  "status.mastered": "Beheerst ✓",
+  "nav.more": "Meer",
+  "more.title": "Meer",
+  "more.tools": "Hulpmiddelen",
+  "more.account": "Account",
+  "more.assessment": "Kan ik in het Engels werken?",
+  "more.tonightsShift": "De dienst van vanavond",
+  "more.jobInterview": "Sollicitatiegesprek",
+  "more.firstWeek": "Eerste werkweek",
+  "more.emergency": "Noodzinnen",
+  "more.accountProfile": "Account en profiel",
+  "more.language": "Taal"
 }

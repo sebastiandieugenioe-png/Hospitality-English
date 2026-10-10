@@ -179,5 +179,16 @@
   "skill.empty": "Non ci sono ancora situazioni disponibili per la tua mansione qui.",
   "status.completed": "Completata",
   "status.in_progress": "In corso",
-  "status.mastered": "Padroneggiata ✓"
+  "status.mastered": "Padroneggiata ✓",
+  "nav.more": "Altro",
+  "more.title": "Altro",
+  "more.tools": "Strumenti",
+  "more.account": "Account",
+  "more.assessment": "Posso lavorare in inglese?",
+  "more.tonightsShift": "Il turno di stasera",
+  "more.jobInterview": "Colloquio di lavoro",
+  "more.firstWeek": "Prima settimana di lavoro",
+  "more.emergency": "Frasi di emergenza",
+  "more.accountProfile": "Account e profilo",
+  "more.language": "Lingua"
 }

@@ -21,6 +21,7 @@ import FirstWeek from "@/pages/FirstWeek";
 import ListeningPractice from "@/pages/ListeningPractice";
 import SpeakingPractice from "@/pages/SpeakingPractice";
 import Account from "@/pages/Account";
+import More from "@/pages/More";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
             <Route path="/listening-practice" element={<ListeningPractice />} />
             <Route path="/speaking-practice" element={<SpeakingPractice />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/more" element={<More />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-center" />

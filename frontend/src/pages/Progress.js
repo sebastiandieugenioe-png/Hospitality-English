@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import { AppShell } from "@/components/AppShell";
 import { getSkills, getSituations, getSituationStats } from "@/lib/api";
 import { getLocalizedField } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
@@ -45,8 +45,7 @@ export default function Progress() {
   }).filter((r) => r.total > 0);
 
   return (
-    <div className="min-h-screen bg-brand-sand">
-      <Navbar />
+    <AppShell title={t("nav.progress")}>
       <main className="max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
         <motion.header initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <h1 className="text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">{t("progress.title")}</h1>
@@ -113,6 +112,6 @@ export default function Progress() {
           </>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }
