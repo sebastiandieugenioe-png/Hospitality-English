@@ -271,3 +271,10 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - New shared helper `frontend/src/lib/progress.js` (situationStatus, isPracticed, countPracticed, hasAnyActivity, groupBySkill, freeProgress — profession-aware). Learn now imports it (no visual change).
 - `pages/Progress.js` rewritten: ProfessionProgress (new / free bar over free pool / free-complete + single Explore Premium via requestPremium / premium x of 25 + %), SkillProgress rows (same grouping as Learn, tap → /learn), ReviewSummary (same filtered due query as Practice), AssessmentSummary (band from existing result_bands + current score, Retake/Start → /assessment; no "View results" — Assessment has no results route).
 - OMITTED: weekly activity, Listening/Speaking metrics, strongest/weakest, charts. 9 new progress.* keys in 10 locales. Tested iteration_19: 100%.
+
+## UX/UI Implementation 6 — More + Account Architecture (Jun 2026) — DONE
+- /more rebuilt: profile summary (guest/account, role · country, plan), single Premium CTA (free), Tools via `lib/toolRegistry.js` (profession-aware, official order), Account & preferences, Support, Legal.
+- New secondary pages (← header, no bottom nav, `components/SettingsLayout.js`): /profile (read-only, no technical IDs), /learning-preferences (venue/country/goal/employment editable via existing PUT profile, full profile sent; ROLE READ-ONLY — role switching is a future separate product phase), /language (10 locales), /subscription (free benefits + Upgrade → PremiumGate; premium shows plan/renewal only if derivable, Manage only if managementURL; no Restore — Web SDK has none), /account (same logic, now i18n + danger zone), /support (intro + feedback + report), /support/feedback, /privacy & /terms (placeholders, no legal text).
+- Backend: `POST /api/feedback` (Mongo `feedback`, profession_id, user_id resolved server-side, rate limited); `feedback` added to LEARNING_COLLECTIONS so account deletion removes it.
+- ~110 new i18n keys x10. Tested iteration_20: backend 7/7, frontend 100%.
+- Backlog: role switching phase; real FAQ content; legal content; app version source.

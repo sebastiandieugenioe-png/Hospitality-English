@@ -1,0 +1,30 @@
+{
+  "summary": "Iteration 20 full e2e test of UX/UI 6 — More + Account architecture + Feedback backend. All acceptance criteria pass. Backend POST /api/feedback: valid 201, invalid category 422, empty/whitespace message 422, unknown guest stored with guest_id=null and no extra sensitive fields, known guest resolves user_id server-side; Mongo doc shape matches spec (id,user_id,guest_id,profession_id,category,message,app_version,route,created_at,status='new'). 7/7 pytest tests pass. Frontend: Guest a7f7c2a4... (bartender, es, free) /more shows 'Invitado', 'Bartender · Irlanda', 'Plan gratuito', data-auth=guest, create-account CTA and premium CTA both present. Tools render in exact spec order (assessment, tonight_shift, job_interview, first_week, emergency_phrases). All 14 settings rows navigate to their routes; back button returns to /more; no bottom nav on secondary pages; no horizontal overflow at 390px. /profile shows no guest_id / 'uid' / 'guest_id' strings. /language: 10 options (es,it,fr,pt,de,pl,ro,uk,nl,en), es checked, switching to en changes /more labels to 'Guest' / 'Free plan', back to es works. /subscription free: subscription-free + benefits visible, Upgrade opens PremiumGate overlay. /support/feedback?category=bug preselects Bug (aria-checked=true); send disabled until message typed; real feedback sent -> feedback-sent displayed. /account guest: Google GIS detected in page, account-apple-btn opens consent, Cancelar closes consent. /learning-preferences: role is read-only (no select element), venue change persists after reload, /learn still 25 situations, final venue restored to cocktail-bar as requested. /privacy and /terms show legal-pending only. Regression smoke OK: /home, /learn, /practice, /progress, /listening-practice, /speaking-practice all load without errors. Note: 400 errors in console are Firebase Identity-Toolkit anonymous signup attempts (expected — no project configured); they do not affect app functionality.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_feedback.py",
+    "/app/test_reports/pytest/iter20_feedback.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py create_feedback: category whitelist is redundant since Pydantic validates nothing on it (plain str). The explicit FEEDBACK_CATEGORIES check correctly raises 422 — good defensive design.",
+    "FeedbackCreate.message uses Field(min_length=1) which blocks '' at parse time (422). Whitespace-only ('   ') passes Pydantic but is correctly rejected after .strip() with explicit 422 — good.",
+    "Rate limiter is in-memory per IP (10/10min); fine for MVP but will not survive multi-worker/pod. Acceptable at this stage; document for future.",
+    "Feedback doc stores server-resolved user_id from guest doc (never from client), matching spec requirement. _id excluded on return. ✓",
+    "LEARNING_COLLECTIONS now includes 'feedback' so account deletion will remove user feedback — verified in code (line 2340).",
+    "LearningPreferences.save sends full profile (role, english_level preserved); venue change does not erase progress or shrink Learn to <25 — verified empirically.",
+    "/profile correctly hides technical IDs (no guest_id/uid in rendered text).",
+    "SecondaryPage omits bottom nav wrapper — confirmed via DOM count on 14 routes.",
+    "SUPPORTED_LANGUAGES length = 10 (es,it,fr,pt,de,pl,ro,uk,nl,en) matches spec exactly."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_feedback.py (new)"
+  ],
+  "success_rate": {"backend": "100% (7/7)", "frontend": "100%"},
+  "test_credentials": "Anonymous guest a7f7c2a4-e875-468d-ba40-a3773875cec8 via localStorage iph_guest_id",
+  "seed_data_creation": "None persistent — all TEST_iter20 feedback docs were deleted after tests (4 total, verified count).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iter 20 UX/UI 6 (More + Account + Feedback) fully validated. Guest a7f7c2a4-e875-468d-ba40-a3773875cec8 preferences restored to venue=cocktail-bar. Account deletion flow NOT exercised (per request). Premium branch of /subscription validated only by code review (cannot be produced headlessly). The ubiquitous 400 console errors come from Firebase anonymous signup attempts and are expected in this preview env; ignore them. Feedback endpoint rate limit is 10 req / 10 min per IP — subsequent test runs should keep requests ≤ 7 or wait 10 min to avoid 429."
+}
