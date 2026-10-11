@@ -9,10 +9,11 @@ import {
   getTargetCountries,
   getLearningGoals,
   getRecommendedSituations,
+  getSituation,
 } from "@/lib/api";
 import { legacyWorkplaceToRole } from "@/lib/content";
 import { getLocalizedField, SUPPORTED_LANGUAGES } from "@/lib/i18n";
-import { isFreeSituation } from "@/lib/accessConfig";
+import { isFreeSituation, freeSlugs } from "@/lib/accessConfig";
 import { useApp, DRAFT_KEY } from "@/context/AppContext";
 import { useBilling } from "@/context/BillingContext";
 import { btnDark, focusRing } from "@/components/SettingsLayout";
@@ -185,11 +186,18 @@ export default function Onboarding() {
   };
 
   // Shows up to 3 existing recommendations; never blocks reaching /home.
+  // Free: only the role's free situations (existing recs first, then free config order).
   const showRecommendations = async (guestIdValue, role) => {
     try {
       const premium = billing.ready && billing.isPremium("hospitality");
-      const list = await getRecommendedSituations(guestIdValue, { limit: 10 });
-      const top = (list || []).filter((s) => premium || isFreeSituation(s.slug, "hospitality", role)).slice(0, 3);
+      const list = (await getRecommendedSituations(guestIdValue, { limit: 10 })) || [];
+      let top = premium ? list.slice(0, 3) : list.filter((s) => isFreeSituation(s.slug, "hospitality", role)).slice(0, 3);
+      if (!premium && top.length < 3) {
+        const have = new Set(top.map((s) => s.slug));
+        const missing = [...freeSlugs("hospitality", role)].filter((slug) => !have.has(slug)).slice(0, 3 - top.length);
+        const extra = await Promise.all(missing.map((slug) => getSituation(slug).catch(() => null)));
+        top = [...top, ...extra.filter(Boolean).map((x) => ({ slug: x.slug, title: x.title, description: x.translations?.en?.description }))];
+      }
       if (top.length === 0) throw new Error("empty");
       setRecs(top);
     } catch {
