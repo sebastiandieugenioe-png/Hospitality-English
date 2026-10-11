@@ -257,5 +257,14 @@
   "review.done": "Klaar",
   "review.continueLearning": "Verder leren",
   "review.closeAria": "Herhaling sluiten",
-  "review.progressAria": "Item {i} van {n}"
+  "review.progressAria": "Item {i} van {n}",
+  "progress.overallOf": "{n} van {total} situaties geoefend",
+  "progress.freeBarAria": "{n} van {total} gratis situaties geoefend",
+  "progress.moreWithPremium": "Nog {n} situaties zijn beschikbaar met Premium.",
+  "progress.explorePremium": "Ontdek Premium",
+  "progress.startsHereTitle": "Je voortgang begint hier",
+  "progress.startsHereBody": "Voltooi je eerste echte situatie en zie hier je vaardigheden groeien.",
+  "progress.skillPracticed": "{n} / {total} geoefend",
+  "progress.inReview": "{n} in herhaling",
+  "progress.readinessTitle": "Werkgereedheid"
 }

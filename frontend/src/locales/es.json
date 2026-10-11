@@ -257,5 +257,14 @@
   "review.done": "Hecho",
   "review.continueLearning": "Seguir aprendiendo",
   "review.closeAria": "Cerrar repaso",
-  "review.progressAria": "Elemento {i} de {n}"
+  "review.progressAria": "Elemento {i} de {n}",
+  "progress.overallOf": "{n} de {total} situaciones practicadas",
+  "progress.freeBarAria": "{n} de {total} situaciones gratuitas practicadas",
+  "progress.moreWithPremium": "Hay {n} situaciones más de Hostelería con Premium.",
+  "progress.explorePremium": "Explorar Premium",
+  "progress.startsHereTitle": "Tu progreso empieza aquí",
+  "progress.startsHereBody": "Completa tu primera situación real y verás crecer tus habilidades aquí.",
+  "progress.skillPracticed": "{n} / {total} practicadas",
+  "progress.inReview": "{n} en repaso",
+  "progress.readinessTitle": "Preparación laboral"
 }

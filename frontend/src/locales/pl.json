@@ -257,5 +257,14 @@
   "review.done": "Gotowe",
   "review.continueLearning": "Ucz się dalej",
   "review.closeAria": "Zamknij powtórkę",
-  "review.progressAria": "Element {i} z {n}"
+  "review.progressAria": "Element {i} z {n}",
+  "progress.overallOf": "{n} z {total} sytuacji przećwiczonych",
+  "progress.freeBarAria": "{n} z {total} darmowych sytuacji przećwiczonych",
+  "progress.moreWithPremium": "{n} kolejnych sytuacji jest dostępnych w Premium.",
+  "progress.explorePremium": "Poznaj Premium",
+  "progress.startsHereTitle": "Twój postęp zaczyna się tutaj",
+  "progress.startsHereBody": "Ukończ pierwszą prawdziwą sytuację, a zobaczysz tu rozwój swoich umiejętności.",
+  "progress.skillPracticed": "{n} / {total} przećwiczonych",
+  "progress.inReview": "{n} w powtórce",
+  "progress.readinessTitle": "Gotowość do pracy"
 }

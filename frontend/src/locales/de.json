@@ -257,5 +257,14 @@
   "review.done": "Fertig",
   "review.continueLearning": "Weiterlernen",
   "review.closeAria": "Wiederholung schließen",
-  "review.progressAria": "Eintrag {i} von {n}"
+  "review.progressAria": "Eintrag {i} von {n}",
+  "progress.overallOf": "{n} von {total} Situationen geübt",
+  "progress.freeBarAria": "{n} von {total} kostenlosen Situationen geübt",
+  "progress.moreWithPremium": "{n} weitere Situationen sind mit Premium verfügbar.",
+  "progress.explorePremium": "Premium entdecken",
+  "progress.startsHereTitle": "Dein Fortschritt beginnt hier",
+  "progress.startsHereBody": "Schließe deine erste echte Situation ab und sieh hier, wie deine Fähigkeiten wachsen.",
+  "progress.skillPracticed": "{n} / {total} geübt",
+  "progress.inReview": "{n} in Wiederholung",
+  "progress.readinessTitle": "Arbeitsbereitschaft"
 }

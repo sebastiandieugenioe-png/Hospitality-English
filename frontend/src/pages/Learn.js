@@ -6,13 +6,13 @@ import { AppShell } from "@/components/AppShell";
 import { usePremium } from "@/components/PremiumGate";
 import { getSkills, getSituations, getSituationStats, getProfessionalProfiles, getRecommendedSituations } from "@/lib/api";
 import { canAccessSituation } from "@/lib/accessConfig";
+import { situationStatus, groupBySkill, freeProgress, countPracticed, hasAnyActivity } from "@/lib/progress";
 import { getLocalizedField } from "@/lib/i18n";
 import { useApp } from "@/context/AppContext";
 import { useBilling } from "@/context/BillingContext";
 
 const PROFESSION = "hospitality";
 const SCROLL_KEY = "learn_scroll_y";
-const PRACTICED = new Set(["completed", "mastered"]);
 
 export default function Learn() {
   const navigate = useNavigate();
@@ -57,25 +57,15 @@ export default function Learn() {
   }, [situations]);
 
   const canAccess = (slug) => canAccessSituation({ professionId: PROFESSION, role: profile?.role, situationSlug: slug, isPremium: premium });
-  const statusOf = (slug) => {
-    const s = stats[slug]?.status;
-    return PRACTICED.has(s) ? "practiced" : s === "in_progress" ? "in_progress" : "not_started";
-  };
+  const statusOf = (slug) => situationStatus(stats, slug);
   const skillName = (id) => getLocalizedField(skills.find((s) => s.id === id), "name", language) || id;
 
-  const groups = useMemo(() => {
-    if (!situations) return [];
-    const order = Object.fromEntries(skills.map((s) => [s.id, s.order ?? 999]));
-    const map = {};
-    situations.forEach((s) => { (map[s.primary_skill] = map[s.primary_skill] || []).push(s); });
-    return Object.entries(map).sort(([a], [b]) => (order[a] ?? 999) - (order[b] ?? 999));
-  }, [situations, skills]);
+  const groups = useMemo(() => groupBySkill(situations, skills), [situations, skills]);
 
   const total = situations?.length || 0;
-  const practiced = (situations || []).filter((s) => statusOf(s.slug) === "practiced");
-  const hasActivity = (situations || []).some((s) => statusOf(s.slug) !== "not_started");
-  const freeSits = (situations || []).filter((s) => canAccessSituation({ professionId: PROFESSION, role: profile?.role, situationSlug: s.slug, isPremium: false }));
-  const allFreeDone = !premium && freeSits.length > 0 && freeSits.every((s) => statusOf(s.slug) === "practiced");
+  const practicedCount = countPracticed(situations, stats);
+  const hasActivity = hasAnyActivity(situations, stats);
+  const allFreeDone = !premium && freeProgress(situations, stats, { professionId: PROFESSION, role: profile?.role }).allDone;
   const rec = !hasActivity && (recs.find((r) => canAccess(r.slug)) || null);
   const recSit = rec && (situations || []).find((s) => s.slug === rec.slug);
 
@@ -96,8 +86,8 @@ export default function Learn() {
         <motion.header initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
           <h1 className="text-[30px] leading-tight sm:text-4xl font-serif font-bold text-[#222824] tracking-tight">{t("learn.title")}</h1>
           {roleName && <p data-testid="learn-plan-label" className="mt-1.5 text-[15px] font-medium text-[#173D31]">{roleName}</p>}
-          {situations && (practiced.length > 0 ? (
-            <ProgressSummary premium={premium} n={practiced.length} total={total} allFreeDone={allFreeDone} t={t} />
+          {situations && (practicedCount > 0 ? (
+            <ProgressSummary premium={premium} n={practicedCount} total={total} allFreeDone={allFreeDone} t={t} />
           ) : (
             <p data-testid="learn-new-user-sub" className="mt-2 text-[15px] text-[#6B736E]">{t("learn.newUserSub")}</p>
           ))}
@@ -117,7 +107,7 @@ export default function Learn() {
                 id={skillId}
                 name={skillName(skillId)}
                 sits={sits}
-                done={sits.filter((s) => statusOf(s.slug) === "practiced").length}
+                done={countPracticed(sits, stats)}
                 t={t}
                 language={language}
                 statusOf={statusOf}

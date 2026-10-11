@@ -257,5 +257,14 @@
   "review.done": "Done",
   "review.continueLearning": "Continue learning",
   "review.closeAria": "Close review",
-  "review.progressAria": "Item {i} of {n}"
+  "review.progressAria": "Item {i} of {n}",
+  "progress.overallOf": "{n} of {total} situations practiced",
+  "progress.freeBarAria": "{n} of {total} free situations practiced",
+  "progress.moreWithPremium": "{n} more Hospitality situations are available with Premium.",
+  "progress.explorePremium": "Explore Premium",
+  "progress.startsHereTitle": "Your progress starts here",
+  "progress.startsHereBody": "Complete your first real-world situation and you'll see your skills grow here.",
+  "progress.skillPracticed": "{n} / {total} practiced",
+  "progress.inReview": "{n} in review",
+  "progress.readinessTitle": "Work readiness"
 }

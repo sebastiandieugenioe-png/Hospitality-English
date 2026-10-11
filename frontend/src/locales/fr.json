@@ -257,5 +257,14 @@
   "review.done": "Terminé",
   "review.continueLearning": "Continuer à apprendre",
   "review.closeAria": "Fermer la révision",
-  "review.progressAria": "Élément {i} sur {n}"
+  "review.progressAria": "Élément {i} sur {n}",
+  "progress.overallOf": "{n} sur {total} situations pratiquées",
+  "progress.freeBarAria": "{n} sur {total} situations gratuites pratiquées",
+  "progress.moreWithPremium": "{n} situations supplémentaires sont disponibles avec Premium.",
+  "progress.explorePremium": "Découvrir Premium",
+  "progress.startsHereTitle": "Votre progression commence ici",
+  "progress.startsHereBody": "Terminez votre première situation réelle et vous verrez vos compétences progresser ici.",
+  "progress.skillPracticed": "{n} / {total} pratiquées",
+  "progress.inReview": "{n} en révision",
+  "progress.readinessTitle": "Préparation au travail"
 }

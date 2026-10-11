@@ -257,5 +257,14 @@
   "review.done": "Gata",
   "review.continueLearning": "Continuă să înveți",
   "review.closeAria": "Închide recapitularea",
-  "review.progressAria": "Elementul {i} din {n}"
+  "review.progressAria": "Elementul {i} din {n}",
+  "progress.overallOf": "{n} din {total} situații exersate",
+  "progress.freeBarAria": "{n} din {total} situații gratuite exersate",
+  "progress.moreWithPremium": "Încă {n} situații sunt disponibile cu Premium.",
+  "progress.explorePremium": "Descoperă Premium",
+  "progress.startsHereTitle": "Progresul tău începe aici",
+  "progress.startsHereBody": "Finalizează prima situație reală și îți vei vedea abilitățile crescând aici.",
+  "progress.skillPracticed": "{n} / {total} exersate",
+  "progress.inReview": "{n} în recapitulare",
+  "progress.readinessTitle": "Pregătire pentru muncă"
 }

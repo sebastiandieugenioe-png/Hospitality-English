@@ -257,5 +257,14 @@
   "review.done": "Concluído",
   "review.continueLearning": "Continuar a aprender",
   "review.closeAria": "Fechar revisão",
-  "review.progressAria": "Item {i} de {n}"
+  "review.progressAria": "Item {i} de {n}",
+  "progress.overallOf": "{n} de {total} situações praticadas",
+  "progress.freeBarAria": "{n} de {total} situações gratuitas praticadas",
+  "progress.moreWithPremium": "Há mais {n} situações de Hotelaria com Premium.",
+  "progress.explorePremium": "Explorar Premium",
+  "progress.startsHereTitle": "O teu progresso começa aqui",
+  "progress.startsHereBody": "Conclui a tua primeira situação real e vais ver as tuas competências crescer aqui.",
+  "progress.skillPracticed": "{n} / {total} praticadas",
+  "progress.inReview": "{n} em revisão",
+  "progress.readinessTitle": "Preparação para o trabalho"
 }

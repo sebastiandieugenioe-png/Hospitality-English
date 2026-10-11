@@ -257,5 +257,14 @@
   "review.done": "Готово",
   "review.continueLearning": "Продовжити навчання",
   "review.closeAria": "Закрити повторення",
-  "review.progressAria": "Елемент {i} з {n}"
+  "review.progressAria": "Елемент {i} з {n}",
+  "progress.overallOf": "{n} з {total} ситуацій опрацьовано",
+  "progress.freeBarAria": "{n} з {total} безкоштовних ситуацій опрацьовано",
+  "progress.moreWithPremium": "Ще {n} ситуацій доступні з Premium.",
+  "progress.explorePremium": "Дізнатися про Premium",
+  "progress.startsHereTitle": "Ваш прогрес починається тут",
+  "progress.startsHereBody": "Завершіть першу реальну ситуацію — і побачите тут, як зростають ваші навички.",
+  "progress.skillPracticed": "{n} / {total} опрацьовано",
+  "progress.inReview": "{n} на повторенні",
+  "progress.readinessTitle": "Готовність до роботи"
 }

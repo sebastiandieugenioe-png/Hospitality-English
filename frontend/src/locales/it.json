@@ -257,5 +257,14 @@
   "review.done": "Fatto",
   "review.continueLearning": "Continua a imparare",
   "review.closeAria": "Chiudi ripasso",
-  "review.progressAria": "Elemento {i} di {n}"
+  "review.progressAria": "Elemento {i} di {n}",
+  "progress.overallOf": "{n} di {total} situazioni praticate",
+  "progress.freeBarAria": "{n} di {total} situazioni gratuite praticate",
+  "progress.moreWithPremium": "Altre {n} situazioni sono disponibili con Premium.",
+  "progress.explorePremium": "Scopri Premium",
+  "progress.startsHereTitle": "Il tuo progresso inizia qui",
+  "progress.startsHereBody": "Completa la tua prima situazione reale e vedrai crescere le tue competenze qui.",
+  "progress.skillPracticed": "{n} / {total} praticate",
+  "progress.inReview": "{n} in ripasso",
+  "progress.readinessTitle": "Preparazione al lavoro"
 }
