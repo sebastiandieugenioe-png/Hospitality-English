@@ -1,21 +1,17 @@
 // Central Premium gating UX: guest account-gate -> paywall -> Test Store purchase.
 // Entitlement truth is RevenueCat (useBilling). Nothing premium is persisted locally.
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { Lock, Check, X, Sparkles, Loader2 } from "lucide-react";
+import { Check, X, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
 import { useBilling } from "@/context/BillingContext";
 import { renderGisButton, GOOGLE_CLIENT_ID, APPLE_ENABLED } from "@/lib/firebase";
 import { rcDiag } from "@/lib/revenuecat";
+import { btnDark, btnLight, focusRing } from "@/components/SettingsLayout";
+import { AuthProviderButton, GoogleSignInSlot, AuthStatus, friendlyAuthError } from "@/components/auth/AuthProviders";
 
 const PremiumContext = createContext(null);
 const PROFESSION = "hospitality";
-
-const AppleGlyph = () => (
-  <svg viewBox="0 0 384 512" aria-hidden="true" className="w-4 h-4 fill-current">
-    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
-  </svg>
-);
 
 const productOf = (pkg) => (pkg ? (pkg.webBillingProduct || pkg.rcBillingProduct || null) : null);
 const priceOf = (pkg) => {
@@ -24,7 +20,7 @@ const priceOf = (pkg) => {
 };
 
 export function PremiumProvider({ children }) {
-  const { isAuthenticated, connectGoogle, connectApple } = useApp();
+  const { isAuthenticated, connectGoogle, connectApple, t } = useApp();
   const billing = useBilling();
   const [mode, setMode] = useState(null); // null | "account" | "paywall"
   const resumeRef = useRef(null);
@@ -43,7 +39,7 @@ export function PremiumProvider({ children }) {
   // Central entry point. resume() runs once Premium is unlocked.
   const requestPremium = ({ resume } = {}) => {
     if (billing.status === "loading" || billing.status === "uninitialized" || billing.status === "error") {
-      toast.error("Premium is temporarily unavailable. Please try again.");
+      toast.error(t("paywall.unavailable"));
       return;
     }
     if (billing.isPremium(PROFESSION)) {
@@ -69,18 +65,10 @@ export function PremiumProvider({ children }) {
     <PremiumContext.Provider value={value}>
       {children}
       {mode === "account" && (
-        <AccountGate
-          onClose={closeAll}
-          connectGoogle={connectGoogle}
-          connectApple={connectApple}
-        />
+        <AccountGate t={t} onClose={closeAll} connectGoogle={connectGoogle} connectApple={connectApple} />
       )}
       {mode === "paywall" && (
-        <Paywall
-          billing={billing}
-          onClose={closeAll}
-          onUnlocked={runResume}
-        />
+        <Paywall t={t} billing={billing} onClose={closeAll} onUnlocked={runResume} />
       )}
     </PremiumContext.Provider>
   );
@@ -93,7 +81,7 @@ export function usePremium() {
 }
 
 /* ---------- Guest account gate ---------- */
-function AccountGate({ onClose, connectGoogle, connectApple }) {
+function AccountGate({ t, onClose, connectGoogle, connectApple }) {
   const gisRef = useRef(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(null);
@@ -109,7 +97,7 @@ function AccountGate({ onClose, connectGoogle, connectApple }) {
           if (!token) return;
           setBusy(true); setErr(null);
           try { await connectGoogle(token); } // intent effect continues to paywall
-          catch (e) { if (active) setErr("Could not sign in. Please try again."); }
+          catch (e) { if (active) setErr(friendlyAuthError(e, t)); }
           finally { if (active) setBusy(false); }
         }, { width: 300 });
       } catch { /* GIS unavailable */ }
@@ -120,39 +108,23 @@ function AccountGate({ onClose, connectGoogle, connectApple }) {
   const onApple = async () => {
     setBusy(true); setErr(null);
     try { await connectApple(); }
-    catch (e) {
-      const code = e?.code || "";
-      if (!(code.includes("popup") || code.includes("cancelled"))) setErr("Could not sign in. Please try again.");
-    } finally { setBusy(false); }
+    catch (e) { setErr(friendlyAuthError(e, t)); }
+    finally { setBusy(false); }
   };
 
   return (
-    <Overlay onClose={onClose} testid="premium-account-gate">
-      <div className="flex items-center justify-between">
-        <span className="inline-flex items-center gap-2 text-brand-forest"><Sparkles className="w-5 h-5" /></span>
-        <button data-testid="premium-gate-close" onClick={onClose} className="text-brand-charcoal/40 hover:text-brand-espresso"><X className="w-5 h-5" /></button>
-      </div>
-      <h2 className="mt-3 text-2xl font-serif text-brand-espresso">Create an account to save your progress and unlock Premium.</h2>
-      {err && <p data-testid="premium-gate-error" className="mt-3 text-sm text-brand-terracotta">{err}</p>}
-      <div className="mt-5 space-y-3">
-        <div ref={gisRef} data-testid="premium-gate-google" className="min-h-[44px]" />
+    <Overlay onClose={busy ? undefined : onClose} testid="premium-account-gate" labelledBy="account-gate-title">
+      <CloseButton testid="premium-gate-close" label={t("paywall.closeAria")} onClick={onClose} disabled={busy} />
+      <h2 id="account-gate-title" className="pr-10 text-[26px] leading-tight font-serif font-semibold text-[#222824]">{t("auth.gateTitle")}</h2>
+      <p className="mt-2 text-[15px] text-[#6B736E] leading-relaxed">{t("auth.gateBody")}</p>
+      <div className="mt-6 space-y-3">
+        <AuthStatus busy={busy} busyLabel={t("auth.savingProgress")} err={err} testidPrefix="premium-gate" />
+        <GoogleSignInSlot ref={gisRef} testid="premium-gate-google" hidden={busy} />
         {APPLE_ENABLED && (
-          <button
-            data-testid="premium-gate-apple"
-            disabled={busy}
-            onClick={onApple}
-            className="inline-flex items-center justify-center gap-3 w-full rounded-lg bg-black text-white px-6 py-3.5 font-medium hover:opacity-90 disabled:opacity-40 transition-opacity"
-          >
-            <AppleGlyph /> Continue with Apple
-          </button>
+          <AuthProviderButton testid="premium-gate-apple" label={t("account.continueApple")} disabled={busy} onClick={onApple} />
         )}
-        <button
-          data-testid="premium-gate-notnow"
-          disabled={busy}
-          onClick={onClose}
-          className="w-full rounded-lg border border-black/10 text-brand-charcoal/70 px-6 py-3 font-medium hover:bg-brand-sand transition-colors"
-        >
-          Not now
+        <button type="button" data-testid="premium-gate-notnow" disabled={busy} onClick={onClose} className={`w-full ${btnLight}`}>
+          {t("auth.notNow")}
         </button>
       </div>
     </Overlay>
@@ -160,49 +132,45 @@ function AccountGate({ onClose, connectGoogle, connectApple }) {
 }
 
 /* ---------- Custom paywall (prices from RevenueCat) ---------- */
-function Paywall({ billing, onClose, onUnlocked }) {
+function Paywall({ t, billing, onClose, onUnlocked }) {
   const offering = billing.currentOffering(PROFESSION);
   const annual = offering?.annual || null;
   const monthly = offering?.monthly || null;
-  const [selected, setSelected] = useState("annual"); // default to best value
-  const [state, setState] = useState("idle"); // idle | purchasing | error
+  const [selected, setSelected] = useState(annual || !monthly ? "annual" : "monthly");
+  const [state, setState] = useState("idle"); // idle | purchasing | error | success
   const [err, setErr] = useState(null);
 
   const benefits = [
-    "All 25 situations for your role",
-    "Full Listening practice",
-    "Full Speaking practice",
-    "Full review and practice access",
-    "Future Hospitality content included",
+    t("subscription.benefitSituations"),
+    t("subscription.benefitListening"),
+    t("subscription.benefitSpeaking"),
+    t("subscription.benefitReview"),
   ];
 
   // Savings only when currencies match and numeric prices are comparable.
   let savingsPct = null;
   const ap = priceOf(annual), mp = priceOf(monthly);
   if (ap && mp && ap.currency === mp.currency && ap.amountMicros > 0 && mp.amountMicros > 0) {
-    const annualPerMonth = ap.amountMicros / 12;
-    const pct = Math.round((1 - annualPerMonth / mp.amountMicros) * 100);
+    const pct = Math.round((1 - ap.amountMicros / 12 / mp.amountMicros) * 100);
     if (pct > 0) savingsPct = pct;
   }
 
   const chosenPkg = selected === "annual" ? annual : monthly;
+  const purchasing = state === "purchasing";
 
   const buy = async () => {
-    if (!chosenPkg) return;
-    const product = productOf(chosenPkg);
-    const productId = product?.identifier || null;
+    if (!chosenPkg || purchasing) return;
+    const productId = productOf(chosenPkg)?.identifier || null;
     setState("purchasing"); setErr(null);
     rcDiag("PURCHASE_START", { stage: "before_checkout", product: productId });
     try {
       const { premium } = await billing.purchase(chosenPkg, PROFESSION);
       if (premium) {
-        toast.success("Premium unlocked.");
-        onUnlocked();
+        setState("success");
       } else {
-        // purchase() resolved but entitlement not active even after retries.
         rcDiag("CONFIRM_FAILED", { stage: "after_purchase", product: productId });
         setState("error");
-        setErr("We couldn't confirm your Premium access yet. Please try again.");
+        setErr(t("paywall.errConfirm"));
       }
     } catch (e) {
       const code = e?.errorCode;
@@ -210,84 +178,116 @@ function Paywall({ billing, onClose, onUnlocked }) {
       if (code === 1) { setState("idle"); return; } // UserCancelledError: no error, no unlock
       const isNetwork = code === 10 || String(e?.message || "").toLowerCase().includes("network");
       setState("error");
-      setErr(isNetwork
-        ? "Network problem. Please check your connection and try again."
-        : "Something went wrong with the purchase. Please try again.");
+      setErr(isNetwork ? t("account.errNetwork") : t("paywall.errPurchase"));
     }
   };
 
+  if (state === "success") {
+    return (
+      <Overlay onClose={onUnlocked} testid="premium-paywall" labelledBy="paywall-success-title">
+        <div data-testid="paywall-success" role="status" className="py-4 text-center">
+          <CheckCircle2 className="mx-auto w-12 h-12 text-[#34785B]" aria-hidden="true" />
+          <h2 id="paywall-success-title" className="mt-4 text-[26px] font-serif font-semibold text-[#222824]">{t("paywall.successTitle")}</h2>
+          <p className="mt-2 text-[15px] text-[#6B736E]">{t("paywall.successBody")}</p>
+          <button type="button" data-testid="paywall-success-continue" onClick={onUnlocked} className={`mt-7 w-full ${btnDark}`}>
+            {t("common.continue")}
+          </button>
+        </div>
+      </Overlay>
+    );
+  }
+
   return (
-    <Overlay onClose={state === "purchasing" ? undefined : onClose} testid="premium-paywall">
-      <div className="flex items-center justify-between">
-        <span className="inline-flex items-center gap-2 text-brand-forest"><Lock className="w-5 h-5" /></span>
-        {state !== "purchasing" && (
-          <button data-testid="paywall-close" onClick={onClose} className="text-brand-charcoal/40 hover:text-brand-espresso"><X className="w-5 h-5" /></button>
-        )}
-      </div>
-      <h2 className="mt-3 text-2xl sm:text-3xl font-serif text-brand-espresso">Unlock all Hospitality English</h2>
-      <ul className="mt-4 space-y-2">
+    <Overlay onClose={purchasing ? undefined : onClose} testid="premium-paywall" labelledBy="paywall-title">
+      <CloseButton testid="paywall-close" label={t("paywall.closeAria")} onClick={onClose} disabled={purchasing} />
+      <p className="text-xs uppercase tracking-[0.15em] font-semibold text-[#34785B]">Premium</p>
+      <h2 id="paywall-title" className="mt-2 pr-10 text-[26px] sm:text-[30px] leading-tight font-serif font-semibold text-[#222824]">{t("paywall.title")}</h2>
+      <p className="mt-2 text-[15px] text-[#6B736E]">{t("paywall.subtitle")}</p>
+
+      <ul data-testid="paywall-benefits" className="mt-5 space-y-2.5">
         {benefits.map((b) => (
-          <li key={b} className="flex items-start gap-2 text-sm text-brand-charcoal/80">
-            <Check className="w-4 h-4 text-brand-forest mt-0.5 shrink-0" /> {b}
+          <li key={b} className="flex items-start gap-2.5 text-[15px] text-[#222824]">
+            <Check className="w-4 h-4 text-[#34785B] mt-1 shrink-0" aria-hidden="true" /> {b}
           </li>
         ))}
       </ul>
 
-      <div className="mt-6 space-y-3">
-        <PlanOption
-          testid="paywall-plan-annual" label="Annual" pkg={annual}
-          selected={selected === "annual"} onSelect={() => setSelected("annual")}
-          badge={savingsPct ? `Save ${savingsPct}%` : null}
-        />
-        <PlanOption
-          testid="paywall-plan-monthly" label="Monthly" pkg={monthly}
-          selected={selected === "monthly"} onSelect={() => setSelected("monthly")}
-        />
+      <p data-testid="paywall-free-note" className="mt-4 rounded-2xl bg-[#F7F5F0] px-4 py-3 text-[14px] text-[#6B736E] leading-relaxed">{t("paywall.freeNote")}</p>
+
+      <div role="radiogroup" aria-label={t("paywall.choosePlan")} className="mt-5 space-y-3">
+        <PlanOption t={t} testid="paywall-plan-annual" label={t("subscription.annual")} period={t("paywall.perYear")} pkg={annual}
+          selected={selected === "annual"} onSelect={() => setSelected("annual")} disabled={purchasing}
+          badge={savingsPct ? t("paywall.save", { pct: savingsPct }) : null} />
+        <PlanOption t={t} testid="paywall-plan-monthly" label={t("subscription.monthly")} period={t("paywall.perMonth")} pkg={monthly}
+          selected={selected === "monthly"} onSelect={() => setSelected("monthly")} disabled={purchasing} />
       </div>
 
-      {err && <p data-testid="paywall-error" className="mt-3 text-sm text-brand-terracotta">{err}</p>}
+      {err && <p data-testid="paywall-error" role="alert" className="mt-4 text-[14px] text-[#A44F3B]">{err}</p>}
 
-      <button
-        data-testid="paywall-continue"
-        disabled={!chosenPkg || state === "purchasing"}
-        onClick={buy}
-        className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-lg bg-brand-forest text-white px-6 py-4 font-medium hover:bg-brand-forest-hover disabled:opacity-40 transition-colors"
-      >
-        {state === "purchasing" ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing…</> : "Continue"}
+      <button type="button" data-testid="paywall-continue" disabled={!chosenPkg || purchasing} onClick={buy} aria-busy={purchasing} className={`mt-5 w-full ${btnDark}`}>
+        {purchasing ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("paywall.processing")}</> : t("common.continue")}
       </button>
+      <span className="sr-only" role="status" aria-live="polite">{purchasing ? t("paywall.processing") : ""}</span>
     </Overlay>
   );
 }
 
-function PlanOption({ testid, label, pkg, selected, onSelect, badge }) {
+export function PlanOption({ t, testid, label, period, pkg, selected, onSelect, badge, disabled }) {
   const price = priceOf(pkg);
+  const unavailable = !pkg;
   return (
     <button
+      type="button"
+      role="radio"
+      aria-checked={selected}
       data-testid={testid}
-      disabled={!pkg}
+      data-selected={selected ? "true" : "false"}
+      disabled={unavailable || disabled}
       onClick={onSelect}
-      className={`flex items-center justify-between w-full rounded-xl border px-5 py-4 text-left transition-all ${
-        selected ? "border-brand-forest bg-brand-success-muted" : "border-black/10 bg-white hover:border-brand-forest/40"
-      } ${!pkg ? "opacity-40 cursor-not-allowed" : ""}`}
+      className={`flex items-center gap-3 w-full min-h-[64px] rounded-2xl border px-4 py-3.5 text-left transition-colors ${focusRing} ${
+        selected ? "border-[#173D31] border-2 bg-[#EEF3EF]" : "border-[#DEE2DE] bg-white hover:border-[#173D31]/40"
+      } ${unavailable ? "opacity-40 cursor-not-allowed" : ""}`}
     >
-      <div>
-        <span className="font-serif text-lg text-brand-espresso">{label}</span>
-        {badge && (
-          <span className="ml-2 text-[10px] uppercase tracking-wider font-semibold text-brand-forest bg-brand-forest/10 px-2 py-0.5 rounded-full">{badge}</span>
-        )}
-      </div>
-      <span data-testid={`${testid}-price`} className="text-brand-espresso font-semibold">
-        {price ? price.formattedPrice : "—"}
+      <span aria-hidden="true" className={`grid place-items-center w-5 h-5 rounded-full border-2 shrink-0 ${selected ? "border-[#173D31] bg-[#173D31]" : "border-[#B9BFBA]"}`}>
+        {selected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+      </span>
+      <span className="flex-1 min-w-0">
+        <span className="flex flex-wrap items-center gap-2">
+          <span className="text-[16px] font-semibold text-[#222824]">{label}</span>
+          {badge && <span className="text-[11px] uppercase tracking-wider font-semibold text-[#173D31] bg-[#173D31]/10 px-2 py-0.5 rounded-full">{badge}</span>}
+        </span>
+      </span>
+      <span className="text-right shrink-0">
+        <span data-testid={`${testid}-price`} className="block text-[16px] font-semibold text-[#222824]">
+          {price ? price.formattedPrice : "—"}
+        </span>
+        <span className="block text-[12px] text-[#6B736E]">{price ? period : t("paywall.priceUnavailable")}</span>
       </span>
     </button>
   );
 }
 
-function Overlay({ children, onClose, testid }) {
+function CloseButton({ testid, label, onClick, disabled }) {
+  if (disabled) return null;
   return (
-    <div data-testid={testid} className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-6">
-      <div className="absolute inset-0 bg-brand-espresso/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[92vh] overflow-y-auto">
+    <button type="button" data-testid={testid} aria-label={label} onClick={onClick}
+      className={`absolute top-3 right-3 grid place-items-center w-11 h-11 rounded-full text-[#6B736E] hover:bg-[#F7F5F0] hover:text-[#222824] transition-colors ${focusRing}`}>
+      <X className="w-5 h-5" aria-hidden="true" />
+    </button>
+  );
+}
+
+function Overlay({ children, onClose, testid, labelledBy }) {
+  useEffect(() => {
+    if (!onClose) return;
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+  return (
+    <div data-testid={testid} role="dialog" aria-modal="true" aria-labelledby={labelledBy} className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-6">
+      <div className="absolute inset-0 bg-[#222824]/50" onClick={onClose} aria-hidden="true" />
+      <div className="relative w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl px-5 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:p-8 shadow-xl max-h-[92dvh] overflow-y-auto overscroll-contain">
         {children}
       </div>
     </div>

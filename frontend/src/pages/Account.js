@@ -3,13 +3,7 @@ import { LogOut, Trash2, Loader2, AlertTriangle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { SecondaryPage, Section, Row, btnLight } from "@/components/SettingsLayout";
 import { APPLE_ENABLED, renderGisButton, GOOGLE_CLIENT_ID } from "@/lib/firebase";
-
-// Apple logo (white) for the HIG-compliant "Continue with Apple" button.
-const AppleIcon = () => (
-  <svg viewBox="0 0 384 512" aria-hidden="true" className="w-4 h-4 fill-current">
-    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
-  </svg>
-);
+import { AppleGlyph as AppleIcon, AuthProviderButton, GoogleSignInSlot, AuthStatus, friendlyAuthError } from "@/components/auth/AuthProviders";
 
 export default function Account() {
   const { t, account, isAuthenticated, connectGoogle, connectApple, reauthGoogle, reauthRevokeApple, logout, deleteAccount } = useApp();
@@ -26,13 +20,7 @@ export default function Account() {
   const stateRef = useRef({ isAuthenticated, confirmDelete });
   stateRef.current = { isAuthenticated, confirmDelete };
 
-  const friendly = (e, label = "Google") => {
-    const code = e?.code || "";
-    if (code.includes("popup") || code.includes("cancelled") || e?.type === "gis_cancelled") return null; // user cancelled
-    if (code === "auth/network-request-failed" || e?.message === "gis_unavailable") return t("account.errNetwork");
-    if (code === "auth/invalid-credential") return t("account.errInvalid", { provider: label });
-    return t("account.errGeneric", { provider: label });
-  };
+  const friendly = (e) => friendlyAuthError(e, t);
 
   // Apple linking (popup). Consent is confirmed before this runs.
   const handleApple = async () => {
@@ -44,7 +32,7 @@ export default function Account() {
         ? t("account.loadedExisting")
         : t("account.progressSaved"));
     } catch (e) {
-      const m = friendly(e, "Apple");
+      const m = friendly(e);
       if (m) setErr(m);
     } finally {
       setBusy(false);
@@ -214,32 +202,29 @@ export default function Account() {
           <section className="rounded-2xl bg-white border border-[#DEE2DE] p-6">
             <h2 className="text-[21px] font-serif font-semibold text-[#222824]">{t("more.saveProgressTitle")}</h2>
             <p className="mt-1 text-[15px] text-[#6B736E]">{t("account.guestBody")}</p>
-            {busy ? (
-              <p className="mt-5 flex items-center gap-2 text-[#6B736E]"><Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" /> {t("account.connecting")}</p>
-            ) : gisUnavailable ? (
-              <p data-testid="account-gis-unavailable" className="mt-5 text-[14px] text-[#A44F3B]">{t("account.gisUnavailable")}</p>
-            ) : (
-              <div ref={googleBtnRef} data-testid="account-google-gis" className="mt-5 min-h-[44px]" />
-            )}
-            {APPLE_ENABLED && (
-              appleConsent ? (
-                <div data-testid="account-apple-consent" className="mt-3 rounded-2xl border border-[#DEE2DE] bg-[#F7F5F0] p-4">
-                  <p className="text-[14px] text-[#222824]">{t("account.appleConsent")}</p>
-                  <div className="mt-3 flex flex-col gap-2">
-                    <button type="button" data-testid="account-apple-confirm-btn" disabled={busy} onClick={handleApple} className={`w-full ${darkBtn}`}>
-                      <AppleIcon /> {t("account.continueApple")}
-                    </button>
-                    <button type="button" data-testid="account-apple-cancel-btn" disabled={busy} onClick={() => setAppleConsent(false)} className={`w-full ${btnLight}`}>
-                      {t("account.cancel")}
-                    </button>
-                  </div>
-                </div>
+            <div className="mt-5 space-y-3">
+              {busy && <AuthStatus busy busyLabel={t("auth.savingProgress")} testidPrefix="account-link" />}
+              {gisUnavailable ? (
+                <p data-testid="account-gis-unavailable" className="text-[14px] text-[#A44F3B]">{t("account.gisUnavailable")}</p>
               ) : (
-                <button type="button" data-testid="account-apple-btn" disabled={busy} onClick={() => { setErr(null); setMsg(null); setAppleConsent(true); }} className={`mt-3 w-full ${darkBtn}`}>
-                  <AppleIcon /> {t("account.continueApple")}
-                </button>
-              )
-            )}
+                <GoogleSignInSlot ref={googleBtnRef} testid="account-google-gis" hidden={busy} />
+              )}
+              {APPLE_ENABLED && (
+                appleConsent ? (
+                  <div data-testid="account-apple-consent" className="rounded-2xl border border-[#DEE2DE] bg-[#F7F5F0] p-4">
+                    <p className="text-[14px] text-[#222824]">{t("account.appleConsent")}</p>
+                    <div className="mt-3 flex flex-col gap-2">
+                      <AuthProviderButton testid="account-apple-confirm-btn" label={t("account.continueApple")} disabled={busy} onClick={handleApple} />
+                      <button type="button" data-testid="account-apple-cancel-btn" disabled={busy} onClick={() => setAppleConsent(false)} className={`w-full ${btnLight}`}>
+                        {t("account.cancel")}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <AuthProviderButton testid="account-apple-btn" label={t("account.continueApple")} disabled={busy} onClick={() => { setErr(null); setMsg(null); setAppleConsent(true); }} />
+                )
+              )}
+            </div>
           </section>
           <p className="text-center text-[14px] text-[#6B736E]">{t("account.noAccountNeeded")}</p>
         </div>
