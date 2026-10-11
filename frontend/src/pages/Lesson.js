@@ -4,16 +4,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   ArrowLeft,
-  X,
   Check,
   RotateCw,
   CircleCheck,
   CircleX,
-  Trophy,
-  BookOpen,
+  Clock,
 } from "lucide-react";
 import { toast } from "sonner";
-import { getLesson, startAttempt, submitResponse, completeAttempt, getListeningMeta, getListeningItem, getSpeakingMeta, getSpeakingItem } from "@/lib/api";
+import { getRecommendedSituations, getLesson, startAttempt, submitResponse, completeAttempt, getListeningMeta, getListeningItem, getSpeakingMeta, getSpeakingItem } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
 import { useBilling } from "@/context/BillingContext";
 import { usePremium } from "@/components/PremiumGate";
@@ -22,6 +20,9 @@ import { getLocalizedField, getText, getLocalizedOptions } from "@/lib/i18n";
 import { ServiceNote } from "@/components/ServiceNote";
 import { ListeningQuestion } from "@/components/ListeningQuestion";
 import { SpeakingQuestion } from "@/components/SpeakingQuestion";
+import { FocusLayout, PrimaryButton, SecondaryButton, TeachingBlock, PhraseBlock, DialogueExample, ExerciseShell, AnswerOption, FeedbackPanel, focusRing } from "@/components/focus/FocusUI";
+import { canAccessSituation } from "@/lib/accessConfig";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 const STEPS = ["intro", "phrases", "dialogue", "flashcards", "listening", "speaking", "exercises", "quiz", "completion"];
 
@@ -43,6 +44,12 @@ export default function Lesson() {
   const [speakingMeta, setSpeakingMeta] = useState(null);
   const [speakingItem, setSpeakingItem] = useState(null);
   const recordedRef = useRef(false);
+
+  // Reset lesson state when moving to another situation within the same route.
+  useEffect(() => {
+    setStepIdx(0); setScore({ correct: 0, total: 0 }); setAttemptId(null); setAttemptResult(null);
+    recordedRef.current = false;
+  }, [slug]);
 
   useEffect(() => {
     setLoading(true);
@@ -124,6 +131,10 @@ export default function Lesson() {
   };
 
   const step = STEPS[stepIdx];
+  const [confirmExit, setConfirmExit] = useState(false);
+  const leave = () => (window.history.state?.idx > 0 ? navigate(-1) : navigate("/learn"));
+  const requestExit = () => (stepIdx > 0 && step !== "completion" ? setConfirmExit(true) : leave());
+  useEffect(() => { window.scrollTo(0, 0); }, [stepIdx]);
   const next = () => setStepIdx((i) => Math.min(i + 1, STEPS.length - 1));
   const prev = () => setStepIdx((i) => Math.max(i - 1, 0));
 
@@ -136,38 +147,38 @@ export default function Lesson() {
 
   if (loading) {
     return (
-      <Shell onClose={() => navigate(-1)} progress={0} label="">
-        <p className="text-brand-charcoal/50">{t("lesson.loading")}</p>
-      </Shell>
+      <FocusLayout onExit={leave} exitLabel={t("lesson.closeAria")}>
+        <p className="text-[#6B736E]">{t("lesson.loading")}</p>
+      </FocusLayout>
     );
   }
 
   if (data?.locked) {
     return (
-      <Shell onClose={() => navigate("/home")} progress={0} label="">
+      <FocusLayout onExit={leave} exitLabel={t("lesson.closeAria")}>
         <div className="text-center py-16" data-testid="lesson-locked">
           <span className="grid place-items-center w-16 h-16 mx-auto rounded-full bg-brand-forest/10 text-brand-forest">
             <Lock className="w-8 h-8" />
           </span>
-          <h1 className="mt-6 text-2xl font-serif text-brand-espresso">Premium situation</h1>
+          <h1 className="mt-6 text-2xl font-serif text-brand-espresso">{t("lesson.lockedTitle")}</h1>
           <p className="mt-3 text-brand-charcoal/60 max-w-sm mx-auto">
-            Unlock all 25 situations for your role with Hospitality Premium.
+            {t("lesson.lockedBody")}
           </p>
           <button
             data-testid="lesson-unlock-btn"
             onClick={() => requestPremium({ resume: () => { setLoading(true); getLesson(slug).then((d) => setData(d)).catch(() => {}).finally(() => setLoading(false)); } })}
             className="mt-8 inline-flex items-center gap-2 bg-brand-forest text-white rounded-lg px-6 py-3 font-medium hover:bg-brand-forest-hover transition-colors"
           >
-            <Lock className="w-4 h-4" /> Unlock Premium
+            <Lock className="w-4 h-4" /> {t("lesson.lockedCta")}
           </button>
         </div>
-      </Shell>
+      </FocusLayout>
     );
   }
 
   if (!data?.available) {
     return (
-      <Shell onClose={() => navigate("/home")} progress={0} label="">
+      <FocusLayout onExit={leave} exitLabel={t("lesson.closeAria")}>
         <div className="text-center py-16">
           <h1 className="text-2xl font-serif text-brand-espresso">
             {t("lesson.soonTitle")}
@@ -183,15 +194,29 @@ export default function Lesson() {
             {t("lesson.backHome")}
           </button>
         </div>
-      </Shell>
+      </FocusLayout>
     );
   }
 
   const lesson = data.lesson;
-  const progress = (stepIdx / (STEPS.length - 1)) * 100;
+  const totalSteps = STEPS.length - 1;
+  const stepLabel = step === "listening" && listeningMeta ? getText(listeningMeta.ui.section_title, language) : step === "speaking" && speakingMeta ? getText(speakingMeta.ui.section_title, language) : t(`lesson.step.${step}`);
 
   return (
-    <Shell onClose={() => navigate("/home")} progress={progress} label={step === "listening" && listeningMeta ? getText(listeningMeta.ui.section_title, language) : step === "speaking" && speakingMeta ? getText(speakingMeta.ui.section_title, language) : t(`lesson.step.${step}`)}>
+    <FocusLayout onExit={requestExit} exitLabel={t("lesson.closeAria")} current={Math.min(stepIdx + 1, totalSteps)} total={totalSteps}
+      progressLabel={t("lesson.progressAria", { step: stepLabel, n: Math.min(stepIdx + 1, totalSteps), total: totalSteps })}>
+      <AlertDialog open={confirmExit} onOpenChange={setConfirmExit}>
+        <AlertDialogContent data-testid="lesson-exit-dialog">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("lesson.exitTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("lesson.exitBody")}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel data-testid="lesson-exit-stay-btn">{t("lesson.exitStay")}</AlertDialogCancel>
+            <AlertDialogAction data-testid="lesson-exit-confirm-btn" onClick={leave}>{t("lesson.exitLeave")}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -200,7 +225,7 @@ export default function Lesson() {
           exit={{ opacity: 0, y: -12 }}
           transition={{ duration: 0.3 }}
         >
-          {step === "intro" && <Intro lesson={lesson} onNext={next} />}
+          {step === "intro" && <Intro lesson={lesson} situation={data.situation} onNext={next} />}
           {step === "phrases" && <Phrases lesson={lesson} onNext={next} onBack={prev} />}
           {step === "dialogue" && <Dialogue lesson={lesson} situation={data.situation} onNext={next} onBack={prev} />}
           {step === "flashcards" && <Flashcards lesson={lesson} onNext={next} />}
@@ -257,7 +282,7 @@ export default function Lesson() {
           )}
         </motion.div>
       </AnimatePresence>
-    </Shell>
+    </FocusLayout>
   );
 }
 
@@ -272,103 +297,48 @@ function SkipListening({ onDone, failed }) {
   return <p className="text-brand-charcoal/50">{t("lesson.loading")}</p>;
 }
 
-/* ---------- Layout ---------- */
-function Shell({ children, onClose, progress, label }) {
-  const { t } = useApp();
-  return (
-    <div className="min-h-screen bg-brand-sand flex flex-col">
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-brand-sand/80 border-b border-black/5">
-        <div className="max-w-2xl mx-auto px-5 sm:px-8 h-16 flex items-center gap-4">
-          <button
-            data-testid="lesson-close-btn"
-            onClick={onClose}
-            className="text-brand-charcoal/50 hover:text-brand-espresso transition-colors"
-            aria-label={t("lesson.closeAria")}
-          >
-            <X className="w-5 h-5" />
-          </button>
-          <div className="flex-1 h-1.5 rounded-full bg-black/5 overflow-hidden">
-            <div
-              className="h-full bg-brand-forest transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          {label && (
-            <span className="text-xs uppercase tracking-[0.15em] text-brand-charcoal/50 hidden sm:block">
-              {label}
-            </span>
-          )}
-        </div>
-      </header>
-      <main className="flex-1 w-full max-w-2xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
-        {children}
-      </main>
-    </div>
-  );
-}
-
-function PrimaryBtn({ children, testId, ...props }) {
-  return (
-    <button
-      data-testid={testId}
-      className="inline-flex items-center justify-center gap-2 w-full bg-brand-forest text-white hover:bg-brand-forest-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors rounded-lg px-6 py-4 font-medium"
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
+const PrimaryBtn = ({ testId, ...props }) => <PrimaryButton testId={testId} {...props} />;
 
 /* ---------- Step 1: Intro ---------- */
-function Intro({ lesson, onNext }) {
+function Intro({ lesson, situation, onNext }) {
   const { t, language } = useApp();
   const intro = lesson.intro;
-  const contextEs = getLocalizedField(intro, "context", language);
-  const guestOpeningEs = getLocalizedField(intro, "guest_opening", language);
+  const context = getLocalizedField(intro, "context", language);
+  const guestOpening = getLocalizedField(intro, "guest_opening", language);
   const summary = getLocalizedField(intro, "summary", language);
   const objectives = getLocalizedField(intro, "objectives", language) || [];
+  const title = getLocalizedField(situation, "title", language) || situation?.title_en;
   return (
-    <div>
-      <p className="text-xs uppercase tracking-[0.2em] font-semibold text-brand-terracotta mb-3">
-        {t("intro.eyebrow")}
-      </p>
-      {/* Turn context (shift framing) */}
-      {contextEs && (
-        <div className="rounded-2xl bg-white border border-black/5 p-5 shadow-sm">
-          <p className="text-brand-charcoal/70 leading-relaxed">{contextEs}</p>
-          {intro.guest_opening_en && (
-            <div className="mt-3 rounded-xl bg-brand-sand border border-black/5 px-4 py-3">
-              <p className="text-[10px] uppercase tracking-[0.15em] text-brand-charcoal/40 mb-1">
-                {t("intro.guest")}
-              </p>
-              <p className="text-lg text-brand-espresso font-medium">“{intro.guest_opening_en}”</p>
-              {guestOpeningEs && (
-                <p className="mt-0.5 text-sm text-brand-charcoal/60">{guestOpeningEs}</p>
-              )}
-            </div>
-          )}
+    <div data-testid="lesson-intro">
+      <TeachingBlock eyebrow={t("intro.eyebrow")} title={title} sub={context || summary}>
+        {situation?.estimated_minutes && (
+          <p className="mt-2 inline-flex items-center gap-1.5 text-[13px] text-[#6B736E]">
+            <Clock className="w-4 h-4" aria-hidden="true" /> {t("learn.minutes", { n: situation.estimated_minutes })}
+          </p>
+        )}
+      </TeachingBlock>
+      {intro.guest_opening_en && (
+        <div className="mt-5">
+          <p className="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#6B736E] mb-2">{t("intro.guest")}</p>
+          <PhraseBlock english={intro.guest_opening_en} translation={guestOpening} testId="intro-guest-opening" />
         </div>
       )}
-      <p className="mt-6 text-base text-brand-charcoal/70 leading-relaxed">{summary}</p>
-      <div className="mt-8 space-y-3">
-        <p className="text-sm uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50">
-          {t("intro.objectivesTitle")}
-        </p>
-        {objectives.map((obj, i) => (
-          <div
-            key={i}
-            className="flex items-start gap-3 rounded-xl bg-white border border-black/5 p-4"
-          >
-            <span className="grid place-items-center w-6 h-6 rounded-full bg-brand-success-muted text-brand-forest text-sm font-semibold shrink-0">
-              {i + 1}
-            </span>
-            <span className="text-brand-charcoal">{obj}</span>
-          </div>
-        ))}
-      </div>
-      <div className="mt-10">
+      {context && summary && <p className="mt-5 text-[15px] text-[#222824] leading-relaxed">{summary}</p>}
+      {objectives.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-[15px] font-semibold text-[#222824]">{t("intro.objectivesTitle")}</h2>
+          <ul className="mt-2 space-y-2">
+            {objectives.map((obj, i) => (
+              <li key={i} className="flex items-start gap-2.5 text-[15px] text-[#222824] leading-snug">
+                <Check className="w-4 h-4 mt-0.5 text-[#34785B] shrink-0" aria-hidden="true" /> {obj}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <div className="mt-8">
         <PrimaryBtn testId="intro-start-btn" onClick={onNext}>
-          {t("intro.start")} <ArrowRight className="w-4 h-4" />
+          {t("intro.start")} <ArrowRight className="w-4 h-4" aria-hidden="true" />
         </PrimaryBtn>
       </div>
     </div>
@@ -380,29 +350,18 @@ function Phrases({ lesson, onNext, onBack }) {
   const { t, language } = useApp();
   return (
     <div>
-      <h2 className="text-2xl sm:text-3xl font-serif text-brand-espresso tracking-tight">
-        {t("phrases.title")}
-      </h2>
-      <p className="mt-2 text-sm text-brand-charcoal/60">
-        {t("phrases.sub")}
-      </p>
-      <div className="mt-6 space-y-3">
+      <TeachingBlock title={t("phrases.title")} sub={t("phrases.sub")} />
+      <div className="mt-5 space-y-3">
         {lesson.phrases.map((p) => (
-          <div
-            key={p.id}
-            data-testid={`phrase-${p.id}`}
-            className="rounded-xl bg-white border border-black/5 p-5 shadow-sm"
-          >
-            <p className="text-lg text-brand-espresso font-medium">{p.english_content}</p>
-            <p className="mt-1 text-sm text-brand-charcoal/60">{getText(p.translations, language)}</p>
+          <PhraseBlock key={p.id} testId={`phrase-${p.id}`} english={p.english_content} translation={getText(p.translations, language)}>
             <ServiceNote item={p} />
-          </div>
+          </PhraseBlock>
         ))}
       </div>
-      <div className="mt-10 flex gap-3">
+      <div className="mt-8 flex gap-3">
         <BackBtn onClick={onBack} />
         <PrimaryBtn testId="phrases-next-btn" onClick={onNext}>
-          {t("common.continue")} <ArrowRight className="w-4 h-4" />
+          {t("common.continue")} <ArrowRight className="w-4 h-4" aria-hidden="true" />
         </PrimaryBtn>
       </div>
     </div>
@@ -413,69 +372,27 @@ function Phrases({ lesson, onNext, onBack }) {
 function Dialogue({ lesson, situation, onNext, onBack }) {
   const { t, language } = useApp();
   const [showEs, setShowEs] = useState(true);
-  // Anyone who is not the guest/customer is treated as staff (future-proof for
-  // waiter, bartender, host, barista… without hardcoding each role).
+  // Anyone who is not the guest/customer is treated as staff (role-agnostic).
   const isStaffSpeaker = (speaker) => !["customer", "guest", "client"].includes(speaker);
   const subtitle = getLocalizedField(situation, "description", language) || t("dialogue.fallbackSub");
+  const lines = lesson.dialogue.map((line) => ({
+    isStaff: isStaffSpeaker(line.speaker),
+    speaker: getLocalizedField(line, "speaker_label", language) || line.speaker_label_es,
+    english: line.english,
+    translation: showEs ? (getText(line.translations, language) ?? line.spanish) : null,
+  }));
   return (
     <div>
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h2 className="text-2xl sm:text-3xl font-serif text-brand-espresso tracking-tight">
-          {t("dialogue.title")}
-        </h2>
-        <button
-          data-testid="dialogue-toggle-translation"
-          onClick={() => setShowEs((v) => !v)}
-          className="text-sm font-medium text-brand-forest hover:text-brand-forest-hover transition-colors"
-        >
-          {showEs ? t("dialogue.hideTranslation") : t("dialogue.showTranslation")}
-        </button>
-      </div>
-      <p className="mt-2 text-sm text-brand-charcoal/60">
-        {subtitle}
-      </p>
-      <div className="mt-6 space-y-4">
-        {lesson.dialogue.map((line, i) => {
-          const isWaiter = isStaffSpeaker(line.speaker);
-          const translation = getText(line.translations, language) ?? line.spanish;
-          return (
-            <div
-              key={i}
-              className={`flex ${isWaiter ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-[85%] rounded-2xl px-5 py-3 ${
-                  isWaiter
-                    ? "bg-brand-forest text-white rounded-br-sm"
-                    : "bg-white border border-black/5 text-brand-espresso rounded-bl-sm shadow-sm"
-                }`}
-              >
-                <p
-                  className={`text-[10px] uppercase tracking-[0.15em] mb-1 ${
-                    isWaiter ? "text-white/60" : "text-brand-charcoal/40"
-                  }`}
-                >
-                  {getLocalizedField(line, "speaker_label", language) || line.speaker_label_es}
-                </p>
-                <p className="text-base font-medium">{line.english}</p>
-                {showEs && (
-                  <p
-                    className={`mt-1 text-sm ${
-                      isWaiter ? "text-white/70" : "text-brand-charcoal/60"
-                    }`}
-                  >
-                    {translation}
-                  </p>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="mt-10 flex gap-3">
+      <TeachingBlock title={t("dialogue.title")} sub={subtitle} />
+      <button type="button" data-testid="dialogue-toggle-translation" aria-pressed={showEs} onClick={() => setShowEs((v) => !v)}
+        className={`mt-3 min-h-[44px] text-[14px] font-semibold text-[#173D31] hover:underline ${focusRing}`}>
+        {showEs ? t("dialogue.hideTranslation") : t("dialogue.showTranslation")}
+      </button>
+      <div className="mt-3"><DialogueExample lines={lines} /></div>
+      <div className="mt-8 flex gap-3">
         <BackBtn onClick={onBack} />
         <PrimaryBtn testId="dialogue-next-btn" onClick={onNext}>
-          {t("common.continue")} <ArrowRight className="w-4 h-4" />
+          {t("common.continue")} <ArrowRight className="w-4 h-4" aria-hidden="true" />
         </PrimaryBtn>
       </div>
     </div>
@@ -638,6 +555,8 @@ function QuestionFlow({ questions, onComplete, finishLabel, testPrefix, section,
   const [idx, setIdx] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const isLast = idx + 1 >= questions.length;
+  const { t } = useApp();
+  useEffect(() => { if (idx > 0) window.scrollTo(0, 0); }, [idx]);
 
   const handleNext = (wasCorrect) => {
     const newCount = correctCount + (wasCorrect ? 1 : 0);
@@ -651,16 +570,7 @@ function QuestionFlow({ questions, onComplete, finishLabel, testPrefix, section,
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-5">
-        {questions.map((_, i) => (
-          <div
-            key={i}
-            className={`h-1.5 flex-1 rounded-full ${
-              i <= idx ? "bg-brand-forest" : "bg-black/5"
-            }`}
-          />
-        ))}
-      </div>
+      <p data-testid={`${testPrefix}-counter`} className="mb-4 text-[13px] font-medium text-[#6B736E] tabular-nums">{t("lesson.questionOf", { n: idx + 1, total: questions.length })}</p>
       <QuestionCard
         key={idx}
         q={questions[idx]}
@@ -722,99 +632,91 @@ function QuestionCard({ q, onContinue, isLast, finishLabel, testId, section, onS
     (q.type === "fill_gap" && text.trim().length > 0) ||
     (q.type === "word_ordering" && picked.length === q.words.length);
 
-  return (
-    <div data-testid={testId}>
-      <p className="text-lg text-brand-espresso font-medium">{prompt}</p>
+  const instruction = q.type === "multiple_choice" ? t("lesson.chooseBest") : q.type === "fill_gap" ? t("lesson.completePhrase") : t("lesson.buildSentence");
+  const optionState = (i) => {
+    if (!answered) return null;
+    if (i === q.answer_index) return "correct";
+    return selected === i ? "incorrect" : "dim";
+  };
+  const inputId = `${testId}-input`;
 
-      {/* Multiple choice */}
+  return (
+    <ExerciseShell
+      testId={testId}
+      instruction={instruction}
+      prompt={prompt}
+      feedback={answered && (
+        <FeedbackPanel
+          testId={`${testId}-feedback`}
+          correct={isCorrect}
+          correctTitle={t("review.correct")}
+          incorrectTitle={t("review.notQuite")}
+          betterLabel={t("review.betterAnswer")}
+          betterAnswer={q.answer || options?.[q.answer_index]}
+          whyLabel={t("review.why")}
+          explanation={explanation}
+        />
+      )}
+      action={!answered ? (
+        <PrimaryBtn testId={`${testId}-check-btn`} disabled={!canCheck} onClick={evaluate}>{t("question.check")}</PrimaryBtn>
+      ) : (
+        <PrimaryBtn testId={`${testId}-continue-btn`} onClick={() => onContinue(isCorrect)}>
+          {isLast ? finishLabel : t("common.continue")} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+        </PrimaryBtn>
+      )}
+    >
       {q.type === "multiple_choice" && (
-        <div className="mt-5 space-y-3">
-          {options.map((opt, i) => {
-            const chosen = selected === i;
-            let cls = "border-black/5 bg-white hover:border-brand-forest/30";
-            if (answered) {
-              if (i === q.answer_index) cls = "border-brand-forest bg-brand-success-muted";
-              else if (chosen) cls = "border-brand-terracotta bg-brand-terracotta/5";
-              else cls = "border-black/5 bg-white opacity-60";
-            } else if (chosen) {
-              cls = "border-brand-forest bg-brand-success-muted";
-            }
-            return (
-              <button
-                key={i}
-                data-testid={`${testId}-option-${i}`}
-                disabled={answered}
-                onClick={() => setSelected(i)}
-                className={`flex items-center justify-between w-full text-left rounded-xl border px-5 py-4 transition-all ${cls}`}
-              >
-                <span className="text-brand-charcoal">{opt}</span>
-                {answered && i === q.answer_index && (
-                  <Check className="w-5 h-5 text-brand-forest" />
-                )}
-                {answered && chosen && i !== q.answer_index && (
-                  <X className="w-5 h-5 text-brand-terracotta" />
-                )}
-              </button>
-            );
-          })}
+        <div className="space-y-2.5" role="radiogroup" aria-label={prompt}>
+          {options.map((opt, i) => (
+            <AnswerOption key={i} testId={`${testId}-option-${i}`} label={opt} selected={selected === i} state={optionState(i)} disabled={answered} onSelect={() => setSelected(i)} />
+          ))}
         </div>
       )}
 
-      {/* Fill the gap */}
       {q.type === "fill_gap" && (
-        <div className="mt-5">
-          <p className="text-lg text-brand-espresso bg-white border border-black/5 rounded-xl px-5 py-4">
-            {q.sentence}
-          </p>
+        <div>
+          <p lang="en" className="text-[17px] text-[#222824] bg-white border border-[#DEE2DE] rounded-[15px] px-4 py-3.5">{q.sentence}</p>
+          <label htmlFor={inputId} className="sr-only">{t("question.gapPlaceholder")}</label>
           <input
-            data-testid={`${testId}-input`}
+            id={inputId}
+            data-testid={inputId}
             value={text}
             disabled={answered}
+            autoComplete="off"
+            autoCapitalize="none"
+            spellCheck={false}
+            enterKeyHint="done"
             onChange={(e) => setText(e.target.value)}
+            onFocus={(e) => setTimeout(() => e.target.scrollIntoView({ block: "center", behavior: "smooth" }), 250)}
             onKeyDown={(e) => e.key === "Enter" && canCheck && !answered && evaluate()}
             placeholder={t("question.gapPlaceholder")}
-            className="mt-3 w-full rounded-xl border border-black/10 bg-white px-5 py-4 text-brand-espresso focus:outline-none focus:ring-2 focus:ring-brand-forest"
+            className="mt-3 w-full min-h-[52px] rounded-[15px] border border-[#DEE2DE] bg-white px-4 text-[16px] text-[#222824] focus:outline-none focus:ring-2 focus:ring-[#173D31]"
           />
         </div>
       )}
 
-      {/* Word ordering */}
       {q.type === "word_ordering" && (
-        <div className="mt-5">
-          <div
-            data-testid={`${testId}-answer-area`}
-            className="min-h-[56px] rounded-xl border border-dashed border-black/15 bg-white px-4 py-3 flex flex-wrap gap-2 items-center"
-          >
-            {picked.length === 0 && (
-              <span className="text-sm text-brand-charcoal/40">
-                {t("question.orderPlaceholder")}
-              </span>
-            )}
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#6B736E] mb-2">{t("lesson.yourAnswer")}</p>
+          <div data-testid={`${testId}-answer-area`} aria-live="polite"
+            className="min-h-[60px] rounded-[15px] border border-dashed border-[#6B736E]/40 bg-white px-3 py-2.5 flex flex-wrap gap-2 items-center">
+            {picked.length === 0 && <span className="text-[14px] text-[#6B736E]">{t("question.orderPlaceholder")}</span>}
             {picked.map((p) => (
-              <button
-                key={p.i}
-                disabled={answered}
+              <button key={p.i} type="button" disabled={answered} aria-label={t("lesson.removeWord", { w: p.w })}
                 onClick={() => setPicked((prev) => prev.filter((x) => x.i !== p.i))}
-                className="px-3 py-2 rounded-lg bg-brand-forest text-white text-sm"
-              >
+                className={`min-h-[44px] px-3.5 rounded-xl bg-[#173D31] text-white text-[16px] ${focusRing}`}>
                 {p.w}
               </button>
             ))}
           </div>
-          <div className="mt-4 flex flex-wrap gap-2">
+          <p className="mt-4 text-[11px] uppercase tracking-[0.15em] font-semibold text-[#6B736E] mb-2">{t("lesson.wordBank")}</p>
+          <div className="flex flex-wrap gap-2">
             {shuffled.map((p) => {
               const used = picked.some((x) => x.i === p.i);
               return (
-                <button
-                  key={p.i}
-                  disabled={used || answered}
-                  onClick={() => setPicked((prev) => [...prev, p])}
-                  className={`px-3 py-2 rounded-lg border text-sm transition-all ${
-                    used
-                      ? "opacity-30 border-black/5 bg-white"
-                      : "border-black/10 bg-white hover:border-brand-forest/40"
-                  }`}
-                >
+                <button key={p.i} type="button" disabled={used || answered} onClick={() => setPicked((prev) => [...prev, p])}
+                  className={`min-h-[44px] px-3.5 rounded-xl border text-[16px] transition-colors ${focusRing} ${
+                    used ? "opacity-30 border-[#DEE2DE] bg-white" : "border-[#DEE2DE] bg-white text-[#222824] hover:border-[#173D31]/40"}`}>
                   {p.w}
                 </button>
               );
@@ -822,122 +724,77 @@ function QuestionCard({ q, onContinue, isLast, finishLabel, testId, section, onS
           </div>
         </div>
       )}
-
-      {/* Feedback */}
-      {answered && (
-        <div
-          data-testid={`${testId}-feedback`}
-          className={`mt-6 rounded-xl p-4 ${
-            isCorrect
-              ? "bg-brand-success-muted text-brand-forest"
-              : "bg-brand-terracotta/10 text-brand-terracotta-hover"
-          }`}
-        >
-          <p className="font-semibold flex items-center gap-2">
-            {isCorrect ? <CircleCheck className="w-5 h-5" /> : <CircleX className="w-5 h-5" />}
-            {isCorrect ? t("question.correct") : t("question.incorrect")}
-          </p>
-          {!isCorrect && (
-            <p className="mt-1 text-sm text-brand-charcoal/70">
-              {t("question.correctAnswer")} <span className="font-medium">{q.answer || options?.[q.answer_index]}</span>
-            </p>
-          )}
-          <p className="mt-1 text-sm text-brand-charcoal/70">{explanation}</p>
-        </div>
-      )}
-
-      <div className="mt-8">
-        {!answered ? (
-          <PrimaryBtn testId={`${testId}-check-btn`} disabled={!canCheck} onClick={evaluate}>
-            {t("question.check")}
-          </PrimaryBtn>
-        ) : (
-          <PrimaryBtn testId={`${testId}-continue-btn`} onClick={() => onContinue(isCorrect)}>
-            {isLast ? finishLabel : t("question.next")} <ArrowRight className="w-4 h-4" />
-          </PrimaryBtn>
-        )}
-      </div>
-    </div>
+    </ExerciseShell>
   );
 }
 
 /* ---------- Step 7: Completion ---------- */
 function Completion({ result, score, situation, slug }) {
   const navigate = useNavigate();
-  const { t, language } = useApp();
+  const { t, language, guestId, profile } = useApp();
+  const billing = useBilling();
+  const [nextSit, setNextSit] = useState(undefined);
   const title = getLocalizedField(situation, "title", language) || situation?.title_en || "";
   const scores = result?.scores;
-  const overall = scores?.overall ?? Math.round((score.correct / (score.total || 1)) * 100);
-  const mastered = result?.met_mastery_threshold ?? result?.mastered;
+  const overall = scores?.overall;
   const dims = [
     { key: "english", label: t("score.english") },
     { key: "comprehension", label: t("score.comprehension") },
     { key: "service", label: t("score.service") },
   ].filter((d) => scores && scores[d.key] != null);
 
-  return (
-    <div className="text-center py-6">
-      <motion.div
-        initial={{ scale: 0.6, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 200, damping: 15 }}
-        className="grid place-items-center w-20 h-20 mx-auto rounded-full bg-brand-forest text-white"
-      >
-        <Trophy className="w-9 h-9" />
-      </motion.div>
-      <h1 className="mt-6 text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">
-        {t("completion.title")}
-      </h1>
-      <p className="mt-2 text-brand-charcoal/60">{title}</p>
+  useEffect(() => {
+    if (!guestId) { setNextSit(null); return; }
+    const premium = billing.isPremium("hospitality");
+    getRecommendedSituations(guestId, { limit: 5 })
+      .then((recs) => setNextSit(recs.find((r) => r.slug !== slug && canAccessSituation({ professionId: "hospitality", role: profile?.role, situationSlug: r.slug, isPremium: premium })) || null))
+      .catch(() => setNextSit(null));
+  }, [guestId, slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
-      <div className="mt-8 rounded-2xl bg-white border border-black/5 p-6 shadow-sm">
-        <p className="text-5xl font-serif text-brand-forest" data-testid="completion-score">
-          {overall}%
-        </p>
-        <p className="mt-1 text-xs uppercase tracking-[0.15em] text-brand-charcoal/50">
-          {t("completion.score")}
-        </p>
+  return (
+    <div className="text-center pt-6" data-testid="lesson-completion">
+      <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 15 }}
+        className="grid place-items-center w-16 h-16 mx-auto rounded-full bg-[#173D31] text-white">
+        <CircleCheck className="w-8 h-8" aria-hidden="true" />
+      </motion.div>
+      <h1 className="mt-5 text-[28px] font-serif font-bold text-[#222824] tracking-tight">{t("lesson.situationComplete")}</h1>
+      <p className="mt-1 text-[15px] text-[#6B736E]">{title}</p>
+
+      <div className="mt-6 rounded-2xl bg-white border border-[#DEE2DE] p-5">
+        {score.total > 0 && (
+          <p data-testid="completion-quiz-correct" className="text-[17px] font-semibold text-[#222824]">
+            {t("lesson.quizCorrect", { n: score.correct, total: score.total })}
+          </p>
+        )}
+        {overall != null && (
+          <p className="mt-1 text-[14px] text-[#6B736E]">
+            {t("completion.score")}: <span data-testid="completion-score" className="font-semibold text-[#173D31]">{overall}%</span>
+          </p>
+        )}
         {dims.length > 0 && (
-          <div className="mt-5 grid grid-cols-3 gap-3">
+          <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-[#DEE2DE] pt-4">
             {dims.map((d) => (
               <div key={d.key} data-testid={`score-${d.key}`}>
-                <p className="text-2xl font-serif text-brand-espresso">{scores[d.key]}%</p>
-                <p className="text-[10px] uppercase tracking-[0.12em] text-brand-charcoal/45">
-                  {d.label}
-                </p>
+                <dd className="text-[19px] font-serif font-semibold text-[#222824]">{scores[d.key]}%</dd>
+                <dt className="text-[12px] text-[#6B736E]">{d.label}</dt>
               </div>
             ))}
-          </div>
+          </dl>
         )}
       </div>
 
-      <p
-        data-testid="mastery-message"
-        className={`mt-6 font-medium ${mastered ? "text-brand-forest" : "text-brand-charcoal/70"}`}
-      >
-        {mastered ? t("completion.mastered") : t("completion.goodPractice")}
-      </p>
-
       <div className="mt-8 space-y-3">
-        <PrimaryBtn
-          testId="completion-retry-btn"
-          onClick={() => navigate(0)}
-        >
-          <RotateCw className="w-4 h-4" /> {t("completion.retry")}
-        </PrimaryBtn>
-        <button
-          data-testid="completion-skill-btn"
-          onClick={() => navigate(situation?.primary_skill ? `/skill/${situation.primary_skill}` : "/learn")}
-          className="inline-flex items-center justify-center gap-2 w-full bg-white text-brand-forest border border-brand-forest/20 hover:bg-brand-sand transition-colors rounded-lg px-6 py-4 font-medium"
-        >
-          <BookOpen className="w-4 h-4" /> {t("completion.backSkill")}
-        </button>
-        <button
-          data-testid="completion-progress-btn"
-          onClick={() => navigate("/progress")}
-          className="text-sm font-medium text-brand-charcoal/60 hover:text-brand-forest transition-colors"
-        >
-          {t("completion.viewProgress")}
+        {nextSit ? (
+          <PrimaryBtn testId="completion-continue-btn" onClick={() => navigate(`/lesson/${nextSit.slug}`, { replace: true })}>
+            {t("review.continueLearning")} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+          </PrimaryBtn>
+        ) : (
+          <PrimaryBtn testId="completion-back-learn-btn" disabled={nextSit === undefined} onClick={() => navigate("/learn")}>{t("lesson.backToLearn")}</PrimaryBtn>
+        )}
+        {nextSit && <SecondaryButton testId="completion-done-btn" onClick={() => navigate("/learn")}>{t("review.done")}</SecondaryButton>}
+        <button type="button" data-testid="completion-retry-btn" onClick={() => navigate(0)}
+          className={`inline-flex items-center gap-2 min-h-[44px] px-3 text-[14px] font-medium text-[#6B736E] hover:text-[#173D31] ${focusRing}`}>
+          <RotateCw className="w-4 h-4" aria-hidden="true" /> {t("completion.retry")}
         </button>
       </div>
     </div>
@@ -951,7 +808,7 @@ function BackBtn({ onClick }) {
     <button
       data-testid="lesson-back-btn"
       onClick={onClick}
-      className="inline-flex items-center justify-center gap-2 bg-white text-brand-forest border border-brand-forest/20 hover:bg-brand-sand transition-colors rounded-lg px-5 py-4 font-medium shrink-0"
+      className={`inline-flex items-center justify-center min-h-[52px] min-w-[52px] rounded-[15px] border border-[#DEE2DE] bg-white text-[#173D31] hover:bg-[#EEF3EF] transition-colors shrink-0 ${focusRing}`}
       aria-label={t("common.back")}
     >
       <ArrowLeft className="w-4 h-4" />
