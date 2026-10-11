@@ -1,0 +1,24 @@
+{
+  "summary": "Iteration 23 frontend-only validation of PREMIUM_PRACTICE_SESSION_RACE_FIX in PracticeSessionPage.js. All 7 acceptance scenarios PASS. (1) Delayed-premium Listening: Playwright route interception on https://api.revenuecat.com/v1/subscribers/<id> fetched real response, injected active entitlement 'hospitality_premium' (expires 2099-01-01, product hospitality_premium_monthly, store promotional), then delayed fulfill() by 4s. Loaded /listening-practice with iph_guest_id=dc7d6048. Verified ZERO /api/guests/<id>/listening-practice requests during the ~2s unresolved window; after RC resolved exactly ONE listening-practice request with free_only=false; window.__BILLING__.isPremiumHospitality=true, status=ready. (2) Delayed-premium Speaking: same mock, same assertions, PASS (exactly 1 speaking-practice request, free_only=false, after RC resolved). (3) Free (no mock, real test store): exactly 1 request with free_only=true, fired only after billing resolved (both kinds). (4) Error policy: all https://api.revenuecat.com/* and api-sb.revenuecat.com/* routes aborted → window.__BILLING__.status transitions to 'error' → page NOT stuck loading, lp-intro / sp-intro visible, exactly 1 pool request with free_only=true. (5) Mid-session re-renders: after start → answered 2 listening questions (multiple selects, check, continue, feedback renders) → still exactly 1 pool request total, no [data-testid='paywall']/[class*=paywall] element appears mid-session. (6) 'Practice again' on completion fires exactly 1 NEW pool request (verified prev=1 → +1). (7) Regression smoke: /home /learn /practice /lesson/welcoming-guests all HTTP 200 with 0 pageerrors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "accessResolved = billing.status === 'ready' || billing.status === 'error' matches existing outage policy correctly — 'error' keeps free access.",
+    "sessionKeyRef keyed by language dedupes StrictMode double-invoke and also prevents re-firing when billing.status later re-becomes ready (e.g. refresh) during a session — spec-compliant.",
+    "reqRef (request id) correctly discards stale pool responses when a new loadPool is in-flight (e.g. StrictMode double, or Practice-again rapid click).",
+    "loadPool reads billing.isPremium(professionId) at call time, so delayed RC resolution → correct free_only flag. Confirmed empirically (free_only=false after injected entitlement).",
+    "'Practice again' intentionally issues a new pool via loadPool(guestId); setPhase('loading') briefly shown — good UX, no race (reqRef++ invalidates any prior in-flight call).",
+    "Loading text ('common.loading') is shown while phase==='loading' which covers the pre-accessResolved window — verified NO pool request leaks during this window.",
+    "No backend / BillingContext / RevenueCat config / lessons were touched (confirmed by scope of diff). Regression smoke clean."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped)", "frontend": "100% (7/7 scenarios)"},
+  "test_credentials": "Anonymous guest via localStorage iph_guest_id: dc7d6048-96f7-4518-9970-d57f0ba4933e (waiter/en).",
+  "seed_data_creation": "A handful of listening-practice attempts were persisted on waiter guest as a side effect of mid-session + practice-again test runs.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "RevenueCat SDK (purchases-js) calls three endpoints: GET https://api.revenuecat.com/v1/subscribers/<app_user_id>/offerings, GET https://api.revenuecat.com/v1/subscribers/<app_user_id> (customer info), and GET https://api.revenuecat.com/rcbilling/v1/subscribers/<app_user_id>/products?... Delaying only the customer-info endpoint (regex /v1/subscribers/[^/]+$) with route.fetch()+modify+asyncio.sleep(4)+route.fulfill() is sufficient to force an unresolved billing window. Inject active entitlement into subscriber.entitlements.hospitality_premium with future expires_date and matching subscription under subscriber.subscriptions. window.__BILLING__ is only exposed in test env (REACT_APP_REVENUECAT_ENV=test, which is current) — includes isPremiumHospitality boolean usable for assertions. Aborting all revenuecat.com routes reliably triggers status='error' in BillingContext.",
+  "rca of the issue": "N/A — fix in PracticeSessionPage.js verified: pool request is gated by accessResolved (ready|error), decided once per language via sessionKeyRef, stale responses discarded via reqRef. All race scenarios (delayed resolve, RC outage, StrictMode double effect, mid-session re-renders) produce exactly ONE correctly-flagged pool request."
+}

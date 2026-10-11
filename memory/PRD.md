@@ -291,3 +291,6 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - Speaking: manual submit (existing), playback before submit, re-record, double-submit guard, mic needed/blocked states, overall label (evaluator has no numeric score), 5 real dims, transcript, natural alternative only if improved_response_en. "What worked / Try improving" and strongest/weakest OMITTED (no reliable data).
 - 44 new practiceSession.* keys x10. Tested iteration_22: 100%.
 - Known existing nuance: practice pool's free_only is computed when the session loads; if billing isn't ready yet a Premium user may get the free pool (pre-existing, untouched).
+
+## PREMIUM_PRACTICE_SESSION_RACE_FIX (Jun 2026) — DONE
+- `components/focus/PracticeSessionPage.js`: pool request waits until billing.status is resolved (ready|error; error = existing free-access outage policy); decided once per session (ref keyed by language, StrictMode-safe), stale responses ignored via request id. Tested iteration_23 with delayed mocked RevenueCat premium: 0 requests while pending, exactly 1 request free_only=false after resolve (Listening + Speaking); free → free_only=true; RC abort → error → free, not stuck.
