@@ -1,0 +1,32 @@
+{
+  "summary": "Iteration 22 frontend-only e2e of UX/UI 8 — redesigned dedicated /listening-practice and /speaking-practice. All acceptance criteria pass. (Waiter guest dc7d6048, en, free, 390px): lp-intro visible with lp-intro-meta='5 conversations', bottom-navigation hidden inside session, focus-step-counter progresses 1/5..5/5, custom listening-audio-player data-state transitions loading→ready→playing→ready, listening-audio-play-btn/listening-audio-replay-btn/listening-audio-duration all working. Answer flow: select listening-option-i → listening-check-btn → listening-feedback (data-correct true/false) with 'The guest said' listening-transcript and listening-model-response → listening-continue-btn. lp-complete + lp-complete-stat 'n / 5 correct' + lp-complete-done-btn (→/practice) + lp-complete-again-btn present. Audio error: routed all mp3/wav/m4a to abort → listening-audio-player data-state=error with 'We couldn't load this audio.' message + listening-audio-retry-btn (no DOMException/MEDIA_* leaking). Speaking: sp-intro with sp-intro-meta='5 real situations', notes include speakNaturally + privacyNote (translated, no raw keys). Record flow with fake media (--use-fake-ui-for-media-stream / --use-fake-device-for-media-stream + grant_permissions): recording-control data-phase idle→recording→recorded (with speaking-playback-player, speaking-submit-btn, speaking-retry-btn)→processing→speaking-result. speaking-overall='Needs practice' (text label, no numeric score). All 5 dims present: speaking-clear / speaking-handled / speaking-professional / speaking-grammar / speaking-naturalness. speaking-transcript rendered. speaking-record-again-btn returns phase to idle keeping counter at 1/5 (unchanged). Double-click on speaking-submit-btn did not double-submit (phase went to processing on first click; second click no-op). Mic denied path: overridden navigator.mediaDevices.getUserMedia to reject NotAllowedError → recording-control data-phase=mic_denied, speaking-mic-denied data-mic=needed, 'Microphone access is needed for Speaking practice.' + speaking-mic-retry-btn, NO technical text (no 'NotAllowed'/'DOMException'/'Error:'). Skip: speaking-skip-continue-btn visible in idle/mic_denied/recorded; clicking advances counter 1/5→2/5. Exit: lesson-close-btn before any answer → leaves directly to /practice (no dialog); after an answer → lp-exit-dialog with lp-exit-stay-btn (keeps on question) + lp-exit-confirm-btn (→/practice). sp-exit-dialog analogous. In-lesson regression (/lesson/welcoming-guests waiter): legacy in-lesson Listening step 5/8 confirmed with legacy `listening-play-btn` + `listening-replay-btn` as rounded-full pill buttons (`inline-flex items-center gap-2 rounded-full bg-brand-forest text-white px-6 py-3 font-medium`) and `listening-continue-btn` ('Next') — spec-compliant, visually unchanged. Spec confirms in-lesson Speaking step 6 unchanged (per iter 21 full validation). Free pool: for free guest the GET requests are /api/guests/{id}/listening-practice?free_only=true and /api/guests/{id}/speaking-practice?free_only=true (verified 3× each). i18n ES (guest a7f7c2a4): 'Empezar'/'conversa'/'situaciones' present on both practice pages, no raw 'practiceSession.' keys. 390px no horizontal overflow (scrollWidth==clientWidth==390 on both). Smoke: /home /learn /practice /progress /more all return 200 with bottom-navigation present.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "PracticeUI.AudioPlayer correctly resets state on src change (useEffect deps [src, autoPlay]) and swallows play() rejections — defensive and spec-compliant.",
+    "SpeakingExercise cleans up MediaRecorder tracks on unmount and on item.id change, preventing mic-indicator leaks. Good.",
+    "submittingRef guards against double-submit even if React re-renders the button briefly before phase flips to 'processing'. Verified empirically.",
+    "On submit API error, phase recovers to 'recorded' (not 'error'), letting the user retry — matches 'If STT/evaluator fails, UI recovers to recorded'.",
+    "PracticeSessionPage fetches the pool once with free_only=!isPremium at session start and only on language change/guest change — no mid-session paywall. Spec-compliant.",
+    "requestExit shows dialog only when phase==='question' && answered>0 — correct.",
+    "SessionIntro renders start-btn via `${testId}-start-btn` so lp-intro-start-btn / sp-intro-start-btn pattern holds. ✓",
+    "SpeakingResult 'overall' uses t(`practiceSession.overall.${result.overall || 'needs_practice'}`) — no numeric score ever shown. ✓",
+    "Minor nit: SpeakingResult's `onContinue` is passed to speaking-continue-btn in result phase, but the ancestor `speaking-skip-continue-btn` (outside the result section) is also hidden when phase==='result' via the `phase !== 'result'` guard — correctly scoped.",
+    "No `components/ListeningQuestion.js` / `components/SpeakingQuestion.js` touched — in-lesson flow preserved as per spec.",
+    "Audio-error UX uses onError + role='alert' with user-friendly copy — no leaked MEDIA_ERR_* / DOMException text."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped)", "frontend": "100%"},
+  "test_credentials": "Anonymous guests via localStorage iph_guest_id: dc7d6048-96f7-4518-9970-d57f0ba4933e (waiter/en/free), a7f7c2a4-e875-468d-ba40-a3773875cec8 (bartender/es/free)",
+  "seed_data_creation": "One listening attempt + one speaking attempt persisted on waiter guest as a side effect of the e2e run.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "UX/UI 8 dedicated practice pages fully validated. Chromium headless accepts navigator.mediaDevices.getUserMedia and generates playable fake audio when the browser is launched with --use-fake-ui-for-media-stream + --use-fake-device-for-media-stream (default in Playwright test harness) and page.context.grant_permissions(['microphone'], origin=…). Note: the real STT/evaluator DID accept the fake sine-wave audio and returned a 'Needs practice' overall with 5 dims and a transcript — flow fully exercised. Audio error state is reachable by routing *.mp3/*.wav/*.m4a to route.abort(). Firebase identitytoolkit 400 noise is expected ambient (per iter 20/21 context).",
+  "rca of the issue": "N/A — no issues found."
+}

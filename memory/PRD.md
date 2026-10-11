@@ -284,3 +284,10 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - `pages/Lesson.js`: Focus Mode; exit = history back (Learn scroll restored) with honest confirm dialog after intro; intro/phrases/dialogue restyled with existing content only; exercises/quiz via ExerciseShell (validation, answer_index, submitResponse unchanged); feedback Correct / Not quite + Better answer + Why; completion "Situation complete" + real quiz n/total + backend %/dims, NO mastery message; Continue learning → next accessible existing recommendation (lesson state resets on slug change). Locked lesson screen localized.
 - Learn scroll restoration hardened (re-applies scrollTo briefly after return).
 - 18 new lesson.* keys x10. Tested iteration_21 (≈97%, scroll issue then fixed + verified 1500→1500 both exit paths).
+
+## UX/UI Implementation 8 — Listening + Speaking dedicated modes (Jun 2026) — DONE
+- New generic `components/focus/PracticeUI.js` (AudioPlayer, RecordingControl, SpeakingResult, SessionIntro, SessionCompletion), `PracticeExercises.js` (ListeningExercise, SpeakingExercise — same API calls/rules as lesson components), `PracticeSessionPage.js` (intro → FocusLayout n/5 → completion; honest exit dialog; pool fixed at start, no mid-session paywall).
+- /listening-practice and /speaking-practice now thin wrappers. In-lesson steps (components/ListeningQuestion.js, SpeakingQuestion.js) intentionally UNCHANGED (user decision).
+- Speaking: manual submit (existing), playback before submit, re-record, double-submit guard, mic needed/blocked states, overall label (evaluator has no numeric score), 5 real dims, transcript, natural alternative only if improved_response_en. "What worked / Try improving" and strongest/weakest OMITTED (no reliable data).
+- 44 new practiceSession.* keys x10. Tested iteration_22: 100%.
+- Known existing nuance: practice pool's free_only is computed when the session loads; if billing isn't ready yet a Premium user may get the free pool (pre-existing, untouched).
