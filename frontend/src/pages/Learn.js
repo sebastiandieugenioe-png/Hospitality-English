@@ -51,9 +51,12 @@ export default function Learn() {
     if (!situations?.length) return;
     const y = Number(sessionStorage.getItem(SCROLL_KEY));
     sessionStorage.removeItem(SCROLL_KEY);
-    if (y > 0) window.scrollTo(0, y);
+    // Re-apply briefly: late layout/focus changes after returning can override a single scrollTo.
+    const go = () => { if (y > 0) window.scrollTo(0, y); };
+    go();
+    const timers = [requestAnimationFrame(go), setTimeout(go, 150), setTimeout(go, 350)];
     const id = setTimeout(() => { window.history.scrollRestoration = "auto"; }, 400);
-    return () => clearTimeout(id);
+    return () => { cancelAnimationFrame(timers[0]); clearTimeout(timers[1]); clearTimeout(timers[2]); clearTimeout(id); };
   }, [situations]);
 
   const canAccess = (slug) => canAccessSituation({ professionId: PROFESSION, role: profile?.role, situationSlug: slug, isPremium: premium });

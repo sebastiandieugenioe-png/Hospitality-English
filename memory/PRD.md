@@ -278,3 +278,9 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - Backend: `POST /api/feedback` (Mongo `feedback`, profession_id, user_id resolved server-side, rate limited); `feedback` added to LEARNING_COLLECTIONS so account deletion removes it.
 - ~110 new i18n keys x10. Tested iteration_20: backend 7/7, frontend 100%.
 - Backlog: role switching phase; real FAQ content; legal content; app version source.
+
+## UX/UI Implementation 7 — Focus Mode + Lessons + Exercise Shell (Jun 2026) — DONE
+- New generic `components/focus/FocusUI.js`: FocusLayout (× + real step progress n/8 with aria), PrimaryButton/SecondaryButton, TeachingBlock, PhraseBlock, DialogueExample, ExerciseShell, AnswerOption, FeedbackPanel — reusable for future Listening/Speaking phases.
+- `pages/Lesson.js`: Focus Mode; exit = history back (Learn scroll restored) with honest confirm dialog after intro; intro/phrases/dialogue restyled with existing content only; exercises/quiz via ExerciseShell (validation, answer_index, submitResponse unchanged); feedback Correct / Not quite + Better answer + Why; completion "Situation complete" + real quiz n/total + backend %/dims, NO mastery message; Continue learning → next accessible existing recommendation (lesson state resets on slug change). Locked lesson screen localized.
+- Learn scroll restoration hardened (re-applies scrollTo briefly after return).
+- 18 new lesson.* keys x10. Tested iteration_21 (≈97%, scroll issue then fixed + verified 1500→1500 both exit paths).
