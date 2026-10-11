@@ -1,5 +1,5 @@
 // Generic dedicated practice session: intro → N exercises in FocusLayout → completion. Pool is fixed at start (no mid-session paywall).
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "@/context/AppContext";
@@ -20,35 +20,42 @@ export function PracticeSessionPage({ kind, professionId = "hospitality", getMet
   const [phase, setPhase] = useState("loading"); // loading | intro | question | complete | error
   const [guestId, setGuestId] = useState(null);
   const [confirmExit, setConfirmExit] = useState(false);
+  // Existing billing states: uninitialized | loading -> unresolved; ready | error -> resolved (error keeps free access).
+  const accessResolved = billing.status === "ready" || billing.status === "error";
+  const sessionKeyRef = useRef(null);
 
   useEffect(() => {
     if (!loading && !onboardingCompleted) navigate("/onboarding", { replace: true });
   }, [loading, onboardingCompleted, navigate]);
 
+  const reqRef = useRef(0);
+  // Fetch + apply a pool; stale responses (older request ids) are ignored.
   const loadPool = async (gid) => {
+    const id = ++reqRef.current;
     const d = await getPool(gid, { free_only: !billing.isPremium(professionId) });
-    setItems(d.items || []); setIdx(0); setAnswered(0); setSuccess(0);
-    return d.items || [];
+    if (id !== reqRef.current) return null;
+    const list = d.items || [];
+    setItems(list); setIdx(0); setAnswered(0); setSuccess(0);
+    return list;
   };
 
   useEffect(() => {
-    let active = true;
+    if (!accessResolved || sessionKeyRef.current === language) return;
+    sessionKeyRef.current = language; // decide the pool once per session (also dedupes StrictMode double-invoke)
     (async () => {
       try {
         const m = await getMeta();
         const gid = await ensureGuest();
-        if (!active) return;
         setMeta(m); setGuestId(gid);
         const list = await loadPool(gid);
-        if (active) setPhase(list.length ? "intro" : "complete");
+        if (list) setPhase(list.length ? "intro" : "complete");
       } catch (e) {
         console.warn(`${kind} session load failed`, e?.response?.status);
-        if (active) setPhase("error");
+        setPhase("error");
       }
     })();
-    return () => { active = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ensureGuest, language]);
+  }, [language, accessResolved]);
 
   useEffect(() => { window.scrollTo(0, 0); }, [idx, phase]);
 
@@ -56,7 +63,7 @@ export function PracticeSessionPage({ kind, professionId = "hospitality", getMet
   const requestExit = () => (phase === "question" && answered > 0 ? setConfirmExit(true) : leave());
   const onAnswered = (r) => { setAnswered((n) => n + 1); if (isSuccess(r)) setSuccess((n) => n + 1); };
   const goNext = () => (idx + 1 >= items.length ? setPhase("complete") : setIdx((i) => i + 1));
-  const again = async () => { setPhase("loading"); const list = await loadPool(guestId); setPhase(list.length ? "question" : "complete"); };
+  const again = async () => { setPhase("loading"); const list = await loadPool(guestId); if (list) setPhase(list.length ? "question" : "complete"); };
 
   const total = items.length;
   const inQuestion = phase === "question";
