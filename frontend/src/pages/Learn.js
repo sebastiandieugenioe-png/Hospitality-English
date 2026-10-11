@@ -52,6 +52,8 @@ export default function Learn() {
     const y = Number(sessionStorage.getItem(SCROLL_KEY));
     sessionStorage.removeItem(SCROLL_KEY);
     if (y > 0) window.scrollTo(0, y);
+    const id = setTimeout(() => { window.history.scrollRestoration = "auto"; }, 400);
+    return () => clearTimeout(id);
   }, [situations]);
 
   const canAccess = (slug) => canAccessSituation({ professionId: PROFESSION, role: profile?.role, situationSlug: slug, isPremium: premium });
@@ -80,6 +82,7 @@ export default function Learn() {
   const open = (slug) => {
     if (canAccess(slug)) {
       sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
+      window.history.scrollRestoration = "manual";
       navigate(`/lesson/${slug}`);
       window.scrollTo(0, 0);
     } else {

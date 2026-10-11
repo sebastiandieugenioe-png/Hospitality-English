@@ -1,0 +1,33 @@
+{
+  "summary": "Frontend-only verification of Learn (/learn) redesign (UX/UI Implementation 3). 7/8 scenarios pass. The only functional defect is scroll-restoration on back-navigation: Chrome's native history.scrollRestoration ('auto') overrides the useLayoutEffect window.scrollTo(0, y), so the user lands farther down than the previously stored scroll position. Everything else (row counts, lock states, status rows, header progress copy, per-skill counters, new-user recommended-first card, PremiumGate for locked rows, direct /lesson/<premium> gate, bottom nav, i18n EN/DE, regression smoke of /home, /practice, /progress, /more, /listening-practice, /speaking-practice) behaves as specified.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Learn (/learn) scroll restoration",
+        "issue": "After tapping a situation and using browser Back, scrollY lands ~1167px instead of the stored ~600–700px. history.scrollRestoration is still 'auto', so Chrome restores its own position AFTER the component's useLayoutEffect window.scrollTo(0, y) runs. useLayoutEffect also removes the sessionStorage key eagerly, so a second natural effect pass cannot recover. Spec requires restoration 'near the previous scroll position'.",
+        "selector": "frontend/src/pages/Learn.js (useLayoutEffect SCROLL_KEY block)",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "In frontend/src/pages/Learn.js, disable native scroll restoration when the route owns it. Minimal fix:\n  useLayoutEffect(() => {\n    const prev = window.history.scrollRestoration;\n    window.history.scrollRestoration = 'manual';\n    return () => { window.history.scrollRestoration = prev; };\n  }, []);\nand ensure the stored y is applied after situations are rendered (current effect is correct once native restoration is disabled). Also consider only removeItem after a successful scrollTo so re-renders don't clear it prematurely."
+  ],
+  "critical_code_review_comments": [
+    "Learn.js guards profile fetch but not against profile.role being undefined on first paint — currently fine but relies on getSituations([]) short-circuit; keep an eye on it.",
+    "sessionStorage.removeItem(SCROLL_KEY) runs before window.scrollTo; if a parent effect replaces situations later (language change refetch), the stored y is already gone. Low risk, but worth noting.",
+    "RecommendedFirst renders only when !hasActivity && first accessible rec exists — matches spec. But if recs API fails silently (empty array), new user sees no recommendation card and only the subtitle (acceptable fallback)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped)", "frontend": "95% (7/8 scenarios fully pass; scroll restoration partial)"},
+  "test_credentials": "Guest IDs provided: bartender a3f1d161-6a6f-468f-b414-fb36c18427bc; waiter fa5e0512-6021-459d-ab51-edb53f728fcf (interface_language=fr as noted); new guest created ad-hoc via POST /api/guests + PUT /api/guests/{id}/profile.",
+  "seed_data_creation": "Created one brand-new guest a4bb5267-5834-4d77-b4f8-411e8b654728 (bartender, pub, ireland, first_hospitality_job) to validate the Recommended-first flow. Safe to leave; no production data touched.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Scenario-by-scenario results — (1) Bartender guest: 25 rows, 5 unlocked (4 not_started + 1 in_progress), 20 locked, no 'FREE'/'Gratis' text, role label 'Bartender'. (2) Waiter guest: 25 rows, 5 unlocked (2 in_progress + 2 not_started + 1 practiced), 20 locked; welcoming-guests data-state=in_progress; explaining-the-menu data-state=practiced; menu-knowledge progress '1 / 3'; header 'N situation(s) practiced' localized (fr: '1 situation pratiquée'). (3) New guest: learn-recommended-first card and learn-new-user-sub visible, no '0' progress; Start button navigates to /lesson/taking-a-drinks-order. (4) Scroll restoration FAILS — final scrollY=1167 vs stored 700 because history.scrollRestoration='auto'. (5) Locked tap: no navigation, Create-an-account sheet (PremiumGate for guest) opens. (6) Direct /lesson/guest-orders-a-round-with-changes still shows 'Premium situation / Unlock Premium' lock gate. (7) Bottom nav present at 390px and 1920px; no horizontal overflow in either; last row has adequate space above nav. (8) Language switch via /more applied correctly: EN h1 'Learn for your role', DE h1 'Für deine Position lernen', no raw 'learn.*' keys leak in any locale.",
+  "rca of the issue": "Scroll restoration bug RCA: On SPA back-navigation Chrome restores the previously recorded scrollY from its internal session history (history.scrollRestoration default 'auto'). Learn.js's useLayoutEffect calls window.scrollTo(0, y) during the layout pass after situations load, but Chromium then re-applies its own scroll position on the next frame, winning the race. Reproduction: open /learn as any guest, scroll to ~700, click any accessible situation, press browser Back — observe scrollY != 700 (often ~1167 from a prior visit). Mitigation: set window.history.scrollRestoration='manual' on mount (and restore on unmount) so React's useLayoutEffect becomes the sole source of truth."
+}

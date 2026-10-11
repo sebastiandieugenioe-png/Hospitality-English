@@ -255,3 +255,9 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - Weekly activity OMITTED (no reliable weekly metrics). Tool cards + recommended/category grids removed from Home (tools in /more).
 - 31 new `home.*` keys in 10 locales. Fixed Practice.js session-complete undefined `Navbar` (now AppShell showBottomNav={false}).
 - Tested: testing_agent iteration_16 (100% frontend), pytest billing/apple 7/7.
+
+## UX/UI Implementation 3 — Learn Redesign (Jun 2026) — DONE
+- `pages/Learn.js` rewritten: role + real progress (Premium "N of 25 practiced" + bar; Free "N situations practiced" + "all free completed"); skills grouped by primary_skill with "done / total"; compact 68px rows (not started ~min / in progress / practiced ✓ / Premium lock). Lists ALL 25 situations per role (role filter only — venue_type NOT a hard filter; user decision). Locked tap → existing requestPremium. New user → "Recommended first" from existing recommendations.
+- Scroll restoration via sessionStorage + temporary history.scrollRestoration="manual".
+- 13 new `learn.*` keys in 10 locales. /skill/:slug kept but no longer linked from Learn.
+- Tested: iteration_17 (7/8, scroll fix then verified manually 700→700, 1500→1500).
