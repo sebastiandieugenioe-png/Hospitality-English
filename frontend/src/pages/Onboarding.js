@@ -196,7 +196,7 @@ export default function Onboarding() {
         const have = new Set(top.map((s) => s.slug));
         const missing = [...freeSlugs("hospitality", role)].filter((slug) => !have.has(slug)).slice(0, 3 - top.length);
         const extra = await Promise.all(missing.map((slug) => getSituation(slug).catch(() => null)));
-        top = [...top, ...extra.filter(Boolean).map((x) => ({ slug: x.slug, title: x.title, description: x.translations?.en?.description }))];
+        top = [...top, ...extra.filter(Boolean).map((x) => ({ slug: x.slug, title: getLocalizedField(x, "title", language), description: getLocalizedField(x, "description", language) }))];
       }
       if (top.length === 0) throw new Error("empty");
       setRecs(top);

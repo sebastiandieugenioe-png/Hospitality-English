@@ -1,0 +1,32 @@
+{
+  "summary": "UX_UI_IMPLEMENTATION_9_FINAL_VALIDATION — frontend-only. Verified fix: Onboarding completion screen now shows EXACTLY 3 recommendations for FREE users, all accessible, pulling from the role's free-situation list. Tested at 390x800 for both Bartender and Waiter free flows. Also ran code review + regression smoke + i18n checks.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Onboarding complete (free)", "issues": ["Recommendation titles mix languages when free list is filled via getSituation fallback: the API's top-level `title` field is the backend default (English for recommending-drinks, welcoming-guests, bringing-the-bill) while existing recs returned with localized titles (es for taking-a-drinks-order etc.). Non-blocking — titles are non-empty as required — but UX inconsistency. Fix: use getLocalizedField(x, 'title', language) when mapping the fallback situations in Onboarding.js showRecommendations (lines ~198-199)."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "(Minor i18n polish) In Onboarding.js showRecommendations fallback mapping, localize title/description via getLocalizedField(x, 'title', language) / getLocalizedField(x, 'description', language) instead of using x.title and x.translations?.en?.description, so free-filler recs render in the user's selected UI language."
+  ],
+  "critical_code_review_comments": [
+    "Onboarding.js:194 Premium path uses list.slice(0,3) when billing.ready && billing.isPremium('hospitality'). Confirmed per spec.",
+    "Onboarding.js:195-200 Free path: filters existing recs by isFreeSituation(slug,'hospitality', role), then fills missing with freeSlugs('hospitality', role) in FREE_SITUATIONS_BY_ROLE order, excluding duplicates. Correct.",
+    "Onboarding.js:199 fallback mapping uses x.title (default lang) and translations?.en?.description — should use getLocalizedField for consistent i18n.",
+    "accessConfig.js correctly exposes FREE_SITUATIONS_BY_ROLE for bartender & waiter with 5 slugs each; freeSlugs(role) returns Set preserving insertion order via Array iteration (used via spread).",
+    "No locked cards shown on completion screen (no PremiumGate or lock markup rendered inside OnboardingComplete).",
+    "Completion screen has NO onboarding-step-indicator and NO progressbar — confirmed via DOM query on both bartender and waiter flows.",
+    "Code grep /app/frontend/src: no '€', no '5.99', no '39.99', no 'certificate' in paywall benefits, no 'Restore' button (only a 'Restore Learn scroll position' comment and a code comment stating 'no restore')."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend-only)", "frontend": "100% of acceptance criteria pass; 1 minor i18n polish noted"},
+  "test_credentials": "Anonymous guests via localStorage iph_guest_id (fresh per flow). Created two guests during this run (bartender and waiter).",
+  "seed_data_creation": "Two guest profiles completed onboarding (one bartender, one waiter) through API calls triggered by the real UI flow.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Validated with Playwright at 390x800. Bartender run slugs=[taking-a-drinks-order, guest-arrives-at-the-bar, recommending-drinks]; Waiter slugs=[guest-is-not-ready-to-order, welcoming-guests, bringing-the-bill]. All 3 accessible on /lesson/{slug} with no premium-account-gate and no lesson-locked. onboarding-start-learning-btn navigates to /home. Step indicator reads 'Step 1 of 6' (en) or 'Paso 6 de 6' (es) and disappears on the completion screen. Learn 25-situations-per-role / venue_type non-filtering already confirmed in iteration_24 — not re-run here because the specific free-rec validation was the only change under review.",
+  "rca of the issue": "Previous iteration showed only 1 rec for free bartender because filtering was limited to the API-returned recommendations list (which had only 1 free-for-role item). Fix: after filter, top up with freeSlugs(profession, role) via getSituation calls until the list reaches 3. Verified working for both roles."
+}
