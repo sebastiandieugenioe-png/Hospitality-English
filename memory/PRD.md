@@ -261,3 +261,8 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - Scroll restoration via sessionStorage + temporary history.scrollRestoration="manual".
 - 13 new `learn.*` keys in 10 locales. /skill/:slug kept but no longer linked from Learn.
 - Tested: iteration_17 (7/8, scroll fix then verified manually 700→700, 1500→1500).
+
+## UX/UI Implementation 4 — Practice Hub + Review UX (Jun 2026) — DONE
+- `pages/Practice.js` rewritten: Recommended card (due / all caught up → scroll to modes / no reviews yet → /learn); due count = review-items?due&free_only (same queue as session; review-summary no longer used here). Practice modes rows (Listening/Speaking with real session_size, Review "Quick review session" — real session up to 10). "Mistake bank" → "Your review items" list (kept per user, revisit in final QA). "Mistakes by skill" block removed.
+- Review session focus mode restyled; SRS self-rating (again/hard/good/easy) kept as continue step, same logic. Feedback Correct / Not quite + Better answer + Why (existing explanation only). Completion: reviewed + correct (client-counted), Done → /practice, Continue learning → /learn.
+- 22 new practice.*/review.* keys in 10 locales. Tested iteration_18: 100%.

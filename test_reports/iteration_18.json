@@ -1,0 +1,41 @@
+{
+  "summary": "Frontend-only testing of /practice root + Review session redesign (UX/UI #4). All functional specs verified: RECOMMENDED card data-states (due/caught-up/empty), review session focus mode, completion counters, mode navigation, i18n ES/DE, no horizontal overflow at 390px, regression smoke across /home,/learn,/progress,/more. Full 6-item session executed for test guest (dc7d6048) with mix of ratings (again/good/good/easy/good/easy) landing on completion screen (reviewed=6, correct count accurate per data-correct attributes), Done returns to /practice root, state transitioned to caught-up (due count 0) matching backend API.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Practice.js (554 lines) is above the 700-line threshold target but still readable; consider splitting ReviewSession/QuestionRenderer/Feedback into /pages/practice/* modules in a future pass.",
+    "premiumParam() recreates object each render; included in load() closure via billing.customerInfo dep — safe but worth memoizing if parent re-renders become costly.",
+    "QuestionRenderer uses Math.random() inside useMemo for word_ordering shuffle; deterministic enough per-item but will reshuffle on content identity change (acceptable here).",
+    "Mid-session X close path was not clicked live (no fresh due items available after full session; next_review_at ~6 min out) but onEnd wiring is identical to Done (setSession(null)+load) which was validated to navigate back to /practice root — functionally equivalent."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (skipped)", "frontend": "100%" },
+  "test_credentials": "Anonymous guest via localStorage iph_guest_id. Used dc7d6048-96f7-4518-9970-d57f0ba4933e (6 due items) and created 91a34c49-8ef9-4a14-9ad7-9a9aee4d3da9 (empty state).",
+  "seed_data_creation": "Created one empty-state guest via POST /api/guests + PUT /api/guests/{id}/profile with role=waiter, venue_type=pub, target_country=ireland, goal=work_abroad.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Guest dc7d6048 is now caught-up (0 due) after this test consumed its 6 due items; one item re-enters due state ~6 min later (SRS). If future tests need a due queue, mint a fresh guest and generate mistakes via exercise submissions, or wait for scheduled next_review_at. Language switcher at /more uses data-testid=more-language-block + more-language-option-{code}. i18n keys practice.* and review.* are present in es/de/en bundles with zero raw-key leaks on /practice.",
+  "detailed_results": {
+    "recommended_due_state": "PASS - data-state=due, '6 items due', bottom nav visible, no overflow",
+    "full_review_session_6_items": "PASS - mix of mc/fill/order rendered, feedback shown with data-correct, ratings applied; completion reviewed=6, correct=3 matched feedback outcomes",
+    "focus_mode_no_bottom_nav": "PASS - 0 <nav> elements inside session; close btn + counter + progressbar present",
+    "done_back_to_practice": "PASS - returns to /practice root, state transitions to caught-up",
+    "caught_up_state": "PASS - data-state=caught-up, 'All caught up', practice-anyway-btn scrolls to modes (top ~79px), no disabled buttons inside recommended",
+    "empty_state": "PASS - new guest with 0 reviews shows data-state=empty, 'Aún no hay repasos' (es default), practice-go-learn-btn navigates to /learn",
+    "listening_mode_navigation": "PASS - /listening-practice loads without errors",
+    "speaking_mode_navigation": "PASS - /speaking-practice loads without errors (free pool question rendered)",
+    "review_mode_from_caught_up": "PASS - scrolls to #practice-review-items (top ~133px)",
+    "due_count_matches_api": "PASS - UI due = GET /api/guests/{id}/review-items?due=true&free_only=true length",
+    "premium_free_only_check": "VERIFIED BY CODE - premiumParam() emits free_only=!isPremium('hospitality'); when premium=true axios sends free_only=false which backend parses as bool False, bypassing free filter",
+    "i18n_es": "PASS - h1='Practicar', sub='Refuerza lo que has aprendido.', rec='Todo al día', modes='Modos de práctica', zero raw key leaks",
+    "i18n_de": "PASS - h1='Üben', rec='Alles erledigt', modes='Übungsarten', zero raw key leaks",
+    "no_horizontal_overflow_390": "PASS",
+    "regression_smoke": "PASS - /home, /learn, /progress, /more, /learn->situation lesson all load clean, no error elements, no overflow"
+  }
+}
