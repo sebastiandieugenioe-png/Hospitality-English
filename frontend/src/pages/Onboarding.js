@@ -188,7 +188,7 @@ export default function Onboarding() {
   const showRecommendations = async (guestIdValue, role) => {
     try {
       const premium = billing.ready && billing.isPremium("hospitality");
-      const list = await getRecommendedSituations(guestIdValue, { limit: 5 });
+      const list = await getRecommendedSituations(guestIdValue, { limit: 10 });
       const top = (list || []).filter((s) => premium || isFreeSituation(s.slug, "hospitality", role)).slice(0, 3);
       if (top.length === 0) throw new Error("empty");
       setRecs(top);

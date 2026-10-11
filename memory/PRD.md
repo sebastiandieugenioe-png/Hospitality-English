@@ -294,3 +294,10 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 
 ## PREMIUM_PRACTICE_SESSION_RACE_FIX (Jun 2026) — DONE
 - `components/focus/PracticeSessionPage.js`: pool request waits until billing.status is resolved (ready|error; error = existing free-access outage policy); decided once per session (ref keyed by language, StrictMode-safe), stale responses ignored via request id. Tested iteration_23 with delayed mocked RevenueCat premium: 0 requests while pending, exactly 1 request free_only=false after resolve (Listening + Speaking); free → free_only=true; RC abort → error → free, not stuck.
+
+## UX/UI Implementation 9 — Onboarding + Auth + Paywall polish (Jun 2026) — PASS (iteration_24)
+- Onboarding: same 6 steps (no english_level), header Back + "Step X of 6", segmented progressbar, radio semantics, role descriptions from taxonomy, compact 2-col grid for language/venue/country, sticky CTA. New brief completion screen: up to 3 accessible recommendations from existing `/recommended-situations` (limit 10, filtered free-for-role unless Premium) → "Start learning" → /home; falls back to /home on error/empty.
+- Auth: shared `components/auth/AuthProviders.js` (AuthProviderButton, GoogleSignInSlot, AuthStatus, friendlyAuthError) used by PremiumGate AccountGate and /account guest section. "Saving your progress…" state; GIS slot stays mounted for retry.
+- Paywall (single PremiumGate): i18n title/subtitle, 4 real benefits (subscription.benefit*), Free note, PlanOption radios with RevenueCat formattedPrice + period, Processing…, success view "Premium unlocked" + Continue (runs resume), silent cancel, humanised errors, Escape/close 44px. No Restore, no certificates, no hardcoded prices, removed "Future content" benefit.
+- i18n: new keys onboarding.intro/progressAria/doneEyebrow/doneTitle, auth.*, paywall.* in 10 locales; onboarding.country.q/sub neutral copy.
+- Note: existing recommender often ranks premium situations first, so free users may see 1–3 recs on completion (logic not changed).
