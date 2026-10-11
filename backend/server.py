@@ -2337,6 +2337,7 @@ async def speaking_attempt(
 LEARNING_COLLECTIONS = [
     "situation_attempts", "review_items", "assessment_attempts", "shift_sessions",
     "job_interview_progress", "first_week_progress", "listening_attempts", "speaking_attempts",
+    "feedback",
 ]
 
 # Minimal in-memory rate limiter for auth endpoints (per client, sliding window).
@@ -2538,6 +2539,48 @@ async def delete_account(payload: DeleteAccountReq, identity: dict = Depends(req
                              {"deleted_guest_ids": list(guest_ids)})
     return {"deleted": True}
 
+
+
+# ---------- Feedback (minimal, profession-aware; no tickets/emails) ----------
+FEEDBACK_CATEGORIES = {"bug", "confusing", "suggestion", "other"}
+
+
+class FeedbackCreate(BaseModel):
+    guest_id: Optional[str] = None
+    profession_id: str = "hospitality"
+    category: str
+    message: str = Field(min_length=1, max_length=4000)
+    app_version: Optional[str] = Field(default=None, max_length=40)
+    route: Optional[str] = Field(default=None, max_length=200)
+
+
+@api_router.post("/feedback", status_code=201)
+async def create_feedback(payload: FeedbackCreate, request: Request):
+    _rate_limit(f"feedback:{request.client.host if request.client else 'unknown'}", limit=10, window=600)
+    if payload.category not in FEEDBACK_CATEGORIES:
+        raise HTTPException(status_code=422, detail="Invalid category")
+    message = payload.message.strip()
+    if not message:
+        raise HTTPException(status_code=422, detail="Message is required")
+    guest_id, user_id = None, None
+    if payload.guest_id:
+        guest = await db.guests.find_one({"id": payload.guest_id}, {"_id": 0, "id": 1, "user_id": 1})
+        if guest:
+            guest_id, user_id = guest["id"], guest.get("user_id")
+    doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "guest_id": guest_id,
+        "profession_id": payload.profession_id,
+        "category": payload.category,
+        "message": message,
+        "app_version": payload.app_version,
+        "route": payload.route,
+        "created_at": now_iso(),
+        "status": "new",
+    }
+    await db.feedback.insert_one(doc)
+    return {"id": doc["id"], "status": "new"}
 
 
 app.include_router(api_router)

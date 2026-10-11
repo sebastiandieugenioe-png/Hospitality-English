@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, LogOut, Trash2, Mail, ShieldCheck, Loader2, AlertTriangle } from "lucide-react";
+import { LogOut, Trash2, Loader2, AlertTriangle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
-import { Navbar } from "@/components/Navbar";
+import { SecondaryPage, Section, Row, btnLight } from "@/components/SettingsLayout";
 import { APPLE_ENABLED, renderGisButton, GOOGLE_CLIENT_ID } from "@/lib/firebase";
 
 // Apple logo (white) for the HIG-compliant "Continue with Apple" button.
@@ -13,8 +12,7 @@ const AppleIcon = () => (
 );
 
 export default function Account() {
-  const navigate = useNavigate();
-  const { account, isAuthenticated, connectGoogle, connectApple, reauthGoogle, reauthRevokeApple, logout, deleteAccount } = useApp();
+  const { t, account, isAuthenticated, connectGoogle, connectApple, reauthGoogle, reauthRevokeApple, logout, deleteAccount } = useApp();
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
   const [err, setErr] = useState(null);
@@ -31,9 +29,9 @@ export default function Account() {
   const friendly = (e, label = "Google") => {
     const code = e?.code || "";
     if (code.includes("popup") || code.includes("cancelled") || e?.type === "gis_cancelled") return null; // user cancelled
-    if (code === "auth/network-request-failed" || e?.message === "gis_unavailable") return "Network problem. Please check your connection and try again.";
-    if (code === "auth/invalid-credential") return `That ${label} sign-in could not be verified. Please try again.`;
-    return `Could not complete ${label} sign-in. Please try again.`;
+    if (code === "auth/network-request-failed" || e?.message === "gis_unavailable") return t("account.errNetwork");
+    if (code === "auth/invalid-credential") return t("account.errInvalid", { provider: label });
+    return t("account.errGeneric", { provider: label });
   };
 
   // Apple linking (popup). Consent is confirmed before this runs.
@@ -43,8 +41,8 @@ export default function Account() {
     try {
       const r = await connectApple();
       setMsg(r?.loaded_existing_account
-        ? "Your saved account progress has been loaded."
-        : "Your progress is now saved to your account.");
+        ? t("account.loadedExisting")
+        : t("account.progressSaved"));
     } catch (e) {
       const m = friendly(e, "Apple");
       if (m) setErr(m);
@@ -64,12 +62,12 @@ export default function Account() {
         await reauthGoogle(googleIdToken);
         await deleteAccount();
         setConfirmDelete(false);
-        setMsg("Your account and learning data have been deleted.");
+        setMsg(t("account.deleted"));
       } else {
         const r = await connectGoogle(googleIdToken);
         setMsg(r?.loaded_existing_account
-          ? "Your saved account progress has been loaded."
-          : "Your progress is now saved to your account.");
+          ? t("account.loadedExisting")
+          : t("account.progressSaved"));
       }
     } catch (e) {
       const m = friendly(e);
@@ -87,15 +85,15 @@ export default function Account() {
       await reauthRevokeApple();          // reauth + revoke; throws on cancel / missing token
       await deleteAccount();              // backend delete + firebase delete + fresh anon guest
       setConfirmDelete(false);
-      setMsg("Your account and learning data have been deleted.");
+      setMsg(t("account.deleted"));
     } catch (e) {
       const code = e?.code || "";
       if (code.includes("popup") || code.includes("cancelled") || code.includes("user-cancelled")) {
-        setErr("Account deletion was cancelled. No data was deleted.");
+        setErr(t("account.deleteCancelled"));
       } else if (code === "APPLE_REVOKE_TOKEN_MISSING") {
-        setErr("We couldn't securely revoke Apple access, so nothing was deleted. Please try again.");
+        setErr(t("account.appleRevokeMissing"));
       } else {
-        setErr("Could not delete your account. Please try again.");
+        setErr(t("account.deleteFailed"));
       }
     } finally {
       setBusy(false);
@@ -141,168 +139,111 @@ export default function Account() {
 
   const handleLogout = async () => {
     setBusy(true); setErr(null); setMsg(null);
-    try { await logout(); } catch (e) { setErr("Sign out failed. Please try again."); }
+    try { await logout(); } catch (e) { setErr(t("account.signOutFailed")); }
     finally { setBusy(false); }
   };
 
+  const providers = account?.providers || [];
+  const providerName = (p) => (p === "google.com" ? "Google" : p === "apple.com" ? "Apple" : null);
+  const signedWith = providers.map(providerName).filter(Boolean).join(", ");
+  const darkBtn = "inline-flex items-center justify-center gap-2 min-h-[48px] px-6 rounded-[15px] font-semibold text-[16px] bg-black text-white hover:opacity-90 disabled:opacity-40 transition-opacity";
+
   return (
-    <div className="min-h-screen bg-brand-sand">
-      <Navbar />
-      <main className="max-w-2xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
-        <button
-          data-testid="account-back-btn"
-          onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-sm font-medium text-brand-charcoal/60 hover:text-brand-forest transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back
-        </button>
+    <SecondaryPage title={t("settings.account")} testid="account-page">
+      {msg && (
+        <p data-testid="account-message" role="status" className="rounded-2xl bg-[#EEF3EF] border border-[#34785B]/25 text-[#173D31] px-4 py-3 text-[15px]">{msg}</p>
+      )}
+      {err && (
+        <p data-testid="account-error" role="alert" className="rounded-2xl bg-white border border-[#C7654E]/40 text-[#A44F3B] px-4 py-3 text-[15px]">{err}</p>
+      )}
 
-        <h1 className="mt-5 text-3xl sm:text-4xl font-serif text-brand-espresso tracking-tight">Account</h1>
+      {isAuthenticated ? (
+        <div data-testid="account-authenticated" className="space-y-8">
+          <Section title={t("account.signIn")} id="account-signin-title">
+            {account?.email && <Row label={t("settings.email")} value={<span data-testid="account-email">{account.email}</span>} testid="account-email-row" />}
+            {signedWith && <Row label={t("account.signedInWith")} value={signedWith} testid="account-providers" />}
+          </Section>
+          <div className="sr-only">
+            {providers.map((p) => <span key={p} data-testid={`account-provider-${p}`}>{providerName(p) || p}</span>)}
+          </div>
 
-        {msg && (
-          <p data-testid="account-message" className="mt-5 rounded-xl bg-brand-success-muted border border-brand-forest/15 text-brand-forest px-4 py-3 text-sm">
-            {msg}
-          </p>
-        )}
-        {err && (
-          <p data-testid="account-error" className="mt-5 rounded-xl bg-brand-terracotta/10 border border-brand-terracotta/20 text-brand-terracotta-hover px-4 py-3 text-sm">
-            {err}
-          </p>
-        )}
+          <button type="button" data-testid="account-signout-btn" disabled={busy} onClick={handleLogout} className={`w-full ${btnLight}`}>
+            <LogOut className="w-4 h-4" aria-hidden="true" /> {t("account.signOut")}
+          </button>
 
-        {isAuthenticated ? (
-          /* ---- Signed in ---- */
-          <div data-testid="account-authenticated" className="mt-8 space-y-6">
-            <div className="rounded-2xl bg-white border border-black/5 p-6 shadow-sm">
-              {account?.display_name && <p className="text-lg font-serif text-brand-espresso">{account.display_name}</p>}
-              {account?.email && (
-                <p className="mt-1 flex items-center gap-2 text-sm text-brand-charcoal/70">
-                  <Mail className="w-4 h-4" /> <span data-testid="account-email">{account.email}</span>
-                </p>
-              )}
-              <div className="mt-4 flex flex-wrap gap-2">
-                {(account?.providers || []).map((p) => (
-                  <span key={p} data-testid={`account-provider-${p}`} className="inline-flex items-center gap-1.5 text-xs font-medium bg-brand-sand border border-black/5 rounded-full px-3 py-1 text-brand-charcoal/70">
-                    <ShieldCheck className="w-3.5 h-3.5 text-brand-forest" /> {p === "google.com" ? "Google" : p}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <button
-              data-testid="account-signout-btn"
-              disabled={busy}
-              onClick={handleLogout}
-              className="inline-flex items-center justify-center gap-2 w-full rounded-lg border border-brand-forest/30 text-brand-forest px-6 py-3.5 font-medium hover:bg-brand-forest/5 disabled:opacity-40 transition-colors"
-            >
-              <LogOut className="w-4 h-4" /> Sign out
-            </button>
-
-            <div className="rounded-2xl border border-brand-terracotta/20 bg-brand-terracotta/5 p-6">
-              <p className="flex items-center gap-2 text-sm font-semibold text-brand-terracotta-hover">
-                <AlertTriangle className="w-4 h-4" /> Delete account
+          <section aria-labelledby="account-danger-title" className="pt-6 border-t border-[#DEE2DE]">
+            <h2 id="account-danger-title" className="text-xs uppercase tracking-[0.15em] font-semibold text-[#A44F3B] mb-3 px-1">{t("account.dangerZone")}</h2>
+            <div className="rounded-2xl border border-[#C7654E]/30 bg-white p-5">
+              <p className="flex items-center gap-2 text-[16px] font-semibold text-[#222824]">
+                <AlertTriangle className="w-4 h-4 text-[#A44F3B]" aria-hidden="true" /> {t("account.deleteTitle")}
               </p>
-              <p className="mt-1 text-sm text-brand-charcoal/60">This permanently deletes your account and all your learning data. This cannot be undone.</p>
+              <p className="mt-1 text-[14px] text-[#6B736E]">{t("account.deleteBody")}</p>
               {!confirmDelete ? (
-                <button
-                  data-testid="account-delete-btn"
-                  onClick={() => { setErr(null); setMsg(null); setConfirmDelete(true); }}
-                  className="mt-4 inline-flex items-center gap-2 rounded-lg bg-brand-terracotta text-white px-5 py-2.5 font-medium hover:opacity-90 transition-opacity"
-                >
-                  <Trash2 className="w-4 h-4" /> Delete account
+                <button type="button" data-testid="account-delete-btn" onClick={() => { setErr(null); setMsg(null); setConfirmDelete(true); }}
+                  className="mt-4 inline-flex items-center gap-2 min-h-[44px] px-5 rounded-[15px] border border-[#C7654E]/50 text-[#A44F3B] font-semibold text-[15px] hover:bg-[#C7654E]/5 transition-colors">
+                  <Trash2 className="w-4 h-4" aria-hidden="true" /> {t("account.deleteTitle")}
                 </button>
               ) : (
                 <div className="mt-4 space-y-3">
-                  <p className="text-sm text-brand-charcoal/70">For your security, confirm it's you, then your account will be deleted:</p>
+                  <p className="text-[14px] text-[#222824]">{t("account.deleteConfirm")}</p>
                   {busy ? (
-                    <p className="flex items-center gap-2 text-sm text-brand-charcoal/60"><Loader2 className="w-4 h-4 animate-spin" /> Deleting…</p>
+                    <p className="flex items-center gap-2 text-[14px] text-[#6B736E]"><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("account.deleting")}</p>
                   ) : (
                     <>
-                      {(account?.providers || []).includes("google.com") && (
-                        <div ref={reauthBtnRef} data-testid="account-reauth-google" className="min-h-[44px]" />
-                      )}
-                      {(account?.providers || []).includes("apple.com") && (
-                        <button
-                          data-testid="account-reauth-apple-btn"
-                          onClick={handleAppleDelete}
-                          className="inline-flex items-center justify-center gap-2 rounded-lg bg-black text-white px-5 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
-                        >
-                          <AppleIcon /> Confirm with Apple &amp; delete
+                      {providers.includes("google.com") && <div ref={reauthBtnRef} data-testid="account-reauth-google" className="min-h-[44px]" />}
+                      {providers.includes("apple.com") && (
+                        <button type="button" data-testid="account-reauth-apple-btn" onClick={handleAppleDelete} className={`w-full ${darkBtn}`}>
+                          <AppleIcon /> {t("account.confirmAppleDelete")}
                         </button>
                       )}
-                      {!(account?.providers || []).some((p) => p === "google.com" || p === "apple.com") && (
+                      {!providers.some((p) => p === "google.com" || p === "apple.com") && (
                         <div ref={reauthBtnRef} data-testid="account-reauth-google" className="min-h-[44px]" />
                       )}
                     </>
                   )}
-                  <button
-                    data-testid="account-delete-cancel-btn"
-                    disabled={busy}
-                    onClick={() => setConfirmDelete(false)}
-                    className="rounded-lg border border-black/10 text-brand-charcoal/70 px-5 py-2.5 font-medium hover:bg-brand-sand transition-colors"
-                  >
-                    Cancel
+                  <button type="button" data-testid="account-delete-cancel-btn" disabled={busy} onClick={() => setConfirmDelete(false)} className={`w-full ${btnLight}`}>
+                    {t("account.cancel")}
                   </button>
                 </div>
               )}
             </div>
-          </div>
-        ) : (
-          /* ---- Guest (no visible account) ---- */
-          <div data-testid="account-guest" className="mt-8 space-y-5">
-            <div className="rounded-2xl bg-white border border-black/5 p-6 shadow-sm">
-              <p className="text-lg font-serif text-brand-espresso">Save your progress</p>
-              <p className="mt-1 text-sm text-brand-charcoal/60">Save your progress and continue on another device.</p>
-
-              {busy ? (
-                <p className="mt-5 flex items-center gap-2 text-brand-charcoal/60"><Loader2 className="w-5 h-5 animate-spin" /> Connecting…</p>
-              ) : gisUnavailable ? (
-                <p data-testid="account-gis-unavailable" className="mt-5 text-sm text-brand-terracotta-hover">Google sign-in is temporarily unavailable. Please try again later.</p>
-              ) : (
-                <div ref={googleBtnRef} data-testid="account-google-gis" className="mt-5 min-h-[44px]" />
-              )}
-
-              {APPLE_ENABLED && (
-                appleConsent ? (
-                  <div data-testid="account-apple-consent" className="mt-3 rounded-lg border border-black/10 bg-brand-sand/60 p-4">
-                    <p className="text-sm text-brand-charcoal/80">
-                      Your current HospitalityEnglish progress will be linked to your Apple account and available across devices.
-                    </p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <button
-                        data-testid="account-apple-confirm-btn"
-                        disabled={busy}
-                        onClick={handleApple}
-                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-black text-white px-5 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-40 transition-opacity"
-                      >
-                        <AppleIcon /> Continue with Apple
-                      </button>
-                      <button
-                        data-testid="account-apple-cancel-btn"
-                        disabled={busy}
-                        onClick={() => setAppleConsent(false)}
-                        className="rounded-lg border border-black/10 text-brand-charcoal/70 px-5 py-2.5 text-sm font-medium hover:bg-brand-sand transition-colors"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+          </section>
+        </div>
+      ) : (
+        <div data-testid="account-guest" className="space-y-5">
+          <section className="rounded-2xl bg-white border border-[#DEE2DE] p-6">
+            <h2 className="text-[21px] font-serif font-semibold text-[#222824]">{t("more.saveProgressTitle")}</h2>
+            <p className="mt-1 text-[15px] text-[#6B736E]">{t("account.guestBody")}</p>
+            {busy ? (
+              <p className="mt-5 flex items-center gap-2 text-[#6B736E]"><Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" /> {t("account.connecting")}</p>
+            ) : gisUnavailable ? (
+              <p data-testid="account-gis-unavailable" className="mt-5 text-[14px] text-[#A44F3B]">{t("account.gisUnavailable")}</p>
+            ) : (
+              <div ref={googleBtnRef} data-testid="account-google-gis" className="mt-5 min-h-[44px]" />
+            )}
+            {APPLE_ENABLED && (
+              appleConsent ? (
+                <div data-testid="account-apple-consent" className="mt-3 rounded-2xl border border-[#DEE2DE] bg-[#F7F5F0] p-4">
+                  <p className="text-[14px] text-[#222824]">{t("account.appleConsent")}</p>
+                  <div className="mt-3 flex flex-col gap-2">
+                    <button type="button" data-testid="account-apple-confirm-btn" disabled={busy} onClick={handleApple} className={`w-full ${darkBtn}`}>
+                      <AppleIcon /> {t("account.continueApple")}
+                    </button>
+                    <button type="button" data-testid="account-apple-cancel-btn" disabled={busy} onClick={() => setAppleConsent(false)} className={`w-full ${btnLight}`}>
+                      {t("account.cancel")}
+                    </button>
                   </div>
-                ) : (
-                  <button
-                    data-testid="account-apple-btn"
-                    disabled={busy}
-                    onClick={() => { setErr(null); setMsg(null); setAppleConsent(true); }}
-                    className="mt-3 inline-flex items-center justify-center gap-3 w-full rounded-lg bg-black text-white px-6 py-3.5 font-medium hover:opacity-90 disabled:opacity-40 transition-opacity"
-                  >
-                    <AppleIcon /> Continue with Apple
-                  </button>
-                )
-              )}
-            </div>
-            <p className="text-center text-sm text-brand-charcoal/50">No account is required to keep learning.</p>
-          </div>
-        )}
-      </main>
-    </div>
+                </div>
+              ) : (
+                <button type="button" data-testid="account-apple-btn" disabled={busy} onClick={() => { setErr(null); setMsg(null); setAppleConsent(true); }} className={`mt-3 w-full ${darkBtn}`}>
+                  <AppleIcon /> {t("account.continueApple")}
+                </button>
+              )
+            )}
+          </section>
+          <p className="text-center text-[14px] text-[#6B736E]">{t("account.noAccountNeeded")}</p>
+        </div>
+      )}
+    </SecondaryPage>
   );
 }

@@ -133,6 +133,7 @@ export const updateLanguage = (id, interface_language) =>
   client.put(`/guests/${id}/language`, { interface_language }).then((r) => r.data);
 export const getLanguages = () => client.get("/languages").then((r) => r.data);
 export const updateOnboarding = (id, payload) => client.put(`/guests/${id}/onboarding`, payload).then((r) => r.data);
+export const sendFeedback = (payload) => client.post("/feedback", payload).then((r) => r.data);
 export const updateProfile = (id, payload) => client.put(`/guests/${id}/profile`, payload).then((r) => r.data);
 export const recordFlashcard = (id, payload) => client.post(`/guests/${id}/flashcard`, payload).then((r) => r.data);
 export const recordCompletion = (id, payload) => client.post(`/guests/${id}/complete`, payload).then((r) => r.data);

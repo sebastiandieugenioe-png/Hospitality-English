@@ -22,6 +22,12 @@ import ListeningPractice from "@/pages/ListeningPractice";
 import SpeakingPractice from "@/pages/SpeakingPractice";
 import Account from "@/pages/Account";
 import More from "@/pages/More";
+import Profile from "@/pages/Profile";
+import LearningPreferences from "@/pages/LearningPreferences";
+import Language from "@/pages/Language";
+import Subscription from "@/pages/Subscription";
+import Legal from "@/pages/Legal";
+import { Support, Feedback } from "@/pages/Support";
 
 function App() {
   return (
@@ -49,6 +55,14 @@ function App() {
             <Route path="/speaking-practice" element={<SpeakingPractice />} />
             <Route path="/account" element={<Account />} />
             <Route path="/more" element={<More />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/learning-preferences" element={<LearningPreferences />} />
+            <Route path="/language" element={<Language />} />
+            <Route path="/subscription" element={<Subscription />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/support/feedback" element={<Feedback />} />
+            <Route path="/privacy" element={<Legal />} />
+            <Route path="/terms" element={<Legal />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-center" />
