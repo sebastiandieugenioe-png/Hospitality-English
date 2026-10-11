@@ -266,3 +266,8 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - `pages/Practice.js` rewritten: Recommended card (due / all caught up → scroll to modes / no reviews yet → /learn); due count = review-items?due&free_only (same queue as session; review-summary no longer used here). Practice modes rows (Listening/Speaking with real session_size, Review "Quick review session" — real session up to 10). "Mistake bank" → "Your review items" list (kept per user, revisit in final QA). "Mistakes by skill" block removed.
 - Review session focus mode restyled; SRS self-rating (again/hard/good/easy) kept as continue step, same logic. Feedback Correct / Not quite + Better answer + Why (existing explanation only). Completion: reviewed + correct (client-counted), Done → /practice, Continue learning → /learn.
 - 22 new practice.*/review.* keys in 10 locales. Tested iteration_18: 100%.
+
+## UX/UI Implementation 5 — Progress Redesign (Jun 2026) — DONE
+- New shared helper `frontend/src/lib/progress.js` (situationStatus, isPracticed, countPracticed, hasAnyActivity, groupBySkill, freeProgress — profession-aware). Learn now imports it (no visual change).
+- `pages/Progress.js` rewritten: ProfessionProgress (new / free bar over free pool / free-complete + single Explore Premium via requestPremium / premium x of 25 + %), SkillProgress rows (same grouping as Learn, tap → /learn), ReviewSummary (same filtered due query as Practice), AssessmentSummary (band from existing result_bands + current score, Retake/Start → /assessment; no "View results" — Assessment has no results route).
+- OMITTED: weekly activity, Listening/Speaking metrics, strongest/weakest, charts. 9 new progress.* keys in 10 locales. Tested iteration_19: 100%.

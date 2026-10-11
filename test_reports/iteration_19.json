@@ -1,0 +1,25 @@
+{
+  "summary": "Frontend-only test of redesigned /progress root. All critical acceptance criteria pass: Guest1 (bartender, 5 free, 72% assessment) shows overall data-state='free-complete' with correct copy, Explore Premium opens PremiumGate (premium-account-gate) overlay, no '100%' leaks, assessment data-state='done' with band + 'Current: 72%' + Retake -> /assessment. Guest2 (waiter, 1 practiced) -> data-state='free' with progress bar. Per-skill counts on /progress numerically match /learn's learn-skill-progress-<id> for all 10/11 skills on both guests. Sum of skill totals = 25 for both (no double counting). Guest3 review summary data-state='due', '1 item due' matches /practice ('1 item due' + Review now). i18n: no raw progress.* keys leak in en/de/fr. No horizontal overflow at 390px. Smoke OK: /home, /practice, /more, /learn (25 rows), /listening-practice, /speaking-practice.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Progress.js uses `countPracticed` and `freeProgress` from shared /lib/progress.js (matches Learn) — single source of truth achieved as spec requires.",
+    "Progress skill count label 'n / total practiced' includes trailing word, while Learn's learn-skill-progress-<id> renders only 'n / total' (no 'practiced'). Numeric values are identical — meets acceptance (counts equal) but string formatting differs by design. If strict visual parity was intended, consider unifying template; otherwise acceptable.",
+    "Overall section correctly suppresses zeros in 'new' state (no '0 /' or '0%' text) — Code review confirms the ProfessionProgress early-return for practiced===0 renders only the startsHere title/body/button.",
+    "Premium branch (data-state='premium') code looks correct: shows '{n} of {total}' label and {%} via Math.round((practiced/total)*100). Could not exercise headlessly (no premium guest available). Verified by code review only, per request.",
+    "Assessment summary derives band via summary.latest.band_key with fallback to min/max range — safe. getAssessmentMeta() loaded independently; if meta load fails, section is not rendered (graceful).",
+    "ReviewSummary uses getReviewItems with same free_only flag as Practice -> matches practice-recommended counts for guest dc7d6048."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "seed_data_creation": "None. Used provided seeded guests a7f7c2a4..., fa5e0512..., dc7d6048... Attempted new-guest creation via POST /api/guests + PUT /profile but PUT returned 422 'Invalid values for: employment_status' with value 'currently_working'. Not a Progress bug — api validation issue in profile PUT payload used by test (unrelated to this iteration). The 'new' state is reachable per code (practiced===0 branch) and the data-state attribute is wired correctly.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Progress redesign v5 validated. Guest IDs used: a7f7c2a4-e875-468d-ba40-a3773875cec8 (bartender, free-complete + 72% assessment), fa5e0512-6021-459d-ab51-edb53f728fcf (waiter, 1 practiced), dc7d6048-96f7-4518-9970-d57f0ba4933e (review due=1). Premium path only verified by code review. employment_status valid enum does not include 'currently_working'; use a value from EMPLOYMENT_STATUSES if creating new guests via API. Bottom nav tab testid is 'tab-progress' (not 'nav-progress')."
+}
