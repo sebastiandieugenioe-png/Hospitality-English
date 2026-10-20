@@ -74,17 +74,8 @@ export const recommendationMap = {
   other: ["general", "restaurant", "bar"],
 };
 
-export const targetProfiles = [
-  "Camareros/as",
-  "Bartenders",
-  "Barbacks",
-  "Personal de hotel",
-  "Recepcionistas",
-  "Housekeeping",
-  "Personal de cocina",
-  "Baristas",
-  "Estudiantes de hostelería",
-];
+// i18n keys: current V1 curriculum roles only.
+export const targetProfiles = ["landing.roleBartenders", "landing.roleWaiters"];
 
 export const landingImages = {
   hero: "https://images.unsplash.com/photo-1573052905904-34ad8c27f0cc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjh8MHwxfHNlYXJjaHwxfHxib3V0aXF1ZSUyMGhvdGVsJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzg3NDI0NTEzfDA&ixlib=rb-4.1.0&q=85",
@@ -93,12 +84,10 @@ export const landingImages = {
 };
 
 export const situations = [
-  "Welcoming a guest",
-  "Taking an order",
+  "Welcoming guests",
+  "Taking a drinks order",
   "Explaining the menu",
-  "Handling allergies",
+  "Allergies & dietary requirements",
   "Recommending drinks",
-  "Handling complaints",
-  "Checking in a hotel guest",
-  "Making coffee orders",
+  "Handling a complaint",
 ];

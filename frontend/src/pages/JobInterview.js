@@ -125,6 +125,9 @@ export default function JobInterview() {
         <span className="text-xs uppercase tracking-[0.15em] font-semibold text-brand-charcoal/50">{tx("title")}</span>
         <span data-testid="ji-progress" className="text-sm text-brand-charcoal/50 tabular-nums">{progressText}</span>
       </div>
+      {idx === 0 && tx("subtitle") && (
+        <p data-testid="ji-subtitle" className="-mt-2 mb-6 text-[15px] text-brand-charcoal/70 leading-relaxed">{tx("subtitle")}</p>
+      )}
       <AnimatePresence mode="wait">
         <motion.div key={scenario.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.25 }}>
           <h2 data-testid="ji-question" className="text-2xl font-serif text-brand-espresso leading-snug">{scenario.question_en}</h2>

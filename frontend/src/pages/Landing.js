@@ -124,8 +124,8 @@ export default function Landing() {
             </p>
             <div className="mt-8 flex flex-wrap gap-2">
               {targetProfiles.map((p) => (
-                <span key={p} className="px-3 py-1.5 rounded-full bg-brand-sand border border-black/5 text-sm text-brand-charcoal">
-                  {p}
+                <span key={p} data-testid={`landing-role-${p.split(".")[1]}`} className="px-3 py-1.5 rounded-full bg-brand-sand border border-black/5 text-sm text-brand-charcoal">
+                  {t(p)}
                 </span>
               ))}
             </div>
