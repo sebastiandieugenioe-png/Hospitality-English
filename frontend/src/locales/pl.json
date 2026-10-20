@@ -293,7 +293,6 @@
   "account.signOut": "Wyloguj się",
   "account.signOutFailed": "Wylogowanie nie powiodło się. Spróbuj ponownie.",
   "account.signedInWith": "Zalogowano przez",
-  "legal.pending": "Treść prawna w przygotowaniu. Strona zostanie opublikowana przed startem.",
   "legal.privacy": "Polityka prywatności",
   "legal.terms": "Warunki korzystania",
   "more.accountPrefs": "Konto i preferencje",
@@ -429,7 +428,7 @@
   "practiceSession.speakingIntro": "Ćwicz to, co naprawdę powiesz w pracy.",
   "practiceSession.conversations": "{n} rozmów",
   "practiceSession.speakNaturally": "Mów naturalnie. Nie musisz używać dokładnego zdania.",
-  "practiceSession.privacyNote": "Nagranie służy tylko do oceny odpowiedzi i nie jest przechowywane.",
+  "practiceSession.privacyNote": "Nie przechowujemy Twojego nagrania: jest transkrybowane, a potem usuwane. Zapisujemy tylko transkrypcję i ocenę.",
   "practiceSession.listeningComplete": "Słuchanie ukończone",
   "practiceSession.speakingComplete": "Mówienie ukończone",
   "practiceSession.practicedOne": "1 sytuacja przećwiczona",
@@ -467,5 +466,7 @@
   "nav.account": "Konto",
   "nav.primaryAria": "Nawigacja główna",
   "landing.roleBartenders": "Barmani",
-  "landing.roleWaiters": "Kelnerzy"
+  "landing.roleWaiters": "Kelnerzy",
+  "legal.accountDeletion": "Usuwanie konta",
+  "legal.englishOnly": "Ten dokument jest dostępny w języku angielskim, który jest jego oficjalną wersją."
 }

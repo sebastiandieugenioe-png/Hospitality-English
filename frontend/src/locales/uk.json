@@ -293,7 +293,6 @@
   "account.signOut": "Вийти",
   "account.signOutFailed": "Не вдалося вийти. Спробуйте ще раз.",
   "account.signedInWith": "Вхід через",
-  "legal.pending": "Юридичний зміст очікується. Сторінку буде опубліковано до запуску.",
   "legal.privacy": "Політика конфіденційності",
   "legal.terms": "Умови використання",
   "more.accountPrefs": "Обліковий запис і налаштування",
@@ -429,7 +428,7 @@
   "practiceSession.speakingIntro": "Практикуйте те, що справді скажете на роботі.",
   "practiceSession.conversations": "{n} розмов",
   "practiceSession.speakNaturally": "Говоріть природно. Точна фраза не потрібна.",
-  "practiceSession.privacyNote": "Запис використовується лише для оцінки відповіді й не зберігається.",
+  "practiceSession.privacyNote": "Ми не зберігаємо ваш запис: його транскрибують, а потім видаляють. Зберігаються лише транскрипт і відгук.",
   "practiceSession.listeningComplete": "Аудіювання завершено",
   "practiceSession.speakingComplete": "Говоріння завершено",
   "practiceSession.practicedOne": "1 ситуацію опрацьовано",
@@ -467,5 +466,7 @@
   "nav.account": "Обліковий запис",
   "nav.primaryAria": "Головна навігація",
   "landing.roleBartenders": "Бармени",
-  "landing.roleWaiters": "Офіціанти"
+  "landing.roleWaiters": "Офіціанти",
+  "legal.accountDeletion": "Видалення облікового запису",
+  "legal.englishOnly": "Цей документ доступний англійською мовою, яка є його офіційною версією."
 }

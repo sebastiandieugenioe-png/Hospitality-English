@@ -63,6 +63,7 @@ function App() {
             <Route path="/support/feedback" element={<Feedback />} />
             <Route path="/privacy" element={<Legal />} />
             <Route path="/terms" element={<Legal />} />
+            <Route path="/account-deletion" element={<Legal />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-center" />

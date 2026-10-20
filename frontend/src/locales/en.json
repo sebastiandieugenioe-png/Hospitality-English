@@ -293,7 +293,6 @@
   "account.signOut": "Sign out",
   "account.signOutFailed": "Sign out failed. Please try again.",
   "account.signedInWith": "Signed in with",
-  "legal.pending": "Legal content pending. This page will be published before launch.",
   "legal.privacy": "Privacy Policy",
   "legal.terms": "Terms of Use",
   "more.accountPrefs": "Account & preferences",
@@ -429,7 +428,7 @@
   "practiceSession.speakingIntro": "Practice what you'd actually say at work.",
   "practiceSession.conversations": "{n} conversations",
   "practiceSession.speakNaturally": "Speak naturally. You don't need to use an exact phrase.",
-  "practiceSession.privacyNote": "Your recording is only used to evaluate your response and isn't kept after processing.",
+  "practiceSession.privacyNote": "We don't store your recording: it's transcribed and then discarded. Only the transcript and feedback are saved.",
   "practiceSession.listeningComplete": "Listening complete",
   "practiceSession.speakingComplete": "Speaking complete",
   "practiceSession.practicedOne": "1 situation practiced",
@@ -467,5 +466,7 @@
   "nav.account": "Account",
   "nav.primaryAria": "Main navigation",
   "landing.roleBartenders": "Bartenders",
-  "landing.roleWaiters": "Waiters / Servers"
+  "landing.roleWaiters": "Waiters / Servers",
+  "legal.accountDeletion": "Account deletion",
+  "legal.englishOnly": "This document is the official English version."
 }

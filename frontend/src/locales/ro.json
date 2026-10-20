@@ -293,7 +293,6 @@
   "account.signOut": "Deconectează-te",
   "account.signOutFailed": "Deconectarea a eșuat. Încearcă din nou.",
   "account.signedInWith": "Conectat cu",
-  "legal.pending": "Conținut legal în curs. Pagina va fi publicată înainte de lansare.",
   "legal.privacy": "Politica de confidențialitate",
   "legal.terms": "Termeni de utilizare",
   "more.accountPrefs": "Cont și preferințe",
@@ -429,7 +428,7 @@
   "practiceSession.speakingIntro": "Exersează ce ai spune de fapt la muncă.",
   "practiceSession.conversations": "{n} conversații",
   "practiceSession.speakNaturally": "Vorbește natural. Nu ai nevoie de o frază exactă.",
-  "practiceSession.privacyNote": "Înregistrarea e folosită doar pentru evaluare și nu este păstrată.",
+  "practiceSession.privacyNote": "Nu păstrăm înregistrarea ta: este transcrisă și apoi ștearsă. Se salvează doar transcrierea și feedbackul.",
   "practiceSession.listeningComplete": "Ascultare finalizată",
   "practiceSession.speakingComplete": "Vorbire finalizată",
   "practiceSession.practicedOne": "1 situație exersată",
@@ -467,5 +466,7 @@
   "nav.account": "Cont",
   "nav.primaryAria": "Navigare principală",
   "landing.roleBartenders": "Barmani",
-  "landing.roleWaiters": "Ospătari"
+  "landing.roleWaiters": "Ospătari",
+  "legal.accountDeletion": "Ștergerea contului",
+  "legal.englishOnly": "Acest document este disponibil în engleză, care este versiunea sa oficială."
 }

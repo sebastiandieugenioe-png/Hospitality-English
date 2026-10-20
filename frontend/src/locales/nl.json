@@ -293,7 +293,6 @@
   "account.signOut": "Uitloggen",
   "account.signOutFailed": "Uitloggen mislukt. Probeer het opnieuw.",
   "account.signedInWith": "Ingelogd met",
-  "legal.pending": "Juridische inhoud volgt. Deze pagina wordt vóór de lancering gepubliceerd.",
   "legal.privacy": "Privacybeleid",
   "legal.terms": "Gebruiksvoorwaarden",
   "more.accountPrefs": "Account en voorkeuren",
@@ -429,7 +428,7 @@
   "practiceSession.speakingIntro": "Oefen wat je echt op het werk zou zeggen.",
   "practiceSession.conversations": "{n} gesprekken",
   "practiceSession.speakNaturally": "Spreek natuurlijk. Je hoeft geen exacte zin te gebruiken.",
-  "practiceSession.privacyNote": "Je opname wordt alleen gebruikt om je antwoord te beoordelen en daarna niet bewaard.",
+  "practiceSession.privacyNote": "We bewaren je opname niet: die wordt uitgeschreven en daarna verwijderd. Alleen de transcriptie en de feedback worden opgeslagen.",
   "practiceSession.listeningComplete": "Luisteren voltooid",
   "practiceSession.speakingComplete": "Spreken voltooid",
   "practiceSession.practicedOne": "1 situatie geoefend",
@@ -467,5 +466,7 @@
   "nav.account": "Account",
   "nav.primaryAria": "Hoofdnavigatie",
   "landing.roleBartenders": "Bartenders",
-  "landing.roleWaiters": "Bedienend personeel"
+  "landing.roleWaiters": "Bedienend personeel",
+  "legal.accountDeletion": "Account verwijderen",
+  "legal.englishOnly": "Dit document is beschikbaar in het Engels; dat is de officiële versie."
 }

@@ -293,7 +293,6 @@
   "account.signOut": "Abmelden",
   "account.signOutFailed": "Abmelden fehlgeschlagen. Bitte versuche es erneut.",
   "account.signedInWith": "Angemeldet mit",
-  "legal.pending": "Rechtlicher Inhalt ausstehend. Diese Seite wird vor dem Start veröffentlicht.",
   "legal.privacy": "Datenschutzerklärung",
   "legal.terms": "Nutzungsbedingungen",
   "more.accountPrefs": "Konto & Einstellungen",
@@ -429,7 +428,7 @@
   "practiceSession.speakingIntro": "Übe, was du bei der Arbeit wirklich sagen würdest.",
   "practiceSession.conversations": "{n} Gespräche",
   "practiceSession.speakNaturally": "Sprich natürlich. Du brauchst keinen exakten Satz.",
-  "practiceSession.privacyNote": "Deine Aufnahme wird nur zur Bewertung genutzt und danach nicht gespeichert.",
+  "practiceSession.privacyNote": "Wir speichern deine Aufnahme nicht: Sie wird transkribiert und danach verworfen. Gespeichert werden nur das Transkript und das Feedback.",
   "practiceSession.listeningComplete": "Hören abgeschlossen",
   "practiceSession.speakingComplete": "Sprechen abgeschlossen",
   "practiceSession.practicedOne": "1 Situation geübt",
@@ -467,5 +466,7 @@
   "nav.account": "Konto",
   "nav.primaryAria": "Hauptnavigation",
   "landing.roleBartenders": "Barkeeper",
-  "landing.roleWaiters": "Servicekräfte"
+  "landing.roleWaiters": "Servicekräfte",
+  "legal.accountDeletion": "Konto löschen",
+  "legal.englishOnly": "Dieses Dokument ist auf Englisch verfügbar; dies ist die offizielle Fassung."
 }
