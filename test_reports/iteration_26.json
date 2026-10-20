@@ -1,0 +1,32 @@
+{
+  "summary": "MULTILINGUAL_FINAL_QA_AND_LANGUAGE_DETECTION. Tested on the public URL. (1) First-use auto-detection was run in fresh Playwright contexts with locale plus an overridden navigator.languages/navigator.language. All 12 cases pass: es-ES→es, it-IT→it, fr-FR→fr, pt-BR→pt, de-DE→de, pl-PL→pl, ro-RO→ro, uk-UA→uk, nl-NL→nl, en-IE→en, ja-JP→es, [ja-JP,it-IT,en-US]→it. html lang was correct at 1.5s and still correct at 7s, so it does not flip back to es after Firebase bootstrap. GET /api/guests/{iph_guest_id}.interface_language equals the detected language in every case. (2) Cases A–D pass. A: it, still it after reload. B: en → More → Language → Spanish → reload gives es in the UI, localStorage and Mongo. C: Ukrainian stays across Home/Learn/Practice/More, Mongo=uk. D: ja-JP gives es with no crash. Case E: manual choice survives reload (shown in B). Account linking was checked by code review only: connectGoogle/connectApple keep the same guest, or switch to the existing account's guest, whose interface_language is then loaded by the guestId effect. (3) Locale parity: all 10 locale files have the same 467 keys, no empty values and matching {placeholders}. All 349 static t('key') calls resolve. (4) Assessment/meta: es 'Empezar evaluación' / '...situaciones cotidianas de hostelería.' / 'Repetir evaluación'; de 'Test starten'; nl 'Start de test'. These were checked in the UI and the API. All 4 meta ui dicts are complete for 10 languages. The Spanish listening step label 'Comprensión oral' was confirmed in the UI (aria + visible heading). The Spanish speaking label 'Expresión oral' was confirmed via the API. (5) 390px sweep in de/uk/pl/ro/fr over 16 routes: home, learn, practice, progress, more, profile, learning-preferences, account, assessment, listening-practice, speaking-practice, free lesson, locked lesson, job-interview, subscription and onboarding. scrollWidth=390 everywhere. No element runs off-screen and no ellipsis-clipped text. more-profile-subline wraps onto 2 lines (38.5px) in de/uk/ro/fr with no ellipsis. Full onboarding flow (6 steps plus completion with 3 recs) has no overflow. AccountGate opened from a locked lesson is localized in de/uk/pl. No page errors on any route.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Job interview subtitle", "issue": "The es subtitle in the API was fixed ('...entrevistas de hostelería'), but JobInterview.js never renders tx('subtitle'), so users never see it. Display-only gap.", "affected_selectors": ["/job-interview intro"]}
+    ],
+    "design_issues": [
+      {"screen": "Copy polish (minor)", "issues": [
+        "listening ui es 'Ver transcript' / 'Ocultar transcript' mixes in an English word; 'Ver transcripción' would read more naturally.",
+        "uk: the bottom-nav label 'Навчатися' does not match the Learn page heading 'Навчайся'. 'Практикуватися' is a long nav label; it fits at 390px but with little room.",
+        "pt-BR is detected as pt, but pt.json is European Portuguese ('Fala-nos', 'aprendizagem'). This is acceptable as a product choice, just noting it."
+      ]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_i18n_multilingual_final.py", "/app/test_reports/pytest/pytest_iter26.xml"],
+  "action_items": [
+    "Optional: render the job-interview meta ui.subtitle on the JobInterview intro, or drop it from the data.",
+    "Optional copy polish: es 'transcript' → 'transcripción'; make the uk nav and heading wording consistent."
+  ],
+  "critical_code_review_comments": [
+    "AppContext bootstrap edge case: adoptDeviceLanguage runs whenever localStorage has no guest id. If localStorage was cleared but the Firebase anonymous user in IndexedDB still maps to an existing guest who has not finished onboarding but chose a language manually, that choice is overwritten by the device language. To fix, only adopt when the guest was just created (e.g. the backend returns created=true), or when its interface_language is still the backend default.",
+    "The language PUT failure in setLanguage is only logged with console.error and nothing is shown to the user. Acceptable, since the localStorage cache keeps the choice locally."
+  ],
+  "updated_files": ["/app/backend/tests/test_i18n_multilingual_final.py"],
+  "success_rate": {"backend": "100% (8/8)", "frontend": "100% of the requested scenarios"},
+  "seed_data_creation": "Anonymous guests created by bootstrap in fresh Playwright contexts; some got a waiter profile via PUT /api/guests/{id}/profile.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Detection testing technique: browser.new_context(locale=X) plus add_init_script overriding navigator.languages and navigator.language. Wait about 7s for Firebase bootstrap, then read localStorage.iph_guest_id and use page.request.get('/api/guests/{id}'). Python urllib to the public URL gets a 403, so use Playwright's request API instead. To skip onboarding, PUT /api/guests/{id}/profile with {role:'waiter',venue_type:'casual-restaurant',target_country:'ireland',goal:'work_abroad'}. /lesson/taking-an-order is locked for waiter → lesson-unlock-btn opens AccountGate. Landing page localization is deferred; do not report it."
+}

@@ -302,3 +302,11 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - i18n: new keys onboarding.intro/progressAria/doneEyebrow/doneTitle, auth.*, paywall.* in 10 locales; onboarding.country.q/sub neutral copy.
 - Note: existing recommender often ranks premium situations first, so free users may see 1–3 recs on completion (logic not changed).
 - Final validation fix (Jun 2026, iteration_25 PASS): onboarding completion for FREE users always shows exactly 3 accessible recs — existing recs filtered to role's free situations, then filled from FREE_SITUATIONS_BY_ROLE order (getSituation, localized via getLocalizedField). Premium uses top 3 of normal recs. Only Onboarding.js changed.
+
+## MULTILINGUAL_FINAL_QA_AND_LANGUAGE_DETECTION (Jun 2026) — PASS (iteration_26)
+- i18n.js: generic normalizeLocale / getSupportedLocale / resolveInterfaceLanguage (+ detectBrowserLanguage wrapper). Priority: guest/account interface_language (Mongo) > iph_lang cache > navigator.languages/language > "es".
+- Bug fixed: Firebase bootstrap/logout/delete created server-side guests with default "es", overriding device detection. AppContext.adoptDeviceLanguage sets the device-resolved language on fresh guests (not onboarded, still "es").
+- Locales: 467 keys × 10, parity 100%, 0 empty. Added nav.account, nav.primaryAria. Mixed-language fixes (es feedback/Speaking, pl/ro/uk flashcards, uk feedback/quiz, uk nav labels).
+- Backend tool UI JSON: Assessment es "evaluación"/"hostelería", de/nl "Test", it/pl/nl/de hospitality→Ristorazione/Gastronomia/Horeca/Gastronomie; Job Interview subtitle; Listening/Speaking titles es/it/pt; es "transcripción".
+- More subline + Settings rows/titles wrap instead of truncating.
+- Deferred: Landing copy (Spanish targetProfiles hardcoded, "hospitality" loanword in pl/ro/uk/nl landing); JobInterview never renders ui.subtitle.

@@ -113,11 +113,11 @@ export function AppProvider({ children }) {
   }, []); // eslint-disable-line
 
   // A guest created server-side (bootstrap/logout) starts with the backend default
-  // language; give a fresh one the language already resolved on this device.
+  // language ("es"); give a fresh one the language already resolved on this device.
   const adoptDeviceLanguage = async (id) => {
     try {
       const g = await api.getGuest(id);
-      if (!g.onboarding_completed && g.interface_language !== langRef.current) {
+      if (!g.onboarding_completed && g.interface_language === "es" && langRef.current !== "es") {
         await api.updateLanguage(id, langRef.current);
       }
     } catch { /* non-blocking */ }
