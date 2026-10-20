@@ -4,6 +4,9 @@ import os
 import pytest
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 base_url = os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")
@@ -53,7 +56,7 @@ def test_catalog_counts(client):
 
 # ---------- FIX #1: q_bar_greet_4 shows 4 options in every language ----------
 def test_bar_greet_options_alignment(client):
-    r = client.get(f"{BASE_URL}/api/lessons/guest-arrives-at-the-bar")
+    r = client.get(f"{BASE_URL}/api/lessons/guest-arrives-at-the-bar", headers=premium_headers())
     assert r.status_code == 200, r.text
     lesson = r.json()["lesson"]
     by_id = {q["id"]: q for q in (lesson.get("quiz") or []) + (lesson.get("exercises") or [])}
@@ -76,7 +79,7 @@ def test_all_mc_localized_options_length_invariant(client):
     bad = []
     checked = 0
     for s in sits:
-        r = client.get(f"{BASE_URL}/api/lessons/{s['slug']}")
+        r = client.get(f"{BASE_URL}/api/lessons/{s['slug']}", headers=premium_headers())
         assert r.status_code == 200, (s["slug"], r.status_code)
         body = r.json()
         if not body.get("available"):
@@ -104,8 +107,8 @@ def test_all_mc_localized_options_length_invariant(client):
 def test_full_lesson_wrong_answers_then_practice(client, lang):
     guest = make_guest(client, lang)
     slug = "guest-arrives-at-the-bar"
-    lesson = client.get(f"{BASE_URL}/api/lessons/{slug}").json()["lesson"]
-    a = client.post(f"{BASE_URL}/api/situation-attempts/start",
+    lesson = client.get(f"{BASE_URL}/api/lessons/{slug}", headers=premium_headers()).json()["lesson"]
+    a = client.post(f"{BASE_URL}/api/situation-attempts/start", headers=premium_headers(),
                     json={"guest_id": guest, "situation_slug": slug})
     assert a.status_code == 200, a.text
     attempt_id = a.json()["attempt_id"]
@@ -134,14 +137,14 @@ def test_full_lesson_wrong_answers_then_practice(client, lang):
     assert att["correct_questions"] == 0
     assert att["scores"]["overall"] == 0
 
-    items = client.get(f"{BASE_URL}/api/guests/{guest}/review-items").json()
+    items = client.get(f"{BASE_URL}/api/guests/{guest}/review-items", headers=premium_headers()).json()
     assert len(items) == wrong_count, (len(items), wrong_count)
     for it in items:
         assert it["times_wrong"] == 1, it
         assert "answer" not in it["content"] and "answer_index" not in it["content"], it["content"]
 
     # answer every due item (never 500) and rate it
-    due = client.get(f"{BASE_URL}/api/guests/{guest}/review-items", params={"due": "true"}).json()
+    due = client.get(f"{BASE_URL}/api/guests/{guest}/review-items", headers=premium_headers(), params={"due": "true"}).json()
     assert len(due) == wrong_count
     ratings = ["again", "hard", "good", "easy"]
     for i, it in enumerate(due):
@@ -152,13 +155,13 @@ def test_full_lesson_wrong_answers_then_practice(client, lang):
             submitted = content.get("words", [])
         else:
             submitted = "x"
-        ans = client.post(f"{BASE_URL}/api/review-items/{it['id']}/answer",
+        ans = client.post(f"{BASE_URL}/api/review-items/{it['id']}/answer", headers=premium_headers(),
                           json={"submitted_answer": submitted})
         assert ans.status_code == 200, (it["source_id"], ans.status_code, ans.text[:400])
         j = ans.json()
         assert "correct" in j
         assert j["correct_answer"] is not None, (it["source_id"], j)
-        rr = client.post(f"{BASE_URL}/api/review-items/{it['id']}/rate",
+        rr = client.post(f"{BASE_URL}/api/review-items/{it['id']}/rate", headers=premium_headers(),
                          json={"rating": ratings[i % 4]})
         assert rr.status_code == 200, (it["id"], rr.status_code, rr.text[:300])
 
@@ -167,10 +170,10 @@ def test_full_lesson_wrong_answers_then_practice(client, lang):
 def test_grading_no_false_positive(client):
     guest = make_guest(client, "es")
     slug = "guest-arrives-at-the-bar"
-    lesson = client.get(f"{BASE_URL}/api/lessons/{slug}").json()["lesson"]
+    lesson = client.get(f"{BASE_URL}/api/lessons/{slug}", headers=premium_headers()).json()["lesson"]
     by_id = {q["id"]: ("quiz", q) for q in lesson.get("quiz") or []}
     by_id.update({q["id"]: ("exercise", q) for q in lesson.get("exercises") or []})
-    attempt_id = client.post(f"{BASE_URL}/api/situation-attempts/start",
+    attempt_id = client.post(f"{BASE_URL}/api/situation-attempts/start", headers=premium_headers(),
                              json={"guest_id": guest, "situation_slug": slug}).json()["attempt_id"]
     for qid in ("q_bar_greet_1", "q_bar_greet_4"):
         section, q = by_id[qid]
@@ -188,21 +191,21 @@ def test_grading_no_false_positive(client):
 def test_language_switch_preserves_data(client):
     guest = make_guest(client, "es")
     slug = "guest-arrives-at-the-bar"
-    attempt_id = client.post(f"{BASE_URL}/api/situation-attempts/start",
+    attempt_id = client.post(f"{BASE_URL}/api/situation-attempts/start", headers=premium_headers(),
                              json={"guest_id": guest, "situation_slug": slug}).json()["attempt_id"]
-    lesson = client.get(f"{BASE_URL}/api/lessons/{slug}").json()["lesson"]
+    lesson = client.get(f"{BASE_URL}/api/lessons/{slug}", headers=premium_headers()).json()["lesson"]
     q = (lesson.get("quiz") or [])[0]
     client.put(f"{BASE_URL}/api/situation-attempts/{attempt_id}/response", json={
         "question_id": q["id"], "section": "quiz",
         "submitted_answer": (q["answer_index"] + 1) % len(q["options"])})
-    before_items = client.get(f"{BASE_URL}/api/guests/{guest}/review-items").json()
+    before_items = client.get(f"{BASE_URL}/api/guests/{guest}/review-items", headers=premium_headers()).json()
     r = client.put(f"{BASE_URL}/api/guests/{guest}/language", json={"interface_language": "uk"})
     assert r.status_code == 200, r.text
     g = client.get(f"{BASE_URL}/api/guests/{guest}").json()
     assert g["id"] == guest
     assert g["interface_language"] == "uk"
     assert g["professional_profile"]["role"] == "bartender"
-    after_items = client.get(f"{BASE_URL}/api/guests/{guest}/review-items").json()
+    after_items = client.get(f"{BASE_URL}/api/guests/{guest}/review-items", headers=premium_headers()).json()
     assert len(after_items) == len(before_items) == 1
     attempts = client.get(f"{BASE_URL}/api/guests/{guest}/attempts").json()
     assert len(attempts) == 1

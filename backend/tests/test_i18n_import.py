@@ -11,6 +11,9 @@ from pathlib import Path
 
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
@@ -28,7 +31,7 @@ class TestLanguages:
         assert all(l.get("native_name") for l in r)
 
     def test_language_validation(self):
-        gid = requests.post(f"{API}/guests", json={}).json()["id"]
+        gid = link_premium(requests.post(f"{API}/guests", json={}).json()["id"])
         for code in EXPECTED_LANGS:
             assert requests.put(f"{API}/guests/{gid}/language", json={"interface_language": code}).status_code == 200
         assert requests.put(f"{API}/guests/{gid}/language", json={"interface_language": "zz"}).status_code == 422
@@ -51,7 +54,7 @@ class TestLocalizedOptionsInvariant:
         situations = requests.get(f"{API}/situations").json()
         checked = 0
         for s in situations:
-            les = requests.get(f"{API}/lessons/{s['slug']}").json().get("lesson")
+            les = requests.get(f"{API}/lessons/{s['slug']}", headers=premium_headers()).json().get("lesson")
             if not les:
                 continue
             for section in ("exercises", "quiz"):
@@ -72,15 +75,15 @@ class TestLocalizedOptionsInvariant:
     def test_practice_answer_never_500(self):
         """Reproduces the blocking 500: answer the previously-broken review item."""
         slug = "guest-arrives-at-the-bar"
-        gid = requests.post(f"{API}/guests", json={"interface_language": "fr"}).json()["id"]
-        aid = requests.post(f"{API}/situation-attempts/start",
+        gid = link_premium(requests.post(f"{API}/guests", json={"interface_language": "fr"}).json()["id"])
+        aid = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(),
                             json={"guest_id": gid, "situation_slug": slug}).json()["attempt_id"]
         # q_bar_greet_4: 4 options, answer_index=1; submit wrong to create a review item
         requests.put(f"{API}/situation-attempts/{aid}/response",
                      json={"question_id": "q_bar_greet_4", "section": "quiz", "submitted_answer": 0})
-        items = requests.get(f"{API}/guests/{gid}/review-items").json()
+        items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
         rid = [i["id"] for i in items if i["source_id"] == "q_bar_greet_4"][0]
-        r = requests.post(f"{API}/review-items/{rid}/answer", json={"submitted_answer": 1})
+        r = requests.post(f"{API}/review-items/{rid}/answer", headers=premium_headers(), json={"submitted_answer": 1})
         assert r.status_code == 200, f"Practice answer returned {r.status_code}"
         assert r.json()["correct"] is True
         assert r.json()["correct_answer"]
@@ -96,7 +99,7 @@ class TestContentResolution:
         # English target situation title untouched
         assert sit["title_en"] == "A guest arrives at the bar"
 
-        les = requests.get(f"{API}/lessons/{slug}").json()["lesson"]
+        les = requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json()["lesson"]
         # intro grouped translations
         for lang in ("fr", "de", "en"):
             assert les["intro"]["translations"][lang]["context"]
@@ -117,7 +120,7 @@ class TestContentResolution:
         assert q["translations"]["fr"]["prompt"]
 
     def test_legacy_speaker_label_localized(self):
-        les = requests.get(f"{API}/lessons/taking-an-order").json()["lesson"]
+        les = requests.get(f"{API}/lessons/taking-an-order", headers=premium_headers()).json()["lesson"]
         line = les["dialogue"][0]
         assert line["english"]  # spoken English intact
         assert line.get("speaker_label_fr") and line.get("speaker_label_de")
@@ -126,16 +129,16 @@ class TestContentResolution:
 class TestReviewResolutionAndFallback:
     def _make_mistake(self, lang):
         slug = "guest-arrives-at-the-bar"
-        les = requests.get(f"{API}/lessons/{slug}").json()["lesson"]
+        les = requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json()["lesson"]
         q = les["exercises"][0]
         wrong = 0 if q["answer_index"] != 0 else 1
-        gid = requests.post(f"{API}/guests", json={}).json()["id"]
+        gid = link_premium(requests.post(f"{API}/guests", json={}).json()["id"])
         requests.put(f"{API}/guests/{gid}/language", json={"interface_language": lang})
-        aid = requests.post(f"{API}/situation-attempts/start",
+        aid = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(),
                             json={"guest_id": gid, "situation_slug": slug}).json()["attempt_id"]
         requests.put(f"{API}/situation-attempts/{aid}/response",
                      json={"question_id": q["id"], "section": "exercise", "submitted_answer": wrong})
-        items = requests.get(f"{API}/guests/{gid}/review-items").json()
+        items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
         mine = [it for it in items if it["source_id"] == q["id"]][0]
         return gid, q, mine
 
@@ -156,20 +159,20 @@ class TestReviewResolutionAndFallback:
 class TestProgressPersistenceOnLanguageSwitch:
     def test_switch_keeps_guest_and_progress(self):
         slug = "guest-arrives-at-the-bar"
-        les = requests.get(f"{API}/lessons/{slug}").json()["lesson"]
+        les = requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json()["lesson"]
         q = les["exercises"][0]
 
-        gid = requests.post(f"{API}/guests", json={"interface_language": "es"}).json()["id"]
+        gid = link_premium(requests.post(f"{API}/guests", json={"interface_language": "es"}).json()["id"])
         requests.put(f"{API}/guests/{gid}/profile", json={
             "role": "bartender", "venue_type": "cocktail-bar",
             "target_country": "ireland", "goal": "first_hospitality_job"})
-        aid = requests.post(f"{API}/situation-attempts/start",
+        aid = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(),
                             json={"guest_id": gid, "situation_slug": slug}).json()["attempt_id"]
         wrong = 0 if q["answer_index"] != 0 else 1
         requests.put(f"{API}/situation-attempts/{aid}/response",
                      json={"question_id": q["id"], "section": "exercise", "submitted_answer": wrong})
 
-        before_items = requests.get(f"{API}/guests/{gid}/review-items").json()
+        before_items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
         assert len(before_items) >= 1
 
         # switch language
@@ -181,5 +184,5 @@ class TestProgressPersistenceOnLanguageSwitch:
         assert guest["interface_language"] == "de"
         assert guest.get("professional_profile", {}).get("role") == "bartender"
 
-        after_items = requests.get(f"{API}/guests/{gid}/review-items").json()
+        after_items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
         assert len(after_items) == len(before_items)

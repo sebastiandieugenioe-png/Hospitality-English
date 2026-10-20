@@ -3,6 +3,9 @@ import os
 import pytest
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 base_url = os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")
@@ -56,7 +59,7 @@ class TestContent:
         assert r.status_code == 404
 
     def test_lesson_taking_an_order(self, client):
-        r = client.get(f"{API}/lessons/taking-an-order")
+        r = client.get(f"{API}/lessons/taking-an-order", headers=premium_headers())
         assert r.status_code == 200
         d = r.json()
         assert d["available"] is True
@@ -83,7 +86,7 @@ class TestContent:
                 assert " ".join(sorted(q["words"])) == " ".join(sorted(q["answer"].split(" ")))
 
     def test_lesson_not_authored(self, client):
-        r = client.get(f"{API}/lessons/welcoming-guests")
+        r = client.get(f"{API}/lessons/welcoming-guests", headers=premium_headers())
         assert r.status_code == 200
         d = r.json()
         assert d["available"] is False
@@ -91,7 +94,7 @@ class TestContent:
         assert "lesson" not in d
 
     def test_lesson_unknown_situation(self, client):
-        r = client.get(f"{API}/lessons/nope-nope")
+        r = client.get(f"{API}/lessons/nope-nope", headers=premium_headers())
         assert r.status_code == 404
 
 

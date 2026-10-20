@@ -14,6 +14,9 @@ import json
 from pathlib import Path
 
 import requests
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 API = open(ROOT.parent / "frontend" / ".env").read().split("REACT_APP_BACKEND_URL=")[1].split()[0].strip()
@@ -68,7 +71,7 @@ def test_meta():
 
 def test_item_endpoint_no_model_response_reuses_audio():
     slug = ITEMS[0]["situation_slug"]
-    it = requests.get(f"{BASE}/speaking/item/{slug}", params={"lang": "es"}).json()
+    it = requests.get(f"{BASE}/speaking/item/{slug}", headers=premium_headers(), params={"lang": "es"}).json()
     assert "model_response_en" not in it
     assert it["audio_url"] == "/" + ITEMS[0]["prompt_audio_asset_key"]
     assert it["recording"]["max_seconds"] == 30 and it["recording"]["min_seconds"] == 1
@@ -85,7 +88,7 @@ def _new_guest(role="waiter"):
 
 def test_practice_five_hospitality_role_influence():
     gid = _new_guest("waiter")
-    pr = requests.get(f"{BASE}/guests/{gid}/speaking-practice").json()
+    pr = requests.get(f"{BASE}/guests/{gid}/speaking-practice", headers=premium_headers()).json()
     assert pr["session_size"] == 5 and pr["profession_id"] == "hospitality"
     assert len(pr["items"]) == 5
     assert all("model_response_en" not in i for i in pr["items"])

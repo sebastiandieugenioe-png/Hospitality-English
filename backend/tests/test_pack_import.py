@@ -11,6 +11,9 @@ from pathlib import Path
 
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
@@ -89,7 +92,7 @@ class TestLessonIntegrity:
     def test_lessons_accessible_and_shaped(self):
         all_ids = []
         for slug in PACK_SLUGS:
-            d = requests.get(f"{API}/lessons/{slug}").json()
+            d = requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json()
             assert d["available"] is True, f"{slug} lesson unavailable"
             les = d["lesson"]
             assert les["content_version"] >= 1
@@ -113,7 +116,7 @@ class TestLessonIntegrity:
         seen = set()
         dupes = []
         for slug in EXISTING_SEVEN + PACK_SLUGS:
-            d = requests.get(f"{API}/lessons/{slug}").json()
+            d = requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json()
             if not d.get("available"):
                 continue
             les = d["lesson"]
@@ -130,7 +133,7 @@ class TestFlashcardsExcludeInappropriate:
         # of flashcards. We assert the flag is preserved so Lesson.js can exclude it.
         found_inappropriate = False
         for slug in PACK_SLUGS:
-            les = requests.get(f"{API}/lessons/{slug}").json()["lesson"]
+            les = requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json()["lesson"]
             for p in les["phrases"]:
                 if p.get("service_rating") == "inappropriate":
                     found_inappropriate = True
@@ -144,20 +147,20 @@ class TestI18nResolution:
         """IT guest: Practice resolves a new-lesson question id and falls back to ES
         (pack has no Italian), while the English target answer stays English."""
         slug = "guest-has-had-too-much-to-drink"
-        les = requests.get(f"{API}/lessons/{slug}").json()["lesson"]
+        les = requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json()["lesson"]
         q = les["exercises"][0]
         assert q["type"] == "multiple_choice"
         wrong = 0 if q["answer_index"] != 0 else 1
 
-        gid = requests.post(f"{API}/guests", json={}).json()["id"]
+        gid = link_premium(requests.post(f"{API}/guests", json={}).json()["id"])
         requests.put(f"{API}/guests/{gid}/language", json={"interface_language": "it"})
-        aid = requests.post(f"{API}/situation-attempts/start",
+        aid = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(),
                             json={"guest_id": gid, "situation_slug": slug}).json()["attempt_id"]
         r = requests.put(f"{API}/situation-attempts/{aid}/response",
                          json={"question_id": q["id"], "section": "exercise", "submitted_answer": wrong})
         assert r.status_code == 200 and r.json()["correct"] is False
 
-        items = requests.get(f"{API}/guests/{gid}/review-items").json()
+        items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
         mine = [it for it in items if it["source_id"] == q["id"]]
         assert len(mine) == 1, "Practice did not resolve the new question id"
         content = mine[0]["content"]
@@ -168,7 +171,7 @@ class TestI18nResolution:
         assert mine[0]["situation_title"]
 
         # Grading + explanation resolve (ES fallback) and answer stays English.
-        ra = requests.post(f"{API}/review-items/{mine[0]['id']}/answer",
+        ra = requests.post(f"{API}/review-items/{mine[0]['id']}/answer", headers=premium_headers(),
                            json={"submitted_answer": wrong}).json()
         assert ra["correct"] is False
         assert ra["explanation"]

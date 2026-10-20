@@ -10,6 +10,9 @@ import os
 import pytest
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env["REACT_APP_BACKEND_URL"]).rstrip("/")
@@ -36,7 +39,7 @@ def guest():
 
 
 def _lesson():
-    r = requests.get(f"{BASE_URL}/api/lessons/{SLUG}", timeout=30)
+    r = requests.get(f"{BASE_URL}/api/lessons/{SLUG}", headers=premium_headers(), timeout=30)
     assert r.status_code == 200
     return r.json()["lesson"]
 
@@ -101,7 +104,7 @@ def test_review_item_answer_endpoint_does_not_crash(guest):
     assert resp.status_code == 200, resp.text
     assert resp.json()["correct"] is False
 
-    items = requests.get(f"{BASE_URL}/api/guests/{guest}/review-items", timeout=30)
+    items = requests.get(f"{BASE_URL}/api/guests/{guest}/review-items", headers=premium_headers(), timeout=30)
     assert items.status_code == 200, items.text
     target = [i for i in items.json() if i["source_id"] == QID_OUT_OF_RANGE]
     assert len(target) == 1, f"expected exactly 1 review item, got {len(target)}"

@@ -2,6 +2,9 @@
 import os
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
@@ -103,11 +106,11 @@ class TestContentIntegrity:
             assert s["level"] in VALID_LEVELS, f"{s['slug']} level invalid"
             assert s["difficulty"] in VALID_DIFF, f"{s['slug']} difficulty invalid"
             # lesson must be accessible
-            r = requests.get(f"{API}/lessons/{s['slug']}")
+            r = requests.get(f"{API}/lessons/{s['slug']}", headers=premium_headers())
             assert r.status_code == 200 and r.json().get("available") is True, f"{s['slug']} lesson missing"
 
     def test_taking_an_order_no_regression(self):
-        d = requests.get(f"{API}/lessons/taking-an-order").json()
+        d = requests.get(f"{API}/lessons/taking-an-order", headers=premium_headers()).json()
         assert d["available"] is True
         assert len(d["lesson"]["phrases"]) == 5
         assert len(d["lesson"]["quiz"]) == 5
@@ -116,7 +119,7 @@ class TestContentIntegrity:
 
     def test_six_new_lessons_load(self):
         for slug in PILOT:
-            d = requests.get(f"{API}/lessons/{slug}").json()
+            d = requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json()
             assert d["available"] is True, f"{slug} lesson not available"
             lesson = d["lesson"]
             assert 5 <= len(lesson["phrases"]) <= 8
@@ -132,7 +135,7 @@ class TestContentIntegrity:
 
     def test_service_english_metadata_optional(self):
         # New lesson carries service metadata; legacy learning items still work without it.
-        lesson = requests.get(f"{API}/lessons/guest-says-cocktail-is-too-sweet").json()["lesson"]
+        lesson = requests.get(f"{API}/lessons/guest-says-cocktail-is-too-sweet", headers=premium_headers()).json()["lesson"]
         with_meta = [p for p in lesson["phrases"] if p.get("service_rating")]
         assert with_meta, "expected at least one phrase with Service English metadata"
         bad = [p for p in lesson["phrases"] if p.get("service_rating") == "inappropriate"]

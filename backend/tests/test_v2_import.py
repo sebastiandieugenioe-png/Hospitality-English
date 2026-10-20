@@ -6,6 +6,9 @@ from collections import Counter
 
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
@@ -24,7 +27,7 @@ def _situations(**p):
 
 
 def _lesson(slug):
-    return requests.get(f"{API}/lessons/{slug}").json().get("lesson")
+    return requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json().get("lesson")
 
 
 class TestCatalog:
@@ -132,13 +135,13 @@ class TestPracticeGrading:
         les = _lesson(slug)
         q = next(x for x in les["quiz"] if x["type"] == "multiple_choice")
         wrong = 0 if q["answer_index"] != 0 else 1
-        gid = requests.post(f"{API}/guests", json={"interface_language": "fr"}).json()["id"]
-        aid = requests.post(f"{API}/situation-attempts/start",
+        gid = link_premium(requests.post(f"{API}/guests", json={"interface_language": "fr"}).json()["id"])
+        aid = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(),
                             json={"guest_id": gid, "situation_slug": slug}).json()["attempt_id"]
         r1 = requests.put(f"{API}/situation-attempts/{aid}/response",
                           json={"question_id": q["id"], "section": "quiz", "submitted_answer": wrong})
         assert r1.status_code == 200 and r1.json()["correct"] is False
-        rid = [i["id"] for i in requests.get(f"{API}/guests/{gid}/review-items").json()
+        rid = [i["id"] for i in requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
                if i["source_id"] == q["id"]][0]
-        r2 = requests.post(f"{API}/review-items/{rid}/answer", json={"submitted_answer": q["answer_index"]})
+        r2 = requests.post(f"{API}/review-items/{rid}/answer", headers=premium_headers(), json={"submitted_answer": q["answer_index"]})
         assert r2.status_code == 200 and r2.json()["correct"] is True

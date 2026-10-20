@@ -1,6 +1,9 @@
 """Quantify i18n coverage of MC options per language (report-only diagnostic)."""
 import os, collections, requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 BASE = (os.environ.get("REACT_APP_BACKEND_URL") or dotenv_values("/app/frontend/.env")["REACT_APP_BACKEND_URL"]).rstrip("/")
 LANGS = ["es", "it", "fr", "pt", "de", "pl", "ro", "uk", "nl", "en"]
@@ -8,7 +11,7 @@ LANGS = ["es", "it", "fr", "pt", "de", "pl", "ro", "uk", "nl", "en"]
 sits = requests.get(f"{BASE}/api/situations").json()
 stats = collections.defaultdict(lambda: [0, 0, 0])  # lang -> [total_opts, translated_opts, questions_with_mixed]
 for s in sits:
-    body = requests.get(f"{BASE}/api/lessons/{s['slug']}").json()
+    body = requests.get(f"{BASE}/api/lessons/{s['slug']}", headers=premium_headers()).json()
     if not body.get("available"):
         continue
     lesson = body["lesson"]

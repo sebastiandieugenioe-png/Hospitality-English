@@ -13,6 +13,9 @@ from pathlib import Path
 import pytest
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 _base = os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")
@@ -38,7 +41,7 @@ _cache = {}
 
 
 def _get(path, **params):
-    r = requests.get(f"{API}{path}", params=params, timeout=60)
+    r = requests.get(f"{API}{path}", params=params, timeout=60, headers=premium_headers())
     assert r.status_code == 200, f"GET {path} -> {r.status_code} {r.text[:200]}"
     return r.json()
 
@@ -240,8 +243,8 @@ def test_practice_grading_and_no_answer_leak(slug):
     q = next(x for x in les["quiz"] + les.get("exercises", []) if x.get("type") == "multiple_choice")
     wrong = 0 if q["answer_index"] != 0 else 1
 
-    gid = requests.post(f"{API}/guests", json={"interface_language": "fr"}, timeout=30).json()["id"]
-    aid = requests.post(f"{API}/situation-attempts/start",
+    gid = link_premium(requests.post(f"{API}/guests", json={"interface_language": "fr"}, timeout=30).json()["id"])
+    aid = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(),
                         json={"guest_id": gid, "situation_slug": slug}, timeout=30).json()["attempt_id"]
     section = "quiz" if q in les["quiz"] else "exercises"
     r1 = requests.put(f"{API}/situation-attempts/{aid}/response",
@@ -249,7 +252,7 @@ def test_practice_grading_and_no_answer_leak(slug):
     assert r1.status_code == 200, r1.text[:300]
     assert r1.json()["correct"] is False
 
-    items = requests.get(f"{API}/guests/{gid}/review-items", timeout=30).json()
+    items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers(), timeout=30).json()
     mine = [i for i in items if i.get("source_id") == q["id"]]
     assert mine, "no review item created for wrong answer"
     ri = mine[0]
@@ -257,14 +260,14 @@ def test_practice_grading_and_no_answer_leak(slug):
     assert "answer_index" not in ri and "answer" not in ri, f"review item leaks answer: {list(ri)}"
     assert str(q["answer_index"]) not in [str(v) for k, v in ri.items() if k in ("correct_index",)]
 
-    r_wrong = requests.post(f"{API}/review-items/{ri['id']}/answer",
+    r_wrong = requests.post(f"{API}/review-items/{ri['id']}/answer", headers=premium_headers(),
                             json={"submitted_answer": wrong}, timeout=30)
     assert r_wrong.status_code == 200, r_wrong.text[:300]
     assert r_wrong.json()["correct"] is False
 
-    items = requests.get(f"{API}/guests/{gid}/review-items", timeout=30).json()
+    items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers(), timeout=30).json()
     ri2 = [i for i in items if i.get("source_id") == q["id"]][0]
-    r_ok = requests.post(f"{API}/review-items/{ri2['id']}/answer",
+    r_ok = requests.post(f"{API}/review-items/{ri2['id']}/answer", headers=premium_headers(),
                          json={"submitted_answer": q["answer_index"]}, timeout=30)
     assert r_ok.status_code == 200, r_ok.text[:300]
     assert r_ok.json()["correct"] is True
@@ -281,8 +284,8 @@ class TestV1Regression:
         assert les and les.get("phrases")
         q = next((x for x in les.get("quiz", []) if x.get("type") == "multiple_choice"), None)
         if q:
-            gid = requests.post(f"{API}/guests", json={"interface_language": "es"}, timeout=30).json()["id"]
-            aid = requests.post(f"{API}/situation-attempts/start",
+            gid = link_premium(requests.post(f"{API}/guests", json={"interface_language": "es"}, timeout=30).json()["id"])
+            aid = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(),
                                 json={"guest_id": gid, "situation_slug": slug}, timeout=30).json()["attempt_id"]
             r = requests.put(f"{API}/situation-attempts/{aid}/response",
                              json={"question_id": q["id"], "section": "quiz",

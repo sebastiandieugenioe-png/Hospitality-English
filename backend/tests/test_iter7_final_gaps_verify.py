@@ -13,6 +13,9 @@ from pathlib import Path
 import pytest
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
@@ -47,7 +50,7 @@ def situations():
 def lessons(situations):
     out = {}
     for s in situations:
-        r = requests.get(f"{API}/lessons/{s['slug']}", timeout=30)
+        r = requests.get(f"{API}/lessons/{s['slug']}", headers=premium_headers(), timeout=30)
         assert r.status_code == 200, s["slug"]
         les = r.json().get("lesson")
         if les:
@@ -219,16 +222,16 @@ class TestGrading:
     def _guest(self, lang="fr"):
         r = requests.post(f"{API}/guests", json={"interface_language": lang}, timeout=30)
         assert r.status_code in (200, 201), r.text[:300]
-        return r.json()["id"]
+        return link_premium(r.json()["id"])
 
     def _review_item(self, gid, qid):
-        items = requests.get(f"{API}/guests/{gid}/review-items", timeout=30).json()
+        items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers(), timeout=30).json()
         m = [i for i in items if i.get("source_id") == qid]
         assert m, f"no review item created for {qid}"
         return m[0]["id"]
 
     def _attempt_wrong(self, gid, qid, wrong_index):
-        aid = requests.post(f"{API}/situation-attempts/start",
+        aid = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(),
                             json={"guest_id": gid, "situation_slug": self.SLUG}, timeout=30).json()["attempt_id"]
         r = requests.put(f"{API}/situation-attempts/{aid}/response",
                          json={"question_id": qid, "section": "quiz", "submitted_answer": wrong_index}, timeout=30)
@@ -245,12 +248,12 @@ class TestGrading:
         self._attempt_wrong(gid, "q_bar_greet_4", 0)
         rid = self._review_item(gid, "q_bar_greet_4")
 
-        r_wrong = requests.post(f"{API}/review-items/{rid}/answer", json={"submitted_answer": 0}, timeout=30)
+        r_wrong = requests.post(f"{API}/review-items/{rid}/answer", headers=premium_headers(), json={"submitted_answer": 0}, timeout=30)
         assert r_wrong.status_code == 200, r_wrong.text[:300]
         assert r_wrong.json()["correct"] is False, r_wrong.json()
 
         rid2 = self._review_item(gid, "q_bar_greet_4")
-        r_ok = requests.post(f"{API}/review-items/{rid2}/answer", json={"submitted_answer": 1}, timeout=30)
+        r_ok = requests.post(f"{API}/review-items/{rid2}/answer", headers=premium_headers(), json={"submitted_answer": 1}, timeout=30)
         assert r_ok.status_code == 200, r_ok.text[:300]
         assert r_ok.json()["correct"] is True, r_ok.json()
 
@@ -259,9 +262,9 @@ class TestGrading:
         gid = self._guest("de")
         failures = []
         for slug in ("guest-arrives-at-the-bar", "taking-an-order"):
-            aid = requests.post(f"{API}/situation-attempts/start",
+            aid = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(),
                                 json={"guest_id": gid, "situation_slug": slug}, timeout=30).json()["attempt_id"]
-            les = requests.get(f"{API}/lessons/{slug}", timeout=30).json()["lesson"]
+            les = requests.get(f"{API}/lessons/{slug}", headers=premium_headers(), timeout=30).json()["lesson"]
             for section in ("exercises", "quiz"):
                 for q in les.get(section, []):
                     if q.get("type") != "multiple_choice":

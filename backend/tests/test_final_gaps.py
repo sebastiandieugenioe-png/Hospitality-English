@@ -5,6 +5,9 @@ from pathlib import Path
 
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
@@ -45,7 +48,7 @@ class TestMCOptions:
     def _all_active_mc(self):
         out = []
         for sit in requests.get(f"{API}/situations").json():
-            les = requests.get(f"{API}/lessons/{sit['slug']}").json().get("lesson")
+            les = requests.get(f"{API}/lessons/{sit['slug']}", headers=premium_headers()).json().get("lesson")
             if not les:
                 continue
             for section in ("exercises", "quiz"):
@@ -75,7 +78,7 @@ class TestMCOptions:
     def test_223_gaps_covered_for_9_languages(self):
         covered = 0
         for sit in requests.get(f"{API}/situations").json():
-            les = requests.get(f"{API}/lessons/{sit['slug']}").json().get("lesson")
+            les = requests.get(f"{API}/lessons/{sit['slug']}", headers=premium_headers()).json().get("lesson")
             if not les:
                 continue
             qmap = {q["id"]: q for section in ("exercises", "quiz") for q in les.get(section, [])}
@@ -91,7 +94,7 @@ class TestMCOptions:
         assert covered == 223
 
     def test_policies(self):
-        les = requests.get(f"{API}/lessons/guest-arrives-at-the-bar").json()["lesson"]
+        les = requests.get(f"{API}/lessons/guest-arrives-at-the-bar", headers=premium_headers()).json()["lesson"]
         q = next(x for x in les["exercises"] if x["id"] == "ex_bar_greet_1")
         # preserve_english_target_verbatim -> English verbatim in FR and UK
         for lang in ("fr", "uk"):
@@ -104,14 +107,14 @@ class TestMCOptions:
 
     def test_practice_200_and_grading(self):
         slug = "guest-arrives-at-the-bar"
-        gid = requests.post(f"{API}/guests", json={"interface_language": "fr"}).json()["id"]
-        aid = requests.post(f"{API}/situation-attempts/start",
+        gid = link_premium(requests.post(f"{API}/guests", json={"interface_language": "fr"}).json()["id"])
+        aid = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(),
                             json={"guest_id": gid, "situation_slug": slug}).json()["attempt_id"]
         requests.put(f"{API}/situation-attempts/{aid}/response",
                      json={"question_id": "q_bar_greet_4", "section": "quiz", "submitted_answer": 0})
-        rid = [i["id"] for i in requests.get(f"{API}/guests/{gid}/review-items").json()
+        rid = [i["id"] for i in requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
                if i["source_id"] == "q_bar_greet_4"][0]
-        r = requests.post(f"{API}/review-items/{rid}/answer", json={"submitted_answer": 1})
+        r = requests.post(f"{API}/review-items/{rid}/answer", headers=premium_headers(), json={"submitted_answer": 1})
         assert r.status_code == 200 and r.json()["correct"] is True
 
 

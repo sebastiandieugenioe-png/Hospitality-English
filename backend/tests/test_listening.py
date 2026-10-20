@@ -8,6 +8,9 @@ import os
 from pathlib import Path
 
 import requests
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 API = open(ROOT.parent / "frontend" / ".env").read().split("REACT_APP_BACKEND_URL=")[1].split()[0].strip()
@@ -60,7 +63,7 @@ def test_api_serves_english_target_verbatim():
     """The English target (transcript_en / model_response_en) is served verbatim
     by the reveal, never rewritten/translated."""
     gid = _new_guest()
-    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice").json()
+    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice", headers=premium_headers()).json()
     item = pr["items"][0]
     src = next(i for i in ITEMS if i["id"] == item["id"])
     r = requests.post(f"{BASE}/guests/{gid}/listening-attempts",
@@ -110,7 +113,7 @@ def test_idempotent_generation():
 # ---------- API: answer-free item ----------
 def test_item_endpoint_answer_free():
     slug = ITEMS[0]["situation_slug"]
-    it = requests.get(f"{BASE}/listening/item/{slug}", params={"lang": "es"}).json()
+    it = requests.get(f"{BASE}/listening/item/{slug}", headers=premium_headers(), params={"lang": "es"}).json()
     assert "answer_index" not in it
     assert "transcript_en" not in it
     assert "model_response_en" not in it
@@ -121,8 +124,8 @@ def test_item_endpoint_answer_free():
 
 def test_item_endpoint_localized():
     slug = ITEMS[0]["situation_slug"]
-    es = requests.get(f"{BASE}/listening/item/{slug}", params={"lang": "es"}).json()
-    fr = requests.get(f"{BASE}/listening/item/{slug}", params={"lang": "fr"}).json()
+    es = requests.get(f"{BASE}/listening/item/{slug}", headers=premium_headers(), params={"lang": "es"}).json()
+    fr = requests.get(f"{BASE}/listening/item/{slug}", headers=premium_headers(), params={"lang": "fr"}).json()
     assert es["prompt"] != fr["prompt"]
 
 
@@ -139,7 +142,7 @@ def _new_guest(role="waiter", country="ireland"):
 
 def test_practice_returns_five_hospitality():
     gid = _new_guest()
-    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice").json()
+    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice", headers=premium_headers()).json()
     assert pr["session_size"] == 5
     assert pr["profession_id"] == "hospitality"
     assert len(pr["items"]) == 5
@@ -149,7 +152,7 @@ def test_practice_returns_five_hospitality():
 
 def test_role_influences_practice():
     gid = _new_guest(role="waiter")
-    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice").json()
+    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice", headers=premium_headers()).json()
     # Top of a waiter's ranked session should be dominated by waiter-role items.
     roles = [i["role"] for i in pr["items"]]
     assert roles.count("waiter") >= 3
@@ -157,7 +160,7 @@ def test_role_influences_practice():
 
 def test_attempt_scoring_and_persistence():
     gid = _new_guest()
-    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice").json()
+    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice", headers=premium_headers()).json()
     item = pr["items"][0]
     # wrong-first then correct; reveal only after answering
     r = requests.post(f"{BASE}/guests/{gid}/listening-attempts",
@@ -173,7 +176,7 @@ def test_attempt_scoring_and_persistence():
 
 def test_attempt_persists_profession_id():
     gid = _new_guest()
-    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice").json()
+    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice", headers=premium_headers()).json()
     item = pr["items"][0]
     requests.post(f"{BASE}/guests/{gid}/listening-attempts",
                   json={"listening_item_id": item["id"], "selected_index": 1})
@@ -197,7 +200,7 @@ def test_attempt_persists_profession_id():
 
 def test_language_change_preserves_attempts():
     gid = _new_guest()
-    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice").json()
+    pr = requests.get(f"{BASE}/guests/{gid}/listening-practice", headers=premium_headers()).json()
     item = pr["items"][0]
     requests.post(f"{BASE}/guests/{gid}/listening-attempts",
                   json={"listening_item_id": item["id"], "selected_index": 0})

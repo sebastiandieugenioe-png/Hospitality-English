@@ -7,6 +7,9 @@ new optional metadata fields (without breaking).
 import os
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
@@ -67,7 +70,7 @@ class TestBackwardsCompatibleContent:
         assert tao["is_full"] is True and tao["title_en"] == "Taking an order"
 
     def test_lesson_word_ordering_data_consistent(self):
-        r = requests.get(f"{API}/lessons/taking-an-order")
+        r = requests.get(f"{API}/lessons/taking-an-order", headers=premium_headers())
         lesson = r.json()["lesson"]
         for q in lesson["exercises"] + lesson["quiz"]:
             if q["type"] == "word_ordering":

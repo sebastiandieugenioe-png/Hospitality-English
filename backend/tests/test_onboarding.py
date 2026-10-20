@@ -2,6 +2,9 @@
 import os
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
@@ -104,6 +107,6 @@ class TestNoRegressions:
 
     def test_lesson_endpoints_ok(self):
         assert requests.get(f"{API}/categories").status_code == 200
-        assert requests.get(f"{API}/lessons/taking-an-order").json()["available"] is True
+        assert requests.get(f"{API}/lessons/taking-an-order", headers=premium_headers()).json()["available"] is True
         # welcoming-guests is a free waiter situation and is fully authored.
-        assert requests.get(f"{API}/lessons/welcoming-guests").json()["available"] is True
+        assert requests.get(f"{API}/lessons/welcoming-guests", headers=premium_headers()).json()["available"] is True

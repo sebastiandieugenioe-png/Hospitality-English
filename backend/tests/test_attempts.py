@@ -2,6 +2,9 @@
 import os
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
@@ -11,15 +14,15 @@ SLUG = "guest-asks-for-cocktail-recommendation"
 
 
 def _guest():
-    return requests.post(f"{API}/guests", json={}).json()["id"]
+    return link_premium(requests.post(f"{API}/guests", json={}).json()["id"])
 
 
 def _lesson(slug=SLUG):
-    return requests.get(f"{API}/lessons/{slug}").json()["lesson"]
+    return requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json()["lesson"]
 
 
 def _start(gid, slug=SLUG):
-    return requests.post(f"{API}/situation-attempts/start", json={"guest_id": gid, "situation_slug": slug}).json()
+    return requests.post(f"{API}/situation-attempts/start", headers=premium_headers(), json={"guest_id": gid, "situation_slug": slug}).json()
 
 
 def _answer_all(gid, aid, slug=SLUG, correct=True):
@@ -57,17 +60,17 @@ class TestAttemptLifecycle:
         assert a2["attempt_id"] == a1["attempt_id"], "refresh must resume same attempt"
 
     def test_invalid_guest(self):
-        r = requests.post(f"{API}/situation-attempts/start", json={"guest_id": "nope", "situation_slug": SLUG})
+        r = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(), json={"guest_id": "nope", "situation_slug": SLUG})
         assert r.status_code == 404
 
     def test_invalid_situation(self):
         gid = _guest()
-        r = requests.post(f"{API}/situation-attempts/start", json={"guest_id": gid, "situation_slug": "nope"})
+        r = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(), json={"guest_id": gid, "situation_slug": "nope"})
         assert r.status_code == 404
 
     def test_inactive_situation(self):
         gid = _guest()
-        r = requests.post(f"{API}/situation-attempts/start", json={"guest_id": gid, "situation_slug": "welcoming-guests"})
+        r = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(), json={"guest_id": gid, "situation_slug": "welcoming-guests"})
         assert r.status_code == 400
 
     def test_invalid_question_id(self):

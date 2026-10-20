@@ -19,6 +19,9 @@ API = BASE + "/api"
 
 # --- Mongo direct access for seeding review_items / weak skills (allowed per spec) ---
 from dotenv import load_dotenv
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 load_dotenv("/app/backend/.env")
 MONGO_URL = os.environ["MONGO_URL"]
 DB_NAME = os.environ["DB_NAME"]
@@ -45,7 +48,7 @@ def _make_guest(role="bartender"):
 
 
 def _answer_key(situation_slug):
-    r = requests.get(f"{API}/lessons/{situation_slug}")
+    r = requests.get(f"{API}/lessons/{situation_slug}", headers=premium_headers())
     r.raise_for_status()
     data = r.json()["lesson"]
     keys = {}

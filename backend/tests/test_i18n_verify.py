@@ -10,6 +10,9 @@ import os
 import pytest
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 base_url = os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")
@@ -30,7 +33,7 @@ def client():
 
 @pytest.fixture(scope="module")
 def lesson(client):
-    r = client.get(f"{BASE}/lessons/{SLUG}", timeout=30)
+    r = client.get(f"{BASE}/lessons/{SLUG}", headers=premium_headers(), timeout=30)
     assert r.status_code == 200, r.text
     return r.json()
 
@@ -97,7 +100,7 @@ def test_exercise_canonical_english_and_prompt_translation(lesson):
 
 
 def test_legacy_dialogue_speaker_labels(client):
-    r = client.get(f"{BASE}/lessons/taking-an-order", timeout=30)
+    r = client.get(f"{BASE}/lessons/taking-an-order", headers=premium_headers(), timeout=30)
     assert r.status_code == 200, r.text
     body = r.json()
     dialogue = body["lesson"]["dialogue"]
@@ -130,11 +133,11 @@ def test_language_switch_preserves_guest_and_progress(client):
     assert prof.status_code == 200, prof.text
     assert prof.json()["professional_profile"]["role"] == "bartender"
 
-    st = client.post(f"{BASE}/situation-attempts/start", json={"guest_id": gid, "situation_slug": SLUG}, timeout=30)
+    st = client.post(f"{BASE}/situation-attempts/start", headers=premium_headers(), json={"guest_id": gid, "situation_slug": SLUG}, timeout=30)
     assert st.status_code == 200, st.text
     attempt_id = st.json()["attempt_id"]
 
-    lesson = client.get(f"{BASE}/lessons/{SLUG}", timeout=30).json()
+    lesson = client.get(f"{BASE}/lessons/{SLUG}", headers=premium_headers(), timeout=30).json()
     ex = lesson["lesson"]["exercises"][0]
     wrong = ex["options"][(ex["answer_index"] + 1) % len(ex["options"])]
     resp = client.put(
@@ -145,7 +148,7 @@ def test_language_switch_preserves_guest_and_progress(client):
     assert resp.status_code == 200, resp.text
     assert resp.json()["correct"] is False
 
-    before = client.get(f"{BASE}/guests/{gid}/review-items", timeout=30).json()
+    before = client.get(f"{BASE}/guests/{gid}/review-items", headers=premium_headers(), timeout=30).json()
     assert len(before) >= 1, "wrong answer did not create review item"
 
     sw = client.put(f"{BASE}/guests/{gid}/language", json={"interface_language": "de"}, timeout=30)
@@ -155,14 +158,14 @@ def test_language_switch_preserves_guest_and_progress(client):
     assert body["interface_language"] == "de"
     assert body["professional_profile"]["role"] == "bartender"
 
-    after = client.get(f"{BASE}/guests/{gid}/review-items", timeout=30).json()
+    after = client.get(f"{BASE}/guests/{gid}/review-items", headers=premium_headers(), timeout=30).json()
     assert len(after) == len(before)
 
     # review content resolves for de / en / fr, English answers untouched
     canonical_options = ex["options"]
     for lang in ("de", "en", "fr"):
         assert client.put(f"{BASE}/guests/{gid}/language", json={"interface_language": lang}, timeout=30).status_code == 200
-        items = client.get(f"{BASE}/guests/{gid}/review-items", timeout=30).json()
+        items = client.get(f"{BASE}/guests/{gid}/review-items", headers=premium_headers(), timeout=30).json()
         target = [i for i in items if i["source_id"] == ex["id"]]
         assert target, f"review item for {ex['id']} missing in {lang}"
         content = target[0]["content"]

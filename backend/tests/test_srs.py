@@ -2,6 +2,9 @@
 import os
 import requests
 from dotenv import dotenv_values
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers, link_premium  # noqa: E402
 
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env.get("REACT_APP_BACKEND_URL")).rstrip("/")
@@ -11,15 +14,15 @@ SLUG = "guest-asks-for-cocktail-recommendation"
 
 
 def _guest():
-    return requests.post(f"{API}/guests", json={}).json()["id"]
+    return link_premium(requests.post(f"{API}/guests", json={}).json()["id"])
 
 
 def _lesson(slug=SLUG):
-    return requests.get(f"{API}/lessons/{slug}").json()["lesson"]
+    return requests.get(f"{API}/lessons/{slug}", headers=premium_headers()).json()["lesson"]
 
 
 def _start(gid, slug=SLUG):
-    return requests.post(f"{API}/situation-attempts/start", json={"guest_id": gid, "situation_slug": slug}).json()
+    return requests.post(f"{API}/situation-attempts/start", headers=premium_headers(), json={"guest_id": gid, "situation_slug": slug}).json()
 
 
 def _wrong_for(q):
@@ -47,7 +50,7 @@ class TestMistakeCreation:
         q = _first_exercise()
         r = _answer(aid, q, "exercise", _wrong_for(q))
         assert r["correct"] is False
-        items = requests.get(f"{API}/guests/{gid}/review-items").json()
+        items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
         assert len(items) == 1
         it = items[0]
         assert it["source_type"] == "question" and it["origin"] == "mistake"
@@ -64,7 +67,7 @@ class TestMistakeCreation:
         q = _first_exercise()
         correct = q["answer_index"] if q["type"] == "multiple_choice" else q["answer"]
         _answer(aid, q, "exercise", correct)
-        items = requests.get(f"{API}/guests/{gid}/review-items").json()
+        items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
         assert len(items) == 0
 
     def test_times_wrong_dedup_within_same_attempt(self):
@@ -73,7 +76,7 @@ class TestMistakeCreation:
         _answer(aid, q, "exercise", _wrong_for(q))
         _answer(aid, q, "exercise", _wrong_for(q))
         _answer(aid, q, "exercise", _wrong_for(q))
-        items = requests.get(f"{API}/guests/{gid}/review-items").json()
+        items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
         assert len(items) == 1 and items[0]["times_wrong"] == 1
 
     def test_times_wrong_increments_across_attempts(self):
@@ -83,7 +86,7 @@ class TestMistakeCreation:
             q = _first_exercise()
             _answer(aid, q, "exercise", _wrong_for(q))
             requests.post(f"{API}/situation-attempts/{aid}/complete")
-        items = requests.get(f"{API}/guests/{gid}/review-items").json()
+        items = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()
         assert len(items) == 1 and items[0]["times_wrong"] == 2
 
     def test_guest_isolation(self):
@@ -91,8 +94,8 @@ class TestMistakeCreation:
         aid = _start(g1)["attempt_id"]
         q = _first_exercise()
         _answer(aid, q, "exercise", _wrong_for(q))
-        assert len(requests.get(f"{API}/guests/{g1}/review-items").json()) == 1
-        assert len(requests.get(f"{API}/guests/{g2}/review-items").json()) == 0
+        assert len(requests.get(f"{API}/guests/{g1}/review-items", headers=premium_headers()).json()) == 1
+        assert len(requests.get(f"{API}/guests/{g2}/review-items", headers=premium_headers()).json()) == 0
 
 
 class TestReviewListing:
@@ -100,14 +103,14 @@ class TestReviewListing:
         gid = _guest(); aid = _start(gid)["attempt_id"]
         q = _first_exercise()
         _answer(aid, q, "exercise", _wrong_for(q))
-        due = requests.get(f"{API}/guests/{gid}/review-items", params={"due": "true", "limit": 10}).json()
+        due = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers(), params={"due": "true", "limit": 10}).json()
         assert len(due) == 1  # new mistakes are due immediately
         summ = requests.get(f"{API}/guests/{gid}/review-summary").json()
         assert summ["total"] == 1 and summ["due"] == 1
         assert sum(summ["by_dimension"].values()) == 1
 
     def test_review_items_missing_guest(self):
-        assert requests.get(f"{API}/guests/nope/review-items").status_code == 404
+        assert requests.get(f"{API}/guests/nope/review-items", headers=premium_headers()).status_code == 404
         assert requests.get(f"{API}/guests/nope/review-summary").status_code == 404
 
 
@@ -116,32 +119,32 @@ class TestAnswerAndRate:
         gid = _guest(); aid = _start(gid)["attempt_id"]
         q = _first_exercise()
         _answer(aid, q, "exercise", _wrong_for(q))
-        item = requests.get(f"{API}/guests/{gid}/review-items").json()[0]
+        item = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()[0]
         return gid, item, q
 
     def test_answer_backend_grades(self):
         gid, item, q = self._make_item()
         correct = q["answer_index"] if q["type"] == "multiple_choice" else q["answer"]
-        r = requests.post(f"{API}/review-items/{item['id']}/answer", json={"submitted_answer": correct}).json()
+        r = requests.post(f"{API}/review-items/{item['id']}/answer", headers=premium_headers(), json={"submitted_answer": correct}).json()
         assert r["correct"] is True and r["correct_answer"]
-        r2 = requests.post(f"{API}/review-items/{item['id']}/answer", json={"submitted_answer": _wrong_for(q)}).json()
+        r2 = requests.post(f"{API}/review-items/{item['id']}/answer", headers=premium_headers(), json={"submitted_answer": _wrong_for(q)}).json()
         assert r2["correct"] is False
-        refreshed = requests.get(f"{API}/guests/{gid}/review-items").json()[0]
+        refreshed = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers()).json()[0]
         assert refreshed["times_seen"] == 2 and refreshed["times_correct"] == 1
 
     def test_rate_good_schedules_future(self):
         gid, item, _ = self._make_item()
-        r = requests.post(f"{API}/review-items/{item['id']}/rate", json={"rating": "good"}).json()
+        r = requests.post(f"{API}/review-items/{item['id']}/rate", headers=premium_headers(), json={"rating": "good"}).json()
         assert r["consecutive_successes"] == 1 and r["interval_days"] == 1
         assert r["review_state"] == "review"
         assert r["next_review_at"] > item["next_review_at"]
         # No longer due today
-        due = requests.get(f"{API}/guests/{gid}/review-items", params={"due": "true"}).json()
+        due = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers(), params={"due": "true"}).json()
         assert len(due) == 0
 
     def test_rate_again_relearns(self):
         gid, item, _ = self._make_item()
-        r = requests.post(f"{API}/review-items/{item['id']}/rate", json={"rating": "again"}).json()
+        r = requests.post(f"{API}/review-items/{item['id']}/rate", headers=premium_headers(), json={"rating": "again"}).json()
         assert r["consecutive_successes"] == 0 and r["interval_days"] == 0
         assert r["review_state"] == "learning"
         assert r["ease_factor"] < 2.5
@@ -149,40 +152,40 @@ class TestAnswerAndRate:
     def test_rate_easy_larger_interval_than_good(self):
         _, item_a, _ = self._make_item()
         _, item_b, _ = self._make_item()
-        good = requests.post(f"{API}/review-items/{item_a['id']}/rate", json={"rating": "good"}).json()
-        easy = requests.post(f"{API}/review-items/{item_b['id']}/rate", json={"rating": "easy"}).json()
+        good = requests.post(f"{API}/review-items/{item_a['id']}/rate", headers=premium_headers(), json={"rating": "good"}).json()
+        easy = requests.post(f"{API}/review-items/{item_b['id']}/rate", headers=premium_headers(), json={"rating": "easy"}).json()
         assert easy["interval_days"] > good["interval_days"]
         assert easy["ease_factor"] > good["ease_factor"]
 
     def test_rate_hard_lowers_ease(self):
         _, item, _ = self._make_item()
-        r = requests.post(f"{API}/review-items/{item['id']}/rate", json={"rating": "hard"}).json()
+        r = requests.post(f"{API}/review-items/{item['id']}/rate", headers=premium_headers(), json={"rating": "hard"}).json()
         assert r["ease_factor"] < 2.5 and r["consecutive_successes"] == 1
 
     def test_ease_floor(self):
         _, item, _ = self._make_item()
         last = None
         for _ in range(10):
-            last = requests.post(f"{API}/review-items/{item['id']}/rate", json={"rating": "again"}).json()
+            last = requests.post(f"{API}/review-items/{item['id']}/rate", headers=premium_headers(), json={"rating": "again"}).json()
         assert last["ease_factor"] >= 1.3
 
     def test_consecutive_interval_growth(self):
         _, item, _ = self._make_item()
-        r1 = requests.post(f"{API}/review-items/{item['id']}/rate", json={"rating": "good"}).json()
-        r2 = requests.post(f"{API}/review-items/{item['id']}/rate", json={"rating": "good"}).json()
-        r3 = requests.post(f"{API}/review-items/{item['id']}/rate", json={"rating": "good"}).json()
+        r1 = requests.post(f"{API}/review-items/{item['id']}/rate", headers=premium_headers(), json={"rating": "good"}).json()
+        r2 = requests.post(f"{API}/review-items/{item['id']}/rate", headers=premium_headers(), json={"rating": "good"}).json()
+        r3 = requests.post(f"{API}/review-items/{item['id']}/rate", headers=premium_headers(), json={"rating": "good"}).json()
         assert r1["interval_days"] == 1 and r2["interval_days"] == 3
         assert r3["interval_days"] > r2["interval_days"]
 
     def test_invalid_rating(self):
         _, item, _ = self._make_item()
-        assert requests.post(f"{API}/review-items/{item['id']}/rate", json={"rating": "meh"}).status_code == 422
+        assert requests.post(f"{API}/review-items/{item['id']}/rate", headers=premium_headers(), json={"rating": "meh"}).status_code == 422
 
     def test_answer_missing_item(self):
-        assert requests.post(f"{API}/review-items/nope/answer", json={"submitted_answer": 0}).status_code == 404
+        assert requests.post(f"{API}/review-items/nope/answer", headers=premium_headers(), json={"submitted_answer": 0}).status_code == 404
 
     def test_rate_missing_item(self):
-        assert requests.post(f"{API}/review-items/nope/rate", json={"rating": "good"}).status_code == 404
+        assert requests.post(f"{API}/review-items/nope/rate", headers=premium_headers(), json={"rating": "good"}).status_code == 404
 
 
 class TestMasterySemantics:

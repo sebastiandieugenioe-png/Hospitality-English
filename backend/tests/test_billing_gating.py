@@ -5,6 +5,9 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 API = open(ROOT.parent / "frontend" / ".env").read().split("REACT_APP_BACKEND_URL=")[1].split()[0].strip() + "/api"
 
 import billing_access
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(__file__))
+from premium_helpers import premium_headers  # noqa: E402
 
 BART_FREE = billing_access.free_slugs("hospitality", "bartender")
 WAIT_FREE = billing_access.free_slugs("hospitality", "waiter")
@@ -42,13 +45,14 @@ def test_lesson_exposes_is_free_flag():
     free_slug = sorted(BART_FREE)[0]
     bart = requests.get(f"{API}/situations", params={"role": "bartender"}).json()
     premium_slug = next(s["slug"] for s in bart if not s.get("is_free"))
-    # Lesson endpoint stays available to all modules (Tonight's Shift etc.) but
-    # exposes is_free so the client route-guards the Learn flow.
+    # Server-side enforcement: Premium lessons need a verified Premium identity.
     free_lesson = requests.get(f"{API}/lessons/{free_slug}")
-    prem_lesson = requests.get(f"{API}/lessons/{premium_slug}")
-    assert free_lesson.status_code == 200 and prem_lesson.status_code == 200
+    prem_anon = requests.get(f"{API}/lessons/{premium_slug}")
+    assert free_lesson.status_code == 200
     assert free_lesson.json()["situation"]["is_free"] is True
-    assert prem_lesson.json()["situation"]["is_free"] is False
+    assert prem_anon.status_code == 403 and prem_anon.json()["detail"] == "premium_required"
+    prem_auth = requests.get(f"{API}/lessons/{premium_slug}", headers=premium_headers())
+    assert prem_auth.status_code == 200 and prem_auth.json()["situation"]["is_free"] is False
 
 
 def test_listening_speaking_free_pool_only_free_situations():
@@ -63,8 +67,8 @@ def test_listening_speaking_free_pool_only_free_situations():
 def test_review_items_free_filtering_does_not_delete():
     gid = _make_guest("waiter")
     # No premium items exist yet for a fresh guest; both calls succeed and free<=full.
-    free = requests.get(f"{API}/guests/{gid}/review-items", params={"free_only": "true"}).json()
-    full = requests.get(f"{API}/guests/{gid}/review-items", params={"free_only": "false"}).json()
+    free = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers(), params={"free_only": "true"}).json()
+    full = requests.get(f"{API}/guests/{gid}/review-items", headers=premium_headers(), params={"free_only": "false"}).json()
     assert isinstance(free, list) and isinstance(full, list)
     assert len(free) <= len(full)
 

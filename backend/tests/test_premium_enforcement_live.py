@@ -3,7 +3,7 @@ import os
 import pytest
 import requests
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL").rstrip("/")
+BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or open(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", ".env")).read().split("REACT_APP_BACKEND_URL=")[1].split()[0]).strip().rstrip("/")
 API = f"{BASE_URL}/api"
 FREE_B = ["guest-arrives-at-the-bar", "taking-a-drinks-order", "recommending-drinks",
           "guest-asks-about-cocktail-allergens", "handling-a-complaint"]
