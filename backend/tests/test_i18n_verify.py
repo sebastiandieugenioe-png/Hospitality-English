@@ -54,11 +54,11 @@ def test_situation_counts(client):
     assert r.status_code == 200
     all_sits = r.json()
     assert all(s.get("active") for s in all_sits)
-    assert len(all_sits) == 20, f"expected 20 active situations, got {len(all_sits)}"
+    assert len(all_sits) == 50, f"expected 50 active situations, got {len(all_sits)}"
     for role in ("bartender", "waiter"):
         rr = client.get(f"{BASE}/situations", params={"role": role}, timeout=30)
         assert rr.status_code == 200
-        assert len(rr.json()) == 10, f"{role}: {len(rr.json())}"
+        assert len(rr.json()) == 25, f"{role}: {len(rr.json())}"
 
 
 # ---------- multilingual content resolution ----------
@@ -94,9 +94,11 @@ def test_exercise_canonical_english_and_prompt_translation(lesson):
     assert all(isinstance(o, str) for o in opts)
     tr = ex.get("translations") or {}
     assert tr.get("fr", {}).get("prompt"), "missing exercise translations.fr.prompt"
-    # canonical English options must not be translated in any language block
+    # Localized option blocks (added in the MC options phase) must mirror the canonical set.
     for lang, block in tr.items():
-        assert "options" not in block, f"exercise translations.{lang} must not override options"
+        if "options" in block:
+            loc = block["options"]
+            assert len(loc) == len(opts) and all(isinstance(o, str) and o.strip() for o in loc), lang
 
 
 def test_legacy_dialogue_speaker_labels(client):

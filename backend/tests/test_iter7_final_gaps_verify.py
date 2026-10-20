@@ -113,8 +113,8 @@ class TestSkills:
 
 # ---------------- MC OPTIONS ----------------
 class TestMCInvariants:
-    def test_94_active_mc_questions(self, mc_questions):
-        assert len(mc_questions) == 94
+    def test_active_mc_questions_count(self, mc_questions):
+        assert len(mc_questions) == 214
 
     def test_canonical_and_localized_lengths(self, mc_questions):
         for q in mc_questions:
@@ -123,6 +123,10 @@ class TestMCInvariants:
             assert isinstance(q["answer_index"], int) and 0 <= q["answer_index"] < 4
             assert q.get("assessment_dimension"), f"{q['id']} missing assessment_dimension"
             tr = q.get("translations") or {}
+            # v2 pack MCs whose options are English phrases to choose carry no localized
+            # options at all; otherwise every audited language must have them (no partials).
+            if not any((tr.get(lang) or {}).get("options") for lang in AUDIT):
+                continue
             for lang in AUDIT:
                 loc = (tr.get(lang) or {}).get("options")
                 assert loc is not None, f"{q['id']}/{lang} options missing"
@@ -286,28 +290,28 @@ class TestCategoriesCatalog:
         cats = r.json()
         assert len(cats) == 7, [c["slug"] for c in cats]
         assert {c["slug"]: c["situation_count"] for c in cats} == {
-            "general": 0, "restaurant": 10, "bar": 10,
+            "general": 0, "restaurant": 25, "bar": 25,
             "hotel": 0, "coffee": 0, "kitchen": 0, "housekeeping": 0}
         for c in cats:
             assert "_id" not in c
             for lang in ALL_LANGS:
                 assert _resolve(c, "name", lang), f"category {c['slug']} name {lang}"
 
-    def test_20_active_situations_no_duplicates(self, situations):
-        assert len(situations) == 20
+    def test_50_active_situations_no_duplicates(self, situations):
+        assert len(situations) == 50
         slugs = Counter(s["slug"] for s in situations)
         assert not [k for k, v in slugs.items() if v > 1], slugs
         roles = Counter()
         for s in situations:
             for role in (s.get("roles") or [s.get("role")]):
                 roles[role] += 1
-        assert requests.get(f"{API}/situations", params={"role": "bartender"}, timeout=30).json().__len__() == 10
-        assert requests.get(f"{API}/situations", params={"role": "waiter"}, timeout=30).json().__len__() == 10
+        assert requests.get(f"{API}/situations", params={"role": "bartender"}, timeout=30).json().__len__() == 25
+        assert requests.get(f"{API}/situations", params={"role": "waiter"}, timeout=30).json().__len__() == 25
         for s in situations:
             assert s.get("active") is True
 
     def test_no_duplicate_lessons_or_learning_items(self, lessons, situations):
-        assert len(lessons) == 20
+        assert len(lessons) == 50
         ids = Counter()
         for les in lessons.values():
             for section in ("exercises", "quiz"):

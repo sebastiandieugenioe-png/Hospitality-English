@@ -160,13 +160,13 @@ class TestNoCollateralChange:
         sits = r.json()
         sits = sits if isinstance(sits, list) else sits.get("situations", [])
         active = [s for s in sits if s.get("active", True)]
-        assert len(active) == 20, len(active)
+        assert len(active) == 50, len(active)
         roles = {}
         for s in active:
             for role in s.get("roles") or ["unknown"]:
                 roles[role] = roles.get(role, 0) + 1
-        assert roles.get("bartender") == 10, roles
-        assert roles.get("waiter") == 10, roles
+        assert roles.get("bartender") == 25, roles
+        assert roles.get("waiter") == 25, roles
 
     def test_situations_still_localized(self, client):
         r = client.get(f"{BASE_URL}/api/situations", timeout=30)

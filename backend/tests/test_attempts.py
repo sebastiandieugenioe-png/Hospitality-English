@@ -69,9 +69,18 @@ class TestAttemptLifecycle:
         assert r.status_code == 404
 
     def test_inactive_situation(self):
-        gid = _guest()
-        r = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(), json={"guest_id": gid, "situation_slug": "welcoming-guests"})
-        assert r.status_code == 400
+        # All 50 catalog situations are active now; use a temporary inactive one.
+        from pymongo import MongoClient
+        env = dotenv_values(os.path.join(os.path.dirname(__file__), "..", ".env"))
+        db = MongoClient(env["MONGO_URL"])[env["DB_NAME"]]
+        slug = "tmp-inactive-situation-test"
+        db.situations.update_one({"slug": slug}, {"$set": {"slug": slug, "active": False, "category": "bar", "roles": ["bartender"]}}, upsert=True)
+        try:
+            gid = _guest()
+            r = requests.post(f"{API}/situation-attempts/start", headers=premium_headers(), json={"guest_id": gid, "situation_slug": slug})
+            assert r.status_code == 400
+        finally:
+            db.situations.delete_one({"slug": slug})
 
     def test_invalid_question_id(self):
         gid = _guest(); aid = _start(gid)["attempt_id"]

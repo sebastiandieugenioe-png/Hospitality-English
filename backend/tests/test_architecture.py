@@ -83,7 +83,8 @@ class TestProfessionalProfile:
         assert r.status_code == 200
         g = r.json()
         prof = g["professional_profile"]
-        assert prof == {"role": None, "venue_type": None, "target_country": None, "goal": None, "english_level": None}
+        assert prof == {"role": None, "venue_type": None, "target_country": None, "goal": None,
+                        "english_level": None, "employment_status": None}
         assert g["onboarding_completed"] is False
         # Placeholders are no longer part of the definitive architecture.
         assert "situation_attempts" not in g and "mistake_bank" not in g and "srs" not in g

@@ -85,13 +85,14 @@ class TestContent:
             else:
                 assert " ".join(sorted(q["words"])) == " ".join(sorted(q["answer"].split(" ")))
 
-    def test_lesson_not_authored(self, client):
-        r = client.get(f"{API}/lessons/welcoming-guests", headers=premium_headers())
+    def test_welcoming_guests_now_authored(self, client):
+        # Authored in the 50-situation catalog and Free for waiters (no auth needed).
+        r = client.get(f"{API}/lessons/welcoming-guests")
         assert r.status_code == 200
         d = r.json()
-        assert d["available"] is False
+        assert d["available"] is True
         assert d["situation"]["slug"] == "welcoming-guests"
-        assert "lesson" not in d
+        assert d["lesson"]
 
     def test_lesson_unknown_situation(self, client):
         r = client.get(f"{API}/lessons/nope-nope", headers=premium_headers())

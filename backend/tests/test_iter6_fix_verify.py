@@ -46,10 +46,10 @@ def test_languages_list(client):
 def test_catalog_counts(client):
     sits = client.get(f"{BASE_URL}/api/situations").json()
     active = [s for s in sits if s.get("active")]
-    assert len(active) == 20, len(active)
+    assert len(active) == 50, len(active)
     bar = [s for s in active if "bartender" in (s.get("roles") or [])]
     wai = [s for s in active if "waiter" in (s.get("roles") or [])]
-    assert len(bar) == 10 and len(wai) == 10, (len(bar), len(wai))
+    assert len(bar) == 25 and len(wai) == 25, (len(bar), len(wai))
     cats = client.get(f"{BASE_URL}/api/categories").json()
     assert len(cats) == 7, len(cats)
 
