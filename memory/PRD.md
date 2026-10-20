@@ -315,3 +315,11 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - Landing: target-profile pills → 2 i18n roles (landing.roleBartenders / landing.roleWaiters); situation chips → 6 real catalog situations; heroSub/feat1Body/feat3Body only bar + table service (10 locales); pl/ro/uk/nl "hospitality" → gastronomia/ospitalitate/сфера гостинності/horeca; pl/ro/uk flashcards localized.
 - Job Interview: renders existing ui.subtitle (ji-subtitle) on question 1.
 - Deferred: Landing "Main categories" section still lists Hotel/Reception, Coffee Shop, Kitchen, Housekeeping in English (user asked to keep untouched); barista photo in "Made for" section.
+
+## SERVER_SIDE_PREMIUM_ENFORCEMENT_V1 (Jun 2026) — code PASS (iteration_28, 28/28 backend)
+- backend/premium_access.py: RevenueCat REST v1 GET /subscribers/{users.id} with env REVENUECAT_SECRET_API_KEY; active = entitlement present & not expired; cache 60s positive / 15s negative; errors/missing key => not entitled and not cached (fail closed).
+- server.py: _account_for_token (verified non-anonymous Firebase token → users doc), _premium_for_request (guest must belong to user), _require_situation_access (free slugs always open). Gated: GET /lessons/{slug}, POST /situation-attempts/start, review-items (+answer/rate), listening/speaking item, listening/speaking practice pools, listening/speaking attempts. free_only can only narrow. New POST /api/billing/refresh-entitlement (own user, invalidates cache).
+- Frontend: axios interceptor attaches Firebase ID token; Lesson 403 → locked screen; Paywall calls refreshEntitlement after successful purchase.
+- REQUIRED: add REVENUECAT_SECRET_API_KEY (RevenueCat secret sk_ key, same project as the Web/Test Store public key) to backend/.env + production secrets. Without it, backend treats everyone as Free.
+- Legacy content tests that fetch premium lessons anonymously (test_tonights_shift, test_listening item tests, test_catalog, test_i18n_import, ...) now get 403 by design.
+- Post-launch: RevenueCat webhooks; guests without role get union of 10 free in pools (pre-existing).

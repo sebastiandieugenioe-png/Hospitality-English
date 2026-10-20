@@ -1,0 +1,33 @@
+{
+  "summary": "SERVER_SIDE_PREMIUM_ENFORCEMENT_V1. Backend: 28/28 passed (15 new live tests via public URL + 13 existing mocked tests). Anonymous callers and forged-token callers are always Free: premium lesson/listening/speaking item → 403 premium_required, start attempt with premium=true → 403, practice pools and review-items narrowed to bartender free 5, refresh-entitlement without token or with a garbage token → 401, no 500s. Frontend at 390px as guest: onboarding (bartender) → Home OK; Learn has 25 rows (5 unlocked, 20 locked), and a locked row opens the AccountGate sheet; /lesson/serving-beer shows the lesson-locked 'Premium situation' screen with Unlock button (not blank or error); /lesson/taking-a-drinks-order went through steps 1-5 (intro, dialogue, flashcard, embedded listening step loads); /listening-practice and /speaking-practice sessions start and show questions; Practice, Progress, More, /account, Home render without page errors. MAIN FINDING: the Firebase Web API key in frontend/.env is rejected by Google ('API key not valid', HTTP 400 on identitytoolkit accounts:signUp). Anonymous Firebase sign-in therefore fails and 0 of 57 API requests carried an Authorization header. Premium gating still fails closed correctly, but the token-attachment path cannot be checked live, and linked-account / refresh-entitlement flows cannot work in this environment.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/guests/{id}/listening-practice|speaking-practice|review-items", "issue": "When the guest has no professional_profile.role, free_slugs(role=None) returns the union of bartender and waiter free sets (10 situations), not 5. This has low impact but is looser than 'role's free situations'."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Firebase anonymous auth → axios Authorization interceptor", "issue": "identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDLqLf... returns 400 'API key not valid. Please pass a valid API key.' (reproduced with curl as well). getIdToken() returns null, so no Bearer header is sent (0/57 requests). The console shows repeated 400 errors. backend tests/test_accounts_auth.py now fails 2/9 for the same reason.", "affected_selectors": []}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_premium_enforcement_live.py", "/app/backend/tests/test_premium_enforcement.py", "/app/test_reports/pytest/pytest_premium.xml"],
+  "action_items": [
+    "HIGH: Fix REACT_APP_FIREBASE_API_KEY in frontend/.env. Google rejects the current key as invalid: it may have been deleted or regenerated, or it is restricted or not part of project hospitality-*. Get the Web API key from Firebase console → Project settings, restart the frontend, then re-check that requests carry 'Authorization: Bearer'.",
+    "Optional: decide whether guests without a role should get the union of free situations in practice pools / review-items, or none."
+  ],
+  "critical_code_review_comments": [
+    "premium_access fails closed correctly: a missing key, a non-200 response or an exception all mean not entitled, and failures are not cached. The negative TTL only applies to a verified empty result.",
+    "_require_situation_access for anonymous or forged tokens returns 403 with no 500. This was verified live.",
+    "GET /lessons/{premium} was requested 4 times on the locked-screen page (all 403). This looks like a retry or a double effect. It wastes requests and should not retry on 403."
+  ],
+  "updated_files": ["/app/backend/tests/test_premium_enforcement_live.py"],
+  "success_rate": {"backend": "100% (28/28 premium tests); test_accounts_auth 7/9 because the Firebase key is invalid", "frontend": "~90% (all requested screens OK; Bearer-header check failed due to env key)"},
+  "seed_data_creation": "Anonymous guests created via POST /api/guests (bartender profile) by the live tests and the UI runs.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: export REACT_APP_BACKEND_URL then pytest backend/tests/test_premium_enforcement_live.py backend/tests/test_premium_enforcement.py. Onboarding automation: onboarding-option-interface_language-en → onboarding-continue-btn → onboarding-option-role-bartender, then pick the first option and continue on later steps → onboarding-start-learning-btn. In lessons, embedded listening options are data-testid listening-option-N (not role=radio), and Next stays disabled until one is selected. After the Firebase key is fixed, check that the axios requests include an Authorization header.",
+  "rca of the issue": "Missing Bearer header: frontend/src/lib/firebase.js ensureAnonymous → signInAnonymously → accounts:signUp returns 400 INVALID_ARGUMENT 'API key not valid'. auth.currentUser stays null, getIdToken() returns null, and the interceptor skips the header. This is an environment or credential problem, not a code bug. Mitigation: put a valid Firebase Web API key in frontend/.env and restart the frontend."
+}
