@@ -63,7 +63,7 @@ export default function Lesson() {
           setData(d);
         }
       })
-      .catch(() => setData(null))
+      .catch((e) => setData(e?.response?.status === 403 ? { locked: true } : null))
       .finally(() => setLoading(false));
   }, [slug, billing.status]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -166,7 +166,7 @@ export default function Lesson() {
           </p>
           <button
             data-testid="lesson-unlock-btn"
-            onClick={() => requestPremium({ resume: () => { setLoading(true); getLesson(slug).then((d) => setData(d)).catch(() => {}).finally(() => setLoading(false)); } })}
+            onClick={() => requestPremium({ resume: () => { setLoading(true); getLesson(slug).then((d) => setData(d)).catch((e) => setData(e?.response?.status === 403 ? { locked: true } : null)).finally(() => setLoading(false)); } })}
             className="mt-8 inline-flex items-center gap-2 bg-brand-forest text-white rounded-lg px-6 py-3 font-medium hover:bg-brand-forest-hover transition-colors"
           >
             <Lock className="w-4 h-4" /> {t("lesson.lockedCta")}

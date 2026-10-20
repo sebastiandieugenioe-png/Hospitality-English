@@ -28,6 +28,7 @@ import speaking_data as speaking
 import stt_elevenlabs
 import speaking_evaluator
 import billing_access
+import premium_access
 import firebase_admin_setup
 
 ROOT_DIR = Path(__file__).parent
@@ -451,10 +452,11 @@ async def get_category(slug: str):
 
 
 @api_router.get("/lessons/{situation_slug}")
-async def get_lesson(situation_slug: str):
+async def get_lesson(situation_slug: str, authorization: str = Header(None)):
     situation = await db.situations.find_one({"slug": situation_slug}, {"_id": 0})
     if not situation:
         raise HTTPException(status_code=404, detail="Situation not found")
+    await _require_situation_access(situation_slug, authorization)
     # Freemium: expose whether this situation is free so the client can gate the
     # Learn flow (route-level) for non-premium users. Other modules (Tonight's Shift,
     # First Week, etc.) consume lessons unchanged.
@@ -702,12 +704,13 @@ async def record_completion(guest_id: str, payload: LessonCompletion):
 
 # ---------- Situation attempts (independent collection) ----------
 @api_router.post("/situation-attempts/start")
-async def start_attempt(payload: AttemptStart):
+async def start_attempt(payload: AttemptStart, authorization: str = Header(None)):
     if not await db.guests.find_one({"id": payload.guest_id}):
         raise HTTPException(status_code=404, detail="Guest not found")
     situation = await db.situations.find_one({"slug": payload.situation_slug}, {"_id": 0})
     if not situation:
         raise HTTPException(status_code=404, detail="Situation not found")
+    await _require_situation_access(payload.situation_slug, authorization, payload.guest_id)
     if not situation.get("active"):
         raise HTTPException(status_code=400, detail="Situation is not active")
 
@@ -996,6 +999,7 @@ async def get_review_items(
     due: bool = Query(False),
     limit: int = Query(50, ge=1, le=200),
     free_only: bool = Query(False),
+    authorization: str = Header(None),
 ):
     """Review items for a guest with canonical content resolved (no N+1).
 
@@ -1015,6 +1019,9 @@ async def get_review_items(
 
     # Freemium: free users never receive items derived from Premium situations.
     # Items are not deleted, only excluded from selection; premium restores them.
+    # The client flag can only narrow access; the backend decides Premium.
+    if not free_only and not await _premium_for_request(authorization, guest_id):
+        free_only = True
     if free_only:
         role = (guest.get("professional_profile") or {}).get("role")
         allowed = billing_access.free_slugs("hospitality", role)
@@ -1060,10 +1067,11 @@ async def _review_item_or_404(item_id):
 
 
 @api_router.post("/review-items/{item_id}/answer")
-async def answer_review_item(item_id: str, payload: ReviewAnswer):
+async def answer_review_item(item_id: str, payload: ReviewAnswer, authorization: str = Header(None)):
     """Backend grades the submitted answer. Does NOT change the SRS schedule
     (rating is a separate, independent step)."""
     item = await _review_item_or_404(item_id)
+    await _require_situation_access(item["situation_slug"], authorization, item["guest_id"])
     index, _ = await _lesson_questions(item["situation_slug"])
     entry = index.get(item["source_id"])
     if not entry:
@@ -1086,11 +1094,12 @@ async def answer_review_item(item_id: str, payload: ReviewAnswer):
 
 
 @api_router.post("/review-items/{item_id}/rate")
-async def rate_review_item(item_id: str, payload: ReviewRate):
+async def rate_review_item(item_id: str, payload: ReviewRate, authorization: str = Header(None)):
     """Recalculates the SRS schedule from a self-rating. Independent of correctness."""
     if payload.rating not in VALID_RATINGS:
         raise HTTPException(status_code=422, detail="Invalid rating")
     item = await _review_item_or_404(item_id)
+    await _require_situation_access(item["situation_slug"], authorization, item["guest_id"])
     schedule = _compute_schedule(item, payload.rating)
     schedule["last_reviewed_at"] = now_iso()
     schedule["updated_at"] = now_iso()
@@ -2087,20 +2096,23 @@ async def listening_meta():
 
 
 @api_router.get("/listening/item/{situation_slug}")
-async def listening_item(situation_slug: str, lang: str = Query(DEFAULT_LANGUAGE)):
+async def listening_item(situation_slug: str, lang: str = Query(DEFAULT_LANGUAGE), authorization: str = Header(None)):
     item = listening.ITEM_BY_SLUG.get(situation_slug)
     if not item:
         raise HTTPException(status_code=404, detail="No listening item for this situation")
+    await _require_situation_access(situation_slug, authorization)
     if lang not in SUPPORTED_LANG_CODES:
         lang = DEFAULT_LANGUAGE
     return await _listening_item_public(item, lang)
 
 
 @api_router.get("/guests/{guest_id}/listening-practice")
-async def listening_practice(guest_id: str, free_only: bool = Query(False)):
+async def listening_practice(guest_id: str, free_only: bool = Query(False), authorization: str = Header(None)):
     guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
     if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
+    if not free_only and not await _premium_for_request(authorization, guest_id):
+        free_only = True
     lang = guest.get("interface_language", DEFAULT_LANGUAGE)
     ranked = await _rank_listening_items_for_guest(guest)
     if free_only:
@@ -2113,13 +2125,14 @@ async def listening_practice(guest_id: str, free_only: bool = Query(False)):
 
 
 @api_router.post("/guests/{guest_id}/listening-attempts")
-async def listening_attempt(guest_id: str, payload: ListeningAnswer):
+async def listening_attempt(guest_id: str, payload: ListeningAnswer, authorization: str = Header(None)):
     guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
     if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
     item = listening.ITEM_BY_ID.get(payload.listening_item_id)
     if not item:
         raise HTTPException(status_code=422, detail="Unknown listening_item_id")
+    await _require_situation_access(item["situation_slug"], authorization, guest_id)
 
     lang = guest.get("interface_language", DEFAULT_LANGUAGE)
     correct = payload.selected_index == item["answer_index"]
@@ -2211,20 +2224,23 @@ async def speaking_meta():
 
 
 @api_router.get("/speaking/item/{situation_slug}")
-async def speaking_item(situation_slug: str, lang: str = Query(DEFAULT_LANGUAGE)):
+async def speaking_item(situation_slug: str, lang: str = Query(DEFAULT_LANGUAGE), authorization: str = Header(None)):
     item = speaking.ITEM_BY_SLUG.get(situation_slug)
     if not item:
         raise HTTPException(status_code=404, detail="No speaking item for this situation")
+    await _require_situation_access(situation_slug, authorization)
     if lang not in SUPPORTED_LANG_CODES:
         lang = DEFAULT_LANGUAGE
     return speaking.public_item(item, lang)
 
 
 @api_router.get("/guests/{guest_id}/speaking-practice")
-async def speaking_practice(guest_id: str, free_only: bool = Query(False)):
+async def speaking_practice(guest_id: str, free_only: bool = Query(False), authorization: str = Header(None)):
     guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
     if not guest:
         raise HTTPException(status_code=404, detail="Guest not found")
+    if not free_only and not await _premium_for_request(authorization, guest_id):
+        free_only = True
     lang = guest.get("interface_language", DEFAULT_LANGUAGE)
     ranked = await _rank_speaking_items_for_guest(guest)
     if free_only:
@@ -2248,6 +2264,7 @@ async def speaking_attempt(
     speaking_item_id: str = Form(...),
     duration_ms: int = Form(0),
     audio: UploadFile = File(...),
+    authorization: str = Header(None),
 ):
     guest = await db.guests.find_one({"id": guest_id}, {"_id": 0})
     if not guest:
@@ -2255,6 +2272,7 @@ async def speaking_attempt(
     item = speaking.ITEM_BY_ID.get(speaking_item_id)
     if not item:
         raise HTTPException(status_code=422, detail="Unknown speaking_item_id")
+    await _require_situation_access(item["situation_slug"], authorization, guest_id)
 
     audio_bytes = await audio.read()
     if not audio_bytes:
@@ -2365,6 +2383,52 @@ async def require_identity(request: Request, authorization: str = Header(None)):
     except Exception:
         # Do not leak internals.
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+
+# ---------- Server-side Premium authorization ----------
+async def _account_for_token(authorization):
+    """Linked account for a verified, non-anonymous Firebase token; else None."""
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    try:
+        identity = firebase_admin_setup.verify_token(authorization.split(" ", 1)[1].strip())
+    except Exception:
+        return None
+    if firebase_admin_setup.is_anonymous(identity):
+        return None
+    return await db.users.find_one({"firebase_uid": identity["uid"]}, {"_id": 0, "id": 1, "profile_ids_by_profession": 1})
+
+
+async def _premium_for_request(authorization, guest_id=None, profession="hospitality"):
+    """True only when RevenueCat confirms the entitlement for the token's own users.id
+    (and, if given, the guest belongs to that user). Client flags are never trusted."""
+    user = await _account_for_token(authorization)
+    if not user:
+        return False
+    if guest_id is not None and (user.get("profile_ids_by_profession") or {}).get(profession) != guest_id:
+        g = await db.guests.find_one({"id": guest_id}, {"_id": 0, "user_id": 1})
+        if not g or g.get("user_id") != user["id"]:
+            return False
+    entitlement = billing_access._cfg(profession).get("entitlement_id")
+    return await premium_access.has_entitlement(user["id"], entitlement)
+
+
+async def _require_situation_access(situation_slug, authorization, guest_id=None):
+    if billing_access.is_free_situation(situation_slug, "hospitality"):
+        return
+    if not await _premium_for_request(authorization, guest_id):
+        raise HTTPException(status_code=403, detail="premium_required")
+
+
+@api_router.post("/billing/refresh-entitlement")
+async def refresh_entitlement(identity: dict = Depends(require_identity)):
+    """Re-verify the caller's own entitlement (e.g. right after a purchase)."""
+    user = await db.users.find_one({"firebase_uid": identity["uid"]}, {"_id": 0, "id": 1})
+    if not user:
+        return {"premium": False}
+    premium_access.invalidate(user["id"])
+    entitlement = billing_access._cfg("hospitality").get("entitlement_id")
+    return {"premium": await premium_access.has_entitlement(user["id"], entitlement)}
 
 
 def _public_user(user):

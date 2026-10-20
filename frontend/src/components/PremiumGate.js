@@ -7,6 +7,7 @@ import { useApp } from "@/context/AppContext";
 import { useBilling } from "@/context/BillingContext";
 import { renderGisButton, GOOGLE_CLIENT_ID, APPLE_ENABLED } from "@/lib/firebase";
 import { rcDiag } from "@/lib/revenuecat";
+import { refreshEntitlement } from "@/lib/api";
 import { btnDark, btnLight, focusRing } from "@/components/SettingsLayout";
 import { AuthProviderButton, GoogleSignInSlot, AuthStatus, friendlyAuthError } from "@/components/auth/AuthProviders";
 
@@ -166,6 +167,7 @@ function Paywall({ t, billing, onClose, onUnlocked }) {
     try {
       const { premium } = await billing.purchase(chosenPkg, PROFESSION);
       if (premium) {
+        try { await refreshEntitlement(); } catch { /* backend re-verifies on next request */ }
         setState("success");
       } else {
         rcDiag("CONFIRM_FAILED", { stage: "after_purchase", product: productId });

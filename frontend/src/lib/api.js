@@ -1,9 +1,21 @@
 import axios from "axios";
+import { getIdToken } from "@/lib/firebase";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
 
 const client = axios.create({ baseURL: API });
+
+// Attach the Firebase ID token so the backend can authorize Premium itself.
+client.interceptors.request.use(async (config) => {
+  if (!config.headers?.Authorization) {
+    try {
+      const token = await getIdToken();
+      if (token) config.headers.Authorization = `Bearer ${token}`;
+    } catch { /* no session: request proceeds as Free */ }
+  }
+  return config;
+});
 
 export const getCategories = () => client.get("/categories").then((r) => r.data);
 export const getCategory = (slug) => client.get(`/categories/${slug}`).then((r) => r.data);
@@ -139,3 +151,5 @@ export const recordFlashcard = (id, payload) => client.post(`/guests/${id}/flash
 export const recordCompletion = (id, payload) => client.post(`/guests/${id}/complete`, payload).then((r) => r.data);
 
 export default client;
+
+export const refreshEntitlement = () => client.post("/billing/refresh-entitlement").then((r) => r.data);
