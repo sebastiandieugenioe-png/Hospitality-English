@@ -463,5 +463,7 @@
   "paywall.successTitle": "Premium sbloccato",
   "paywall.successBody": "Ora hai accesso all'intero programma di Ristorazione.",
   "paywall.errConfirm": "Non siamo ancora riusciti a confermare il tuo accesso Premium. Riprova.",
-  "paywall.errPurchase": "Non siamo riusciti a completare l'acquisto. Riprova."
+  "paywall.errPurchase": "Non siamo riusciti a completare l'acquisto. Riprova.",
+  "nav.account": "Account",
+  "nav.primaryAria": "Navigazione principale"
 }

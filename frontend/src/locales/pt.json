@@ -463,5 +463,7 @@
   "paywall.successTitle": "Premium desbloqueado",
   "paywall.successBody": "Já tens acesso a todo o programa de Hotelaria.",
   "paywall.errConfirm": "Ainda não conseguimos confirmar o teu acesso Premium. Tenta novamente.",
-  "paywall.errPurchase": "Não conseguimos concluir a compra. Tenta novamente."
+  "paywall.errPurchase": "Não conseguimos concluir a compra. Tenta novamente.",
+  "nav.account": "Conta",
+  "nav.primaryAria": "Navegação principal"
 }

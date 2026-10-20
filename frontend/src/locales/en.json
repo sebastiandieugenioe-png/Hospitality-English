@@ -463,5 +463,7 @@
   "paywall.successTitle": "Premium unlocked",
   "paywall.successBody": "You now have access to the full Hospitality curriculum.",
   "paywall.errConfirm": "We couldn't confirm your Premium access yet. Please try again.",
-  "paywall.errPurchase": "We couldn't complete the purchase. Please try again."
+  "paywall.errPurchase": "We couldn't complete the purchase. Please try again.",
+  "nav.account": "Account",
+  "nav.primaryAria": "Main navigation"
 }

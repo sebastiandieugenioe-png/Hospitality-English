@@ -210,15 +210,15 @@
    "max": 100,
    "key": "strong_foundation",
    "translations": {
-    "es": "Una base sólida de inglés para hospitality",
-    "it": "Una solida base di inglese per l’hospitality",
+    "es": "Una base sólida de inglés para hostelería",
+    "it": "Una solida base di inglese per la ristorazione",
     "fr": "Une solide base d’anglais pour l’hôtellerie-restauration",
     "pt": "Uma base sólida de inglês para hotelaria e restauração",
-    "de": "Eine solide Grundlage in Hospitality-Englisch",
-    "pl": "Solidne podstawy angielskiego w hospitality",
+    "de": "Eine solide Grundlage in Gastronomie-Englisch",
+    "pl": "Solidne podstawy angielskiego w gastronomii",
     "ro": "O bază solidă de engleză pentru ospitalitate",
     "uk": "Міцна база англійської для сфери гостинності",
-    "nl": "Een sterke basis in hospitality-Engels",
+    "nl": "Een sterke basis in horeca-Engels",
     "en": "Strong hospitality English foundation"
    }
   }
@@ -3640,15 +3640,15 @@
    "en": "Can I Work in English?"
   },
   "subtitle": {
-   "es": "Descubre cómo te desenvuelves en situaciones cotidianas de hospitality.",
-   "it": "Scopri come te la cavi nelle situazioni quotidiane dell’hospitality.",
+   "es": "Descubre cómo te desenvuelves en situaciones cotidianas de hostelería.",
+   "it": "Scopri come te la cavi nelle situazioni quotidiane della ristorazione.",
    "fr": "Découvrez comment vous vous débrouillez dans les situations quotidiennes de l’hôtellerie-restauration.",
    "pt": "Descobre como te sais em situações quotidianas de hotelaria e restauração.",
    "de": "Finde heraus, wie gut du typische Situationen in der Gastronomie auf Englisch bewältigst.",
-   "pl": "Sprawdź, jak radzisz sobie w codziennych sytuacjach w hospitality.",
+   "pl": "Sprawdź, jak radzisz sobie w codziennych sytuacjach w gastronomii.",
    "ro": "Află cum te descurci în situații cotidiene din industria ospitalității.",
    "uk": "Дізнайся, як ти справляєшся з повсякденними ситуаціями у сфері гостинності.",
-   "nl": "Ontdek hoe je omgaat met alledaagse situaties in de hospitality.",
+   "nl": "Ontdek hoe je omgaat met alledaagse situaties in de horeca.",
    "en": "Find out how you handle everyday hospitality situations."
   },
   "duration": {
@@ -3664,15 +3664,15 @@
    "en": "About 5–7 minutes"
   },
   "start": {
-   "es": "Empezar assessment",
+   "es": "Empezar evaluación",
    "it": "Inizia la valutazione",
    "fr": "Commencer l’évaluation",
    "pt": "Começar avaliação",
-   "de": "Assessment starten",
+   "de": "Test starten",
    "pl": "Rozpocznij ocenę",
    "ro": "Începe evaluarea",
    "uk": "Почати оцінювання",
-   "nl": "Start assessment",
+   "nl": "Start de test",
    "en": "Start assessment"
   },
   "maybe_later": {
@@ -3724,15 +3724,15 @@
    "en": "Needs practice"
   },
   "retake": {
-   "es": "Repetir assessment",
+   "es": "Repetir evaluación",
    "it": "Ripeti la valutazione",
    "fr": "Refaire l’évaluation",
    "pt": "Repetir avaliação",
-   "de": "Assessment wiederholen",
+   "de": "Test wiederholen",
    "pl": "Powtórz ocenę",
    "ro": "Repetă evaluarea",
    "uk": "Пройти оцінювання ще раз",
-   "nl": "Assessment opnieuw doen",
+   "nl": "Test opnieuw doen",
    "en": "Retake assessment"
   },
   "baseline": {
@@ -3744,7 +3744,7 @@
    "pl": "Pierwsza ocena",
    "ro": "Prima evaluare",
    "uk": "Перше оцінювання",
-   "nl": "Eerste assessment",
+   "nl": "Eerste test",
    "en": "First assessment"
   },
   "current": {
@@ -3764,7 +3764,7 @@
    "it": "Questa è una valutazione pratica di allenamento, non una certificazione ufficiale.",
    "fr": "Il s’agit d’une évaluation pratique d’entraînement, et non d’une certification officielle.",
    "pt": "Esta é uma avaliação prática de treino, não uma certificação oficial.",
-   "de": "Dies ist ein praktisches Trainings-Assessment, keine offizielle Zertifizierung.",
+   "de": "Dies ist ein praktischer Trainingstest, keine offizielle Zertifizierung.",
    "pl": "To praktyczna ocena treningowa, a nie oficjalny certyfikat.",
    "ro": "Aceasta este o evaluare practică de antrenament, nu o certificare oficială.",
    "uk": "Це практичне навчальне оцінювання, а не офіційна сертифікація.",

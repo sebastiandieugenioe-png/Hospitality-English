@@ -18,7 +18,7 @@
   "dialogue.hideTranslation": "Ukryj tłumaczenie",
   "dialogue.showTranslation": "Pokaż tłumaczenie",
   "dialogue.title": "Realna sytuacja",
-  "exercises.sub": "Przećwicz to, czego się nauczyłeś. Otrzymasz natychmiastowy feedback.",
+  "exercises.sub": "Przećwicz to, czego się nauczyłeś. Od razu otrzymasz informację zwrotną.",
   "exercises.title": "Ćwiczenia",
   "exercises.toQuiz": "Przejdź do quizu",
   "filter.all": "Wszystkie",
@@ -29,9 +29,9 @@
   "flashcards.knew": "Wiedziałem",
   "flashcards.reveal": "Dotknij, aby odsłonić",
   "flashcards.sub": "Dotknij karty, aby zobaczyć odpowiedź.",
-  "flashcards.title": "Flashcards",
+  "flashcards.title": "Fiszki",
   "home.continueLearning": "Kontynuuj naukę",
-  "home.defaultFeaturedDesc": "Ucz się prawdziwych zwrotów, dialogów, flashcards i quizów.",
+  "home.defaultFeaturedDesc": "Ucz się prawdziwych zwrotów, dialogów, z fiszkami i quizami.",
   "home.defaultFeaturedTitle": "Przyjmowanie zamówienia",
   "home.exploreCategories": "Przeglądaj wszystkie kategorie",
   "home.eyebrow": "Twoja nauka",
@@ -87,7 +87,7 @@
   "lesson.step.completion": "Ukończone",
   "lesson.step.dialogue": "Realna sytuacja",
   "lesson.step.exercises": "Ćwiczenia",
-  "lesson.step.flashcards": "Flashcards",
+  "lesson.step.flashcards": "Fiszki",
   "lesson.step.intro": "Wprowadzenie",
   "lesson.step.phrases": "Przydatne zwroty",
   "lesson.step.quiz": "Quiz końcowy",
@@ -463,5 +463,7 @@
   "paywall.successTitle": "Premium odblokowane",
   "paywall.successBody": "Masz teraz dostęp do całego programu Gastronomia.",
   "paywall.errConfirm": "Nie udało się jeszcze potwierdzić dostępu Premium. Spróbuj ponownie.",
-  "paywall.errPurchase": "Nie udało się dokończyć zakupu. Spróbuj ponownie."
+  "paywall.errPurchase": "Nie udało się dokończyć zakupu. Spróbuj ponownie.",
+  "nav.account": "Konto",
+  "nav.primaryAria": "Nawigacja główna"
 }

@@ -19,7 +19,7 @@ export function SecondaryPage({ title, testid, back = "/more", children }) {
             className={`grid place-items-center w-11 h-11 -ml-3 rounded-full text-[#222824] hover:bg-[#EEF3EF] transition-colors ${focusRing}`}>
             <ArrowLeft className="w-5 h-5" aria-hidden="true" />
           </button>
-          <h1 data-testid="secondary-title" className="font-serif text-[21px] font-semibold text-[#222824] tracking-tight truncate">{title}</h1>
+          <h1 data-testid="secondary-title" className="font-serif text-[21px] font-semibold text-[#222824] tracking-tight leading-tight break-words">{title}</h1>
         </div>
       </header>
       <main className="max-w-2xl mx-auto px-5 sm:px-8 pt-6 pb-12 space-y-8">{children}</main>
@@ -48,7 +48,7 @@ export function Row({ to, onClick, icon: Icon, label, sub, value, testid, traili
         <span className="block text-[16px] text-[#222824] font-medium leading-snug">{label}</span>
         {sub && <span className="block text-[13px] text-[#6B736E] leading-snug">{sub}</span>}
       </span>
-      {value && <span className="text-[14px] text-[#6B736E] shrink-0 max-w-[45%] truncate text-right">{value}</span>}
+      {value && <span className="text-[14px] text-[#6B736E] shrink min-w-0 max-w-[55%] [overflow-wrap:anywhere] text-right">{value}</span>}
       {trailing !== undefined ? trailing : (to || onClick) && <ChevronRight className="w-5 h-5 text-[#6B736E] shrink-0" aria-hidden="true" />}
     </>
   );

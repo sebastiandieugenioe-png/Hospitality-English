@@ -463,5 +463,7 @@
   "paywall.successTitle": "Premium freigeschaltet",
   "paywall.successBody": "Du hast jetzt Zugriff auf das gesamte Gastronomie-Programm.",
   "paywall.errConfirm": "Wir konnten deinen Premium-Zugang noch nicht bestätigen. Bitte versuche es erneut.",
-  "paywall.errPurchase": "Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es erneut."
+  "paywall.errPurchase": "Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es erneut.",
+  "nav.account": "Konto",
+  "nav.primaryAria": "Hauptnavigation"
 }

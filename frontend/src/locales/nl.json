@@ -463,5 +463,7 @@
   "paywall.successTitle": "Premium ontgrendeld",
   "paywall.successBody": "Je hebt nu toegang tot het volledige Horeca-programma.",
   "paywall.errConfirm": "We konden je Premium-toegang nog niet bevestigen. Probeer het opnieuw.",
-  "paywall.errPurchase": "We konden de aankoop niet voltooien. Probeer het opnieuw."
+  "paywall.errPurchase": "We konden de aankoop niet voltooien. Probeer het opnieuw.",
+  "nav.account": "Account",
+  "nav.primaryAria": "Hoofdnavigatie"
 }

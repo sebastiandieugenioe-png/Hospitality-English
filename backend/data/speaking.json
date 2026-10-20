@@ -23,10 +23,10 @@
   },
   "ui_translations": {
     "section_title": {
-      "es": "Speaking",
-      "it": "Speaking",
+      "es": "Expresión oral",
+      "it": "Parlato",
       "fr": "Expression orale",
-      "pt": "Speaking",
+      "pt": "Expressão oral",
       "de": "Sprechen",
       "pl": "Mówienie",
       "ro": "Vorbire",
@@ -35,10 +35,10 @@
       "en": "Speaking"
     },
     "practice_title": {
-      "es": "Práctica de Speaking",
-      "it": "Pratica di speaking",
+      "es": "Práctica de expresión oral",
+      "it": "Pratica di parlato",
       "fr": "Pratique orale",
-      "pt": "Prática de speaking",
+      "pt": "Prática de expressão oral",
       "de": "Sprechtraining",
       "pl": "Praktyka mówienia",
       "ro": "Practică de vorbire",

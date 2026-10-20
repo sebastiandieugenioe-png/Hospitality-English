@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import * as api from "@/lib/api";
-import { makeT, detectBrowserLanguage, DEFAULT_LANGUAGE, SUPPORTED_CODES } from "@/lib/i18n";
+import { makeT, resolveInterfaceLanguage, SUPPORTED_CODES } from "@/lib/i18n";
 import {
   ensureAnonymous, getIdToken, watchAuth, signInWithGoogle as fbSignInGoogle,
   firebaseSignOut, deleteFirebaseUser,
@@ -21,8 +21,10 @@ export function AppProvider({ children }) {
   // Language: localStorage is only a cache to avoid a flash; MongoDB (guest) is the
   // source of truth once a guest exists.
   const [language, setLanguageState] = useState(
-    () => localStorage.getItem(LANG_KEY) || detectBrowserLanguage()
+    () => resolveInterfaceLanguage({ persisted: [localStorage.getItem(LANG_KEY)] })
   );
+  const langRef = useRef(language);
+  langRef.current = language;
   // `loading` is true until the initial guest fetch settles (only if a guestId exists).
   const [loading, setLoading] = useState(() => !!localStorage.getItem(GUEST_KEY));
   const creatingRef = useRef(null);
@@ -94,6 +96,7 @@ export function AppProvider({ children }) {
           } else {
             setAccount(null);
           }
+          if (!local && r.canonical_guest_id) await adoptDeviceLanguage(r.canonical_guest_id);
           if (r.canonical_guest_id && r.canonical_guest_id !== local) {
             localStorage.setItem(GUEST_KEY, r.canonical_guest_id);
             setGuestId(r.canonical_guest_id);
@@ -108,6 +111,17 @@ export function AppProvider({ children }) {
     })();
     return () => { clearTimeout(safety); if (unsub) unsub(); };
   }, []); // eslint-disable-line
+
+  // A guest created server-side (bootstrap/logout) starts with the backend default
+  // language; give a fresh one the language already resolved on this device.
+  const adoptDeviceLanguage = async (id) => {
+    try {
+      const g = await api.getGuest(id);
+      if (!g.onboarding_completed && g.interface_language !== langRef.current) {
+        await api.updateLanguage(id, langRef.current);
+      }
+    } catch { /* non-blocking */ }
+  };
 
   // Returns an existing guest id or creates one. Never creates duplicates.
   const ensureGuest = async () => {
@@ -276,6 +290,7 @@ export function AppProvider({ children }) {
     await ensureAnonymous();
     const token = await getIdToken(true);
     const r = await api.authBootstrap(token, { current_guest_id: null, profession_id: "hospitality" });
+    await adoptDeviceLanguage(r.canonical_guest_id);
     localStorage.setItem(GUEST_KEY, r.canonical_guest_id);
     setGuestId(r.canonical_guest_id);
   };
@@ -292,6 +307,7 @@ export function AppProvider({ children }) {
     await ensureAnonymous();
     const t2 = await getIdToken(true);
     const r = await api.authBootstrap(t2, { current_guest_id: null, profession_id: "hospitality" });
+    await adoptDeviceLanguage(r.canonical_guest_id);
     localStorage.setItem(GUEST_KEY, r.canonical_guest_id);
     setGuestId(r.canonical_guest_id);
   };

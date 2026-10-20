@@ -22,7 +22,7 @@
   },
   "ui_translations": {
     "section_title": {
-      "es": "Listening",
+      "es": "Comprensión oral",
       "it": "Ascolto",
       "fr": "Compréhension orale",
       "pt": "Compreensão oral",
@@ -34,10 +34,10 @@
       "en": "Listening"
     },
     "practice_title": {
-      "es": "Práctica de Listening",
+      "es": "Práctica de comprensión oral",
       "it": "Pratica di ascolto",
       "fr": "Pratique d’écoute",
-      "pt": "Prática de listening",
+      "pt": "Prática de compreensão oral",
       "de": "Hörtraining",
       "pl": "Praktyka słuchania",
       "ro": "Practică de ascultare",

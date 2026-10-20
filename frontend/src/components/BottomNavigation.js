@@ -18,7 +18,7 @@ export function BottomNavigation() {
   return (
     <nav
       data-testid="bottom-navigation"
-      aria-label="Primary"
+      aria-label={t("nav.primaryAria")}
       className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-[#DEE2DE] pb-[env(safe-area-inset-bottom)]"
     >
       <ul className="flex items-stretch justify-around">
@@ -59,7 +59,7 @@ export function BottomNavigation() {
 export function DesktopNavigation() {
   const { t } = useApp();
   return (
-    <nav data-testid="desktop-navigation" aria-label="Primary" className="hidden md:flex items-center gap-1">
+    <nav data-testid="desktop-navigation" aria-label={t("nav.primaryAria")} className="hidden md:flex items-center gap-1">
       {ROOT_TABS.map(({ to, key, icon: Icon, testid }) => (
         <NavLink
           key={to}

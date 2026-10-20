@@ -18,7 +18,7 @@
   "dialogue.hideTranslation": "Ocultar traducción",
   "dialogue.showTranslation": "Mostrar traducción",
   "dialogue.title": "Situación real",
-  "exercises.sub": "Practica lo que has aprendido. Recibirás feedback inmediato.",
+  "exercises.sub": "Practica lo que has aprendido. Verás al momento si lo has hecho bien.",
   "exercises.title": "Ejercicios",
   "exercises.toQuiz": "Ir al quiz",
   "filter.all": "Todos",
@@ -410,7 +410,7 @@
   "practiceSession.recordAgain": "Volver a grabar",
   "practiceSession.checking": "Revisando tu respuesta…",
   "practiceSession.checkingSub": "Claridad, cómo resuelves la situación, tono, gramática y naturalidad.",
-  "practiceSession.micNeeded": "Necesitas dar acceso al micrófono para practicar Speaking.",
+  "practiceSession.micNeeded": "Necesitas dar acceso al micrófono para practicar la expresión oral.",
   "practiceSession.micBlocked": "El acceso al micrófono está bloqueado.",
   "practiceSession.micBlockedSub": "Activa el acceso al micrófono en los ajustes del navegador o del dispositivo e inténtalo de nuevo.",
   "practiceSession.allowMic": "Permitir micrófono",
@@ -463,5 +463,7 @@
   "paywall.successTitle": "Premium desbloqueado",
   "paywall.successBody": "Ya tienes acceso a todo el programa de Hostelería.",
   "paywall.errConfirm": "Aún no hemos podido confirmar tu acceso Premium. Inténtalo de nuevo.",
-  "paywall.errPurchase": "No hemos podido completar la compra. Inténtalo de nuevo."
+  "paywall.errPurchase": "No hemos podido completar la compra. Inténtalo de nuevo.",
+  "nav.account": "Cuenta",
+  "nav.primaryAria": "Navegación principal"
 }

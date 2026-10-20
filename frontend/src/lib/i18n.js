@@ -28,18 +28,35 @@ export const DEFAULT_LANGUAGE = "es";
 
 const LOCALES = { es, it, fr, pt, de, pl, ro, uk, nl, en };
 
-export function detectBrowserLanguage() {
-  // First use only: pick the first device language we support, normalizing
-  // regional variants (es-AR → es, en-IE → en, pt-BR → pt). Fallback to Spanish.
-  const list =
-    navigator.languages && navigator.languages.length
-      ? navigator.languages
-      : [navigator.language || DEFAULT_LANGUAGE];
-  for (const raw of list) {
-    const code = String(raw).toLowerCase().split("-")[0];
+// Generic locale resolution (reusable across EnglishToWork verticals).
+// "pt-BR" -> "pt", "en_IE" -> "en"; returns "" for empty input.
+export function normalizeLocale(raw) {
+  return String(raw || "").trim().toLowerCase().split(/[-_]/)[0];
+}
+
+// First supported base language from a list of device locales, or null.
+export function getSupportedLocale(list) {
+  for (const raw of list || []) {
+    const code = normalizeLocale(raw);
     if (SUPPORTED_CODES.includes(code)) return code;
   }
-  return DEFAULT_LANGUAGE;
+  return null;
+}
+
+function deviceLocales() {
+  if (typeof navigator === "undefined") return [];
+  return navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+}
+
+// Priority: persisted choice (account/guest/local cache) -> device languages -> fallback.
+export function resolveInterfaceLanguage({ persisted = [], device = deviceLocales() } = {}) {
+  for (const p of persisted) if (SUPPORTED_CODES.includes(p)) return p;
+  return getSupportedLocale(device) || DEFAULT_LANGUAGE;
+}
+
+// First use only: device language normalized to a supported one, else Spanish.
+export function detectBrowserLanguage() {
+  return getSupportedLocale(deviceLocales()) || DEFAULT_LANGUAGE;
 }
 
 // Builds a t(key, vars) function for the given language, falling back to Spanish

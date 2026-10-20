@@ -29,9 +29,9 @@
   "flashcards.knew": "Știam",
   "flashcards.reveal": "Atinge pentru a dezvălui",
   "flashcards.sub": "Atinge cardul pentru a vedea răspunsul.",
-  "flashcards.title": "Flashcards",
+  "flashcards.title": "Cartonașe",
   "home.continueLearning": "Continuă să înveți",
-  "home.defaultFeaturedDesc": "Învață expresii reale, dialog, flashcards și quiz.",
+  "home.defaultFeaturedDesc": "Învață expresii reale, dialog, cartonașe și quiz.",
   "home.defaultFeaturedTitle": "Luarea unei comenzi",
   "home.exploreCategories": "Explorează toate categoriile",
   "home.eyebrow": "Învățarea ta",
@@ -87,7 +87,7 @@
   "lesson.step.completion": "Finalizat",
   "lesson.step.dialogue": "Situație reală",
   "lesson.step.exercises": "Exerciții",
-  "lesson.step.flashcards": "Flashcards",
+  "lesson.step.flashcards": "Cartonașe",
   "lesson.step.intro": "Introducere",
   "lesson.step.phrases": "Expresii utile",
   "lesson.step.quiz": "Quiz final",
@@ -463,5 +463,7 @@
   "paywall.successTitle": "Premium deblocat",
   "paywall.successBody": "Acum ai acces la întregul program de Ospitalitate.",
   "paywall.errConfirm": "Nu am putut confirma încă accesul Premium. Încearcă din nou.",
-  "paywall.errPurchase": "Nu am putut finaliza achiziția. Încearcă din nou."
+  "paywall.errPurchase": "Nu am putut finaliza achiziția. Încearcă din nou.",
+  "nav.account": "Cont",
+  "nav.primaryAria": "Navigare principală"
 }

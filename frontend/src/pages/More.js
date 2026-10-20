@@ -20,8 +20,8 @@ function ProfileSummary({ isAuthenticated, name, subline, premium, t }) {
           <UserRound className="w-6 h-6" strokeWidth={1.75} aria-hidden="true" />
         </span>
         <span className="flex-1 min-w-0">
-          <span data-testid="more-profile-name" className="block font-serif text-[21px] font-semibold text-[#222824] truncate">{name}</span>
-          {subline && <span className="block text-[14px] text-[#6B736E] truncate">{subline}</span>}
+          <span data-testid="more-profile-name" className="block font-serif text-[21px] font-semibold text-[#222824] break-words">{name}</span>
+          {subline && <span data-testid="more-profile-subline" className="block text-[14px] text-[#6B736E] leading-snug break-words">{subline}</span>}
           <span data-testid="more-plan-status" className={`mt-1 inline-flex items-center gap-1 text-[13px] font-medium ${premium ? "text-[#34785B]" : "text-[#6B736E]"}`}>
             {premium && <CircleCheck className="w-3.5 h-3.5" aria-hidden="true" />}
             {premium ? t("more.planPremium") : t("more.planFree")}

@@ -463,5 +463,7 @@
   "paywall.successTitle": "Premium débloqué",
   "paywall.successBody": "Vous avez désormais accès à tout le programme Hôtellerie-restauration.",
   "paywall.errConfirm": "Nous n'avons pas encore pu confirmer votre accès Premium. Veuillez réessayer.",
-  "paywall.errPurchase": "Nous n'avons pas pu finaliser l'achat. Veuillez réessayer."
+  "paywall.errPurchase": "Nous n'avons pas pu finaliser l'achat. Veuillez réessayer.",
+  "nav.account": "Compte",
+  "nav.primaryAria": "Navigation principale"
 }
