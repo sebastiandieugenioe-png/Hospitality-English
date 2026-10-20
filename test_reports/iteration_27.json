@@ -1,0 +1,28 @@
+{
+  "summary": "PRE_LAUNCH_FIXES_V1 frontend QA on the public URL. Everything requested passes. (1) Landing in en/es/pl/ro/uk/nl/de, each in a fresh context with iph_lang set: exactly 2 role pills (landing-role-roleBartenders, landing-role-roleWaiters), localized correctly. en: 'Bartenders' / 'Waiters / Servers'. es: 'Bartenders' / 'Camareros/as de sala'. pl: 'Barmani' / 'Kelnerzy'. ro: 'Barmani' / 'Ospătari'. uk: 'Бармени' / 'Офіціанти'. nl: 'Bartenders' / 'Bedienend personeel'. de: 'Barkeeper' / 'Servicekräfte'. The rendered landing text, with the categories section excluded, contains none of: hotel, reception, recepción, kitchen, cocina, housekeeping, barback, barista. The English word 'hospitality' appears only in en. All 6 English situation chips are present. heroSub, feat1Body and feat3Body only mention bar and table service. pl/ro/uk feat2Body use Fiszki / Cartonașe / Картки. hero-start-btn goes to /onboarding. (2) At 390px: scrollWidth=390 and the pills wrap fine. (3) Job Interview after full UI onboarding as bartender: ji-subtitle is visible on Q1 in es ('Prepárate para responder las preguntas más comunes en entrevistas de hostelería.') and en ('Prepare for the most common hospitality interview questions.'). It is gone from Q2 onwards. The full 10-question flow (select, check, next, complete) works and shows ji-complete with a score. (4) Regression smoke in es at 390px: onboarding, /home, /learn, /practice, /progress, /more and /account all render with scrollWidth=390. On the locked /lesson/taking-an-order, lesson-unlock-btn opens the AccountGate dialog. No page errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Landing 'Made for' section (minor, optional)", "issues": [
+        "The right-hand image pair uses landingImages.coffee, a barista pouring coffee. Next to a section that now says only Bartenders/Waiters, it could suggest barista content. Consider a bar or cocktail image.",
+        "The ro/uk copy uses the local words for hospitality ('ospitalitate', 'гостинності'). The English word does not appear, so this meets the requirement. Noting it only in case the product intended a different term."
+      ]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "None required. Optional: swap the barista image in the Landing 'Made for' section for a bar or restaurant image."
+  ],
+  "critical_code_review_comments": [
+    "Landing.js / content.js: targetProfiles is now an array of i18n keys, and the testids come from key.split('.')[1]. This is clean.",
+    "JobInterview.js:128 renders ji-subtitle only when idx===0 and tx('subtitle') is truthy, which is correct. The useMemo used for the reset in Practice (line 183) should be a useEffect. It is a pre-existing side effect inside useMemo, but it works."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend only)", "frontend": "100% of requested scenarios"},
+  "seed_data_creation": "Anonymous guests created through UI onboarding (bartender) in fresh Playwright contexts.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Onboarding step 1 is the language picker. Pick onboarding-option-interface_language-<code> explicitly, because clicking the first option selects Español and turns the whole UI to es. Role option: onboarding-option-role-bartender. Continue/finish buttons: onboarding-continue-btn and onboarding-finish-btn. JI flow: ji-option-N, then ji-next-btn (check), wait for ji-feedback, then ji-next-btn (next). The Landing categories section (bg-brand-espresso) is intentionally untouched; do not report it."
+}

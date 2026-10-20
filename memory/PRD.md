@@ -310,3 +310,8 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - Backend tool UI JSON: Assessment es "evaluación"/"hostelería", de/nl "Test", it/pl/nl/de hospitality→Ristorazione/Gastronomia/Horeca/Gastronomie; Job Interview subtitle; Listening/Speaking titles es/it/pt; es "transcripción".
 - More subline + Settings rows/titles wrap instead of truncating.
 - Deferred: Landing copy (Spanish targetProfiles hardcoded, "hospitality" loanword in pl/ro/uk/nl landing); JobInterview never renders ui.subtitle.
+
+## PRE_LAUNCH_FIXES_V1 (Jun 2026) — PASS (iteration_27)
+- Landing: target-profile pills → 2 i18n roles (landing.roleBartenders / landing.roleWaiters); situation chips → 6 real catalog situations; heroSub/feat1Body/feat3Body only bar + table service (10 locales); pl/ro/uk/nl "hospitality" → gastronomia/ospitalitate/сфера гостинності/horeca; pl/ro/uk flashcards localized.
+- Job Interview: renders existing ui.subtitle (ji-subtitle) on question 1.
+- Deferred: Landing "Main categories" section still lists Hotel/Reception, Coffee Shop, Kitchen, Housekeeping in English (user asked to keep untouched); barista photo in "Made for" section.
