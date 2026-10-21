@@ -273,6 +273,7 @@
   "account.confirmAppleDelete": "Mit Apple bestätigen & löschen",
   "account.connecting": "Verbinden…",
   "account.continueApple": "Mit Apple fortfahren",
+  "account.continueGoogle": "Mit Google fortfahren",
   "account.dangerZone": "Gefahrenbereich",
   "account.deleteBody": "Löscht dein Konto und deine Lerndaten dauerhaft. Dies kann nicht rückgängig gemacht werden.",
   "account.deleteCancelled": "Die Löschung wurde abgebrochen. Es wurden keine Daten gelöscht.",

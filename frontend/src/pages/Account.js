@@ -3,7 +3,11 @@ import { LogOut, Trash2, Loader2, AlertTriangle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { SecondaryPage, Section, Row, btnLight } from "@/components/SettingsLayout";
 import { APPLE_ENABLED, renderGisButton, GOOGLE_CLIENT_ID } from "@/lib/firebase";
-import { AppleGlyph as AppleIcon, AuthProviderButton, GoogleSignInSlot, AuthStatus, friendlyAuthError } from "@/components/auth/AuthProviders";
+import { AppleGlyph as AppleIcon, AuthProviderButton, GoogleSignInSlot, NativeGoogleButton, AuthStatus, friendlyAuthError } from "@/components/auth/AuthProviders";
+import { isNative } from "@/lib/platform";
+import { nativeGoogleIdToken } from "@/lib/nativeAuth";
+
+const NATIVE = isNative();
 
 export default function Account() {
   const { t, account, isAuthenticated, connectGoogle, connectApple, reauthGoogle, reauthRevokeApple, logout, deleteAccount } = useApp();
@@ -65,6 +69,19 @@ export default function Account() {
     }
   };
 
+  // Native app: fresh Google ID token from the native SDK, then the same handler as GIS.
+  const handleNativeGoogle = async () => {
+    setErr(null); setMsg(null);
+    let googleIdToken;
+    try { googleIdToken = await nativeGoogleIdToken(); }
+    catch (e) {
+      const m = friendly(e);
+      if (m) setErr(m);
+      return;
+    }
+    await onCredential({ credential: googleIdToken });
+  };
+
   // Apple account deletion: fresh reauth + Apple access revocation, then delete.
   // On cancel or missing revoke token, nothing is deleted.
   const handleAppleDelete = async () => {
@@ -90,6 +107,7 @@ export default function Account() {
 
   // Render the GIS button for the guest "Continue with Google" entry point.
   useEffect(() => {
+    if (NATIVE) return;
     if (isAuthenticated || !GOOGLE_CLIENT_ID) {
       if (!GOOGLE_CLIENT_ID) setGisUnavailable(true);
       return;
@@ -111,7 +129,7 @@ export default function Account() {
 
   // Render a GIS button to confirm deletion (recent-login reauthentication).
   useEffect(() => {
-    if (!isAuthenticated || !confirmDelete || !GOOGLE_CLIENT_ID) return;
+    if (NATIVE || !isAuthenticated || !confirmDelete || !GOOGLE_CLIENT_ID) return;
     (async () => {
       try {
         if (reauthBtnRef.current) {
@@ -178,8 +196,10 @@ export default function Account() {
                     <p className="flex items-center gap-2 text-[14px] text-[#6B736E]"><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("account.deleting")}</p>
                   ) : (
                     <>
-                      {providers.includes("google.com") && <div ref={reauthBtnRef} data-testid="account-reauth-google" className="min-h-[44px]" />}
-                      {providers.includes("apple.com") && (
+                      {providers.includes("google.com") && (NATIVE
+                        ? <NativeGoogleButton testid="account-reauth-google-native" label={t("account.continueGoogle")} onClick={handleNativeGoogle} />
+                        : <div ref={reauthBtnRef} data-testid="account-reauth-google" className="min-h-[44px]" />)}
+                      {APPLE_ENABLED && providers.includes("apple.com") && (
                         <button type="button" data-testid="account-reauth-apple-btn" onClick={handleAppleDelete} className={`w-full ${darkBtn}`}>
                           <AppleIcon /> {t("account.confirmAppleDelete")}
                         </button>
@@ -204,7 +224,9 @@ export default function Account() {
             <p className="mt-1 text-[15px] text-[#6B736E]">{t("account.guestBody")}</p>
             <div className="mt-5 space-y-3">
               {busy && <AuthStatus busy busyLabel={t("auth.savingProgress")} testidPrefix="account-link" />}
-              {gisUnavailable ? (
+              {NATIVE ? (
+                !busy && <NativeGoogleButton testid="account-google-native" label={t("account.continueGoogle")} disabled={busy} onClick={handleNativeGoogle} />
+              ) : gisUnavailable ? (
                 <p data-testid="account-gis-unavailable" className="text-[14px] text-[#A44F3B]">{t("account.gisUnavailable")}</p>
               ) : (
                 <GoogleSignInSlot ref={googleBtnRef} testid="account-google-gis" hidden={busy} />

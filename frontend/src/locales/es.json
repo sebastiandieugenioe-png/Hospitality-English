@@ -273,6 +273,7 @@
   "account.confirmAppleDelete": "Confirmar con Apple y borrar",
   "account.connecting": "Conectando…",
   "account.continueApple": "Continuar con Apple",
+  "account.continueGoogle": "Continuar con Google",
   "account.dangerZone": "Zona de riesgo",
   "account.deleteBody": "Borra para siempre tu cuenta y tus datos de aprendizaje. No se puede deshacer.",
   "account.deleteCancelled": "Se ha cancelado el borrado. No se ha eliminado ningún dato.",

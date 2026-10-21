@@ -273,6 +273,7 @@
   "account.confirmAppleDelete": "Confirm with Apple & delete",
   "account.connecting": "Connecting…",
   "account.continueApple": "Continue with Apple",
+  "account.continueGoogle": "Continue with Google",
   "account.dangerZone": "Danger zone",
   "account.deleteBody": "Permanently delete your account and learning data. This cannot be undone.",
   "account.deleteCancelled": "Account deletion was cancelled. No data was deleted.",

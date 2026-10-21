@@ -273,6 +273,7 @@
   "account.confirmAppleDelete": "Підтвердити через Apple і видалити",
   "account.connecting": "Підключення…",
   "account.continueApple": "Продовжити з Apple",
+  "account.continueGoogle": "Продовжити з Google",
   "account.dangerZone": "Небезпечна зона",
   "account.deleteBody": "Назавжди видаляє обліковий запис і навчальні дані. Цю дію не можна скасувати.",
   "account.deleteCancelled": "Видалення скасовано. Дані не видалено.",

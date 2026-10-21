@@ -6,10 +6,12 @@ import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
 import { useBilling } from "@/context/BillingContext";
 import { renderGisButton, GOOGLE_CLIENT_ID, APPLE_ENABLED } from "@/lib/firebase";
+import { isNative } from "@/lib/platform";
+import { nativeGoogleIdToken } from "@/lib/nativeAuth";
 import { rcDiag } from "@/lib/revenuecat";
 import { refreshEntitlement } from "@/lib/api";
 import { btnDark, btnLight, focusRing } from "@/components/SettingsLayout";
-import { AuthProviderButton, GoogleSignInSlot, AuthStatus, friendlyAuthError } from "@/components/auth/AuthProviders";
+import { AuthProviderButton, GoogleSignInSlot, NativeGoogleButton, AuthStatus, friendlyAuthError } from "@/components/auth/AuthProviders";
 
 const PremiumContext = createContext(null);
 const PROFESSION = "hospitality";
@@ -90,7 +92,7 @@ function AccountGate({ t, onClose, connectGoogle, connectApple }) {
   useEffect(() => {
     let active = true;
     (async () => {
-      if (!GOOGLE_CLIENT_ID || !gisRef.current) return;
+      if (isNative() || !GOOGLE_CLIENT_ID || !gisRef.current) return;
       try {
         gisRef.current.innerHTML = "";
         await renderGisButton(gisRef.current, async (response) => {
@@ -106,6 +108,14 @@ function AccountGate({ t, onClose, connectGoogle, connectApple }) {
     return () => { active = false; };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Native app: native Google SDK -> same connectGoogle(idToken) path as GIS.
+  const onNativeGoogle = async () => {
+    setBusy(true); setErr(null);
+    try { await connectGoogle(await nativeGoogleIdToken()); }
+    catch (e) { setErr(friendlyAuthError(e, t)); }
+    finally { setBusy(false); }
+  };
+
   const onApple = async () => {
     setBusy(true); setErr(null);
     try { await connectApple(); }
@@ -120,7 +130,9 @@ function AccountGate({ t, onClose, connectGoogle, connectApple }) {
       <p className="mt-2 text-[15px] text-[#6B736E] leading-relaxed">{t("auth.gateBody")}</p>
       <div className="mt-6 space-y-3">
         <AuthStatus busy={busy} busyLabel={t("auth.savingProgress")} err={err} testidPrefix="premium-gate" />
-        <GoogleSignInSlot ref={gisRef} testid="premium-gate-google" hidden={busy} />
+        {isNative()
+          ? !busy && <NativeGoogleButton testid="premium-gate-google-native" label={t("account.continueGoogle")} onClick={onNativeGoogle} />
+          : <GoogleSignInSlot ref={gisRef} testid="premium-gate-google" hidden={busy} />}
         {APPLE_ENABLED && (
           <AuthProviderButton testid="premium-gate-apple" label={t("account.continueApple")} disabled={busy} onClick={onApple} />
         )}

@@ -1,9 +1,11 @@
 import { initializeApp, getApps } from "firebase/app";
 import {
-  getAuth, signInAnonymously, onAuthStateChanged, GoogleAuthProvider, OAuthProvider,
+  getAuth, initializeAuth, indexedDBLocalPersistence, signInAnonymously, onAuthStateChanged, GoogleAuthProvider, OAuthProvider,
   signInWithPopup, linkWithPopup, signOut, deleteUser, reauthenticateWithPopup,
   signInWithCredential, linkWithCredential, reauthenticateWithCredential, revokeAccessToken,
 } from "firebase/auth";
+import { isNative, isAndroid } from "@/lib/platform";
+import { nativeAppleCredential, nativeSignOut, revokeAppleAuthorizationCode } from "@/lib/nativeAuth";
 
 const clean = (v) => (v || "").replace(/^['"]|['"]$/g, "").trim();
 
@@ -19,14 +21,22 @@ const firebaseConfig = {
   appId: clean(process.env.REACT_APP_FIREBASE_APP_ID),
 };
 
-export const APPLE_ENABLED = true; // Apple provider configured & enabled in Firebase.
+// Apple enabled on web + iOS; hidden only in the Android native app (V1).
+export const APPLE_ENABLED = !(isNative() && isAndroid());
 
 let _app;
 export function fbApp() {
   _app = getApps()[0] || initializeApp(firebaseConfig);
   return _app;
 }
-export const fbAuth = () => getAuth(fbApp());
+// Native WebView: initializeAuth without the popup/redirect resolver (getAuth can hang
+// in Capacitor iOS). Web keeps getAuth exactly as before.
+let _nativeAuth;
+export const fbAuth = () => {
+  if (!isNative()) return getAuth(fbApp());
+  if (!_nativeAuth) _nativeAuth = initializeAuth(fbApp(), { persistence: indexedDBLocalPersistence });
+  return _nativeAuth;
+};
 
 export function watchAuth(cb) {
   return onAuthStateChanged(fbAuth(), cb);
@@ -66,6 +76,7 @@ export async function signInWithGoogle() {
 
 export async function firebaseSignOut() {
   await signOut(fbAuth());
+  if (isNative()) await nativeSignOut();
 }
 
 export async function reauthenticateGoogle() {
@@ -156,7 +167,28 @@ export async function connectGoogleCredential(googleIdToken) {
 // Link Apple to the current anonymous user (preserving uid + guest); if the Apple
 // account already belongs to another Firebase user, sign in to it instead.
 // Only email + name scopes are requested; no Apple/OAuth tokens are persisted.
+// Native iOS: credential from native Sign in with Apple, applied to Firebase JS.
+async function connectAppleNative() {
+  const auth = fbAuth();
+  const { credential } = await nativeAppleCredential();
+  if (auth.currentUser && auth.currentUser.isAnonymous) {
+    try {
+      const res = await linkWithCredential(auth.currentUser, credential);
+      return { mode: "linked", user: res.user };
+    } catch (e) {
+      if (e.code === "auth/credential-already-in-use" || e.code === "auth/email-already-in-use") {
+        const res = await signInWithCredential(auth, OAuthProvider.credentialFromError(e) || credential);
+        return { mode: "signin", user: res.user };
+      }
+      throw e; // unexpected: caller must NOT destroy guest data
+    }
+  }
+  const res = await signInWithCredential(auth, credential);
+  return { mode: "signin", user: res.user };
+}
+
 export async function connectAppleProvider() {
+  if (isNative()) return connectAppleNative();
   const auth = fbAuth();
   const provider = new OAuthProvider("apple.com");
   provider.addScope("email");
@@ -187,6 +219,18 @@ export async function reauthAndRevokeApple() {
   const auth = fbAuth();
   const u = auth.currentUser;
   if (!u) { const e = new Error("no_current_user"); e.code = "auth/no-current-user"; throw e; }
+  if (isNative()) {
+    // Native iOS: fresh Apple sign-in -> reauth Firebase JS -> revoke with the fresh code.
+    const { credential, authorizationCode } = await nativeAppleCredential();
+    if (!authorizationCode) {
+      const e = new Error("apple_revoke_token_missing");
+      e.code = "APPLE_REVOKE_TOKEN_MISSING";
+      throw e;
+    }
+    await reauthenticateWithCredential(u, credential);
+    await revokeAppleAuthorizationCode(auth.config.apiKey, await u.getIdToken(true), authorizationCode);
+    return;
+  }
   const provider = new OAuthProvider("apple.com");
   provider.addScope("email");
   provider.addScope("name");

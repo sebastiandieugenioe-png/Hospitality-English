@@ -273,6 +273,7 @@
   "account.confirmAppleDelete": "Confirmer avec Apple et supprimer",
   "account.connecting": "Connexion…",
   "account.continueApple": "Continuer avec Apple",
+  "account.continueGoogle": "Continuer avec Google",
   "account.dangerZone": "Zone sensible",
   "account.deleteBody": "Supprime définitivement votre compte et vos données d'apprentissage. Action irréversible.",
   "account.deleteCancelled": "La suppression a été annulée. Aucune donnée n'a été supprimée.",

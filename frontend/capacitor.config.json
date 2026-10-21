@@ -1,5 +1,11 @@
 {
   "appId": "app.englishtowork.hospitality",
   "appName": "Hospitality English",
-  "webDir": "build"
+  "webDir": "build",
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": true,
+      "providers": ["google.com", "apple.com"]
+    }
+  }
 }
