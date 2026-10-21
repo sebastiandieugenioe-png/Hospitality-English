@@ -1,0 +1,23 @@
+{
+  "summary": "LEGAL_COMPLIANCE_PRELAUNCH_V1 frontend check at 390x800. All requested items PASS. Fresh context (no login): /privacy (14 sections, 9 OWNER placeholders), /terms (11 sections, 4 placeholders) and /account-deletion (5 sections, 2 placeholders) load directly. Each shows the correct data-testid page and legal-document, the title and h1, the legal-english-note, and highlighted legal-owner-placeholder marks (bg #FBE7C6). No 'Legal content pending' text, scrollWidth is 390, no page errors. Internal links work: /account-deletion→/account (guest sign-in shown), /terms→/privacy, /privacy→/account-deletion. The back button returns to the previous page, or to /more when there is no history. More → more-privacy and more-terms open the correct pages. /account as guest shows account-guest, account-google-gis and account-apple-btn. The Speaking intro shows the exact new privacy note. Locales: all 10 have 470 keys each with the same set, no empty values, legal.pending removed, es privacyNote translated. Regression smoke after onboarding (bartender): /home, /learn, /practice, /progress, /more, /lesson/taking-a-drinks-order, /listening-practice and /speaking-practice all load without errors or horizontal overflow. Code review: git diff HEAD~1 touches no Account.js and no server.py. handleAppleDelete still calls reauthRevokeApple then deleteAccount, and the Google path calls reauthGoogle then deleteAccount. delete_account deletes the LEARNING_COLLECTIONS (incl. feedback), the guests, the user and the Firebase user. No destructive deletion was run.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "privacyPolicy.updated says 'Draft — June 2026'. The current date is Jan 2026, so confirm the intended date when filling the OWNER_ACTION_REQUIRED effective date.",
+    "Legal.js Rich() regex links bare '/account' text. Any future legal text with a path like '/accounting' won't match because of \\b, but '/account/...' would only partially link. Low risk.",
+    "Onboarding goNext catch block swallows completeProfile errors with no user-visible error (pre-existing, not in this change).",
+    "Pre-existing backend log: DuplicateKeyError on users.firebase_uid_1 in some bootstrap/link race (not related to this change). It may be worth an upsert or a catch."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend only)", "frontend": "100%"},
+  "seed_data_creation": "Only anonymous guest profiles created by onboarding.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Onboarding automation: the last step's button is data-testid onboarding-finish-btn (not onboarding-continue-btn). Then click onboarding-start-learning-btn. Firebase anonymous signUp worked (200) in this run. Legal pages: legal-{privacy|terms|account-deletion}-page, legal-document, legal-owner-placeholder, legal-english-note, secondary-back-btn."
+}
