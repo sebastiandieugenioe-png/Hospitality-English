@@ -31,9 +31,9 @@ export const privacyPolicy = {
         "Speaking practice: your voice recording (processed temporarily, see section 5), the text transcript of what you said, the evaluation and feedback produced, and the recording duration.",
         "Subscription status: whether you have Premium, which plan, and related purchase records managed by RevenueCat (see section 6). We do not receive or store full payment card details.",
         "Feedback you send: the category and message you write, plus the app version and the screen you were on.",
-        "Security and account events: records of sign-in, linking and account deletion events (event type, sign-in method, internal IDs and time).",
+        "Account events: records of sign-in and account linking (event type, sign-in method, internal IDs and time).",
         "Data stored on your device: a guest ID, your language choice, an onboarding draft, a RevenueCat anonymous ID and scroll position, kept in your browser's local storage so the app works.",
-        "Technical and usage data collected by the analytics tool described in section 7.",
+        "Technical connection data (such as IP address) that our hosting and font providers receive when your device connects.",
       ],
     },
     {
@@ -67,8 +67,7 @@ export const privacyPolicy = {
     {
       h: "7. Analytics",
       p: [
-        "The app currently loads PostHog analytics through our hosting platform (Emergent). It sets a cookie and local storage entry and can collect usage events and session recordings (a replay of interactions with the app screens; form inputs are masked by default by the tool). It does not receive your name or email from us.",
-        "OWNER_ACTION_REQUIRED: confirm whether this analytics and session recording remain active in production; update or remove this section accordingly before launch.",
+        "The app does not use analytics, advertising or session-recording tools, and does not track you across other apps or websites. Our hosting platform's analytics tool is enabled only in our internal preview environment, which is not used by app users.",
       ],
     },
     {
@@ -79,7 +78,7 @@ export const privacyPolicy = {
         "RevenueCat: subscription and entitlement management.",
         "ElevenLabs: speech-to-text for Speaking practice (audio).",
         "OpenAI: evaluation of Speaking transcripts (text).",
-        "Emergent and its infrastructure providers: hosting of the app, backend and database, and the analytics described in section 7.",
+        "Emergent and its infrastructure providers: hosting of the app, backend and database.",
       ],
       p: ["Some of these providers may process data outside your country, including outside the European Economic Area. Where required, such transfers rely on the safeguards offered by the provider (for example, standard contractual clauses). OWNER_ACTION_REQUIRED: confirm transfer safeguards with each provider."],
     },
@@ -89,15 +88,15 @@ export const privacyPolicy = {
         "Account, profile and learning data: until you delete your account.",
         "Guest data without an account: kept on our servers; there is currently no automatic expiry. You can ask us to delete it (section 10).",
         "Raw Speaking audio: not stored by us; discarded after transcription.",
-        "Security and account event records: kept after account deletion to record that the deletion happened. Retention period: OWNER_ACTION_REQUIRED.",
+        "Account event records (sign-in and linking): until you delete your account.",
         "Subscription records held by RevenueCat and the app stores: kept by them under their own policies and legal obligations (for example, tax records).",
       ],
     },
     {
       h: "10. Deleting your account and data",
       p: [
-        "You can delete your account in the app: More → Account → Delete account. This permanently deletes your account, your profile, your learning data (including Speaking transcripts and evaluations) and feedback linked to your profile, and your sign-in record in Firebase. If you signed in with Apple, we also revoke the app's access to your Apple ID.",
-        "Not deleted by this action: the security record of the deletion event (section 9) and purchase records held by RevenueCat or the app stores.",
+        "You can delete your account in the app: More → Account → Delete account. This permanently deletes your account, your profile, your learning data (including Speaking transcripts and evaluations), feedback linked to your profile, your account event records, and your sign-in record in Firebase. If you signed in with Apple, we also revoke the app's access to your Apple ID.",
+        "Not deleted by this action: purchase records held by RevenueCat or the app stores.",
         "You can also do this from any web browser, or request deletion if you cannot sign in, as explained at /account-deletion.",
       ],
     },

@@ -2597,10 +2597,12 @@ async def delete_account(payload: DeleteAccountReq, identity: dict = Depends(req
     if user:
         await db.users.delete_one({"firebase_uid": uid})
 
+    # Account lifecycle log (write-only, nothing reads it): removed with the account, no post-deletion record.
+    event_filter = [{"firebase_uid": uid}] + ([{"user_id": user["id"]}] if user else []) + [{"guest_id": g} for g in guest_ids]
+    await db.account_events.delete_many({"$or": event_filter})
+
     # Delete the Firebase Auth user last (idempotent).
     firebase_admin_setup.delete_user(uid)
-    await _log_account_event(user["id"] if user else None, uid, "delete", None, None, "hospitality",
-                             {"deleted_guest_ids": list(guest_ids)})
     return {"deleted": True}
 
 

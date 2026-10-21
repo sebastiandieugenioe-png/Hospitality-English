@@ -31,13 +31,13 @@ export const accountDeletion = {
         "Your account and sign-in record.",
         "Your profile, preferences and all learning progress, including Speaking transcripts and evaluations.",
         "Feedback linked to your profile.",
+        "Records of your sign-ins and account linking.",
         "If you used Sign in with Apple, the app's access to your Apple ID is revoked.",
       ],
     },
     {
       h: "What may be kept",
       list: [
-        "A security record that the deletion took place (internal IDs, sign-in method and time). Retention period: OWNER_ACTION_REQUIRED.",
         "Purchase and subscription records held by RevenueCat, the Apple App Store or Google Play under their own policies and legal obligations.",
         "Deleting your account does not cancel a subscription bought through the App Store or Google Play; cancel it in your store account settings.",
       ],

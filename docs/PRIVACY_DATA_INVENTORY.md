@@ -21,8 +21,8 @@ Built from code audit only. Re-audit before every store submission.
 | Subscription/entitlement | On purchase / check | RevenueCat (App User ID = `users.id`; anonymous RC id for guests in localStorage `rc_anonymous_app_user_id`) | Payments / Premium | RevenueCat policy | RevenueCat (+ stores later) | **No** (RevenueCat customer not deleted) | Yes |
 | Payment card details | Not by us | RevenueCat checkout / stores | Payments | — | RevenueCat / Apple / Google | — | — |
 | Feedback (category, message, app_version, route) | When sent | Mongo `feedback` | Support / improvement | Until deletion | — | Yes (by guest_id) | Yes |
-| Account events (sign-in/link/delete; ids, provider, time) | Yes | Mongo `account_events` | Security / audit | **Kept after deletion**; no period defined | — | No | Yes (internal ids, firebase uid) |
-| Usage events + session replay | Yes (preview verified: `sessionRecordingStarted()=true`) | PostHog via `ap.emergent.sh` (cookie + localStorage `ph_phc_…`) | Platform analytics | Unknown | Emergent / PostHog | No | Not identified by us (`person_profiles: identified_only`, no `identify` call) |
+| Account events (sign_in/link; user_id, firebase_uid, provider, guest_id, profession, time, metadata) | Yes | Mongo `account_events` (write-only log) | Account lifecycle log | Until account deletion | — | Yes (by firebase_uid/user_id/guest_ids; no post-deletion record) | Yes (internal ids, firebase uid) |
+| Usage events + session replay | **Production: No.** PostHog `init` in `public/index.html` runs only on `*.preview.emergentagent.com` (internal preview) | — | — | — | — | — | — |
 | IP address / user agent | Implicit | Hosting/CDN logs (Emergent, Cloudflare), Google Fonts | Delivery | Unknown | Emergent, Cloudflare, Google | No | No |
 
 ## 2. Processors (verified in code/config)
@@ -32,7 +32,7 @@ Built from code audit only. Re-audit before every store submission.
 - **RevenueCat**: Web SDK (public key) + server REST v1 (secret key) for entitlement checks.
 - **ElevenLabs**: STT (raw Speaking audio). TTS only for pre-generated Listening content (no user data).
 - **OpenAI**: Speaking evaluation (`gpt-4o-mini`, transcript text).
-- **Emergent**: hosting (frontend, FastAPI, MongoDB), `emergent-main.js`, PostHog analytics with session recording (template `public/index.html`).
+- **Emergent**: hosting (frontend, FastAPI, MongoDB), `emergent-main.js` (platform script, no analytics found). PostHog (app template code) is gated to preview hosts only.
 - **Cloudflare**: edge (cookies `cf_clearance`, `__cf_bm`), set by hosting.
 
 No advertising SDKs, no cross-app tracking, no Meta/TikTok/Google Analytics.
@@ -43,7 +43,7 @@ No advertising SDKs, no cross-app tracking, no Meta/TikTok/Google Analytics.
 - User Content → Audio Data: collected (processed, not stored by us), App Functionality. Other User Content (transcripts, feedback): linked, App Functionality.
 - Identifiers → User ID: linked, App Functionality.
 - Purchases → Purchase History: linked, App Functionality.
-- Usage Data → Product Interaction: collected (learning progress: linked, App Functionality); analytics via PostHog **only if kept in production** (Analytics, not linked).
+- Usage Data → Product Interaction: collected (learning progress: linked, App Functionality). No analytics in production.
 - Tracking: **No** (no cross-app tracking / data brokers).
 
 ## 4. Google Play Data Safety (draft)
@@ -51,7 +51,7 @@ No advertising SDKs, no cross-app tracking, no Meta/TikTok/Google Analytics.
 - Personal info: Email, Name — collected, App functionality / Account management, not shared (processors only).
 - Audio: Voice recordings — collected, processed ephemerally (not stored by us), App functionality.
 - Messages/other user content: feedback, transcripts — collected, App functionality.
-- App activity: in-app interactions/learning progress — collected, App functionality, Personalisation; Analytics only if PostHog stays.
+- App activity: in-app interactions/learning progress — collected, App functionality, Personalisation. No analytics.
 - Financial info: purchase history — collected via RevenueCat/Play, App functionality.
 - Device or other IDs: internal/guest IDs — collected, App functionality.
 - Encrypted in transit: HTTPS endpoints used (OWNER_ACTION_REQUIRED: confirm for all hosting).
@@ -60,15 +60,15 @@ No advertising SDKs, no cross-app tracking, no Meta/TikTok/Google Analytics.
 ## 5. Consent
 
 - Essential local storage: guest id, language, onboarding draft, RevenueCat anon id, scroll position.
-- PostHog cookie/localStorage + session recording are **non-essential**: in the EU this normally requires consent (ePrivacy). Recommended for V1: disable session recording/PostHog in production (owner decision; preview tooling may rely on it — confirm with Emergent support). No consent banner added.
+- PostHog (non-essential) no longer initialises in production (hostname gate), so no consent banner is needed in production. Re-check after each Emergent template update and on the live domain (no `ph_phc_*` cookie, no requests to `ap.emergent.sh`).
 
 ## 6. Owner actions
 
 1. Operator legal name, address, privacy/support email (Privacy §1, §11; Terms intro, §11; `/account-deletion` Option 3).
 2. Effective dates of Privacy and Terms.
 3. Minimum age (Privacy §12).
-4. Retention period for `account_events` (Privacy §9; deletion page).
-5. Decide on PostHog / session recording in production (Privacy §7); confirm with Emergent support whether `index.html` PostHog runs in deployed apps and whether it can be removed.
+4. (Resolved) `account_events` are deleted with the account.
+5. (Resolved) PostHog gated to preview hosts; verify on the live domain after deploy.
 6. Confirm international transfer safeguards with processors (Privacy §8).
 7. Governing law (Terms §11).
 8. Consider deleting the RevenueCat customer on account deletion (currently not done; disclosed).
