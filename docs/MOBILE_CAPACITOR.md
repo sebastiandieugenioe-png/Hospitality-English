@@ -25,7 +25,7 @@ npx cap open ios | npx cap open android                    # macOS/Xcode, Androi
 1. Firebase Console → Project settings → Add app **iOS**, Bundle ID `app.englishtowork.hospitality` → download `GoogleService-Info.plist` → place at `frontend/ios/App/App/GoogleService-Info.plist` and add it to the App target in Xcode.
 2. Firebase Console → Add app **Android**, package `app.englishtowork.hospitality`, add SHA-1 + SHA-256 of debug/upload keystore AND Play App Signing key → download `google-services.json` → `frontend/android/app/google-services.json`.
 3. Xcode → App target → Info → URL Types → add URL scheme = `REVERSED_CLIENT_ID` from the plist.
-4. Apple Developer → Identifiers → `app.englishtowork.hospitality` → enable Sign in with Apple; select Team in Xcode Signing (automatic). Firebase Apple provider: add the bundle ID to the Apple provider (Services ID/Team ID/Key already used by web stay).
+4. Apple Developer → Identifiers → `app.englishtowork.hospitality` → enable Sign in with Apple; select Team in Xcode Signing (automatic). Firebase accepts native Apple tokens (aud = bundle ID) once the iOS app from step 1 is registered; the web Services ID/Team ID/Key config stays as is.
 5. Firebase Auth → Sign-in method: Google + Apple enabled (already for web). Google Cloud: the iOS/Android OAuth clients are auto-created by Firebase when adding the apps.
 6. macOS: `cd frontend/ios/App && pod install`.
 

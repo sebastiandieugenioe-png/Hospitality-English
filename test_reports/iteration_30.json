@@ -1,0 +1,29 @@
+{
+  "summary": "MOBILE_NATIVE_AUTH_V1 web regression at 390x844: everything requested passes. (1) As a guest, /account shows account-guest, account-google-gis (official GIS button rendered, about 700 chars of markup) and account-apple-btn. account-google-native is absent. (2) Clicking account-apple-btn shows account-apple-consent with confirm and cancel buttons. Cancel closes it. No real Apple login was done. (3) The Premium AccountGate was opened two ways: More > more-view-premium-btn, and tapping a locked situation on /learn (Spanish UI). Both show premium-account-gate with premium-gate-google (GIS rendered), premium-gate-apple and premium-gate-notnow. premium-gate-google-native is absent, and Not now closes the gate. (4) Across onboarding, /home, /account, /more, /learn and /lesson there were 0 console errors and 0 page errors, nothing mentions @capacitor-firebase or FirebaseAuthentication, and there were 0 requests to identitytoolkit v2/accounts:revokeToken. The only Identity Toolkit call was v1/accounts:lookup. (5) Guest flow: landing > onboarding (6 steps) > /home works. iph_guest_id is set in localStorage and /api/auth/bootstrap is called. /learn lists situations (free and locked), and the free lesson /lesson/taking-a-drinks-order opens with no unlock button. (6) After picking Spanish (es) in onboarding, /account renders 'Guarda tu progreso / Continuar con Apple' and the gate is localized. The account.continueGoogle key exists exactly once in all 10 locales and is only used in the native branches. (7) Jest src/lib/__tests__/nativeAuth.test.js: 23/23 passed. (8) Backend pytest suite: 420/420 passed with serial -n 0, run from /app/backend. Two earlier runs failed for infra reasons only. Run from /app, premium_helpers cannot import firebase_admin_setup. With the default -n 2 xdist workers, the preview ingress returned Cloudflare 'Just a moment' 429 challenges. Backend code is unchanged in the last commits.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/account and PremiumGate (non-English UI)", "issues": ["The GIS button label stays English ('Continue with Google') while the rest of the UI is Spanish. renderGisButton does not pass a `locale` option (e.g. locale: i18n.language). This predates this change and is minor."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/", "/app/test_reports/pytest/pytest_results_iter30.xml", "/app/frontend/src/lib/__tests__/nativeAuth.test.js"],
+  "action_items": [
+    "Optional: pass `locale` to google.accounts.id.renderButton so the Google button matches the UI language."
+  ],
+  "critical_code_review_comments": [
+    "Web path is intact. fbAuth uses getAuth when not native. connectAppleProvider and reauthAndRevokeApple use the popup path and revokeAccessToken. firebaseSignOut calls nativeSignOut only when native. The NATIVE and isNative() branches keep GIS on web.",
+    "nativeAuth.js is imported statically by firebase.js, Account.js and PremiumGate.js, so the Capacitor plugin proxy is bundled on web. It is lazy and caused no web errors. A dynamic import would trim the web bundle (optional).",
+    "connectAppleNative fallback when the credential is already in use: OAuthProvider.credentialFromError(e) || credential. Re-using the original Apple id_token/nonce credential after a failed link may be rejected. This should be verified on a real iOS device.",
+    "Native reauthAndRevokeApple order is right: fresh credential > reauth > revoke via the v2 REST call. It aborts with APPLE_REVOKE_TOKEN_MISSING when there is no authorizationCode, before anything is deleted.",
+    "/api/auth/bootstrap ran 11 times over about 7 full page loads. This matches earlier reports and is not new."
+  ],
+  "updated_files": ["/app/test_reports/iteration_30.json"],
+  "success_rate": {"backend": "100% (420/420)", "frontend": "100%"},
+  "test_credentials": "None needed (anonymous guest). /app/memory/test_credentials.md was read.",
+  "seed_data_creation": "Only transient anonymous guests created by onboarding runs.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run pytest from /app/backend (cd /app/backend && pytest tests -n 0). With the default -n 2, the preview Cloudflare starts returning 429 HTML challenges and causes ~135 false failures. Onboarding automation: click [data-testid^=onboarding-option-] items (not the onboarding-options-* container), then onboarding-continue-btn / onboarding-finish-btn, then onboarding-start-learning-btn. To open the gate: more-view-premium-btn, or a locked learn-situation-* row. Native-only testids that must stay absent on web: account-google-native, account-reauth-google-native, premium-gate-google-native."
+}

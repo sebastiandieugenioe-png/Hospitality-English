@@ -340,3 +340,13 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 
 ## MOBILE_CAPACITOR_SCAFFOLD_V1 (Jun 2026) — PASS
 - Capacitor 7.6.9 added (Node 20 env), capacitor.config.json (appId app.englishtowork.hospitality, appName Hospitality English, webDir build, bundled), ios/ + android/ generated, mic permissions, src/lib/platform.js. Docs: docs/MOBILE_CAPACITOR.md. Web unchanged. Next: native auth, RevenueCat Capacitor, iOS target ≥14.5.
+
+## 2026-06 — MOBILE_NATIVE_AUTH_V1 (DONE, device tests pending)
+- @capacitor-firebase/authentication@7.5.0, skipNativeAuth=true; Firebase JS is the only session (native: initializeAuth + indexedDBLocalPersistence).
+- src/lib/nativeAuth.js: native Google idToken, Apple idToken+raw nonce+fresh authorizationCode, native signOut, Apple revoke via identitytoolkit v2/accounts:revokeToken (tokenType CODE) before deletion.
+- UI: NativeGoogleButton on native (GIS on web unchanged); Apple hidden only on Android native (APPLE_ENABLED).
+- iOS target 15.0, App.entitlements (Sign in with Apple), Podfile Google subspec; Android rgcfaIncludeGoogle.
+- Tests: 23 jest (src/lib/__tests__/nativeAuth.test.js), web regression iteration_30 PASS, backend 420/420.
+- OWNER_ACTION_REQUIRED: GoogleService-Info.plist, google-services.json + SHA-1/256, REVERSED_CLIENT_ID URL scheme, Apple capability/Team (see docs/MOBILE_CAPACITOR.md).
+- Known V1 limit: Apple-only account cannot delete from Android app. Minor pre-existing: GIS button label not localized.
+- Next: device builds test → RevenueCat purchases-capacitor.
