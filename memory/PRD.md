@@ -332,3 +332,8 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - Speaking privacy note corrected in 10 locales; legal.pending removed; new legal.accountDeletion, legal.englishOnly.
 - Findings: PostHog (via ap.emergent.sh, Emergent template index.html) active with session recording in preview; unknown in prod → owner/Emergent decision (recommend disabling for V1). account_events kept after deletion; RevenueCat customer not deleted on account deletion; guest data has no expiry.
 - LEGAL_TECHNICAL_CLOSEOUT_V1 (Jun 2026): PostHog init in public/index.html gated to *.preview.emergentagent.com (prod hosts get no PostHog/session recording; verify on live domain after deploy). DELETE /api/account now deletes account_events (by firebase_uid/user_id/guest_ids) and no longer writes a post-deletion "delete" event. Privacy §3/§7/§8/§9/§10, /account-deletion and docs inventory updated. Backend suite 420/420 (new tests/test_account_deletion_events.py).
+
+## MOBILE_PACKAGING_DISCOVERY_V1 (Jun 2026) — discovery only, no changes
+- Repo: CRA (craco) React 19 web only; no Capacitor/Cordova/Expo/RN/PWA manifest/SW/native projects.
+- Emergent (support KB): native mobile only via separate Expo/React Native job + EAS cloud builds; cannot convert web job. Code export via GitHub.
+- Recommendation: Capacitor wrapper of current React build (outside Emergent build tooling), native auth plugin (@capacitor-firebase/authentication) for Google/Apple, @revenuecat/purchases-capacitor for StoreKit/Play Billing with appUserID=users.id and same entitlement; backend unchanged. iOS mic usage description + Android RECORD_AUDIO.
