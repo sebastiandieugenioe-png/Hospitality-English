@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Hospitality English</string>
+    <string name="title_activity_main">Hospitality English</string>
+    <string name="package_name">app.englishtowork.hospitality</string>
+    <string name="custom_url_scheme">app.englishtowork.hospitality</string>
+</resources>

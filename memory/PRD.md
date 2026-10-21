@@ -337,3 +337,6 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - Repo: CRA (craco) React 19 web only; no Capacitor/Cordova/Expo/RN/PWA manifest/SW/native projects.
 - Emergent (support KB): native mobile only via separate Expo/React Native job + EAS cloud builds; cannot convert web job. Code export via GitHub.
 - Recommendation: Capacitor wrapper of current React build (outside Emergent build tooling), native auth plugin (@capacitor-firebase/authentication) for Google/Apple, @revenuecat/purchases-capacitor for StoreKit/Play Billing with appUserID=users.id and same entitlement; backend unchanged. iOS mic usage description + Android RECORD_AUDIO.
+
+## MOBILE_CAPACITOR_SCAFFOLD_V1 (Jun 2026) — PASS
+- Capacitor 7.6.9 added (Node 20 env), capacitor.config.json (appId app.englishtowork.hospitality, appName Hospitality English, webDir build, bundled), ios/ + android/ generated, mic permissions, src/lib/platform.js. Docs: docs/MOBILE_CAPACITOR.md. Web unchanged. Next: native auth, RevenueCat Capacitor, iOS target ≥14.5.
