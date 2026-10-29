@@ -366,3 +366,7 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - 9 i18n keys × 10 locales. Tests: jest 63/63 (PremiumGate.test.js, BillingContext.test.js new/extended); iteration_32 browser 390px PASS; backend 410/410 (throttled runner).
 - Tech debt: Lesson.js duplicate embedded item requests; legacy /category page nav overflow + English situation titles.
 - Release blockers: legal OWNER_ACTION_REQUIRED placeholders; native billing (purchases-capacitor + Restore); native auth device tests; production secrets.
+
+## 2026-06 — POST_IMPLEMENTATION_9_TEST_SUITE_RECONCILIATION (DONE)
+- 420 vs 410: backend/tests/run_local_throttled.sh globbed only tests/test_*.py, skipping tests/backend_test.py (10 tests). Fixed runner glob; full run 420/420 passed. No tests deleted/lost.
+- /category/:slug route still registered in App.js but no in-app links (direct URL only).
