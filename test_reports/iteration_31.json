@@ -1,0 +1,30 @@
+{
+  "summary": "PREMIUM_PRACTICE_SESSION_RACE_FIX verified at 390x844 as an anonymous guest using the Spanish UI. Dedicated Listening (/listening-practice): loading screen, then lp-intro, with EXACTLY ONE GET /api/guests/{id}/listening-practice?free_only=true. All 5 items answered (counter 1/5 to 5/5). No extra requests during the session. 'Practicar de nuevo' sent exactly one new request and went straight to question 1/5 without the intro. Speaking (/speaking-practice): same results (sp-intro, one request with free_only=true, first speaking-question rendered, skipped through to sp-complete, 'again' sent one request and went to 1/5). Found and fixed a CRITICAL bug added in BillingContext: when RevenueCat fails, the catch block referenced `desiredId`, which only existed inside the try block. This threw an uncaught ReferenceError, which showed the CRA error overlay, and resolvedFor was never set. accessResolved stayed false, so the dedicated practice pages would stay on loading forever whenever RevenueCat is unreachable (outage, adblock, network). I reproduced it by blocking *revenuecat* requests in Playwright ('PAGEERROR desiredId is not defined'). After the fix, the same scenario shows lp-intro with one free_only=true request. Jest: 34/34 pass after the fix (11+23). Backend: 420/420 pass, run against localhost:8001 one file at a time with throttling. A full parallel run against the public URL triggered Cloudflare 429 'Just a moment' challenges, and localhost runs at full speed ran out of ephemeral ports (the container only has 1024). Home, Progress, Practice hub and the lesson /lesson/taking-a-drinks-order (intro, listening/speaking item endpoints) load with no console errors. Changing the language mid-session was NOT tested in the browser; only the jest tests cover it.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "BillingContext identity effect", "issue": "FIXED: ReferenceError 'desiredId is not defined' in catch when RevenueCat configure/switch/getOfferings fails. This left resolvedFor undefined, so dedicated Listening/Speaking practice stayed on loading forever, and the dev error overlay appeared.", "selector": "[data-testid=lp-intro], [data-testid=sp-intro]", "priority": "CRITICAL"}
+    ],
+    "integration_issues": [
+      {"flow": "Lesson embedded listening/speaking (pre-existing, Lesson.js not changed in this task)", "issue": "On /lesson/taking-a-drinks-order, GET /api/listening/item/{slug} and /api/speaking/item/{slug} were each requested 4 times. Probably StrictMode/dev double effects plus re-renders. Not a regression, but these are duplicate network calls.", "affected_selectors": ["[data-testid=lesson-intro]"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/run_local_throttled.sh", "/app/frontend/src/components/focus/__tests__/PracticeSessionPage.test.js"],
+  "action_items": [
+    "Review my one-line fix in BillingContext.js: desiredId is now declared before the async IIFE so the catch block can use it. Consider adding a jest test for the BillingProvider where RevenueCat rejects, asserting status=error and resolvedFor=null so the practice page reaches the intro.",
+    "Optional: work out why Lesson loads listening/speaking item endpoints 4 times each (pre-existing)."
+  ],
+  "critical_code_review_comments": [
+    "BillingContext: block-scoped const used in catch (fixed). Jest tests mock useBilling, so they could not catch this. Add a test with the real provider.",
+    "BillingContext.refresh() does not update resolvedFor. That is fine because the identity does not change, but write that down.",
+    "PracticeSessionPage error phase has no retry button. The user has to leave and re-enter."
+  ],
+  "updated_files": ["/app/frontend/src/context/BillingContext.js", "/app/backend/tests/run_local_throttled.sh"],
+  "success_rate": {"backend": "100% (420/420)", "frontend": "100% after fix (1 critical bug found & fixed)"},
+  "seed_data_creation": "Several anonymous guests were created through onboarding.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Dedicated practice routes are /listening-practice and /speaking-practice (kind lp/sp). Onboarding last-step button is onboarding-finish-btn, then onboarding-start-learning-btn. Bottom nav: tab-practice; practice-mode-listening and practice-mode-speaking. Running the full pytest suite against the public URL in parallel triggers Cloudflare 429s. Use backend/tests/run_local_throttled.sh (localhost, one file at a time, waits on TIME-WAIT) plus backend_test.py separately. To simulate a RevenueCat outage, use page.route('**/*revenuecat*/**', abort).",
+  "rca of the issue": "Root cause: in BillingContext's identity useEffect, `const desiredId` was declared inside try{}, but the new catch line called setResolvedFor(desiredId). On any RevenueCat failure the catch threw a ReferenceError after setStatus('error'). resolvedFor stayed undefined !== null, so PracticeSessionPage.accessResolved was never true and no session was created (stuck on 'Cargando'). Repro: block *revenuecat* requests, then onboard and open Practice > Comprensión oral. Mitigation: hoist desiredId outside try (done) and verify again with RevenueCat blocked: lp-intro shows with exactly one free_only=true request."
+}

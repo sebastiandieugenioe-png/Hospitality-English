@@ -32,10 +32,10 @@ export function BillingProvider({ children }) {
     if (!authReady) return;
     if (!isRevenueCatConfigured()) { setStatus("error"); setResolvedFor(account?.id || null); return; }
     let cancelled = false;
+    const desiredId = account?.id || null; // outside try: also used by catch
     (async () => {
       setStatus((s) => (s === "ready" ? s : "loading"));
       try {
-        const desiredId = account?.id || null;
         if (!configuredRef.current) {
           configureRevenueCat(desiredId); // init once (anonymous if no account)
           configuredRef.current = true;

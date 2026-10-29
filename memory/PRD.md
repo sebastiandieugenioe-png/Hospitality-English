@@ -350,3 +350,10 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - OWNER_ACTION_REQUIRED: GoogleService-Info.plist, google-services.json + SHA-1/256, REVERSED_CLIENT_ID URL scheme, Apple capability/Team (see docs/MOBILE_CAPACITOR.md).
 - Known V1 limit: Apple-only account cannot delete from Android app. Minor pre-existing: GIS button label not localized.
 - Next: device builds test → RevenueCat purchases-capacitor.
+
+## 2026-06 — PREMIUM_PRACTICE_SESSION_RACE_FIX (DONE)
+- Root cause: BillingContext kept status "ready" during RevenueCat identity switch → practice session could be created with previous identity's entitlement; "practice again" read access while unresolved.
+- Fix: BillingContext additive `resolvedFor`; PracticeSessionPage creates session only when authReady + ready/error + resolvedFor === current identity; once per sessionSeq (idempotent ref), access+language snapshotted; session immutable; "again" bumps sessionSeq.
+- Tests: PracticeSessionPage.test.js (11), BillingContext.test.js (4), nativeAuth (23) = 38/38; backend 420/420; web regression iteration_31.
+- Pre-existing note: lesson embedded listening/speaking item endpoints fetched up to 4x (Lesson.js, untouched).
+- NEXT: IMPLEMENTATION 9 — ONBOARDING / AUTH / PAYWALL POLISH (not started).
