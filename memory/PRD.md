@@ -357,3 +357,12 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 - Tests: PracticeSessionPage.test.js (11), BillingContext.test.js (4), nativeAuth (23) = 38/38; backend 420/420; web regression iteration_31.
 - Pre-existing note: lesson embedded listening/speaking item endpoints fetched up to 4x (Lesson.js, untouched).
 - NEXT: IMPLEMENTATION 9 — ONBOARDING / AUTH / PAYWALL POLISH (not started).
+
+## 2026-06 — IMPLEMENTATION 9: ONBOARDING / AUTH / PAYWALL POLISH (DONE)
+- BillingContext: status "loading" + isPremium false while customerInfo belongs to previous identity (no stale Premium on logout/login/user switch); refresh() returns premium bool.
+- PremiumGate: "pending" sheet while access resolves (no toast); post-sign-in waits for identity; CTA "Subscribe"; auto-renew note; Terms/Privacy links; purchase errors mapped (cancel silent, network, pending, store, already-purchased → re-sync, generic).
+- Subscription: loading state (no Free→Premium flip), unavailable note on billing error, web signed-in "Refresh subscription status" (NOT restore; native Restore deferred to native billing).
+- Learn/Category: skeleton until access resolved; Lesson: no locked flash while unresolved. Onboarding completion free note. GIS button localized.
+- 9 i18n keys × 10 locales. Tests: jest 63/63 (PremiumGate.test.js, BillingContext.test.js new/extended); iteration_32 browser 390px PASS; backend 410/410 (throttled runner).
+- Tech debt: Lesson.js duplicate embedded item requests; legacy /category page nav overflow + English situation titles.
+- Release blockers: legal OWNER_ACTION_REQUIRED placeholders; native billing (purchases-capacitor + Restore); native auth device tests; production secrets.

@@ -16,6 +16,8 @@ const levelLabel = { a1: "A1", a2: "A2", b1: "B1", b2: "B2" };
 export default function Category() {
   const { slug } = useParams();
   const { t, language } = useApp();
+  const billing = useBilling();
+  const accessUnresolved = billing.status === "loading" || billing.status === "uninitialized";
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -40,10 +42,10 @@ export default function Category() {
           <ArrowLeft className="w-4 h-4" /> {t("lesson.backHome")}
         </Link>
 
-        {loading && <p className="text-brand-charcoal/50">{t("common.loading")}</p>}
+        {(loading || accessUnresolved) && !error && <p className="text-brand-charcoal/50">{t("common.loading")}</p>}
         {error && <p className="text-brand-charcoal/50">{t("category.notFound")}</p>}
 
-        {category && (
+        {category && !accessUnresolved && (
           <>
             <motion.header
               initial={{ opacity: 0, y: 10 }}

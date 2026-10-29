@@ -10,7 +10,7 @@ import { nativeGoogleIdToken } from "@/lib/nativeAuth";
 const NATIVE = isNative();
 
 export default function Account() {
-  const { t, account, isAuthenticated, connectGoogle, connectApple, reauthGoogle, reauthRevokeApple, logout, deleteAccount } = useApp();
+  const { t, language, account, isAuthenticated, connectGoogle, connectApple, reauthGoogle, reauthRevokeApple, logout, deleteAccount } = useApp();
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
   const [err, setErr] = useState(null);
@@ -117,7 +117,7 @@ export default function Account() {
       try {
         if (googleBtnRef.current) {
           googleBtnRef.current.innerHTML = "";
-          await renderGisButton(googleBtnRef.current, onCredential, { width: 300 });
+          await renderGisButton(googleBtnRef.current, onCredential, { width: 300, locale: language });
         }
       } catch (e) {
         if (!cancelled) setGisUnavailable(true);
@@ -125,7 +125,7 @@ export default function Account() {
     })();
     return () => { cancelled = true; };
     // eslint-disable-next-line
-  }, [isAuthenticated]);
+  }, [isAuthenticated, language]);
 
   // Render a GIS button to confirm deletion (recent-login reauthentication).
   useEffect(() => {
@@ -134,7 +134,7 @@ export default function Account() {
       try {
         if (reauthBtnRef.current) {
           reauthBtnRef.current.innerHTML = "";
-          await renderGisButton(reauthBtnRef.current, onCredential, { width: 300 });
+          await renderGisButton(reauthBtnRef.current, onCredential, { width: 300, locale: language });
         }
       } catch (e) {
         setGisUnavailable(true);

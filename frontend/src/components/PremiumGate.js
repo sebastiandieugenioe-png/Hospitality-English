@@ -23,7 +23,7 @@ const priceOf = (pkg) => {
 };
 
 export function PremiumProvider({ children }) {
-  const { isAuthenticated, connectGoogle, connectApple, t } = useApp();
+  const { isAuthenticated, connectGoogle, connectApple, t, language } = useApp();
   const billing = useBilling();
   const [mode, setMode] = useState(null); // null | "pending" | "account" | "paywall"
   const resumeRef = useRef(null);
@@ -82,7 +82,7 @@ export function PremiumProvider({ children }) {
         </Overlay>
       )}
       {mode === "account" && (
-        <AccountGate t={t} onClose={closeAll} connectGoogle={connectGoogle} connectApple={connectApple} />
+        <AccountGate t={t} language={language} onClose={closeAll} connectGoogle={connectGoogle} connectApple={connectApple} />
       )}
       {mode === "paywall" && (
         <Paywall t={t} billing={billing} onClose={closeAll} onUnlocked={runResume} />
@@ -98,7 +98,7 @@ export function usePremium() {
 }
 
 /* ---------- Guest account gate ---------- */
-function AccountGate({ t, onClose, connectGoogle, connectApple }) {
+function AccountGate({ t, language, onClose, connectGoogle, connectApple }) {
   const gisRef = useRef(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(null);
@@ -116,7 +116,7 @@ function AccountGate({ t, onClose, connectGoogle, connectApple }) {
           try { await connectGoogle(token); } // intent effect continues to paywall
           catch (e) { if (active) setErr(friendlyAuthError(e, t)); }
           finally { if (active) setBusy(false); }
-        }, { width: 300 });
+        }, { width: 300, locale: language });
       } catch { /* GIS unavailable */ }
     })();
     return () => { active = false; };

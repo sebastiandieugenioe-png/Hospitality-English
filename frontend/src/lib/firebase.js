@@ -137,6 +137,7 @@ export async function renderGisButton(el, callback, opts = {}) {
     type: "standard", theme: "outline", size: "large",
     text: "continue_with", shape: "pill", logo_alignment: "left",
     width: opts.width || 300,
+    ...(opts.locale ? { locale: opts.locale } : {}),
   });
   return google;
 }
