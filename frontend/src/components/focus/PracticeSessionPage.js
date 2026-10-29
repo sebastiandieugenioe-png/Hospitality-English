@@ -10,7 +10,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 
 export function PracticeSessionPage({ kind, professionId = "hospitality", getMeta, getPool, Exercise, icon, introTitle, introSub, introMeta, introNotes, completionTitle, completionStat, isSuccess }) {
   const navigate = useNavigate();
-  const { language, ensureGuest, loading, onboardingCompleted, t } = useApp();
+  const { language, ensureGuest, loading, onboardingCompleted, t, account, authReady } = useApp();
   const billing = useBilling();
   const [meta, setMeta] = useState(null);
   const [items, setItems] = useState([]);
@@ -19,43 +19,47 @@ export function PracticeSessionPage({ kind, professionId = "hospitality", getMet
   const [success, setSuccess] = useState(0);
   const [phase, setPhase] = useState("loading"); // loading | intro | question | complete | error
   const [guestId, setGuestId] = useState(null);
+  const [sessionLang, setSessionLang] = useState(null);
   const [confirmExit, setConfirmExit] = useState(false);
-  // Existing billing states: uninitialized | loading -> unresolved; ready | error -> resolved (error keeps free access).
-  const accessResolved = billing.status === "ready" || billing.status === "error";
-  const sessionKeyRef = useRef(null);
+  const [sessionSeq, setSessionSeq] = useState(0); // bumped only by "practice again"
+  // Resolved = auth settled + billing ready/error (error keeps free access) for the CURRENT identity.
+  const accessResolved = authReady && (billing.status === "ready" || billing.status === "error")
+    && billing.resolvedFor === (account?.id || null);
+  const createdSeqRef = useRef(-1);
+  const reqRef = useRef(0);
+  const latestRef = useRef(null);
+  latestRef.current = { billing, language };
 
   useEffect(() => {
     if (!loading && !onboardingCompleted) navigate("/onboarding", { replace: true });
   }, [loading, onboardingCompleted, navigate]);
 
-  const reqRef = useRef(0);
-  // Fetch + apply a pool; stale responses (older request ids) are ignored.
-  const loadPool = async (gid) => {
-    const id = ++reqRef.current;
-    const d = await getPool(gid, { free_only: !billing.isPremium(professionId) });
-    if (id !== reqRef.current) return null;
-    const list = d.items || [];
-    setItems(list); setIdx(0); setAnswered(0); setSuccess(0);
-    return list;
-  };
-
+  // Create each session exactly once (StrictMode/re-render safe). Access + language are
+  // snapshotted at creation; later entitlement/language changes only affect the next session.
   useEffect(() => {
-    if (!accessResolved || sessionKeyRef.current === language) return;
-    sessionKeyRef.current = language; // decide the pool once per session (also dedupes StrictMode double-invoke)
+    if (!accessResolved || createdSeqRef.current === sessionSeq) return;
+    createdSeqRef.current = sessionSeq;
+    const id = ++reqRef.current;
+    const { billing: b, language: lang } = latestRef.current;
+    const freeOnly = !b.isPremium(professionId);
     (async () => {
       try {
         const m = await getMeta();
         const gid = await ensureGuest();
-        setMeta(m); setGuestId(gid);
-        const list = await loadPool(gid);
-        if (list) setPhase(list.length ? "intro" : "complete");
+        const d = await getPool(gid, { free_only: freeOnly });
+        if (id !== reqRef.current) return;
+        const list = d.items || [];
+        setMeta(m); setGuestId(gid); setSessionLang(lang);
+        setItems(list); setIdx(0); setAnswered(0); setSuccess(0);
+        setPhase(list.length ? (sessionSeq > 0 ? "question" : "intro") : "complete");
       } catch (e) {
+        if (id !== reqRef.current) return;
         console.warn(`${kind} session load failed`, e?.response?.status);
         setPhase("error");
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language, accessResolved]);
+  }, [accessResolved, sessionSeq]);
 
   useEffect(() => { window.scrollTo(0, 0); }, [idx, phase]);
 
@@ -63,7 +67,7 @@ export function PracticeSessionPage({ kind, professionId = "hospitality", getMet
   const requestExit = () => (phase === "question" && answered > 0 ? setConfirmExit(true) : leave());
   const onAnswered = (r) => { setAnswered((n) => n + 1); if (isSuccess(r)) setSuccess((n) => n + 1); };
   const goNext = () => (idx + 1 >= items.length ? setPhase("complete") : setIdx((i) => i + 1));
-  const again = async () => { setPhase("loading"); const list = await loadPool(guestId); if (list) setPhase(list.length ? "question" : "complete"); };
+  const again = () => { setPhase("loading"); setSessionSeq((n) => n + 1); };
 
   const total = items.length;
   const inQuestion = phase === "question";
@@ -82,7 +86,7 @@ export function PracticeSessionPage({ kind, professionId = "hospitality", getMet
   else body = (
     <AnimatePresence mode="wait">
       <motion.div key={items[idx].id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-        <Exercise item={items[idx]} ui={meta.ui} language={language} guestId={guestId} t={t} onAnswered={onAnswered} onContinue={goNext}
+        <Exercise item={items[idx]} ui={meta.ui} language={sessionLang || language} guestId={guestId} t={t} onAnswered={onAnswered} onContinue={goNext}
           continueLabel={idx + 1 >= total ? t("practiceSession.finish") : t("common.continue")} />
       </motion.div>
     </AnimatePresence>

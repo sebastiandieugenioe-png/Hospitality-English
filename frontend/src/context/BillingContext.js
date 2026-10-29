@@ -16,6 +16,8 @@ export function BillingProvider({ children }) {
   const [status, setStatus] = useState("uninitialized"); // uninitialized|loading|ready|error
   const [customerInfo, setCustomerInfo] = useState(null);
   const [offerings, setOfferings] = useState(null);
+  // Identity (users.id or null for guest) the current customerInfo/status belongs to.
+  const [resolvedFor, setResolvedFor] = useState(undefined);
   const configuredRef = useRef(false);
 
   const loadState = async () => {
@@ -28,7 +30,7 @@ export function BillingProvider({ children }) {
   // React to identity changes (guest -> account -> logout). Never blocks the app.
   useEffect(() => {
     if (!authReady) return;
-    if (!isRevenueCatConfigured()) { setStatus("error"); return; }
+    if (!isRevenueCatConfigured()) { setStatus("error"); setResolvedFor(account?.id || null); return; }
     let cancelled = false;
     (async () => {
       setStatus((s) => (s === "ready" ? s : "loading"));
@@ -41,9 +43,9 @@ export function BillingProvider({ children }) {
           await switchRevenueCatIdentity(desiredId);
         }
         await loadState();
-        if (!cancelled) setStatus("ready");
+        if (!cancelled) { setStatus("ready"); setResolvedFor(desiredId); }
       } catch (e) {
-        if (!cancelled) setStatus("error"); // outage: keep free content accessible
+        if (!cancelled) { setStatus("error"); setResolvedFor(desiredId); } // outage: keep free content accessible
       }
     })();
     return () => { cancelled = true; };
@@ -106,6 +108,7 @@ export function BillingProvider({ children }) {
   const value = useMemo(() => ({
     status,
     ready: status === "ready",
+    resolvedFor,
     customerInfo,
     offerings,
     isPremium,
@@ -113,7 +116,7 @@ export function BillingProvider({ children }) {
     currentOffering,
     refresh,
     purchase,
-  }), [status, customerInfo, offerings]); // eslint-disable-line react-hooks/exhaustive-deps
+  }), [status, resolvedFor, customerInfo, offerings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Test Store env only: expose a read-only snapshot for integration self-tests.
   useEffect(() => {
