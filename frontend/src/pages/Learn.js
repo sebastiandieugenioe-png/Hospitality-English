@@ -19,6 +19,8 @@ export default function Learn() {
   const { loading: guestLoading, onboardingCompleted, profile, guestId, language, t } = useApp();
   const billing = useBilling();
   const premium = billing.isPremium(PROFESSION);
+  // Keep the skeleton until access is known, so locks never flicker Free -> Premium.
+  const accessUnresolved = billing.status === "loading" || billing.status === "uninitialized";
   const { requestPremium } = usePremium();
   const [skills, setSkills] = useState([]);
   const [situations, setSituations] = useState(null);
@@ -48,7 +50,7 @@ export default function Learn() {
 
   // Restore Learn scroll position after returning from a lesson.
   useLayoutEffect(() => {
-    if (!situations?.length) return;
+    if (!situations?.length || accessUnresolved) return;
     const y = Number(sessionStorage.getItem(SCROLL_KEY));
     sessionStorage.removeItem(SCROLL_KEY);
     // Re-apply briefly: late layout/focus changes after returning can override a single scrollTo.
@@ -57,7 +59,7 @@ export default function Learn() {
     const timers = [requestAnimationFrame(go), setTimeout(go, 150), setTimeout(go, 350)];
     const id = setTimeout(() => { window.history.scrollRestoration = "auto"; }, 400);
     return () => { cancelAnimationFrame(timers[0]); clearTimeout(timers[1]); clearTimeout(timers[2]); clearTimeout(id); };
-  }, [situations]);
+  }, [situations, accessUnresolved]);
 
   const canAccess = (slug) => canAccessSituation({ professionId: PROFESSION, role: profile?.role, situationSlug: slug, isPremium: premium });
   const statusOf = (slug) => situationStatus(stats, slug);
@@ -89,16 +91,16 @@ export default function Learn() {
         <motion.header initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
           <h1 className="text-[30px] leading-tight sm:text-4xl font-serif font-bold text-[#222824] tracking-tight">{t("learn.title")}</h1>
           {roleName && <p data-testid="learn-plan-label" className="mt-1.5 text-[15px] font-medium text-[#173D31]">{roleName}</p>}
-          {situations && (practicedCount > 0 ? (
+          {situations && !accessUnresolved && (practicedCount > 0 ? (
             <ProgressSummary premium={premium} n={practicedCount} total={total} allFreeDone={allFreeDone} t={t} />
           ) : (
             <p data-testid="learn-new-user-sub" className="mt-2 text-[15px] text-[#6B736E]">{t("learn.newUserSub")}</p>
           ))}
         </motion.header>
 
-        {recSit && <RecommendedFirst sit={recSit} skill={skillName(recSit.primary_skill)} language={language} t={t} onStart={() => open(recSit.slug)} />}
+        {recSit && !accessUnresolved && <RecommendedFirst sit={recSit} skill={skillName(recSit.primary_skill)} language={language} t={t} onStart={() => open(recSit.slug)} />}
 
-        {situations === null ? (
+        {situations === null || accessUnresolved ? (
           <div className="mt-8 space-y-3" data-testid="learn-loading">
             {[0, 1, 2, 3].map((i) => <div key={i} className="h-[68px] rounded-2xl bg-[#EEF3EF] animate-pulse" />)}
           </div>

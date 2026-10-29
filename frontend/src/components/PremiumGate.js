@@ -25,7 +25,7 @@ const priceOf = (pkg) => {
 export function PremiumProvider({ children }) {
   const { isAuthenticated, connectGoogle, connectApple, t } = useApp();
   const billing = useBilling();
-  const [mode, setMode] = useState(null); // null | "account" | "paywall"
+  const [mode, setMode] = useState(null); // null | "pending" | "account" | "paywall"
   const resumeRef = useRef(null);
   const intentRef = useRef(false);
 
@@ -39,34 +39,48 @@ export function PremiumProvider({ children }) {
     if (typeof fn === "function") setTimeout(fn, 0);
   };
 
-  // Central entry point. resume() runs once Premium is unlocked.
+  const unresolved = billing.status === "loading" || billing.status === "uninitialized";
+
+  // Central entry point. resume() runs once Premium is unlocked. While access is still
+  // resolving, a short loading sheet is shown instead of guessing Free/Premium.
   const requestPremium = ({ resume } = {}) => {
-    if (billing.status === "loading" || billing.status === "uninitialized" || billing.status === "error") {
+    if (billing.status === "error") {
       toast.error(t("paywall.unavailable"));
       return;
     }
-    if (billing.isPremium(PROFESSION)) {
+    if (!unresolved && billing.isPremium(PROFESSION)) {
       if (typeof resume === "function") resume();
       return;
     }
     resumeRef.current = resume || null;
     intentRef.current = true;
-    setMode(isAuthenticated ? "paywall" : "account");
+    setMode(unresolved ? "pending" : isAuthenticated ? "paywall" : "account");
   };
 
-  // After the guest signs in, continue automatically to the paywall if intent held.
+  // Resolve "pending" (and post-sign-in) once access for the current identity is known.
   useEffect(() => {
-    if (isAuthenticated && intentRef.current && mode === "account") {
-      if (billing.isPremium(PROFESSION)) { runResume(); return; }
-      setMode("paywall");
-    }
-  }, [isAuthenticated, mode]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (!intentRef.current) return;
+    const afterSignIn = mode === "account" && isAuthenticated;
+    if (mode !== "pending" && !afterSignIn) return;
+    if (unresolved) { if (afterSignIn) setMode("pending"); return; }
+    if (billing.status === "error") { closeAll(); toast.error(t("paywall.unavailable")); return; }
+    if (billing.isPremium(PROFESSION)) { runResume(); return; }
+    setMode(isAuthenticated ? "paywall" : "account");
+  }, [isAuthenticated, mode, billing.status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const value = { requestPremium, isPremium: (p = PROFESSION) => billing.isPremium(p) };
 
   return (
     <PremiumContext.Provider value={value}>
       {children}
+      {mode === "pending" && (
+        <Overlay onClose={closeAll} testid="premium-pending" labelledBy="premium-pending-title">
+          <CloseButton testid="premium-pending-close" label={t("paywall.closeAria")} onClick={closeAll} />
+          <p id="premium-pending-title" role="status" aria-live="polite" className="flex items-center justify-center gap-2 py-10 text-[15px] text-[#6B736E]">
+            <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" /> {t("paywall.checkingAccess")}
+          </p>
+        </Overlay>
+      )}
       {mode === "account" && (
         <AccountGate t={t} onClose={closeAll} connectGoogle={connectGoogle} connectApple={connectApple} />
       )}
@@ -144,6 +158,15 @@ function AccountGate({ t, onClose, connectGoogle, connectApple }) {
   );
 }
 
+// RevenueCat ErrorCode -> calm, non-technical copy (cancel is handled before this).
+export function purchaseErrorMessage(e, t) {
+  const code = e?.errorCode;
+  if (code === 10 || String(e?.message || "").toLowerCase().includes("network")) return t("account.errNetwork");
+  if (code === 20) return t("paywall.errPending");
+  if (code === 2 || code === 3 || code === 5) return t("paywall.errStore");
+  return t("paywall.errPurchase");
+}
+
 /* ---------- Custom paywall (prices from RevenueCat) ---------- */
 function Paywall({ t, billing, onClose, onUnlocked }) {
   const offering = billing.currentOffering(PROFESSION);
@@ -190,9 +213,17 @@ function Paywall({ t, billing, onClose, onUnlocked }) {
       const code = e?.errorCode;
       rcDiag("PURCHASE_ERROR", { stage: "during_purchase", code, message: e?.message, product: productId });
       if (code === 1) { setState("idle"); return; } // UserCancelledError: no error, no unlock
-      const isNetwork = code === 10 || String(e?.message || "").toLowerCase().includes("network");
+      if (code === 6) { // ProductAlreadyPurchased: re-sync the account instead of failing
+        try {
+          if (await billing.refresh(PROFESSION)) {
+            try { await refreshEntitlement(); } catch { /* backend re-verifies on next request */ }
+            setState("success"); return;
+          }
+        } catch { /* fall through to confirm error */ }
+        setState("error"); setErr(t("paywall.errConfirm")); return;
+      }
       setState("error");
-      setErr(isNetwork ? t("account.errNetwork") : t("paywall.errPurchase"));
+      setErr(purchaseErrorMessage(e, t));
     }
   };
 
@@ -239,9 +270,15 @@ function Paywall({ t, billing, onClose, onUnlocked }) {
       {err && <p data-testid="paywall-error" role="alert" className="mt-4 text-[14px] text-[#A44F3B]">{err}</p>}
 
       <button type="button" data-testid="paywall-continue" disabled={!chosenPkg || purchasing} onClick={buy} aria-busy={purchasing} className={`mt-5 w-full ${btnDark}`}>
-        {purchasing ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("paywall.processing")}</> : t("common.continue")}
+        {purchasing ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("paywall.processing")}</> : t("paywall.subscribe")}
       </button>
       <span className="sr-only" role="status" aria-live="polite">{purchasing ? t("paywall.processing") : ""}</span>
+      <p data-testid="paywall-renewal-note" className="mt-4 text-[13px] text-[#6B736E] leading-relaxed">{t("paywall.renewalNote")}</p>
+      <p data-testid="paywall-legal" className="mt-2 text-[13px] text-[#6B736E]">
+        <a href="/terms" target="_blank" rel="noopener noreferrer" data-testid="paywall-terms-link" className={`underline underline-offset-2 hover:text-[#222824] ${focusRing}`}>{t("legal.terms")}</a>
+        <span aria-hidden="true"> · </span>
+        <a href="/privacy" target="_blank" rel="noopener noreferrer" data-testid="paywall-privacy-link" className={`underline underline-offset-2 hover:text-[#222824] ${focusRing}`}>{t("legal.privacy")}</a>
+      </p>
     </Overlay>
   );
 }

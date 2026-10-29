@@ -25,7 +25,11 @@ export function BillingProvider({ children }) {
     const [offs, info] = await Promise.all([rc.getOfferings(), rc.getCustomerInfo()]);
     setOfferings(offs);
     setCustomerInfo(info);
+    return info;
   };
+  // State from a previous identity (mid login/logout switch) is never exposed as resolved.
+  const identityResolved = resolvedFor === (account?.id || null);
+  const effStatus = status === "uninitialized" || identityResolved ? status : "loading";
 
   // React to identity changes (guest -> account -> logout). Never blocks the app.
   useEffect(() => {
@@ -60,7 +64,7 @@ export function BillingProvider({ children }) {
   // Entitlement is ALWAYS derived from live RevenueCat CustomerInfo, never localStorage.
   const isPremium = (professionId) => {
     const cfg = billingConfigFor(professionId);
-    if (!cfg || !customerInfo) return false;
+    if (!cfg || !customerInfo || !identityResolved) return false;
     return Boolean(customerInfo.entitlements?.active?.[cfg.entitlementId]);
   };
 
@@ -74,9 +78,13 @@ export function BillingProvider({ children }) {
     };
   };
 
-  const refresh = async () => {
-    try { await loadState(); setStatus("ready"); }
-    catch { setStatus("error"); }
+  // Re-reads the signed-in account's entitlement. Returns whether Premium is active; throws on failure.
+  const refresh = async (professionId = "hospitality") => {
+    const info = await refreshCustomerInfo();
+    setCustomerInfo(info);
+    setStatus("ready");
+    const entId = billingConfigFor(professionId)?.entitlementId;
+    return Boolean(info?.entitlements?.active?.[entId]);
   };
 
   // Purchase a package (Test Store). purchaseResult.customerInfo is the PRIMARY
@@ -106,8 +114,8 @@ export function BillingProvider({ children }) {
   };
 
   const value = useMemo(() => ({
-    status,
-    ready: status === "ready",
+    status: effStatus,
+    ready: effStatus === "ready",
     resolvedFor,
     customerInfo,
     offerings,
@@ -116,7 +124,7 @@ export function BillingProvider({ children }) {
     currentOffering,
     refresh,
     purchase,
-  }), [status, resolvedFor, customerInfo, offerings]); // eslint-disable-line react-hooks/exhaustive-deps
+  }), [effStatus, resolvedFor, customerInfo, offerings, identityResolved]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Test Store env only: expose a read-only snapshot for integration self-tests.
   useEffect(() => {

@@ -469,5 +469,14 @@
   "landing.roleBartenders": "Barman e bartender",
   "landing.roleWaiters": "Camerieri di sala",
   "legal.accountDeletion": "Eliminazione dell'account",
-  "legal.englishOnly": "Questo documento è disponibile in inglese, che ne è la versione ufficiale."
+  "legal.englishOnly": "Questo documento è disponibile in inglese, che ne è la versione ufficiale.",
+  "paywall.subscribe": "Abbonati",
+  "paywall.checkingAccess": "Verifica del tuo accesso…",
+  "paywall.renewalNote": "L'abbonamento si rinnova automaticamente alla fine di ogni periodo salvo disdetta. Puoi disdirlo in qualsiasi momento; l'accesso resta attivo fino alla fine del periodo pagato.",
+  "paywall.errPending": "Il pagamento è in sospeso. Premium si sbloccherà appena confermato.",
+  "paywall.errStore": "Lo store non è disponibile al momento. Riprova più tardi.",
+  "subscription.checkStatus": "Aggiorna stato dell'abbonamento",
+  "subscription.noPremiumFound": "Nessun abbonamento Premium attivo trovato su questo account.",
+  "subscription.checkFailed": "Non siamo riusciti a verificare il tuo abbonamento. Riprova.",
+  "onboarding.doneFreeNote": "Inizia gratis. Premium è facoltativo e puoi attivarlo quando vuoi."
 }

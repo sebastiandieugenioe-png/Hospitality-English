@@ -469,5 +469,14 @@
   "landing.roleBartenders": "Barkeeper",
   "landing.roleWaiters": "Servicekräfte",
   "legal.accountDeletion": "Konto löschen",
-  "legal.englishOnly": "Dieses Dokument ist auf Englisch verfügbar; dies ist die offizielle Fassung."
+  "legal.englishOnly": "Dieses Dokument ist auf Englisch verfügbar; dies ist die offizielle Fassung.",
+  "paywall.subscribe": "Abonnieren",
+  "paywall.checkingAccess": "Zugang wird geprüft…",
+  "paywall.renewalNote": "Das Abo verlängert sich am Ende jedes Zeitraums automatisch, sofern es nicht gekündigt wird. Du kannst jederzeit kündigen; der Zugang bleibt bis zum Ende des bezahlten Zeitraums bestehen.",
+  "paywall.errPending": "Die Zahlung ist ausstehend. Premium wird freigeschaltet, sobald sie bestätigt ist.",
+  "paywall.errStore": "Der Store ist gerade nicht verfügbar. Bitte versuche es später erneut.",
+  "subscription.checkStatus": "Abo-Status aktualisieren",
+  "subscription.noPremiumFound": "Für dieses Konto wurde kein aktives Premium-Abo gefunden.",
+  "subscription.checkFailed": "Wir konnten dein Abo nicht prüfen. Bitte versuche es erneut.",
+  "onboarding.doneFreeNote": "Starte kostenlos. Premium ist optional und du kannst es jederzeit freischalten."
 }

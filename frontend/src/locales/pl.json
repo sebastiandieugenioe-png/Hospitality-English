@@ -469,5 +469,14 @@
   "landing.roleBartenders": "Barmani",
   "landing.roleWaiters": "Kelnerzy",
   "legal.accountDeletion": "Usuwanie konta",
-  "legal.englishOnly": "Ten dokument jest dostępny w języku angielskim, który jest jego oficjalną wersją."
+  "legal.englishOnly": "Ten dokument jest dostępny w języku angielskim, który jest jego oficjalną wersją.",
+  "paywall.subscribe": "Subskrybuj",
+  "paywall.checkingAccess": "Sprawdzamy Twój dostęp…",
+  "paywall.renewalNote": "Subskrypcja odnawia się automatycznie na koniec każdego okresu, chyba że ją anulujesz. Możesz anulować w każdej chwili; dostęp trwa do końca opłaconego okresu.",
+  "paywall.errPending": "Płatność oczekuje na potwierdzenie. Premium zostanie odblokowane po jej potwierdzeniu.",
+  "paywall.errStore": "Sklep jest teraz niedostępny. Spróbuj ponownie później.",
+  "subscription.checkStatus": "Odśwież status subskrypcji",
+  "subscription.noPremiumFound": "Na tym koncie nie znaleziono aktywnej subskrypcji Premium.",
+  "subscription.checkFailed": "Nie udało się sprawdzić subskrypcji. Spróbuj ponownie.",
+  "onboarding.doneFreeNote": "Zacznij za darmo. Premium jest opcjonalne i możesz je włączyć, kiedy chcesz."
 }

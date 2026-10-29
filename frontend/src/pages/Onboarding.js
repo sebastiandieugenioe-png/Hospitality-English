@@ -93,7 +93,8 @@ function OnboardingComplete({ t, recs, onStart }) {
     <motion.div data-testid="onboarding-complete" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="flex-1 flex flex-col">
       <p className="text-xs uppercase tracking-[0.15em] font-semibold text-[#34785B]">{t("onboarding.doneEyebrow")}</p>
       <h1 className="mt-3 text-[30px] sm:text-[34px] leading-tight font-serif font-semibold text-[#222824]">{t("onboarding.doneTitle")}</h1>
-      <ol className="mt-8 space-y-3" data-testid="onboarding-recommendations">
+      <p data-testid="onboarding-free-note" className="mt-3 text-[15px] text-[#6B736E] leading-relaxed">{t("onboarding.doneFreeNote")}</p>
+      <ol className="mt-6 space-y-3" data-testid="onboarding-recommendations">
         {recs.map((s, i) => (
           <li key={s.slug} data-testid={`onboarding-rec-${s.slug}`} className="flex items-start gap-4 rounded-2xl border border-[#DEE2DE] bg-white px-5 py-4">
             <span aria-hidden="true" className="grid place-items-center w-8 h-8 rounded-full bg-[#EEF3EF] text-[#173D31] text-[14px] font-semibold shrink-0">{i + 1}</span>

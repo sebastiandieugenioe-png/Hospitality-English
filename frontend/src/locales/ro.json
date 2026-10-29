@@ -469,5 +469,14 @@
   "landing.roleBartenders": "Barmani",
   "landing.roleWaiters": "Ospătari",
   "legal.accountDeletion": "Ștergerea contului",
-  "legal.englishOnly": "Acest document este disponibil în engleză, care este versiunea sa oficială."
+  "legal.englishOnly": "Acest document este disponibil în engleză, care este versiunea sa oficială.",
+  "paywall.subscribe": "Abonează-te",
+  "paywall.checkingAccess": "Se verifică accesul tău…",
+  "paywall.renewalNote": "Abonamentul se reînnoiește automat la sfârșitul fiecărei perioade, dacă nu îl anulezi. Poți anula oricând; accesul continuă până la sfârșitul perioadei plătite.",
+  "paywall.errPending": "Plata este în așteptare. Premium se va debloca imediat ce este confirmată.",
+  "paywall.errStore": "Magazinul nu este disponibil acum. Încearcă mai târziu.",
+  "subscription.checkStatus": "Actualizează starea abonamentului",
+  "subscription.noPremiumFound": "Nu am găsit niciun abonament Premium activ pe acest cont.",
+  "subscription.checkFailed": "Nu am putut verifica abonamentul. Încearcă din nou.",
+  "onboarding.doneFreeNote": "Începe gratuit. Premium este opțional și îl poți activa oricând."
 }

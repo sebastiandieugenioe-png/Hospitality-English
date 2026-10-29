@@ -469,5 +469,14 @@
   "landing.roleBartenders": "Bartenders",
   "landing.roleWaiters": "Bedienend personeel",
   "legal.accountDeletion": "Account verwijderen",
-  "legal.englishOnly": "Dit document is beschikbaar in het Engels; dat is de officiële versie."
+  "legal.englishOnly": "Dit document is beschikbaar in het Engels; dat is de officiële versie.",
+  "paywall.subscribe": "Abonneren",
+  "paywall.checkingAccess": "Je toegang wordt gecontroleerd…",
+  "paywall.renewalNote": "Het abonnement wordt aan het einde van elke periode automatisch verlengd, tenzij je opzegt. Je kunt altijd opzeggen; je toegang blijft tot het einde van de betaalde periode.",
+  "paywall.errPending": "De betaling is in behandeling. Premium wordt ontgrendeld zodra deze is bevestigd.",
+  "paywall.errStore": "De store is nu niet beschikbaar. Probeer het later opnieuw.",
+  "subscription.checkStatus": "Abonnementsstatus vernieuwen",
+  "subscription.noPremiumFound": "Er is geen actief Premium-abonnement gevonden op dit account.",
+  "subscription.checkFailed": "We konden je abonnement niet controleren. Probeer het opnieuw.",
+  "onboarding.doneFreeNote": "Begin gratis. Premium is optioneel en je kunt het activeren wanneer je wilt."
 }

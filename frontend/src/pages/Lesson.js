@@ -54,17 +54,24 @@ export default function Lesson() {
   useEffect(() => {
     setLoading(true);
     const premium = billing.isPremium("hospitality");
+    // Never show "locked" while access is unresolved; this effect re-runs once it resolves.
+    const unresolved = billing.status === "loading" || billing.status === "uninitialized";
+    let wait = false;
     getLesson(slug)
       .then((d) => {
         // Route-level freemium gate: non-free situation requires premium entitlement.
         if (d?.situation && d.situation.is_free === false && !premium) {
-          setData({ locked: true });
+          if (unresolved) wait = true; else setData({ locked: true });
         } else {
           setData(d);
         }
       })
-      .catch((e) => setData(e?.response?.status === 403 ? { locked: true } : null))
-      .finally(() => setLoading(false));
+      .catch((e) => {
+        if (e?.response?.status !== 403) setData(null);
+        else if (unresolved) wait = true;
+        else setData({ locked: true });
+      })
+      .finally(() => { if (!wait) setLoading(false); });
   }, [slug, billing.status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

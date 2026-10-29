@@ -1,19 +1,48 @@
-import { Check, CircleCheck, ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { Check, CircleCheck, ExternalLink, Loader2, RefreshCw } from "lucide-react";
 import { SecondaryPage, btnDark, btnLight } from "@/components/SettingsLayout";
 import { usePremium } from "@/components/PremiumGate";
 import { useApp } from "@/context/AppContext";
 import { useBilling } from "@/context/BillingContext";
 import { billingConfigFor } from "@/lib/billingConfig";
+import { refreshEntitlement } from "@/lib/api";
+import { isNative } from "@/lib/platform";
 
 const PROFESSION = "hospitality";
 const pkgProductId = (p) => (p ? ((p.rcBillingProduct || p.webBillingProduct)?.identifier || p.identifier || null) : null);
 
 export default function Subscription() {
-  const { t, language } = useApp();
+  const { t, language, isAuthenticated } = useApp();
   const billing = useBilling();
   const { requestPremium } = usePremium();
   const premium = billing.isPremium(PROFESSION);
   const benefits = ["subscription.benefitSituations", "subscription.benefitListening", "subscription.benefitSpeaking", "subscription.benefitReview"];
+  const [checking, setChecking] = useState(false);
+  const [checkMsg, setCheckMsg] = useState(null); // { kind: "info" | "error", text }
+
+  // Web: re-read the signed-in account's subscription (NOT a store restore).
+  const checkStatus = async () => {
+    setChecking(true); setCheckMsg(null);
+    try {
+      const active = await billing.refresh(PROFESSION);
+      if (active) { try { await refreshEntitlement(); } catch { /* backend re-verifies on next request */ } }
+      else setCheckMsg({ kind: "info", text: t("subscription.noPremiumFound") });
+    } catch {
+      setCheckMsg({ kind: "error", text: t("subscription.checkFailed") });
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  if (billing.status === "loading" || billing.status === "uninitialized") {
+    return (
+      <SecondaryPage title={t("settings.subscription")} testid="subscription-page">
+        <p data-testid="subscription-loading" role="status" aria-live="polite" className="flex items-center gap-2 text-[15px] text-[#6B736E]">
+          <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("common.loading")}
+        </p>
+      </SecondaryPage>
+    );
+  }
 
   if (premium) {
     const ent = billing.customerInfo?.entitlements?.active?.[billingConfigFor(PROFESSION)?.entitlementId] || null;
@@ -62,10 +91,24 @@ export default function Subscription() {
             </li>
           ))}
         </ul>
+        {billing.status === "error" && (
+          <p data-testid="subscription-unavailable" role="status" className="mt-4 text-[14px] text-[#6B736E]">{t("paywall.unavailable")}</p>
+        )}
         <button type="button" data-testid="subscription-upgrade-btn" disabled={!billing.ready} onClick={() => requestPremium()} className={`mt-5 w-full ${btnDark}`}>
           {t("subscription.upgrade")}
         </button>
       </section>
+      {isAuthenticated && !isNative() && (
+        <section className="space-y-3">
+          <button type="button" data-testid="subscription-check-status-btn" disabled={checking} aria-busy={checking} onClick={checkStatus} className={`w-full ${btnLight}`}>
+            {checking ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : <RefreshCw className="w-4 h-4" aria-hidden="true" />} {t("subscription.checkStatus")}
+          </button>
+          {checkMsg && (
+            <p data-testid="subscription-check-msg" role={checkMsg.kind === "error" ? "alert" : "status"}
+              className={`text-[14px] ${checkMsg.kind === "error" ? "text-[#A44F3B]" : "text-[#6B736E]"}`}>{checkMsg.text}</p>
+          )}
+        </section>
+      )}
     </SecondaryPage>
   );
 }

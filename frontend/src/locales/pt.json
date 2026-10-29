@@ -469,5 +469,14 @@
   "landing.roleBartenders": "Bartenders",
   "landing.roleWaiters": "Empregados de mesa",
   "legal.accountDeletion": "Eliminação da conta",
-  "legal.englishOnly": "Este documento está disponível em inglês, que é a sua versão oficial."
+  "legal.englishOnly": "Este documento está disponível em inglês, que é a sua versão oficial.",
+  "paywall.subscribe": "Subscrever",
+  "paywall.checkingAccess": "A verificar o teu acesso…",
+  "paywall.renewalNote": "A subscrição renova-se automaticamente no fim de cada período, salvo cancelamento. Podes cancelar quando quiseres; o acesso mantém-se até ao fim do período pago.",
+  "paywall.errPending": "O pagamento está pendente. O Premium será desbloqueado assim que for confirmado.",
+  "paywall.errStore": "A loja não está disponível neste momento. Tenta mais tarde.",
+  "subscription.checkStatus": "Atualizar estado da subscrição",
+  "subscription.noPremiumFound": "Não foi encontrada nenhuma subscrição Premium ativa nesta conta.",
+  "subscription.checkFailed": "Não foi possível verificar a tua subscrição. Tenta novamente.",
+  "onboarding.doneFreeNote": "Começa grátis. O Premium é opcional e podes ativá-lo quando quiseres."
 }
