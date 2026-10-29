@@ -1,0 +1,24 @@
+{
+  "summary": "Impl 10 (legacy /category retirement + NATIVE_BILLING_V1) PASS on web. At 390x844 with Spanish UI as an anonymous guest (onboarded through UI): /category/restaurant, /category/bar, /category/xyz and /category all land on /learn (learn-page present, no legacy category testids, no 404, no loop). Browser Back returns to the previous page (/progress), never bounces into /category (replace works). Learn: learn-loading seq false->true->false, 25 rows (20 locked, 5 free), locked tap as guest -> premium-account-gate (Google + Apple + Ahora no), no paywall, no paywall-restore-btn. /subscription guest: ''->loading->free, no subscription-restore-btn, no subscription-check-status-btn, no 'Restaurar'/'Restore' text; upgrade -> account gate. No 'Restaurar' text on home/practice/progress/more/account either; no raw i18n keys. Listening and speaking practice each make exactly one request with free_only=true (plus /meta). Free lesson /lesson/taking-a-drinks-order opens (lesson-intro). Premium /lesson/serving-beer shows lesson-locked with no intro. Zero network requests containing 'capacitor' during all browsing; no page errors, no CRA overlay. RevenueCat blocked (api.revenuecat.com aborted): subscription-unavailable shown, upgrade disabled, no restore button. Learn still renders 25 rows; locked tap shows calm toast 'Premium no está disponible ahora mismo. Inténtalo de nuevo.' with no sheet, and the free lesson still opens. Jest 94/94 pass. Backend 420/420 pass via run_local_throttled.sh (37 files incl. backend_test.py). Category.js deleted. AndroidManifest has the BILLING permission and launchMode=singleTop. Covered only by jest, not executable here (no device/Xcode/Android SDK): every native flow — native configure/identity logIn/logOut, native offerings normalisation (nativeProduct price), native purchase, native Restore Purchases (paywall-restore-btn and subscription-restore-btn), the account-first restore (guest signs in, then restore resumes), the RestoreSheet success/none/error/retry states, the assertIdentity guard, and native error-code normalisation.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/run_local_throttled.sh", "/tmp/pyrun/*.xml", "/app/frontend/src/lib/__tests__/revenuecatNative.test.js", "/app/frontend/src/__tests__/App.routes.test.js", "/app/frontend/src/components/__tests__/PremiumGate.test.js", "/app/frontend/src/context/__tests__/BillingContext.test.js"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Premium lesson URL as guest triggers 4x GET /api/lessons/serving-beer -> 403 (browser 'Failed to load resource' console entries). This is expected gating, but the duplicate calls are the known Lesson.js tech debt, not new.",
+    "BillingContext.restore(): the customerInfo returned is applied with setCustomerInfo without re-checking that identity did not change during the await (purchase has the same pattern). The isPremium identityResolved guard mitigates this. Low priority.",
+    "BillingContext.refresh() has no assertIdentity guard, unlike purchase/restore. It is web-signed-in only and isPremium is still guarded, so the risk is low.",
+    "revenuecatNative.configureNative uses a module-level 'configured' flag. If configure throws midway, a retry is possible, which is good. Make sure a cold app start with a signed-in account passes users.id. The current effect waits for authReady, so it does."
+  ],
+  "updated_files": ["/app/test_reports/iteration_33.json"],
+  "success_rate": {"backend": "100% (420/420)", "frontend": "100% (all requested web flows) ; jest 94/94"},
+  "test_credentials": "None required (anonymous guests).",
+  "seed_data_creation": "Several anonymous guests created via UI onboarding.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Onboarding final step uses onboarding-finish-btn then onboarding-start-learning-btn. Learn rows: [data-testid^=learn-situation-][data-state=locked]. Block RC with page.route('**/api.revenuecat.com/**', abort). Backend: setsid nohup bash /app/backend/tests/run_local_throttled.sh > /tmp/backend_run.log & (~6 min). Native billing can only be verified by jest or on a real device."
+}

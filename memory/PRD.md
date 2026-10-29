@@ -370,3 +370,13 @@ Fusionar flashcards legacy en SRS; Job Readiness global; ampliar catálogo; Shif
 ## 2026-06 — POST_IMPLEMENTATION_9_TEST_SUITE_RECONCILIATION (DONE)
 - 420 vs 410: backend/tests/run_local_throttled.sh globbed only tests/test_*.py, skipping tests/backend_test.py (10 tests). Fixed runner glob; full run 420/420 passed. No tests deleted/lost.
 - /category/:slug route still registered in App.js but no in-app links (direct URL only).
+
+## 2026-06 — LEGACY /category RETIREMENT + NATIVE_BILLING_V1 (DONE, device/store validation pending)
+- /category and /category/:slug -> <Navigate to="/learn" replace/>; pages/Category.js deleted (categories = venue types, no Learn equivalent).
+- @revenuecat/purchases-capacitor@11.3.3 (Capacitor 7). lib/revenuecat.js dispatches web/native; lib/revenuecatNative.js (lazy plugin import, users.id logIn/logOut, normalised packages + error codes, restorePurchases).
+- BillingContext.restore() + assertIdentity guard (purchase/restore refused until resolvedFor === current identity).
+- PremiumGate: requestRestore (account-first, auto-resume after sign-in), RestoreSheet, native-only paywall restore (secondary). Subscription: native-only Restore; web keeps Refresh status.
+- Android: BILLING permission, launchMode singleTop. 6 new i18n keys × 10.
+- Tests: jest 94/94 (new revenuecatNative.test.js, App.routes.test.js; extended PremiumGate/BillingContext); backend 420/420; web regression iteration_33 PASS.
+- OWNER_ACTION_REQUIRED: RevenueCat iOS/Android apps + store products, REACT_APP_REVENUECAT_IOS_API_KEY / _ANDROID_API_KEY, Xcode IAP capability (docs/MOBILE_CAPACITOR.md).
+- Native builds NOT_TESTABLE here (no Xcode/JDK/Android SDK).
