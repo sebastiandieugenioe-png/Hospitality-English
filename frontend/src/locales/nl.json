@@ -478,5 +478,11 @@
   "subscription.checkStatus": "Abonnementsstatus vernieuwen",
   "subscription.noPremiumFound": "Er is geen actief Premium-abonnement gevonden op dit account.",
   "subscription.checkFailed": "We konden je abonnement niet controleren. Probeer het opnieuw.",
-  "onboarding.doneFreeNote": "Begin gratis. Premium is optioneel en je kunt het activeren wanneer je wilt."
+  "onboarding.doneFreeNote": "Begin gratis. Premium is optioneel en je kunt het activeren wanneer je wilt.",
+  "paywall.restore": "Aankopen herstellen",
+  "paywall.restoring": "Aankopen worden hersteld…",
+  "paywall.restoreNone": "Er zijn geen eerdere aankopen gevonden om te herstellen voor dit storeaccount.",
+  "paywall.restoreFailed": "We konden je aankopen niet herstellen. Probeer het opnieuw.",
+  "auth.gateRestoreTitle": "Log in om je aankopen te herstellen",
+  "auth.gateRestoreBody": "Aankopen worden aan je account gekoppeld, zodat je Premium op al je apparaten kunt gebruiken. Je voortgang blijft bewaard."
 }

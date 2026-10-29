@@ -14,7 +14,7 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:exported="true">
 
             <intent-filter>
@@ -41,4 +41,5 @@
     <!-- Speaking practice: microphone recording via WebView getUserMedia/MediaRecorder -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 </manifest>

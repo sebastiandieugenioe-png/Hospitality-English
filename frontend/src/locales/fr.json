@@ -478,5 +478,11 @@
   "subscription.checkStatus": "Actualiser l'état de l'abonnement",
   "subscription.noPremiumFound": "Aucun abonnement Premium actif n'a été trouvé sur ce compte.",
   "subscription.checkFailed": "Impossible de vérifier votre abonnement. Réessayez.",
-  "onboarding.doneFreeNote": "Commencez gratuitement. Premium est facultatif et vous pouvez l'activer quand vous voulez."
+  "onboarding.doneFreeNote": "Commencez gratuitement. Premium est facultatif et vous pouvez l'activer quand vous voulez.",
+  "paywall.restore": "Restaurer les achats",
+  "paywall.restoring": "Restauration des achats…",
+  "paywall.restoreNone": "Aucun achat précédent à restaurer n'a été trouvé pour ce compte de la boutique.",
+  "paywall.restoreFailed": "Impossible de restaurer vos achats. Réessayez.",
+  "auth.gateRestoreTitle": "Connectez-vous pour restaurer vos achats",
+  "auth.gateRestoreBody": "Les achats sont liés à votre compte pour utiliser Premium sur tous vos appareils. Votre progression est conservée."
 }

@@ -478,5 +478,11 @@
   "subscription.checkStatus": "Refresh subscription status",
   "subscription.noPremiumFound": "No active Premium subscription was found on this account.",
   "subscription.checkFailed": "We couldn't check your subscription. Please try again.",
-  "onboarding.doneFreeNote": "Start for free. Premium is optional and you can unlock it whenever you like."
+  "onboarding.doneFreeNote": "Start for free. Premium is optional and you can unlock it whenever you like.",
+  "paywall.restore": "Restore purchases",
+  "paywall.restoring": "Restoring purchases…",
+  "paywall.restoreNone": "No previous purchases were found to restore for this store account.",
+  "paywall.restoreFailed": "We couldn't restore your purchases. Please try again.",
+  "auth.gateRestoreTitle": "Sign in to restore your purchases",
+  "auth.gateRestoreBody": "Purchases are linked to your account so you can use Premium on all your devices. Your progress is kept."
 }

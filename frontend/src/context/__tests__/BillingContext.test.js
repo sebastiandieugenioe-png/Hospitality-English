@@ -11,6 +11,8 @@ jest.mock("@/lib/revenuecat", () => ({
   configureRevenueCat: (id) => { if (mockRc.fail) throw new Error("rc down"); mockRc.current = id; },
   switchRevenueCatIdentity: async (id) => { if (mockRc.hold) await mockRc.hold; if (mockRc.fail) throw new Error("rc down"); mockRc.current = id; },
   getRevenueCat: () => ({ getOfferings: async () => ({ all: {} }), getCustomerInfo: async () => mockInfo() }),
+  fetchOfferings: async () => ({ all: {} }),
+  restoreRevenueCatPurchases: async () => { mockRc.premiumIds.push(mockRc.current); return mockInfo(); },
   revenueCatSnapshot: () => ({}), purchaseRevenueCatPackage: async () => null, refreshCustomerInfo: async () => mockInfo(), rcDiag: () => {},
 }));
 const { BillingProvider, useBilling } = require("@/context/BillingContext");
@@ -103,5 +105,28 @@ describe("identity switching never exposes stale access", () => {
     await act(async () => { active = await billingApi.refresh("hospitality"); });
     expect(active).toBe(true);
     expect(billingApi.isPremium("hospitality")).toBe(true);
+  });
+});
+
+describe("native restore / purchase identity guard", () => {
+  test("restore() updates entitlement immediately (no restart)", async () => {
+    mockApp.account = { id: "u1" };
+    await render();
+    expect(billingApi.isPremium("hospitality")).toBe(false);
+    let active;
+    await act(async () => { active = await billingApi.restore("hospitality"); });
+    expect(active).toBe(true);
+    expect(billingApi.isPremium("hospitality")).toBe(true);
+  });
+  test("restore/purchase refused while identity is unresolved (never on previous user)", async () => {
+    mockApp.account = { id: "a" };
+    await render();
+    let release; mockRc.hold = new Promise((r) => { release = r; });
+    mockApp.account = { id: "b" };
+    await render();
+    await expect(billingApi.restore("hospitality")).rejects.toThrow("billing_identity_unresolved");
+    await expect(billingApi.purchase({}, "hospitality")).rejects.toThrow("billing_identity_unresolved");
+    await act(async () => { mockRc.hold = null; release(); await new Promise((r) => setTimeout(r, 0)); });
+    expect(snap.resolvedFor).toBe("b");
   });
 });

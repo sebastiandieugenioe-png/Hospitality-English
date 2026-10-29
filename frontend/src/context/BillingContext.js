@@ -4,8 +4,8 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState } from 
 import { useApp } from "@/context/AppContext";
 import { PROFESSION_BILLING_CONFIG, billingConfigFor } from "@/lib/billingConfig";
 import {
-  isRevenueCatConfigured, configureRevenueCat, getRevenueCat,
-  switchRevenueCatIdentity, revenueCatSnapshot,
+  isRevenueCatConfigured, configureRevenueCat, fetchOfferings,
+  switchRevenueCatIdentity, revenueCatSnapshot, restoreRevenueCatPurchases,
   purchaseRevenueCatPackage, refreshCustomerInfo, rcDiag,
 } from "@/lib/revenuecat";
 
@@ -21,8 +21,7 @@ export function BillingProvider({ children }) {
   const configuredRef = useRef(false);
 
   const loadState = async () => {
-    const rc = getRevenueCat();
-    const [offs, info] = await Promise.all([rc.getOfferings(), rc.getCustomerInfo()]);
+    const [offs, info] = await Promise.all([fetchOfferings(), refreshCustomerInfo()]);
     setOfferings(offs);
     setCustomerInfo(info);
     return info;
@@ -41,7 +40,7 @@ export function BillingProvider({ children }) {
       setStatus((s) => (s === "ready" ? s : "loading"));
       try {
         if (!configuredRef.current) {
-          configureRevenueCat(desiredId); // init once (anonymous if no account)
+          await configureRevenueCat(desiredId); // init once (anonymous if no account)
           configuredRef.current = true;
         } else {
           await switchRevenueCatIdentity(desiredId);
@@ -78,6 +77,21 @@ export function BillingProvider({ children }) {
     };
   };
 
+  const hasEntitlement = (info, professionId) => Boolean(info?.entitlements?.active?.[billingConfigFor(professionId)?.entitlementId]);
+
+  // Purchases/restores only run once RevenueCat is synced to the CURRENT identity.
+  const assertIdentity = () => {
+    if (!identityResolved) { const e = new Error("billing_identity_unresolved"); e.errorCode = 15; throw e; }
+  };
+
+  // Native store restore (iOS/Android). Returns whether Premium is active afterwards.
+  const restore = async (professionId = "hospitality") => {
+    assertIdentity();
+    const info = await restoreRevenueCatPurchases();
+    if (info) setCustomerInfo(info);
+    return hasEntitlement(info, professionId);
+  };
+
   // Re-reads the signed-in account's entitlement. Returns whether Premium is active; throws on failure.
   const refresh = async (professionId = "hospitality") => {
     const info = await refreshCustomerInfo();
@@ -95,6 +109,7 @@ export function BillingProvider({ children }) {
     const cfg = billingConfigFor(professionId);
     const entId = cfg?.entitlementId;
     const hasEnt = (ci) => Boolean(ci?.entitlements?.active?.[entId]);
+    assertIdentity();
 
     let info = await purchaseRevenueCatPackage(rcPackage); // primary confirmation
     let active = hasEnt(info);
@@ -123,6 +138,7 @@ export function BillingProvider({ children }) {
     getProfessionAccess,
     currentOffering,
     refresh,
+    restore,
     purchase,
   }), [effStatus, resolvedFor, customerInfo, offerings, identityResolved]); // eslint-disable-line react-hooks/exhaustive-deps
 

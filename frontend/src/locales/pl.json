@@ -478,5 +478,11 @@
   "subscription.checkStatus": "Odśwież status subskrypcji",
   "subscription.noPremiumFound": "Na tym koncie nie znaleziono aktywnej subskrypcji Premium.",
   "subscription.checkFailed": "Nie udało się sprawdzić subskrypcji. Spróbuj ponownie.",
-  "onboarding.doneFreeNote": "Zacznij za darmo. Premium jest opcjonalne i możesz je włączyć, kiedy chcesz."
+  "onboarding.doneFreeNote": "Zacznij za darmo. Premium jest opcjonalne i możesz je włączyć, kiedy chcesz.",
+  "paywall.restore": "Przywróć zakupy",
+  "paywall.restoring": "Przywracanie zakupów…",
+  "paywall.restoreNone": "Nie znaleziono wcześniejszych zakupów do przywrócenia na tym koncie sklepu.",
+  "paywall.restoreFailed": "Nie udało się przywrócić zakupów. Spróbuj ponownie.",
+  "auth.gateRestoreTitle": "Zaloguj się, aby przywrócić zakupy",
+  "auth.gateRestoreBody": "Zakupy są powiązane z Twoim kontem, aby korzystać z Premium na wszystkich urządzeniach. Twoje postępy zostają zachowane."
 }

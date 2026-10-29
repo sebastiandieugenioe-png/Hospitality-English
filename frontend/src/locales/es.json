@@ -478,5 +478,11 @@
   "subscription.checkStatus": "Actualizar estado de la suscripción",
   "subscription.noPremiumFound": "No hemos encontrado ninguna suscripción Premium activa en esta cuenta.",
   "subscription.checkFailed": "No hemos podido comprobar tu suscripción. Inténtalo de nuevo.",
-  "onboarding.doneFreeNote": "Empieza gratis. Premium es opcional y puedes activarlo cuando quieras."
+  "onboarding.doneFreeNote": "Empieza gratis. Premium es opcional y puedes activarlo cuando quieras.",
+  "paywall.restore": "Restaurar compras",
+  "paywall.restoring": "Restaurando compras…",
+  "paywall.restoreNone": "No hemos encontrado compras anteriores que restaurar en esta cuenta de la tienda.",
+  "paywall.restoreFailed": "No hemos podido restaurar tus compras. Inténtalo de nuevo.",
+  "auth.gateRestoreTitle": "Inicia sesión para restaurar tus compras",
+  "auth.gateRestoreBody": "Las compras se vinculan a tu cuenta para que puedas usar Premium en todos tus dispositivos. Tu progreso se mantiene."
 }

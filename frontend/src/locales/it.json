@@ -478,5 +478,11 @@
   "subscription.checkStatus": "Aggiorna stato dell'abbonamento",
   "subscription.noPremiumFound": "Nessun abbonamento Premium attivo trovato su questo account.",
   "subscription.checkFailed": "Non siamo riusciti a verificare il tuo abbonamento. Riprova.",
-  "onboarding.doneFreeNote": "Inizia gratis. Premium è facoltativo e puoi attivarlo quando vuoi."
+  "onboarding.doneFreeNote": "Inizia gratis. Premium è facoltativo e puoi attivarlo quando vuoi.",
+  "paywall.restore": "Ripristina acquisti",
+  "paywall.restoring": "Ripristino degli acquisti…",
+  "paywall.restoreNone": "Non abbiamo trovato acquisti precedenti da ripristinare per questo account dello store.",
+  "paywall.restoreFailed": "Non siamo riusciti a ripristinare i tuoi acquisti. Riprova.",
+  "auth.gateRestoreTitle": "Accedi per ripristinare i tuoi acquisti",
+  "auth.gateRestoreBody": "Gli acquisti sono collegati al tuo account per usare Premium su tutti i tuoi dispositivi. I tuoi progressi restano salvati."
 }

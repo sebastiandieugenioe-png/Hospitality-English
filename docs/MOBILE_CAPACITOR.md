@@ -29,7 +29,20 @@ npx cap open ios | npx cap open android                    # macOS/Xcode, Androi
 5. Firebase Auth → Sign-in method: Google + Apple enabled (already for web). Google Cloud: the iOS/Android OAuth clients are auto-created by Firebase when adding the apps.
 6. macOS: `cd frontend/ios/App && pod install`.
 
+## Native billing (NATIVE_BILLING_V1)
+- `@revenuecat/purchases-capacitor@11.3.3` (last line for Capacitor 7; 12+ needs Capacitor 8). Dynamically imported only on native.
+- `src/lib/revenuecat.js` dispatches web (purchases-js) vs native (`src/lib/revenuecatNative.js`). BillingContext/paywall/entitlement logic is shared; native packages are normalised to the same price shape; native error codes normalised to the purchases-js numbering.
+- Identity: configure with `users.id` (anonymous only when no account), `logIn(users.id)` on sign-in, `logOut()` on sign-out. Purchase/restore refused until RevenueCat is synced to the current identity (`resolvedFor`).
+- Account-first: guests sign in before Subscribe or Restore; the requested action resumes automatically.
+- Restore purchases (native only): paywall secondary action + Subscription page. Web keeps "Refresh subscription status".
+- Android: `com.android.vending.BILLING` permission; launchMode `singleTop` (RevenueCat requirement).
+
+### OWNER_ACTION_REQUIRED (billing)
+1. RevenueCat: add iOS app (bundle `app.englishtowork.hospitality`) and Android app (package `app.englishtowork.hospitality`); attach store products to entitlement `hospitality_premium` and offering `hospitality_default` (monthly + annual packages, existing prices).
+2. App Store Connect / Play Console: create the subscription products; Play needs a closed-testing track + license testers; iOS a Sandbox tester.
+3. Frontend build env: `REACT_APP_REVENUECAT_IOS_API_KEY` (`appl_…`) and `REACT_APP_REVENUECAT_ANDROID_API_KEY` (`goog_…`) public SDK keys. Missing key = native app stays Free with the calm "Premium unavailable" message.
+4. Xcode: add the In-App Purchase capability; `pod install`.
+
 ## Pending
-- RevenueCat Capacitor SDK + App Store / Play products (`logIn(users.id)`, entitlement `hospitality_premium`).
 - App icons/splash, signing, CI builds (IPA/AAB), store listings.
 - `public/` also ships dev exports (`mvp_i18n_*.json`, `voice_test/`) into the bundle; consider excluding before release.

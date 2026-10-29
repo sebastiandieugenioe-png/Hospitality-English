@@ -478,5 +478,11 @@
   "subscription.checkStatus": "Abo-Status aktualisieren",
   "subscription.noPremiumFound": "Für dieses Konto wurde kein aktives Premium-Abo gefunden.",
   "subscription.checkFailed": "Wir konnten dein Abo nicht prüfen. Bitte versuche es erneut.",
-  "onboarding.doneFreeNote": "Starte kostenlos. Premium ist optional und du kannst es jederzeit freischalten."
+  "onboarding.doneFreeNote": "Starte kostenlos. Premium ist optional und du kannst es jederzeit freischalten.",
+  "paywall.restore": "Käufe wiederherstellen",
+  "paywall.restoring": "Käufe werden wiederhergestellt…",
+  "paywall.restoreNone": "Für dieses Store-Konto wurden keine früheren Käufe zum Wiederherstellen gefunden.",
+  "paywall.restoreFailed": "Wir konnten deine Käufe nicht wiederherstellen. Bitte versuche es erneut.",
+  "auth.gateRestoreTitle": "Melde dich an, um deine Käufe wiederherzustellen",
+  "auth.gateRestoreBody": "Käufe werden mit deinem Konto verknüpft, damit du Premium auf all deinen Geräten nutzen kannst. Dein Fortschritt bleibt erhalten."
 }

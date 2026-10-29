@@ -1,12 +1,14 @@
-// RevenueCat Web SDK service (Test Store, PUBLIC key only).
-// Phase 1: init once, identity (anonymous / users.id), read offerings + entitlements.
-// No purchases, no paywall, no restore. A RevenueCat outage must never break the app.
+// RevenueCat service (PUBLIC keys only). Web = purchases-js; iOS/Android delegate to
+// revenuecatNative.js. A RevenueCat outage must never break the app.
 import { Purchases } from "@revenuecat/purchases-js";
+import { isNative } from "@/lib/platform";
+import * as native from "@/lib/revenuecatNative";
 
 const RC_ANON_KEY = "rc_anonymous_app_user_id";
 const API_KEY = (process.env.REACT_APP_REVENUECAT_API_KEY || "").trim();
 
 export function isRevenueCatConfigured() {
+  if (isNative()) return !!native.nativeApiKey();
   return !!API_KEY; // Test Store public key present (starts with "test_")
 }
 
@@ -24,6 +26,7 @@ let instance = null;
 // appUserId falsy -> anonymous RevenueCat customer. When identified, the id MUST be
 // our internal backend users.id (never Firebase UID, email or guest_id).
 export function configureRevenueCat(appUserId) {
+  if (isNative()) return native.configureNative(appUserId);
   if (instance) return instance;
   if (!API_KEY) throw new Error("REVENUECAT_CONFIG_MISSING");
   const id = (appUserId && String(appUserId).trim()) || getOrCreateAnonymousId();
@@ -39,6 +42,7 @@ export function getRevenueCat() {
 // desiredId truthy  -> logIn(users.id)      (guest -> account)
 // desiredId falsy   -> fresh anonymous customer (logout)
 export async function switchRevenueCatIdentity(desiredId) {
+  if (isNative()) return native.switchNativeIdentity(desiredId);
   const rc = getRevenueCat();
   const current = rc.getAppUserId();
   if (desiredId) {
@@ -52,7 +56,13 @@ export async function switchRevenueCatIdentity(desiredId) {
   return rc.changeUser(anon);
 }
 
+export async function fetchOfferings() {
+  if (isNative()) return native.nativeOfferings();
+  return getRevenueCat().getOfferings();
+}
+
 export function revenueCatSnapshot() {
+  if (isNative()) return { platform: "native" };
   const rc = getRevenueCat();
   return { appUserId: rc.getAppUserId(), anonymous: rc.isAnonymous() };
 }
@@ -61,18 +71,27 @@ export function revenueCatSnapshot() {
 // (the PRIMARY confirmation of entitlement). Throws PurchasesError; UserCancelled
 // (errorCode 1) signals cancellation.
 export async function purchaseRevenueCatPackage(rcPackage) {
+  if (isNative()) return native.nativePurchase(rcPackage);
   const rc = getRevenueCat();
   const res = await rc.purchase({ rcPackage });
   return res.customerInfo;
 }
 
 export async function refreshCustomerInfo() {
+  if (isNative()) return native.nativeCustomerInfo();
   const rc = getRevenueCat();
   return rc.getCustomerInfo();
 }
 
+// Native store restore only (web has no store to restore from).
+export async function restoreRevenueCatPurchases() {
+  if (!isNative()) throw new Error("RESTORE_UNSUPPORTED_ON_WEB");
+  return native.nativeRestore();
+}
+
 // Current App User ID kind for safe diagnostics (never logs the raw id).
 export function appUserIdKind() {
+  if (isNative()) return "native";
   try {
     const rc = getRevenueCat();
     return rc.isAnonymous() ? "anonymous" : "internal-user";

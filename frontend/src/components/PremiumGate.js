@@ -16,7 +16,7 @@ import { AuthProviderButton, GoogleSignInSlot, NativeGoogleButton, AuthStatus, f
 const PremiumContext = createContext(null);
 const PROFESSION = "hospitality";
 
-const productOf = (pkg) => (pkg ? (pkg.webBillingProduct || pkg.rcBillingProduct || null) : null);
+const productOf = (pkg) => (pkg ? (pkg.webBillingProduct || pkg.rcBillingProduct || pkg.nativeProduct || null) : null);
 const priceOf = (pkg) => {
   const p = productOf(pkg);
   return p && p.price ? p.price : null; // { formattedPrice, amountMicros, currency }
@@ -25,11 +25,12 @@ const priceOf = (pkg) => {
 export function PremiumProvider({ children }) {
   const { isAuthenticated, connectGoogle, connectApple, t, language } = useApp();
   const billing = useBilling();
-  const [mode, setMode] = useState(null); // null | "pending" | "account" | "paywall"
+  const [mode, setMode] = useState(null); // null | "pending" | "account" | "paywall" | "restore"
   const resumeRef = useRef(null);
   const intentRef = useRef(false);
+  const actionRef = useRef("subscribe"); // "subscribe" | "restore" (native only)
 
-  const closeAll = () => { setMode(null); intentRef.current = false; resumeRef.current = null; };
+  const closeAll = () => { setMode(null); intentRef.current = false; resumeRef.current = null; actionRef.current = "subscribe"; };
 
   const runResume = () => {
     const fn = resumeRef.current;
@@ -54,7 +55,18 @@ export function PremiumProvider({ children }) {
     }
     resumeRef.current = resume || null;
     intentRef.current = true;
+    actionRef.current = "subscribe";
     setMode(unresolved ? "pending" : isAuthenticated ? "paywall" : "account");
+  };
+
+  // Native "Restore purchases": account-first (guests sign in, then restore runs automatically).
+  const requestRestore = () => {
+    if (!isNative()) return;
+    if (billing.status === "error") { toast.error(t("paywall.unavailable")); return; }
+    resumeRef.current = null;
+    intentRef.current = true;
+    actionRef.current = "restore";
+    setMode(unresolved ? "pending" : isAuthenticated ? "restore" : "account");
   };
 
   // Resolve "pending" (and post-sign-in) once access for the current identity is known.
@@ -64,11 +76,13 @@ export function PremiumProvider({ children }) {
     if (mode !== "pending" && !afterSignIn) return;
     if (unresolved) { if (afterSignIn) setMode("pending"); return; }
     if (billing.status === "error") { closeAll(); toast.error(t("paywall.unavailable")); return; }
+    if (!isAuthenticated) { setMode("account"); return; }
+    if (actionRef.current === "restore") { setMode("restore"); return; }
     if (billing.isPremium(PROFESSION)) { runResume(); return; }
-    setMode(isAuthenticated ? "paywall" : "account");
+    setMode("paywall");
   }, [isAuthenticated, mode, billing.status]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const value = { requestPremium, isPremium: (p = PROFESSION) => billing.isPremium(p) };
+  const value = { requestPremium, requestRestore, isPremium: (p = PROFESSION) => billing.isPremium(p) };
 
   return (
     <PremiumContext.Provider value={value}>
@@ -82,8 +96,9 @@ export function PremiumProvider({ children }) {
         </Overlay>
       )}
       {mode === "account" && (
-        <AccountGate t={t} language={language} onClose={closeAll} connectGoogle={connectGoogle} connectApple={connectApple} />
+        <AccountGate t={t} language={language} onClose={closeAll} connectGoogle={connectGoogle} connectApple={connectApple} restore={actionRef.current === "restore"} />
       )}
+      {mode === "restore" && <RestoreSheet t={t} billing={billing} onClose={closeAll} onDone={runResume} />}
       {mode === "paywall" && (
         <Paywall t={t} billing={billing} onClose={closeAll} onUnlocked={runResume} />
       )}
@@ -98,7 +113,7 @@ export function usePremium() {
 }
 
 /* ---------- Guest account gate ---------- */
-function AccountGate({ t, language, onClose, connectGoogle, connectApple }) {
+function AccountGate({ t, language, onClose, connectGoogle, connectApple, restore }) {
   const gisRef = useRef(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(null);
@@ -140,8 +155,8 @@ function AccountGate({ t, language, onClose, connectGoogle, connectApple }) {
   return (
     <Overlay onClose={busy ? undefined : onClose} testid="premium-account-gate" labelledBy="account-gate-title">
       <CloseButton testid="premium-gate-close" label={t("paywall.closeAria")} onClick={onClose} disabled={busy} />
-      <h2 id="account-gate-title" className="pr-10 text-[26px] leading-tight font-serif font-semibold text-[#222824]">{t("auth.gateTitle")}</h2>
-      <p className="mt-2 text-[15px] text-[#6B736E] leading-relaxed">{t("auth.gateBody")}</p>
+      <h2 id="account-gate-title" className="pr-10 text-[26px] leading-tight font-serif font-semibold text-[#222824]">{t(restore ? "auth.gateRestoreTitle" : "auth.gateTitle")}</h2>
+      <p className="mt-2 text-[15px] text-[#6B736E] leading-relaxed">{t(restore ? "auth.gateRestoreBody" : "auth.gateBody")}</p>
       <div className="mt-6 space-y-3">
         <AuthStatus busy={busy} busyLabel={t("auth.savingProgress")} err={err} testidPrefix="premium-gate" />
         {isNative()
@@ -159,12 +174,70 @@ function AccountGate({ t, language, onClose, connectGoogle, connectApple }) {
 }
 
 // RevenueCat ErrorCode -> calm, non-technical copy (cancel is handled before this).
-export function purchaseErrorMessage(e, t) {
+export function purchaseErrorMessage(e, t, fallback = "paywall.errPurchase") {
   const code = e?.errorCode;
   if (code === 10 || String(e?.message || "").toLowerCase().includes("network")) return t("account.errNetwork");
   if (code === 20) return t("paywall.errPending");
   if (code === 2 || code === 3 || code === 5) return t("paywall.errStore");
-  return t("paywall.errPurchase");
+  return t(fallback);
+}
+
+// Native store restore + backend entitlement refresh. Returns whether Premium is now active.
+async function runRestore(billing) {
+  const active = await billing.restore(PROFESSION);
+  if (active) { try { await refreshEntitlement(); } catch { /* backend re-verifies on next request */ } }
+  return active;
+}
+
+function SuccessView({ t, onContinue }) {
+  return (
+    <div data-testid="paywall-success" role="status" className="py-4 text-center">
+      <CheckCircle2 className="mx-auto w-12 h-12 text-[#34785B]" aria-hidden="true" />
+      <h2 id="paywall-success-title" className="mt-4 text-[26px] font-serif font-semibold text-[#222824]">{t("paywall.successTitle")}</h2>
+      <p className="mt-2 text-[15px] text-[#6B736E]">{t("paywall.successBody")}</p>
+      <button type="button" data-testid="paywall-success-continue" onClick={onContinue} className={`mt-7 w-full ${btnDark}`}>
+        {t("common.continue")}
+      </button>
+    </div>
+  );
+}
+
+/* ---------- Native restore (runs immediately; also resumes after sign-in) ---------- */
+function RestoreSheet({ t, billing, onClose, onDone }) {
+  const [state, setState] = useState("restoring"); // restoring | success | none | error
+  const [err, setErr] = useState(null);
+  const startedRef = useRef(false);
+  const start = async () => {
+    setState("restoring"); setErr(null);
+    try { setState((await runRestore(billing)) ? "success" : "none"); }
+    catch (e) {
+      if (e?.errorCode === 1) { setState("none"); return; }
+      setErr(purchaseErrorMessage(e, t, "paywall.restoreFailed")); setState("error");
+    }
+  };
+  useEffect(() => { if (!startedRef.current) { startedRef.current = true; start(); } }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (state === "success") return <Overlay onClose={onDone} testid="premium-restore" labelledBy="paywall-success-title"><SuccessView t={t} onContinue={onDone} /></Overlay>;
+  const busy = state === "restoring";
+  return (
+    <Overlay onClose={busy ? undefined : onClose} testid="premium-restore" labelledBy="restore-title">
+      <CloseButton testid="restore-close" label={t("paywall.closeAria")} onClick={onClose} disabled={busy} />
+      <h2 id="restore-title" className="pr-10 text-[24px] leading-tight font-serif font-semibold text-[#222824]">{t("paywall.restore")}</h2>
+      {busy && (
+        <p data-testid="restore-busy" role="status" aria-live="polite" className="mt-4 flex items-center gap-2 text-[15px] text-[#6B736E]">
+          <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("paywall.restoring")}
+        </p>
+      )}
+      {state === "none" && <p data-testid="restore-none" role="status" className="mt-4 text-[15px] text-[#6B736E]">{t("paywall.restoreNone")}</p>}
+      {state === "error" && <p data-testid="restore-error" role="alert" className="mt-4 text-[15px] text-[#A44F3B]">{err}</p>}
+      {!busy && (
+        <div className="mt-6 space-y-3">
+          {state === "error" && <button type="button" data-testid="restore-retry-btn" onClick={start} className={`w-full ${btnDark}`}>{t("paywall.restore")}</button>}
+          <button type="button" data-testid="restore-done-btn" onClick={onClose} className={`w-full ${btnLight}`}>{t("paywall.closeAria")}</button>
+        </div>
+      )}
+    </Overlay>
+  );
 }
 
 /* ---------- Custom paywall (prices from RevenueCat) ---------- */
@@ -173,8 +246,9 @@ function Paywall({ t, billing, onClose, onUnlocked }) {
   const annual = offering?.annual || null;
   const monthly = offering?.monthly || null;
   const [selected, setSelected] = useState(annual || !monthly ? "annual" : "monthly");
-  const [state, setState] = useState("idle"); // idle | purchasing | error | success
+  const [state, setState] = useState("idle"); // idle | purchasing | restoring | error | success
   const [err, setErr] = useState(null);
+  const [info, setInfo] = useState(null);
 
   const benefits = [
     t("subscription.benefitSituations"),
@@ -192,12 +266,26 @@ function Paywall({ t, billing, onClose, onUnlocked }) {
   }
 
   const chosenPkg = selected === "annual" ? annual : monthly;
-  const purchasing = state === "purchasing";
+  const restoring = state === "restoring";
+  const purchasing = state === "purchasing" || restoring;
+
+  // Native only: secondary restore action inside the paywall.
+  const restore = async () => {
+    if (purchasing) return;
+    setState("restoring"); setErr(null); setInfo(null);
+    try {
+      if (await runRestore(billing)) { setState("success"); return; }
+      setState("idle"); setInfo(t("paywall.restoreNone"));
+    } catch (e) {
+      if (e?.errorCode === 1) { setState("idle"); return; }
+      setState("error"); setErr(purchaseErrorMessage(e, t, "paywall.restoreFailed"));
+    }
+  };
 
   const buy = async () => {
     if (!chosenPkg || purchasing) return;
     const productId = productOf(chosenPkg)?.identifier || null;
-    setState("purchasing"); setErr(null);
+    setState("purchasing"); setErr(null); setInfo(null);
     rcDiag("PURCHASE_START", { stage: "before_checkout", product: productId });
     try {
       const { premium } = await billing.purchase(chosenPkg, PROFESSION);
@@ -230,14 +318,7 @@ function Paywall({ t, billing, onClose, onUnlocked }) {
   if (state === "success") {
     return (
       <Overlay onClose={onUnlocked} testid="premium-paywall" labelledBy="paywall-success-title">
-        <div data-testid="paywall-success" role="status" className="py-4 text-center">
-          <CheckCircle2 className="mx-auto w-12 h-12 text-[#34785B]" aria-hidden="true" />
-          <h2 id="paywall-success-title" className="mt-4 text-[26px] font-serif font-semibold text-[#222824]">{t("paywall.successTitle")}</h2>
-          <p className="mt-2 text-[15px] text-[#6B736E]">{t("paywall.successBody")}</p>
-          <button type="button" data-testid="paywall-success-continue" onClick={onUnlocked} className={`mt-7 w-full ${btnDark}`}>
-            {t("common.continue")}
-          </button>
-        </div>
+        <SuccessView t={t} onContinue={onUnlocked} />
       </Overlay>
     );
   }
@@ -268,11 +349,18 @@ function Paywall({ t, billing, onClose, onUnlocked }) {
       </div>
 
       {err && <p data-testid="paywall-error" role="alert" className="mt-4 text-[14px] text-[#A44F3B]">{err}</p>}
+      {info && <p data-testid="paywall-info" role="status" className="mt-4 text-[14px] text-[#6B736E]">{info}</p>}
 
       <button type="button" data-testid="paywall-continue" disabled={!chosenPkg || purchasing} onClick={buy} aria-busy={purchasing} className={`mt-5 w-full ${btnDark}`}>
-        {purchasing ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("paywall.processing")}</> : t("paywall.subscribe")}
+        {state === "purchasing" ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("paywall.processing")}</> : t("paywall.subscribe")}
       </button>
-      <span className="sr-only" role="status" aria-live="polite">{purchasing ? t("paywall.processing") : ""}</span>
+      {isNative() && (
+        <button type="button" data-testid="paywall-restore-btn" disabled={purchasing} aria-busy={restoring} onClick={restore}
+          className={`mt-2 w-full min-h-[44px] inline-flex items-center justify-center gap-2 rounded-[15px] text-[15px] font-semibold text-[#173D31] hover:bg-[#EEF3EF] disabled:opacity-40 transition-colors ${focusRing}`}>
+          {restoring && <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />} {restoring ? t("paywall.restoring") : t("paywall.restore")}
+        </button>
+      )}
+      <span className="sr-only" role="status" aria-live="polite">{state === "purchasing" ? t("paywall.processing") : restoring ? t("paywall.restoring") : ""}</span>
       <p data-testid="paywall-renewal-note" className="mt-4 text-[13px] text-[#6B736E] leading-relaxed">{t("paywall.renewalNote")}</p>
       <p data-testid="paywall-legal" className="mt-2 text-[13px] text-[#6B736E]">
         <a href="/terms" target="_blank" rel="noopener noreferrer" data-testid="paywall-terms-link" className={`underline underline-offset-2 hover:text-[#222824] ${focusRing}`}>{t("legal.terms")}</a>

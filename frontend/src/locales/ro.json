@@ -478,5 +478,11 @@
   "subscription.checkStatus": "Actualizează starea abonamentului",
   "subscription.noPremiumFound": "Nu am găsit niciun abonament Premium activ pe acest cont.",
   "subscription.checkFailed": "Nu am putut verifica abonamentul. Încearcă din nou.",
-  "onboarding.doneFreeNote": "Începe gratuit. Premium este opțional și îl poți activa oricând."
+  "onboarding.doneFreeNote": "Începe gratuit. Premium este opțional și îl poți activa oricând.",
+  "paywall.restore": "Restaurează achizițiile",
+  "paywall.restoring": "Se restaurează achizițiile…",
+  "paywall.restoreNone": "Nu am găsit achiziții anterioare de restaurat pentru acest cont al magazinului.",
+  "paywall.restoreFailed": "Nu am putut restaura achizițiile. Încearcă din nou.",
+  "auth.gateRestoreTitle": "Conectează-te pentru a restaura achizițiile",
+  "auth.gateRestoreBody": "Achizițiile sunt legate de contul tău, ca să poți folosi Premium pe toate dispozitivele. Progresul tău se păstrează."
 }

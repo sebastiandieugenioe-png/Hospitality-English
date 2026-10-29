@@ -1,5 +1,5 @@
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { AppProvider } from "@/context/AppContext";
 import { BillingProvider } from "@/context/BillingContext";
@@ -11,7 +11,6 @@ import Learn from "@/pages/Learn";
 import Skill from "@/pages/Skill";
 import Progress from "@/pages/Progress";
 import Practice from "@/pages/Practice";
-import Category from "@/pages/Category";
 import Lesson from "@/pages/Lesson";
 import Assessment from "@/pages/Assessment";
 import EmergencyPhrases from "@/pages/EmergencyPhrases";
@@ -44,7 +43,9 @@ function App() {
             <Route path="/skill/:slug" element={<Skill />} />
             <Route path="/progress" element={<Progress />} />
             <Route path="/practice" element={<Practice />} />
-            <Route path="/category/:slug" element={<Category />} />
+            {/* Retired legacy category page: old saved URLs land on the current Learn experience. */}
+            <Route path="/category/:slug" element={<Navigate to="/learn" replace />} />
+            <Route path="/category" element={<Navigate to="/learn" replace />} />
             <Route path="/lesson/:slug" element={<Lesson />} />
             <Route path="/assessment" element={<Assessment />} />
             <Route path="/emergency" element={<EmergencyPhrases />} />

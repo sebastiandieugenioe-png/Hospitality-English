@@ -30,7 +30,7 @@ const Trigger = () => { api = usePremium(); return null; };
 const setBilling = (o) => Object.assign(mockBilling, {
   status: "ready", ready: true, premium: false, customerInfo: null,
   isPremium() { return this.premium; }, currentOffering: () => offering,
-  purchase: jest.fn(), refresh: jest.fn(), ...o,
+  purchase: jest.fn(), refresh: jest.fn(), restore: jest.fn(), ...o,
 });
 const render = async (ui) => { await act(async () => { root.render(ui); }); await act(async () => { await new Promise((r) => setTimeout(r, 0)); }); };
 const provider = () => <PremiumProvider><Trigger /></PremiumProvider>;
@@ -214,5 +214,100 @@ describe("subscription page", () => {
     await render(sub());
     expect(q("subscription-unavailable")).not.toBeNull();
     expect(q("subscription-upgrade-btn").disabled).toBe(true);
+  });
+});
+
+describe("native billing (iOS/Android)", () => {
+  const nativePkg = (id, micros) => ({ identifier: id, nativePackage: {}, nativeProduct: { identifier: id, price: { formattedPrice: `${micros / 1e6} €`, amountMicros: micros, currency: "EUR" } } });
+  beforeEach(() => { mockNative.native = true; });
+  const openPaywall = async () => { await render(provider()); await act(async () => api.requestPremium({ resume: jest.fn() })); };
+
+  test("paywall shows native prices + secondary Restore under Subscribe", async () => {
+    setBilling({ currentOffering: () => ({ annual: nativePkg("a", 39.99e6), monthly: nativePkg("m", 4.99e6) }) });
+    await openPaywall();
+    expect(q("paywall-plan-annual-price").textContent).toBe("39.99 €");
+    expect(q("paywall-restore-btn").textContent).toContain("paywall.restore");
+    expect(q("paywall-continue").textContent).toContain("paywall.subscribe");
+  });
+  test("paywall restore success -> backend refresh -> success view", async () => {
+    mockBilling.restore.mockResolvedValue(true);
+    await openPaywall();
+    await click("paywall-restore-btn");
+    expect(mockBilling.restore).toHaveBeenCalledTimes(1);
+    expect(mockApi.refreshEntitlement).toHaveBeenCalledTimes(1);
+    expect(q("paywall-success")).not.toBeNull();
+  });
+  test("paywall restore nothing found -> neutral info, paywall stays", async () => {
+    mockBilling.restore.mockResolvedValue(false);
+    await openPaywall();
+    await click("paywall-restore-btn");
+    expect(q("paywall-info").textContent).toBe("paywall.restoreNone");
+    expect(q("paywall-error")).toBeNull();
+  });
+  test("paywall restore network error -> calm error", async () => {
+    mockBilling.restore.mockRejectedValue({ errorCode: 10 });
+    await openPaywall();
+    await click("paywall-restore-btn");
+    expect(q("paywall-error").textContent).toBe("account.errNetwork");
+  });
+  test("signed-in restore from Subscription runs immediately", async () => {
+    mockBilling.restore.mockResolvedValue(true);
+    await render(<PremiumProvider><Subscription /></PremiumProvider>);
+    expect(q("subscription-check-status-btn")).toBeNull();
+    await click("subscription-restore-btn");
+    expect(mockBilling.restore).toHaveBeenCalledTimes(1);
+    expect(q("paywall-success")).not.toBeNull();
+  });
+  test("guest restore -> restore sign-in gate -> after login + identity resolved, restore runs automatically", async () => {
+    mockApp.isAuthenticated = false;
+    mockBilling.restore.mockResolvedValue(false);
+    await render(<PremiumProvider><Subscription /></PremiumProvider>);
+    await click("subscription-restore-btn");
+    expect(q("premium-account-gate").textContent).toContain("auth.gateRestoreTitle");
+    expect(mockBilling.restore).not.toHaveBeenCalled();
+    mockApp.isAuthenticated = true;
+    setBilling({ status: "loading", ready: false });
+    await render(<PremiumProvider><Subscription /></PremiumProvider>);
+    expect(mockBilling.restore).not.toHaveBeenCalled(); // waits for users.id identity sync
+    setBilling({ status: "ready" });
+    mockBilling.restore.mockResolvedValue(false);
+    await render(<PremiumProvider><Subscription /></PremiumProvider>);
+    expect(mockBilling.restore).toHaveBeenCalledTimes(1);
+    expect(q("restore-none").textContent).toBe("paywall.restoreNone");
+  });
+  test("guest subscribe -> sign-in -> continues into paywall (not restore)", async () => {
+    mockApp.isAuthenticated = false;
+    await render(provider());
+    await act(async () => api.requestPremium());
+    expect(q("premium-account-gate").textContent).toContain("auth.gateTitle");
+    mockApp.isAuthenticated = true;
+    await render(provider());
+    expect(q("premium-paywall")).not.toBeNull();
+    expect(mockBilling.restore).not.toHaveBeenCalled();
+  });
+  test("restore cancelled by user -> neutral, no error", async () => {
+    mockBilling.restore.mockRejectedValue({ errorCode: 1 });
+    await render(provider());
+    await act(async () => api.requestRestore());
+    expect(q("restore-error")).toBeNull();
+    expect(q("restore-none")).not.toBeNull();
+  });
+  test("restore error -> retry available", async () => {
+    mockBilling.restore.mockRejectedValueOnce({ errorCode: 0 }).mockResolvedValueOnce(true);
+    await render(provider());
+    await act(async () => api.requestRestore());
+    expect(q("restore-error").textContent).toBe("paywall.restoreFailed");
+    await click("restore-retry-btn");
+    expect(q("paywall-success")).not.toBeNull();
+  });
+});
+
+describe("web keeps no native restore", () => {
+  test("paywall + Subscription have no restore; requestRestore is a no-op", async () => {
+    await render(provider());
+    await act(async () => api.requestRestore());
+    expect(q("premium-restore")).toBeNull();
+    await act(async () => api.requestPremium());
+    expect(q("paywall-restore-btn")).toBeNull();
   });
 });

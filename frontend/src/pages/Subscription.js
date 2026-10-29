@@ -14,7 +14,7 @@ const pkgProductId = (p) => (p ? ((p.rcBillingProduct || p.webBillingProduct)?.i
 export default function Subscription() {
   const { t, language, isAuthenticated } = useApp();
   const billing = useBilling();
-  const { requestPremium } = usePremium();
+  const { requestPremium, requestRestore } = usePremium();
   const premium = billing.isPremium(PROFESSION);
   const benefits = ["subscription.benefitSituations", "subscription.benefitListening", "subscription.benefitSpeaking", "subscription.benefitReview"];
   const [checking, setChecking] = useState(false);
@@ -98,6 +98,11 @@ export default function Subscription() {
           {t("subscription.upgrade")}
         </button>
       </section>
+      {isNative() && (
+        <button type="button" data-testid="subscription-restore-btn" onClick={requestRestore} className={`w-full ${btnLight}`}>
+          <RefreshCw className="w-4 h-4" aria-hidden="true" /> {t("paywall.restore")}
+        </button>
+      )}
       {isAuthenticated && !isNative() && (
         <section className="space-y-3">
           <button type="button" data-testid="subscription-check-status-btn" disabled={checking} aria-busy={checking} onClick={checkStatus} className={`w-full ${btnLight}`}>
