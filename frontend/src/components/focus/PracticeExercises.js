@@ -182,7 +182,8 @@ export function SpeakingExercise({ item, ui, language, guestId, t, onAnswered, o
   };
 
   const recordAgain = () => {
-    setResult(null); setBlob(null); setSeconds(0); setSubmitError(null);
+    setResult(null); setBlob(null); setSeconds(0);
+    setSubmitError((e) => (e === "daily_limit" ? e : null)); // the daily limit stays until reload
     setBlobUrl((u) => { if (u) URL.revokeObjectURL(u); return null; });
     setPhase("idle");
   };
@@ -196,7 +197,7 @@ export function SpeakingExercise({ item, ui, language, guestId, t, onAnswered, o
       <h2 className="mt-6 text-[17px] font-semibold text-[#222824]">{t("practiceSession.howRespond")}</h2>
       {phase !== "result" && (
         <RecordingControl phase={phase} seconds={seconds} maxSeconds={MAX_SECONDS} blobUrl={blobUrl} tooShort={seconds < 1} micState={micState} t={t}
-          onRecord={startRecording} onStop={stopRecording} onSubmit={submit} onRerecord={recordAgain} />
+          onRecord={startRecording} onStop={stopRecording} onSubmit={submit} onRerecord={recordAgain} submitDisabled={submitError === "daily_limit"} />
       )}
       {phase === "recorded" && submitError && (
         <p data-testid={`speaking-error-${submitError}`} role="alert" className="mt-3 text-[14px] text-center text-[#A44F3B]">

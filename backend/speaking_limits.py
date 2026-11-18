@@ -43,24 +43,32 @@ async def ensure_indexes(db):
 
 
 async def check_and_record(db, guest_id, is_premium, now=None):
-    """Returns None when the attempt may proceed (and records it), or the limit
-    name that was hit ("profile" | "global")."""
+    """Returns None when the attempt may proceed (and keeps it recorded), or the limit
+    name that was hit ("profile" | "global").
+
+    Insert first, then count: with simultaneous requests every request sees the others'
+    rows, so the limit can never be exceeded (at worst a borderline request is refused)."""
     now = now or datetime.now(timezone.utc)
     since = now - WINDOW
     col = db[COLLECTION]
+    res = await col.insert_one({"guest_id": guest_id, "premium": bool(is_premium), "at": now})
+    row_id = res.inserted_id
+
+    async def refuse(name):
+        await col.delete_one({"_id": row_id})
+        return name
 
     per_profile = PREMIUM_DAILY_PER_PROFILE if is_premium else FREE_DAILY_PER_PROFILE
     if per_profile >= 0:
         used = await col.count_documents({"guest_id": guest_id, "at": {"$gte": since}})
-        if used >= per_profile:
-            return "profile"
+        if used > per_profile:
+            return await refuse("profile")
 
     if not is_premium and FREE_DAILY_GLOBAL >= 0:
         used_global = await col.count_documents({"premium": False, "at": {"$gte": since}})
-        if used_global >= FREE_DAILY_GLOBAL:
-            return "global"
+        if used_global > FREE_DAILY_GLOBAL:
+            return await refuse("global")
 
-    await col.insert_one({"guest_id": guest_id, "premium": bool(is_premium), "at": now})
     return None
 
 

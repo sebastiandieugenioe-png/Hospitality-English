@@ -285,6 +285,18 @@
       "uk": "Не вдалося оцінити твою відповідь. Спробуй ще раз.",
       "nl": "We konden je antwoord niet beoordelen. Probeer het opnieuw.",
       "en": "We couldn't evaluate your answer. Please try again."
+    },
+    "submit": {
+      "es": "Enviar",
+      "en": "Send",
+      "it": "Invia",
+      "fr": "Envoyer",
+      "pt": "Enviar",
+      "de": "Senden",
+      "pl": "Wyślij",
+      "ro": "Trimite",
+      "uk": "Надіслати",
+      "nl": "Versturen"
     }
   },
   "items": [

@@ -80,7 +80,7 @@ export function AudioPlayer({ src, label, autoPlay = false, testId = "audio", t,
 }
 
 // Presentational recorder states; recording logic stays in the caller.
-export function RecordingControl({ phase, seconds, maxSeconds, blobUrl, tooShort, micState, t, onRecord, onStop, onSubmit, onRerecord }) {
+export function RecordingControl({ phase, seconds, maxSeconds, blobUrl, tooShort, micState, t, onRecord, onStop, onSubmit, onRerecord, submitDisabled = false }) {
   return (
     <div className="mt-6 rounded-2xl bg-white border border-[#DEE2DE] p-6 text-center" data-testid="recording-control" data-phase={phase}>
       {phase === "idle" && (
@@ -113,7 +113,7 @@ export function RecordingControl({ phase, seconds, maxSeconds, blobUrl, tooShort
           <p className="text-[16px] font-semibold text-[#222824] text-center">{t("practiceSession.ready")}</p>
           <AudioPlayer src={blobUrl} testId="speaking-playback" t={t} />
           {tooShort && <p data-testid="speaking-too-short" role="alert" className="text-[14px] text-[#A44F3B] text-center">{t("practiceSession.tooShort")}</p>}
-          <PrimaryButton testId="speaking-submit-btn" disabled={tooShort} onClick={onSubmit}>{t("practiceSession.submit")}</PrimaryButton>
+          <PrimaryButton testId="speaking-submit-btn" disabled={tooShort || submitDisabled} onClick={onSubmit}>{t("practiceSession.submit")}</PrimaryButton>
           <SecondaryButton testId="speaking-retry-btn" onClick={onRerecord}><RotateCcw className="w-4 h-4" aria-hidden="true" /> {t("practiceSession.recordAgain")}</SecondaryButton>
         </div>
       )}
