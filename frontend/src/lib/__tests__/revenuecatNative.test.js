@@ -78,6 +78,43 @@ test("offerings normalised to the shared price shape", async () => {
   expect(m.nativePackage.identifier).toBe("$rc_monthly");
 });
 
+describe("free trial on native", () => {
+  const trialOfferings = () => ({ current: null, all: { hospitality_default: {
+    identifier: "hospitality_default",
+    monthly: { identifier: "$rc_monthly", product: { identifier: "m", priceString: "4,99 €", price: 4.99, currencyCode: "EUR" } },
+    annual: { identifier: "$rc_annual", product: { identifier: "a", priceString: "39,99 €", price: 39.99, currencyCode: "EUR",
+      introPrice: { price: 0, periodUnit: "DAY", periodNumberOfUnits: 7 } } },
+  } } });
+
+  test("iOS: trial shown only when the store confirms eligibility", async () => {
+    mockP.getOfferings = jest.fn(async () => trialOfferings());
+    mockP.checkTrialOrIntroductoryPriceEligibility = jest.fn(async () => ({ a: { status: 2 } }));
+    const { rc } = load(KEYS);
+    const o = await rc.fetchOfferings();
+    expect(o.all.hospitality_default.annual.nativeProduct.freeTrialIso).toBe("P7D");
+    expect(mockP.checkTrialOrIntroductoryPriceEligibility).toHaveBeenCalledWith({ productIdentifiers: ["a"] });
+  });
+
+  test("iOS: ineligible or eligibility check fails -> no trial promised", async () => {
+    mockP.getOfferings = jest.fn(async () => trialOfferings());
+    mockP.checkTrialOrIntroductoryPriceEligibility = jest.fn(async () => ({ a: { status: 1 } }));
+    let o = await load(KEYS).rc.fetchOfferings();
+    expect(o.all.hospitality_default.annual.nativeProduct.freeTrialIso).toBeUndefined();
+    mockP.checkTrialOrIntroductoryPriceEligibility = jest.fn(async () => { throw new Error("x"); });
+    o = await load(KEYS).rc.fetchOfferings();
+    expect(o.all.hospitality_default.annual.nativeProduct.freeTrialIso).toBeUndefined();
+  });
+
+  test("Android: Play only returns eligible offers, so no extra check", async () => {
+    mockPlatform.platform = "android";
+    mockP.getOfferings = jest.fn(async () => trialOfferings());
+    mockP.checkTrialOrIntroductoryPriceEligibility = jest.fn();
+    const o = await load(KEYS).rc.fetchOfferings();
+    expect(o.all.hospitality_default.annual.nativeProduct.freeTrialIso).toBe("P7D");
+    expect(mockP.checkTrialOrIntroductoryPriceEligibility).not.toHaveBeenCalled();
+  });
+});
+
 test("purchase passes the original native package; restore uses native restorePurchases", async () => {
   const { rc } = load(KEYS);
   const o = await rc.fetchOfferings();
