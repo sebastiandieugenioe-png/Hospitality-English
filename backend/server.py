@@ -27,6 +27,7 @@ import listening_data as listening
 import speaking_data as speaking
 import stt_elevenlabs
 import speaking_evaluator
+import speaking_limits
 import billing_access
 import premium_access
 import firebase_admin_setup
@@ -2274,9 +2275,19 @@ async def speaking_attempt(
         raise HTTPException(status_code=422, detail="Unknown speaking_item_id")
     await _require_situation_access(item["situation_slug"], authorization, guest_id)
 
-    audio_bytes = await audio.read()
+    # Size check BEFORE anything is sent to a paid API.
+    audio_bytes, too_large = await speaking_limits.read_limited(audio)
+    if too_large:
+        raise HTTPException(status_code=413, detail="audio_too_large")
     if not audio_bytes:
         raise HTTPException(status_code=422, detail="Empty audio")
+
+    # Daily usage limits (recorded before STT, so failed uploads still count).
+    is_premium = await _premium_for_request(authorization, guest_id)
+    hit = await speaking_limits.check_and_record(db, guest_id, is_premium)
+    if hit:
+        logger.info("Speaking limit reached (%s) for guest %s", hit, guest_id)
+        raise HTTPException(status_code=429, detail=speaking_limits.LIMIT_DETAIL)
 
     # 1) STT (ElevenLabs Scribe v2) — raw audio is only held in memory, never stored.
     try:
@@ -2355,7 +2366,7 @@ async def speaking_attempt(
 LEARNING_COLLECTIONS = [
     "situation_attempts", "review_items", "assessment_attempts", "shift_sessions",
     "job_interview_progress", "first_week_progress", "listening_attempts", "speaking_attempts",
-    "feedback",
+    "feedback", speaking_limits.COLLECTION,
 ]
 
 # Minimal in-memory rate limiter for auth endpoints (per client, sliding window).
@@ -2705,6 +2716,7 @@ async def startup_seed():
         await db.speaking_attempts.create_index("guest_id")
         await db.speaking_attempts.create_index([("guest_id", 1), ("speaking_item_id", 1)])
         await db.speaking_attempts.create_index([("guest_id", 1), ("overall", 1)])
+        await speaking_limits.ensure_indexes(db)
         await db.users.create_index("firebase_uid", unique=True)
         await db.guests.create_index("anonymous_firebase_uid")
         await db.guests.create_index("user_id")

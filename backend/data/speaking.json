@@ -261,6 +261,30 @@
       "uk": "Спробуй відповісти повним реченням.",
       "nl": "Probeer met een volledige zin te antwoorden.",
       "en": "Try to answer with a complete sentence."
+    },
+    "daily_limit": {
+      "es": "Has llegado al límite de prácticas de hoy. Vuelve mañana o hazte Premium para practicar más.",
+      "it": "Hai raggiunto il limite di esercizi di oggi. Torna domani o passa a Premium per esercitarti di più.",
+      "fr": "Vous avez atteint la limite d'exercices pour aujourd'hui. Revenez demain ou passez à Premium pour vous entraîner davantage.",
+      "pt": "Chegaste ao limite de práticas de hoje. Volta amanhã ou passa a Premium para praticar mais.",
+      "de": "Du hast das Übungslimit für heute erreicht. Komm morgen wieder oder hol dir Premium, um mehr zu üben.",
+      "pl": "Osiągnięto dzisiejszy limit ćwiczeń. Wróć jutro lub przejdź na Premium, aby ćwiczyć więcej.",
+      "ro": "Ai atins limita de exerciții pentru azi. Revino mâine sau treci la Premium ca să exersezi mai mult.",
+      "uk": "Ти досяг ліміту вправ на сьогодні. Повертайся завтра або оформи Premium, щоб практикуватися більше.",
+      "nl": "Je hebt de oefenlimiet voor vandaag bereikt. Kom morgen terug of neem Premium om meer te oefenen.",
+      "en": "You've reached today's practice limit. Come back tomorrow or go Premium to practise more."
+    },
+    "send_failed": {
+      "es": "No hemos podido evaluar tu respuesta. Inténtalo de nuevo.",
+      "it": "Non siamo riusciti a valutare la tua risposta. Riprova.",
+      "fr": "Nous n'avons pas pu évaluer votre réponse. Réessayez.",
+      "pt": "Não conseguimos avaliar a tua resposta. Tenta de novo.",
+      "de": "Wir konnten deine Antwort nicht auswerten. Versuch es noch einmal.",
+      "pl": "Nie udało się ocenić twojej odpowiedzi. Spróbuj ponownie.",
+      "ro": "Nu am putut evalua răspunsul tău. Încearcă din nou.",
+      "uk": "Не вдалося оцінити твою відповідь. Спробуй ще раз.",
+      "nl": "We konden je antwoord niet beoordelen. Probeer het opnieuw.",
+      "en": "We couldn't evaluate your answer. Please try again."
     }
   },
   "items": [

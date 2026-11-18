@@ -103,6 +103,7 @@ export function SpeakingExercise({ item, ui, language, guestId, t, onAnswered, o
   const startedAtRef = useRef(0);
   const timerRef = useRef(null);
   const submittingRef = useRef(false);
+  const [submitError, setSubmitError] = useState(null); // null | "daily_limit" | "send_failed"
 
   function cleanup() {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
@@ -163,6 +164,7 @@ export function SpeakingExercise({ item, ui, language, guestId, t, onAnswered, o
     submittingRef.current = true;
     const elapsed = Date.now() - startedAtRef.current;
     setPhase("processing");
+    setSubmitError(null);
     try {
       const ext = mime.includes("mp4") ? "mp4" : mime.includes("mpeg") ? "mp3" : mime.includes("wav") ? "wav" : "webm";
       const r = await submitSpeakingAttempt(guestId, { speaking_item_id: item.id, duration_ms: Math.max(elapsed, seconds * 1000), blob, filename: `response.${ext}` });
@@ -170,7 +172,9 @@ export function SpeakingExercise({ item, ui, language, guestId, t, onAnswered, o
       onAnswered?.(r);
       setPhase("result");
     } catch (e) {
-      console.warn("speaking submit failed", e?.response?.status);
+      const status = e?.response?.status;
+      console.warn("speaking submit failed", status);
+      setSubmitError(status === 429 ? "daily_limit" : "send_failed");
       setPhase("recorded");
     } finally {
       submittingRef.current = false;
@@ -178,7 +182,7 @@ export function SpeakingExercise({ item, ui, language, guestId, t, onAnswered, o
   };
 
   const recordAgain = () => {
-    setResult(null); setBlob(null); setSeconds(0);
+    setResult(null); setBlob(null); setSeconds(0); setSubmitError(null);
     setBlobUrl((u) => { if (u) URL.revokeObjectURL(u); return null; });
     setPhase("idle");
   };
@@ -193,6 +197,11 @@ export function SpeakingExercise({ item, ui, language, guestId, t, onAnswered, o
       {phase !== "result" && (
         <RecordingControl phase={phase} seconds={seconds} maxSeconds={MAX_SECONDS} blobUrl={blobUrl} tooShort={seconds < 1} micState={micState} t={t}
           onRecord={startRecording} onStop={stopRecording} onSubmit={submit} onRerecord={recordAgain} />
+      )}
+      {phase === "recorded" && submitError && (
+        <p data-testid={`speaking-error-${submitError}`} role="alert" className="mt-3 text-[14px] text-center text-[#A44F3B]">
+          {tx(submitError)}
+        </p>
       )}
       {phase === "result" && result && (
         <SpeakingResult result={result} ui={ui} tx={tx} t={t} onTryAgain={recordAgain} onContinue={onContinue} continueLabel={continueLabel} />

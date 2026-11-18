@@ -26,6 +26,7 @@ export function SpeakingQuestion({ item, ui, language, guestId, onAnswered, onCo
   const [blobUrl, setBlobUrl] = useState(null);
   const [mime, setMime] = useState("audio/webm");
   const [seconds, setSeconds] = useState(0);
+  const [submitError, setSubmitError] = useState(null); // null | "daily_limit" | "send_failed"
   const recorderRef = useRef(null);
   const chunksRef = useRef([]);
   const streamRef = useRef(null);
@@ -38,6 +39,7 @@ export function SpeakingQuestion({ item, ui, language, guestId, onAnswered, onCo
     cleanup();
     setPhase("idle");
     setResult(null);
+    setSubmitError(null);
     setBlob(null);
     setBlobUrl((u) => { if (u) URL.revokeObjectURL(u); return null; });
     setSeconds(0);
@@ -107,6 +109,7 @@ export function SpeakingQuestion({ item, ui, language, guestId, onAnswered, onCo
     const elapsed = Date.now() - startedAtRef.current;
     if (!blob || blob.size === 0) return;
     setPhase("processing");
+    setSubmitError(null);
     try {
       const ext = mime.includes("mp4") ? "mp4" : mime.includes("mpeg") ? "mp3" : mime.includes("wav") ? "wav" : "webm";
       const r = await submitSpeakingAttempt(guestId, {
@@ -119,12 +122,15 @@ export function SpeakingQuestion({ item, ui, language, guestId, onAnswered, onCo
       if (onAnswered) onAnswered(r);
       setPhase("result");
     } catch (e) {
+      const status = e?.response?.status;
+      setSubmitError(status === 429 ? "daily_limit" : "send_failed");
       setPhase("recorded"); // allow retry on failure
     }
   };
 
   const recordAgain = () => {
     setResult(null);
+    setSubmitError(null);
     setBlob(null);
     setBlobUrl((u) => { if (u) URL.revokeObjectURL(u); return null; });
     setSeconds(0);
@@ -180,6 +186,11 @@ export function SpeakingQuestion({ item, ui, language, guestId, onAnswered, onCo
             <div className="w-full flex flex-col items-center gap-4">
               <audio data-testid="speaking-playback" src={blobUrl} controls className="w-full max-w-sm" />
               {seconds < 1 && <p data-testid="speaking-too-short" className="text-sm text-brand-terracotta-hover">{tx("too_short")}</p>}
+              {submitError && (
+                <p data-testid={`speaking-error-${submitError}`} role="alert" className="text-sm text-center text-brand-terracotta-hover max-w-sm">
+                  {tx(submitError)}
+                </p>
+              )}
               <div className="flex gap-3">
                 <button
                   data-testid="speaking-retry-btn"
