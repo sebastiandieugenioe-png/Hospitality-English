@@ -10,9 +10,12 @@ Cohort = guest profiles created in the last N days. Steps:
   6. created an account                       guests.user_id
 Paid / trial conversions live in RevenueCat (its dashboard), not here.
 
-Disabled unless the ADMIN_STATS_TOKEN env var is set; the token must be sent as the
-`key` query parameter or the `X-Admin-Key` header.
+Access: the key is sent as the `key` query parameter or the `X-Admin-Key` header.
+It is checked against ADMIN_STATS_TOKEN (env, plain) if set, otherwise against a
+SHA-256 hash (ADMIN_STATS_TOKEN_SHA256 env, or the built-in default below). Only the
+hash lives in the code, so the key itself is never in the repository.
 """
+import hashlib
 import hmac
 import html
 import os
@@ -31,11 +34,22 @@ LANG_NAMES = {"es": "Español", "en": "English", "it": "Italiano", "fr": "Franç
               "de": "Deutsch", "pl": "Polski", "ro": "Română", "uk": "Українська", "nl": "Nederlands"}
 
 
+# SHA-256 of the owner's private key (the key itself is not stored anywhere in the code).
+DEFAULT_TOKEN_SHA256 = "aa8fcf52df68c4ed8cc6bdf56488e58ccf5c8c3bf4716546f9e66d6594038188"
+
+
 def token_ok(provided):
-    expected = os.environ.get("ADMIN_STATS_TOKEN", "").strip()
-    if not expected or not provided:
-        return None if not expected else False  # None = feature disabled
-    return hmac.compare_digest(str(provided).strip(), expected)
+    """True = allowed, False = wrong key, None = feature disabled."""
+    plain = os.environ.get("ADMIN_STATS_TOKEN", "").strip()
+    expected_hash = os.environ.get("ADMIN_STATS_TOKEN_SHA256", DEFAULT_TOKEN_SHA256).strip().lower()
+    if not plain and not expected_hash:
+        return None
+    if not provided:
+        return False
+    provided = str(provided).strip()
+    if plain:
+        return hmac.compare_digest(provided, plain)
+    return hmac.compare_digest(hashlib.sha256(provided.encode()).hexdigest(), expected_hash)
 
 
 def compute_funnel(cohort, started_ids, completed_ids, spoke_ids):
