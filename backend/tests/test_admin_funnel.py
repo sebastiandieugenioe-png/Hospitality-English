@@ -26,12 +26,23 @@ def test_compute_funnel_counts_each_step():
 
 
 def test_token(monkeypatch):
+    import hashlib
     monkeypatch.delenv("ADMIN_STATS_TOKEN", raising=False)
+    monkeypatch.setenv("ADMIN_STATS_TOKEN_SHA256", "")
     assert af.token_ok("anything") is None  # disabled -> 404
     monkeypatch.setenv("ADMIN_STATS_TOKEN", "s3cret")
     assert af.token_ok("s3cret") is True
     assert af.token_ok("wrong") is False
     assert af.token_ok(None) is False
+    # hash mode (no plain key configured)
+    monkeypatch.delenv("ADMIN_STATS_TOKEN")
+    monkeypatch.setenv("ADMIN_STATS_TOKEN_SHA256", hashlib.sha256(b"k3y").hexdigest())
+    assert af.token_ok("k3y") is True
+    assert af.token_ok("nope") is False
+
+
+def test_default_hash_is_a_sha256():
+    assert len(af.DEFAULT_TOKEN_SHA256) == 64
 
 
 def test_render_html_has_steps_and_no_ids():
