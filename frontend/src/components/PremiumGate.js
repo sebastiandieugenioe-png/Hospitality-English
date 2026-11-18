@@ -10,6 +10,7 @@ import { isNative } from "@/lib/platform";
 import { nativeGoogleIdToken } from "@/lib/nativeAuth";
 import { rcDiag } from "@/lib/revenuecat";
 import { refreshEntitlement } from "@/lib/api";
+import { trialOf, trialLabelKey } from "@/lib/trial";
 import { btnDark, btnLight, focusRing } from "@/components/SettingsLayout";
 import { AuthProviderButton, GoogleSignInSlot, NativeGoogleButton, AuthStatus, friendlyAuthError } from "@/components/auth/AuthProviders";
 
@@ -266,6 +267,12 @@ function Paywall({ t, billing, onClose, onUnlocked }) {
   }
 
   const chosenPkg = selected === "annual" ? annual : monthly;
+  const trialText = (pkg) => {
+    const tr = trialOf(pkg);
+    return tr ? t(trialLabelKey(tr, "paywall.trial"), { count: tr.count }) : null;
+  };
+  const chosenTrial = trialText(chosenPkg);
+  const chosenPrice = priceOf(chosenPkg);
   const restoring = state === "restoring";
   const purchasing = state === "purchasing" || restoring;
 
@@ -343,17 +350,22 @@ function Paywall({ t, billing, onClose, onUnlocked }) {
       <div role="radiogroup" aria-label={t("paywall.choosePlan")} className="mt-5 space-y-3">
         <PlanOption t={t} testid="paywall-plan-annual" label={t("subscription.annual")} period={t("paywall.perYear")} pkg={annual}
           selected={selected === "annual"} onSelect={() => setSelected("annual")} disabled={purchasing}
-          badge={savingsPct ? t("paywall.save", { pct: savingsPct }) : null} />
+          badge={savingsPct ? t("paywall.save", { pct: savingsPct }) : null} trial={trialText(annual)} />
         <PlanOption t={t} testid="paywall-plan-monthly" label={t("subscription.monthly")} period={t("paywall.perMonth")} pkg={monthly}
-          selected={selected === "monthly"} onSelect={() => setSelected("monthly")} disabled={purchasing} />
+          selected={selected === "monthly"} onSelect={() => setSelected("monthly")} disabled={purchasing} trial={trialText(monthly)} />
       </div>
 
       {err && <p data-testid="paywall-error" role="alert" className="mt-4 text-[14px] text-[#A44F3B]">{err}</p>}
       {info && <p data-testid="paywall-info" role="status" className="mt-4 text-[14px] text-[#6B736E]">{info}</p>}
 
       <button type="button" data-testid="paywall-continue" disabled={!chosenPkg || purchasing} onClick={buy} aria-busy={purchasing} className={`mt-5 w-full ${btnDark}`}>
-        {state === "purchasing" ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("paywall.processing")}</> : t("paywall.subscribe")}
+        {state === "purchasing" ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> {t("paywall.processing")}</> : chosenTrial ? t("paywall.startTrial") : t("paywall.subscribe")}
       </button>
+      {chosenTrial && chosenPrice && (
+        <p data-testid="paywall-trial-note" className="mt-3 text-[14px] text-center text-[#222824] leading-relaxed">
+          {t("paywall.trialNote", { trial: chosenTrial, price: chosenPrice.formattedPrice, period: t(selected === "annual" ? "paywall.perYear" : "paywall.perMonth") })}
+        </p>
+      )}
       {isNative() && (
         <button type="button" data-testid="paywall-restore-btn" disabled={purchasing} aria-busy={restoring} onClick={restore}
           className={`mt-2 w-full min-h-[44px] inline-flex items-center justify-center gap-2 rounded-[15px] text-[15px] font-semibold text-[#173D31] hover:bg-[#EEF3EF] disabled:opacity-40 transition-colors ${focusRing}`}>
@@ -371,7 +383,7 @@ function Paywall({ t, billing, onClose, onUnlocked }) {
   );
 }
 
-export function PlanOption({ t, testid, label, period, pkg, selected, onSelect, badge, disabled }) {
+export function PlanOption({ t, testid, label, period, pkg, selected, onSelect, badge, trial, disabled }) {
   const price = priceOf(pkg);
   const unavailable = !pkg;
   return (
@@ -394,6 +406,7 @@ export function PlanOption({ t, testid, label, period, pkg, selected, onSelect, 
         <span className="flex flex-wrap items-center gap-2">
           <span className="text-[16px] font-semibold text-[#222824]">{label}</span>
           {badge && <span className="text-[11px] uppercase tracking-wider font-semibold text-[#173D31] bg-[#173D31]/10 px-2 py-0.5 rounded-full">{badge}</span>}
+          {trial && <span data-testid={`${testid}-trial`} className="text-[11px] uppercase tracking-wider font-semibold text-white bg-[#34785B] px-2 py-0.5 rounded-full">{trial}</span>}
         </span>
       </span>
       <span className="text-right shrink-0">

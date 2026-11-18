@@ -119,6 +119,27 @@ describe("paywall", () => {
     expect(q("paywall-privacy-link").getAttribute("href")).toBe("/privacy");
     expect(el.textContent).not.toMatch(/restore/i);
   });
+  test("no trial configured -> no trial badge, no trial note", async () => {
+    await open();
+    expect(q("paywall-plan-annual-trial")).toBeNull();
+    expect(q("paywall-trial-note")).toBeNull();
+  });
+
+  test("free trial -> badge, 'start free trial' CTA and the price charged after the trial", async () => {
+    const withTrial = (p) => ({ ...p, webBillingProduct: { ...p.webBillingProduct, freeTrialPhase: { periodDuration: "P7D" } } });
+    setBilling({ currentOffering: () => ({ annual: withTrial(offering.annual), monthly: offering.monthly }) });
+    await open();
+    expect(q("paywall-plan-annual-trial").textContent).toBe('paywall.trialDays:{"count":7}');
+    expect(q("paywall-plan-monthly-trial")).toBeNull();
+    expect(q("paywall-continue").textContent).toContain("paywall.startTrial");
+    expect(q("paywall-trial-note").textContent).toContain('"price":"€50"');
+    expect(q("paywall-trial-note").textContent).toContain('"period":"paywall.perYear"');
+    expect(q("paywall-renewal-note")).not.toBeNull();
+    await click("paywall-plan-monthly");
+    expect(q("paywall-continue").textContent).toContain("paywall.subscribe");
+    expect(q("paywall-trial-note")).toBeNull();
+  });
+
   test("purchase success -> entitlement refreshed -> success -> continue resumes once", async () => {
     const resume = jest.fn();
     mockBilling.purchase.mockResolvedValue({ premium: true });

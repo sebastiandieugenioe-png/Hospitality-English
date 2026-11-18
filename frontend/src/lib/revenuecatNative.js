@@ -1,6 +1,7 @@
 // RevenueCat native (Capacitor iOS/Android) adapter. Public platform SDK keys only.
 // The plugin is dynamically imported so the web bundle path never initialises it.
 import { getPlatform } from "@/lib/platform";
+import { nativeFreeTrialIso } from "@/lib/trial";
 
 const KEYS = {
   ios: process.env.REACT_APP_REVENUECAT_IOS_API_KEY,
@@ -32,12 +33,14 @@ const call = async (fn) => {
 export function normalizePackage(p) {
   if (!p) return null;
   const pr = p.product || {};
+  const freeTrialIso = nativeFreeTrialIso(pr);
   return {
     ...p,
     nativePackage: p,
     nativeProduct: {
       identifier: pr.identifier,
       price: { formattedPrice: pr.priceString, amountMicros: Math.round((pr.price || 0) * 1e6), currency: pr.currencyCode },
+      ...(freeTrialIso ? { freeTrialIso } : {}),
     },
   };
 }
@@ -69,7 +72,31 @@ export async function switchNativeIdentity(desiredId) {
 export async function nativeOfferings() {
   const o = await call((P) => P.getOfferings());
   const all = Object.fromEntries(Object.entries(o?.all || {}).map(([k, v]) => [k, normalizeOffering(v)]));
-  return { ...o, all, current: normalizeOffering(o?.current) };
+  const current = normalizeOffering(o?.current);
+  await applyTrialEligibility([...Object.values(all), current]);
+  return { ...o, all, current };
+}
+
+const INTRO_ELIGIBLE = 2; // INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE
+const packagesOf = (offerings) => offerings.flatMap((o) => (o ? [o.monthly, o.annual] : [])).filter(Boolean);
+
+// iOS lists a product's intro offer even when this Apple ID already used it, so the trial is
+// only shown when the store confirms eligibility (fail closed: never promise a trial we can't
+// honour). Google Play only returns offers the user is eligible for, so Android needs no check.
+export async function applyTrialEligibility(offerings) {
+  if (getPlatform() !== "ios") return;
+  const withTrial = packagesOf(offerings).filter((p) => p.nativeProduct?.freeTrialIso);
+  if (!withTrial.length) return;
+  let result = {};
+  try {
+    const ids = [...new Set(withTrial.map((p) => p.nativeProduct.identifier))];
+    result = (await (await plugin()).checkTrialOrIntroductoryPriceEligibility({ productIdentifiers: ids })) || {};
+  } catch (e) {
+    result = {};
+  }
+  for (const p of withTrial) {
+    if (result[p.nativeProduct.identifier]?.status !== INTRO_ELIGIBLE) delete p.nativeProduct.freeTrialIso;
+  }
 }
 
 export const nativeCustomerInfo = () => call(async (P) => (await P.getCustomerInfo()).customerInfo);
