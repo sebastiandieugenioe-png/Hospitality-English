@@ -38,18 +38,26 @@ LANG_NAMES = {"es": "Español", "en": "English", "it": "Italiano", "fr": "Franç
 DEFAULT_TOKEN_SHA256 = "aa8fcf52df68c4ed8cc6bdf56488e58ccf5c8c3bf4716546f9e66d6594038188"
 
 
+def _clean(v):
+    # Tolerate stray quotes/whitespace that can sneak in when pasting a secret.
+    return str(v or "").strip().strip("'\"`").strip()
+
+
 def token_ok(provided):
-    """True = allowed, False = wrong key, None = feature disabled."""
-    plain = os.environ.get("ADMIN_STATS_TOKEN", "").strip()
-    expected_hash = os.environ.get("ADMIN_STATS_TOKEN_SHA256", DEFAULT_TOKEN_SHA256).strip().lower()
+    """True = allowed, False = wrong key, None = feature disabled.
+    The key is accepted if it matches the plain ADMIN_STATS_TOKEN OR the SHA-256 hash."""
+    plain = _clean(os.environ.get("ADMIN_STATS_TOKEN"))
+    expected_hash = _clean(os.environ.get("ADMIN_STATS_TOKEN_SHA256", DEFAULT_TOKEN_SHA256)).lower()
     if not plain and not expected_hash:
         return None
+    provided = _clean(provided)
     if not provided:
         return False
-    provided = str(provided).strip()
-    if plain:
-        return hmac.compare_digest(provided, plain)
-    return hmac.compare_digest(hashlib.sha256(provided.encode()).hexdigest(), expected_hash)
+    if plain and hmac.compare_digest(provided, plain):
+        return True
+    if expected_hash and hmac.compare_digest(hashlib.sha256(provided.encode()).hexdigest(), expected_hash):
+        return True
+    return False
 
 
 def compute_funnel(cohort, started_ids, completed_ids, spoke_ids):
