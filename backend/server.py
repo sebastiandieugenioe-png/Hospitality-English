@@ -1,4 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Query, UploadFile, File, Form, Header, Request, Depends
+from fastapi.responses import HTMLResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -28,6 +29,8 @@ import speaking_data as speaking
 import stt_elevenlabs
 import speaking_evaluator
 import speaking_limits
+import admin_funnel
+from html import escape as html_escape
 import billing_access
 import premium_access
 import firebase_admin_setup
@@ -2363,6 +2366,22 @@ async def speaking_attempt(
 
 # ---------- Accounts & Auth MVP (Firebase identity; Mongo = learning source of truth) ----------
 # Learning-data collections keyed by guest_id (real collection names in this DB).
+@api_router.get("/admin/funnel")
+async def admin_funnel_stats(request: Request, days: int = 30, key: Optional[str] = None,
+                             format: str = "html", x_admin_key: Optional[str] = Header(None)):
+    ok = admin_funnel.token_ok(key or x_admin_key)
+    if ok is None:
+        raise HTTPException(status_code=404, detail="Not Found")
+    if not ok:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    days = max(1, min(int(days), 3650))
+    data = await admin_funnel.gather(db, days)
+    if format == "json":
+        return {"days": days, **data}
+    page = admin_funnel.render_html(data, days).replace("{KEY}", html_escape(key or ""))
+    return HTMLResponse(page, headers={"Cache-Control": "no-store", "X-Robots-Tag": "noindex"})
+
+
 LEARNING_COLLECTIONS = [
     "situation_attempts", "review_items", "assessment_attempts", "shift_sessions",
     "job_interview_progress", "first_week_progress", "listening_attempts", "speaking_attempts",
