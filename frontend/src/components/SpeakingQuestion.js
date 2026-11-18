@@ -39,7 +39,7 @@ export function SpeakingQuestion({ item, ui, language, guestId, onAnswered, onCo
     cleanup();
     setPhase("idle");
     setResult(null);
-    setSubmitError(null);
+    setSubmitError((e) => (e === "daily_limit" ? e : null)); // the daily limit stays until reload
     setBlob(null);
     setBlobUrl((u) => { if (u) URL.revokeObjectURL(u); return null; });
     setSeconds(0);
@@ -130,7 +130,7 @@ export function SpeakingQuestion({ item, ui, language, guestId, onAnswered, onCo
 
   const recordAgain = () => {
     setResult(null);
-    setSubmitError(null);
+    setSubmitError((e) => (e === "daily_limit" ? e : null));
     setBlob(null);
     setBlobUrl((u) => { if (u) URL.revokeObjectURL(u); return null; });
     setSeconds(0);
@@ -201,11 +201,11 @@ export function SpeakingQuestion({ item, ui, language, guestId, onAnswered, onCo
                 </button>
                 <button
                   data-testid="speaking-submit-btn"
-                  disabled={seconds < 1}
+                  disabled={seconds < 1 || submitError === "daily_limit"}
                   onClick={submit}
                   className="inline-flex items-center gap-2 rounded-full bg-brand-forest text-white px-6 py-3 font-medium hover:bg-brand-forest-hover disabled:opacity-40 transition-colors"
                 >
-                  <Check className="w-4 h-4" /> {tx("section_title")}
+                  <Check className="w-4 h-4" /> {tx("submit")}
                 </button>
               </div>
             </div>

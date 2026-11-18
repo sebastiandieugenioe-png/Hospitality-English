@@ -25,10 +25,24 @@ class FakeCollection:
         return True
 
     async def count_documents(self, q):
+        await asyncio.sleep(0)  # yield, so concurrent callers really interleave
         return sum(1 for r in self.rows if self._match(r, q))
 
     async def insert_one(self, doc):
-        self.rows.append(dict(doc))
+        await asyncio.sleep(0)
+        row = dict(doc)
+        row["_id"] = len(self.rows) + 1000 + sum(1 for _ in self.rows)
+        self.rows.append(row)
+
+        class R:
+            inserted_id = row["_id"]
+        return R()
+
+    async def delete_one(self, q):
+        for i, r in enumerate(self.rows):
+            if self._match(r, q):
+                del self.rows[i]
+                return
 
 
 class FakeDB(dict):
@@ -100,3 +114,15 @@ def test_read_limited():
     assert data == b"x" * 10 and not too_large
     data, too_large = run(sl.read_limited(FakeUpload(b"x" * 50), max_bytes=10))
     assert too_large and len(data) == 11
+
+
+def test_concurrent_requests_never_exceed_limit(monkeypatch):
+    monkeypatch.setattr(sl, "FREE_DAILY_PER_PROFILE", 5)
+    db = FakeDB()
+
+    async def burst():
+        return await asyncio.gather(*[sl.check_and_record(db, "g", False) for _ in range(20)])
+
+    results = run(burst())
+    assert sum(1 for r in results if r is None) <= 5
+    assert len(db[sl.COLLECTION].rows) <= 5
