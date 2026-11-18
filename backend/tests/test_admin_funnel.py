@@ -41,6 +41,15 @@ def test_token(monkeypatch):
     assert af.token_ok("nope") is False
 
 
+def test_hash_still_works_when_plain_key_is_wrong(monkeypatch):
+    import hashlib
+    monkeypatch.setenv("ADMIN_STATS_TOKEN", '"mistyped"')
+    monkeypatch.setenv("ADMIN_STATS_TOKEN_SHA256", hashlib.sha256(b"k3y").hexdigest())
+    assert af.token_ok("k3y") is True
+    assert af.token_ok("mistyped") is True  # quotes around the stored value are ignored
+    assert af.token_ok("other") is False
+
+
 def test_default_hash_is_a_sha256():
     assert len(af.DEFAULT_TOKEN_SHA256) == 64
 
