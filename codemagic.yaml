@@ -1,0 +1,103 @@
+# Cloud builds for the iOS and Android apps (no Mac needed).
+# Setup guide: docs/CLOUD_BUILDS.md
+#
+# Codemagic environment group "hospitality_app" (Team/App settings -> Environment variables):
+#   REACT_APP_BACKEND_URL                 production backend, e.g. https://hospitalityenglish.app
+#   REACT_APP_FIREBASE_*                  same values as the web app
+#   REACT_APP_GOOGLE_CLIENT_ID            same value as the web app
+#   REACT_APP_REVENUECAT_IOS_API_KEY      appl_...
+#   REACT_APP_REVENUECAT_ANDROID_API_KEY  goog_...
+#   REACT_APP_REVENUECAT_ENV              production
+#   GOOGLE_SERVICE_INFO_PLIST_B64         optional: base64 of GoogleService-Info.plist if not committed
+#   GOOGLE_SERVICES_JSON_B64              optional: base64 of google-services.json if not committed
+#   GCLOUD_SERVICE_ACCOUNT_CREDENTIALS    Google Play service account JSON (Android publishing)
+
+workflows:
+  ios-testflight:
+    name: iOS -> TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: Hospitality English   # name of the App Store Connect API key in Codemagic
+    environment:
+      groups:
+        - hospitality_app
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: app.englishtowork.hospitality
+      node: 20
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install and build web app
+        working_directory: frontend
+        script: |
+          yarn install
+          CI=false yarn build
+      - name: Firebase config (iOS)
+        working_directory: frontend
+        script: |
+          # Use the committed file if present; otherwise decode it from the env var.
+          if [ ! -s ios/App/App/GoogleService-Info.plist ] && [ -n "$GOOGLE_SERVICE_INFO_PLIST_B64" ]; then
+            echo "$GOOGLE_SERVICE_INFO_PLIST_B64" | base64 --decode > ios/App/App/GoogleService-Info.plist
+          fi
+          test -s ios/App/App/GoogleService-Info.plist || { echo "Missing GoogleService-Info.plist"; exit 1; }
+      - name: Sync Capacitor and pods
+        working_directory: frontend
+        script: |
+          npx cap sync ios
+      - name: Signing profiles
+        script: xcode-project use-profiles
+      - name: Build number
+        working_directory: frontend/ios/App
+        script: agvtool new-version -all $BUILD_NUMBER
+      - name: Build IPA
+        working_directory: frontend
+        script: |
+          xcode-project build-ipa --workspace ios/App/App.xcworkspace --scheme App
+    artifacts:
+      - frontend/build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+
+  android-internal:
+    name: Android -> Google Play (internal/closed)
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      groups:
+        - hospitality_app
+      android_signing:
+        - hospitality_upload_key   # name of the keystore uploaded in Codemagic
+      node: 20
+      java: 21
+    scripts:
+      - name: Install and build web app
+        working_directory: frontend
+        script: |
+          yarn install
+          CI=false yarn build
+      - name: Firebase config (Android)
+        working_directory: frontend
+        script: |
+          if [ ! -s android/app/google-services.json ] && [ -n "$GOOGLE_SERVICES_JSON_B64" ]; then
+            echo "$GOOGLE_SERVICES_JSON_B64" | base64 --decode > android/app/google-services.json
+          fi
+          test -s android/app/google-services.json || { echo "Missing google-services.json"; exit 1; }
+      - name: Sync Capacitor
+        working_directory: frontend
+        script: npx cap sync android
+      - name: Build AAB
+        working_directory: frontend/android
+        script: |
+          chmod +x gradlew
+          ./gradlew bundleRelease
+    artifacts:
+      - frontend/android/app/build/outputs/**/*.aab
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: true
