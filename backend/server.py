@@ -2681,10 +2681,22 @@ async def create_feedback(payload: FeedbackCreate, request: Request):
 
 app.include_router(api_router)
 
+# Native app (Capacitor) WebView origins must always be allowed, whatever
+# CORS_ORIGINS says in the deployment environment.
+NATIVE_APP_ORIGINS = ["capacitor://localhost", "https://localhost", "http://localhost"]
+
+
+def _cors_origins():
+    configured = [o.strip() for o in os.environ.get('CORS_ORIGINS', '*').split(',') if o.strip()]
+    if '*' in configured:
+        return ['*']
+    return configured + [o for o in NATIVE_APP_ORIGINS if o not in configured]
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=_cors_origins(),
     allow_methods=["*"],
     allow_headers=["*"],
 )
