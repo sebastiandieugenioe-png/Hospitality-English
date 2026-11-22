@@ -11,7 +11,7 @@ export const privacyPolicy = {
       h: "1. Who is responsible",
       p: [
         "The service is operated by Sebastian Di Eugenio, a sole trader based in Ireland (trading as English to Work), who is the data controller.",
-        "Address: 4 Emmet Road, Dublin D08 F8W3, Ireland.",
+        "Address: Apt 4, Emmet Place, Usher Street, Dublin 8, D08 F8W3, Ireland.",
         "Privacy contact: info@englishtowork.app.",
       ],
     },

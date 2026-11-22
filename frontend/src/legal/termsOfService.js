@@ -3,7 +3,7 @@ export const termsOfService = {
   title: "Terms of Use",
   updated: "Last updated: 22 November 2026. Effective date: 22 November 2026.",
   intro: [
-    "These Terms govern your use of Inglés para Hostelería (\"Hospitality English\", \"the app\"), operated by Sebastian Di Eugenio, a sole trader based in Ireland (trading as English to Work), 4 Emmet Road, Dublin D08 F8W3, Ireland. By using the app you agree to these Terms.",
+    "These Terms govern your use of Inglés para Hostelería (\"Hospitality English\", \"the app\"), operated by Sebastian Di Eugenio, a sole trader based in Ireland (trading as English to Work), Apt 4, Emmet Place, Usher Street, Dublin 8, D08 F8W3, Ireland. By using the app you agree to these Terms.",
   ],
   sections: [
     {
