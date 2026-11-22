@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "589564557464",
+    "project_id": "hospitalityenglish-bf82d",
+    "storage_bucket": "hospitalityenglish-bf82d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589564557464:android:0cc0a0ef31cb586ae778ed",
+        "android_client_info": {
+          "package_name": "app.englishtowork.hospitality"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "589564557464-irn2akn16jpiv1s0c3j2b1h9n83eb93o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8_kjlU7KjcrXXkc5eBJ14q0QomwgfKg4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "589564557464-irn2akn16jpiv1s0c3j2b1h9n83eb93o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "589564557464-j70ig5dq0d4er9n8v41lcfndf1kfd27m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.englishtowork.hospitality"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
