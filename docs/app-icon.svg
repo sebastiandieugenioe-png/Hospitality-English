@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#1C3329"/>
+  <g id="mark">
+    <!-- speech bubble -->
+    <path fill="#F9F8F6" d="M362 222 H662 A150 150 0 0 1 812 372 V572 A150 150 0 0 1 662 722 H430 L300 812 L322 712 A150 150 0 0 1 212 572 V372 A150 150 0 0 1 362 222 Z"/>
+    <!-- coupe glass -->
+    <path fill="#1C3329" d="M382 352 H642 Q632 488 512 498 Q392 488 382 352 Z"/>
+    <rect x="501" y="492" width="22" height="112" rx="6" fill="#1C3329"/>
+    <rect x="432" y="594" width="160" height="24" rx="12" fill="#1C3329"/>
+    <!-- garnish -->
+    <line x1="560" y1="420" x2="628" y2="300" stroke="#C86F53" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="628" cy="300" r="30" fill="#C86F53"/>
+  </g>
+</svg>
