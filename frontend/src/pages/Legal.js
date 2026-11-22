@@ -4,11 +4,18 @@ import { useApp } from "@/context/AppContext";
 import { privacyPolicy } from "@/legal/privacyPolicy";
 import { termsOfService } from "@/legal/termsOfService";
 import { accountDeletion } from "@/legal/accountDeletion";
+import { privacyPolicy as privacyPolicyEs } from "@/legal/es/privacyPolicy";
+import { termsOfService as termsOfServiceEs } from "@/legal/es/termsOfService";
+import { accountDeletion as accountDeletionEs } from "@/legal/es/accountDeletion";
 
 const DOCS = {
   "/privacy": { kind: "privacy", doc: privacyPolicy, titleKey: "legal.privacy" },
   "/terms": { kind: "terms", doc: termsOfService, titleKey: "legal.terms" },
   "/account-deletion": { kind: "account-deletion", doc: accountDeletion, titleKey: "legal.accountDeletion" },
+};
+// Translated versions; any other language shows the official English text.
+const TRANSLATED = {
+  es: { privacy: privacyPolicyEs, terms: termsOfServiceEs, "account-deletion": accountDeletionEs },
 };
 const OWNER = "OWNER_ACTION_REQUIRED";
 
@@ -37,15 +44,17 @@ function Section({ s }) {
 }
 
 export default function Legal() {
-  const { t } = useApp();
-  const { kind, doc, titleKey } = DOCS[useLocation().pathname] || DOCS["/privacy"];
+  const { t, language } = useApp();
+  const { kind, doc: docEn, titleKey } = DOCS[useLocation().pathname] || DOCS["/privacy"];
+  const translated = TRANSLATED[language]?.[kind];
+  const doc = translated || docEn;
   return (
     <SecondaryPage title={t(titleKey)} testid={`legal-${kind}-page`}>
-      <article data-testid="legal-document" lang="en" className="rounded-2xl bg-white border border-[#DEE2DE] p-5 sm:p-7 space-y-6 text-[15px] leading-relaxed text-[#3A403C] [overflow-wrap:anywhere]">
+      <article data-testid="legal-document" lang={translated ? language : "en"} className="rounded-2xl bg-white border border-[#DEE2DE] p-5 sm:p-7 space-y-6 text-[15px] leading-relaxed text-[#3A403C] [overflow-wrap:anywhere]">
         <header className="space-y-2">
           <h1 className="font-serif text-[26px] font-semibold text-[#222824]">{doc.title}</h1>
           <p className="text-[13px] text-[#6B736E]"><Rich text={doc.updated} /></p>
-          {t("legal.englishOnly") && <p data-testid="legal-english-note" lang="" className="text-[13px] text-[#6B736E]">{t("legal.englishOnly")}</p>}
+          {!translated && t("legal.englishOnly") && <p data-testid="legal-english-note" lang="" className="text-[13px] text-[#6B736E]">{t("legal.englishOnly")}</p>}
         </header>
         {doc.intro.map((p, i) => <p key={i}><Rich text={p} /></p>)}
         {doc.sections.map((s) => <Section key={s.h} s={s} />)}

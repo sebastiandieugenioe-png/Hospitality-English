@@ -23,7 +23,7 @@ export const accountDeletion = {
     },
     {
       h: "Option 3: If you can't sign in",
-      p: ["Contact us at OWNER_ACTION_REQUIRED (support email) from the email address linked to your account and ask for your account to be deleted."],
+      p: ["Contact us at info@englishtowork.app from the email address linked to your account and ask for your account to be deleted."],
     },
     {
       h: "What is deleted",
