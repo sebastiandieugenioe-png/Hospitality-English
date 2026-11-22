@@ -10,7 +10,7 @@ export const privacyPolicy = {
       h: "1. Responsable",
       p: [
         "El servicio lo opera Sebastian Di Eugenio, trabajador autónomo con sede en Irlanda (con el nombre comercial English to Work), que es el responsable del tratamiento.",
-        "Dirección: 4 Emmet Road, Dublin D08 F8W3, Irlanda.",
+        "Dirección: Apt 4, Emmet Place, Usher Street, Dublín 8, D08 F8W3, Irlanda.",
         "Contacto de privacidad: info@englishtowork.app.",
       ],
     },
