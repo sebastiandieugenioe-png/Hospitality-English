@@ -2,7 +2,7 @@
 // (see /app/docs/PRIVACY_DATA_INVENTORY.md). Keep both in sync.
 export const privacyPolicy = {
   title: "Privacy Policy",
-  updated: "Draft — June 2026. Effective date: OWNER_ACTION_REQUIRED",
+  updated: "Last updated: 22 November 2026. Effective date: 22 November 2026.",
   intro: [
     "This Privacy Policy explains what personal data Inglés para Hostelería (\"Hospitality English\", \"the app\", \"we\") processes, why, and what choices you have. It applies to the web app and to the mobile apps that use the same service.",
   ],
@@ -10,9 +10,9 @@ export const privacyPolicy = {
     {
       h: "1. Who is responsible",
       p: [
-        "The service is operated by: OWNER_ACTION_REQUIRED (legal name of the operator).",
-        "Address: OWNER_ACTION_REQUIRED.",
-        "Privacy contact: OWNER_ACTION_REQUIRED (privacy/support email).",
+        "The service is operated by Sebastian Di Eugenio, a sole trader based in Ireland (trading as English to Work), who is the data controller.",
+        "Address: 4 Emmet Road, Dublin D08 F8W3, Ireland.",
+        "Privacy contact: info@englishtowork.app.",
       ],
     },
     {
@@ -80,7 +80,7 @@ export const privacyPolicy = {
         "OpenAI: evaluation of Speaking transcripts (text).",
         "Emergent and its infrastructure providers: hosting of the app, backend and database.",
       ],
-      p: ["Some of these providers may process data outside your country, including outside the European Economic Area. Where required, such transfers rely on the safeguards offered by the provider (for example, standard contractual clauses). OWNER_ACTION_REQUIRED: confirm transfer safeguards with each provider."],
+      p: ["Some of these providers may process data outside your country, including outside the European Economic Area. Where this happens, the transfer relies on a European Commission adequacy decision (including the EU-U.S. Data Privacy Framework where the provider is certified) or on the Standard Contractual Clauses included in the provider's data processing terms."],
     },
     {
       h: "9. How long we keep data",
@@ -103,12 +103,12 @@ export const privacyPolicy = {
     {
       h: "11. Your rights",
       p: [
-        "Depending on where you live (for example under the EU/UK GDPR), you may have the right to access your data, correct it, delete it, restrict or object to its processing, and receive a copy in a portable format. You can change your profile and language in the app and delete your account at any time. For other requests contact us at OWNER_ACTION_REQUIRED. You also have the right to complain to your local data protection authority.",
+        "Depending on where you live (for example under the EU/UK GDPR), you may have the right to access your data, correct it, delete it, restrict or object to its processing, and receive a copy in a portable format. You can change your profile and language in the app and delete your account at any time. For other requests contact us at info@englishtowork.app; we will reply within one month. You also have the right to complain to the Irish Data Protection Commission (www.dataprotection.ie) or to the data protection authority where you live.",
       ],
     },
     {
       h: "12. Children",
-      p: ["The app is designed for adults working or preparing to work in hospitality. Minimum age: OWNER_ACTION_REQUIRED."],
+      p: ["The app is designed for adults working or preparing to work in hospitality. You must be at least 16 years old to use it."],
     },
     {
       h: "13. Security",

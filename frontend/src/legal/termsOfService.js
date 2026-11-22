@@ -1,9 +1,9 @@
 // Canonical English Terms of Use (practical launch draft, not lawyer-reviewed).
 export const termsOfService = {
   title: "Terms of Use",
-  updated: "Draft — June 2026. Effective date: OWNER_ACTION_REQUIRED",
+  updated: "Last updated: 22 November 2026. Effective date: 22 November 2026.",
   intro: [
-    "These Terms govern your use of Inglés para Hostelería (\"Hospitality English\", \"the app\"), operated by OWNER_ACTION_REQUIRED (legal name of the operator). By using the app you agree to these Terms.",
+    "These Terms govern your use of Inglés para Hostelería (\"Hospitality English\", \"the app\"), operated by Sebastian Di Eugenio, a sole trader based in Ireland (trading as English to Work), 4 Emmet Road, Dublin D08 F8W3, Ireland. By using the app you agree to these Terms.",
   ],
   sections: [
     {
@@ -63,8 +63,8 @@ export const termsOfService = {
     {
       h: "11. Governing law and contact",
       p: [
-        "Governing law and courts: OWNER_ACTION_REQUIRED.",
-        "Contact: OWNER_ACTION_REQUIRED (support email).",
+        "These Terms are governed by the laws of Ireland and the Irish courts have jurisdiction. If you are a consumer living in another EU country, you also keep the protection of the mandatory laws of your country and can bring a claim in its courts.",
+        "Contact: info@englishtowork.app.",
       ],
     },
   ],
