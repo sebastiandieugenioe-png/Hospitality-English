@@ -76,7 +76,7 @@ export function Navbar() {
             <GraduationCap className="w-5 h-5" strokeWidth={1.75} />
           </span>
           <span className="font-serif text-lg text-brand-espresso tracking-tight hidden sm:block">
-            Inglés para Hostelería
+            Hospitality English
           </span>
         </Link>
         <div className="flex items-center gap-3 sm:gap-5 min-w-0">

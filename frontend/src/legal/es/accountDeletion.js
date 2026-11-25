@@ -1,9 +1,9 @@
 // Spanish translation of ../accountDeletion.js. Keep both in sync.
 export const accountDeletion = {
   title: "Borrar tu cuenta",
-  updated: "Inglés para Hostelería (Hospitality English)",
+  updated: "Hospitality English at Work",
   intro: [
-    "Esta página explica cómo borrar tu cuenta de Inglés para Hostelería y los datos vinculados a ella. No necesitas volver a instalar la app.",
+    "Esta página explica cómo borrar tu cuenta de Hospitality English y los datos vinculados a ella. No necesitas volver a instalar la app.",
   ],
   sections: [
     {

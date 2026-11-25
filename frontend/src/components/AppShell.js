@@ -22,7 +22,7 @@ export function AppHeader({ title }) {
             </span>
           ) : (
             <span className="font-serif text-lg text-[#222824] tracking-tight hidden sm:block">
-              Inglés para Hostelería
+              Hospitality English
             </span>
           )}
         </Link>

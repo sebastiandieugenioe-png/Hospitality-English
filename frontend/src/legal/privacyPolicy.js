@@ -4,7 +4,7 @@ export const privacyPolicy = {
   title: "Privacy Policy",
   updated: "Last updated: 22 November 2026. Effective date: 22 November 2026.",
   intro: [
-    "This Privacy Policy explains what personal data Inglés para Hostelería (\"Hospitality English\", \"the app\", \"we\") processes, why, and what choices you have. It applies to the web app and to the mobile apps that use the same service.",
+    "This Privacy Policy explains what personal data Hospitality English at Work (\"Hospitality English\", \"the app\", \"we\") processes, why, and what choices you have. It applies to the web app and to the mobile apps that use the same service.",
   ],
   sections: [
     {

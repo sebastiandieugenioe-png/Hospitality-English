@@ -3,7 +3,7 @@ export const termsOfService = {
   title: "Términos de uso",
   updated: "Última actualización: 22 de noviembre de 2026. En vigor desde el 22 de noviembre de 2026.",
   intro: [
-    "Estos Términos regulan el uso de Inglés para Hostelería (\"Hospitality English\", \"la app\"), operada por Sebastian Di Eugenio, trabajador autónomo con sede en Irlanda (con el nombre comercial English to Work), Apt 4, Emmet Place, Usher Street, Dublín 8, D08 F8W3, Irlanda. Al usar la app aceptas estos Términos.",
+    "Estos Términos regulan el uso de Hospitality English at Work (\"Hospitality English\", \"la app\"), operada por Sebastian Di Eugenio, trabajador autónomo con sede en Irlanda (con el nombre comercial English to Work), Apt 4, Emmet Place, Usher Street, Dublín 8, D08 F8W3, Irlanda. Al usar la app aceptas estos Términos.",
   ],
   sections: [
     {
