@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /voice_test/
+Disallow: /mvp_i18n_export_v1.json
+Disallow: /mvp_i18n_gaps_export_v1.json
+
+Sitemap: https://hospitalityenglish.app/sitemap.xml
