@@ -66,3 +66,7 @@ body {
         display: contents !important;
     }
 }
+
+/* Installed app: no text-selection pop-ups or long-press callouts on taps. */
+.native-app body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+.native-app input, .native-app textarea, .native-app [contenteditable="true"] { -webkit-user-select: text; user-select: text; }

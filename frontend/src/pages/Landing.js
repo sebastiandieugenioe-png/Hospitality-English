@@ -1,4 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
+import { isNative } from "@/lib/platform";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Layers, Sparkles, Repeat, Users, Check } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -26,7 +27,9 @@ const categories = [
 
 export default function Landing() {
   const navigate = useNavigate();
-  const { t } = useApp();
+  const { t, onboardingCompleted } = useApp();
+  // In the installed app the marketing page is only for new users.
+  if (isNative() && onboardingCompleted) return <Navigate to="/home" replace />;
 
   const features = [
     { icon: Sparkles, title: t("landing.feat1Title"), body: t("landing.feat1Body") },
