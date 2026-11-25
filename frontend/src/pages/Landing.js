@@ -171,7 +171,7 @@ export default function Landing() {
 
       <footer className="border-t border-black/5 py-8 text-center text-sm text-brand-charcoal/50">
         <Link to="/" className="font-serif text-brand-espresso">
-          Inglés para Hostelería
+          Hospitality English
         </Link>
         <p className="mt-1">{t("landing.footerTagline")}</p>
       </footer>

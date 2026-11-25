@@ -1,9 +1,9 @@
 // Public account-deletion resource (Google Play requirement). Canonical English.
 export const accountDeletion = {
   title: "Delete your account",
-  updated: "Inglés para Hostelería (Hospitality English)",
+  updated: "Hospitality English at Work",
   intro: [
-    "This page explains how to delete your Inglés para Hostelería account and the data linked to it. You don't need to reinstall the mobile app.",
+    "This page explains how to delete your Hospitality English account and the data linked to it. You don't need to reinstall the mobile app.",
   ],
   sections: [
     {
