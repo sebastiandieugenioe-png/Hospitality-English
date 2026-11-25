@@ -9,7 +9,7 @@ export function AppHeader({ title }) {
   return (
     <header
       data-testid="app-header"
-      className="sticky top-0 z-30 bg-[#F7F5F0]/90 backdrop-blur-xl border-b border-[#DEE2DE]"
+      className="sticky top-0 z-30 bg-[#F7F5F0]/90 backdrop-blur-xl border-b border-[#DEE2DE] pt-[env(safe-area-inset-top)]"
     >
       <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between gap-4">
         <Link to="/home" data-testid="app-header-logo" className="flex items-center gap-2 shrink-0">

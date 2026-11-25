@@ -319,7 +319,7 @@ function ReviewSession({ session, setSession, onEnd, t, navigate }) {
 
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col" data-testid="review-session">
-      <header className="sticky top-0 z-40 bg-[#F7F5F0]/90 backdrop-blur-xl border-b border-[#DEE2DE]">
+      <header className="sticky top-0 z-40 bg-[#F7F5F0]/90 backdrop-blur-xl border-b border-[#DEE2DE] pt-[env(safe-area-inset-top)]">
         <div className="max-w-2xl mx-auto px-5 sm:px-8 h-16 flex items-center gap-4">
           <button
             type="button"
