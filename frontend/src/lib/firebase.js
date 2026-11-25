@@ -178,7 +178,18 @@ async function connectAppleNative() {
       return { mode: "linked", user: res.user };
     } catch (e) {
       if (e.code === "auth/credential-already-in-use" || e.code === "auth/email-already-in-use") {
-        const res = await signInWithCredential(auth, OAuthProvider.credentialFromError(e) || credential);
+        // An Apple id_token + nonce can only be used once: the failed link already
+        // consumed it. Use the pending token from the error if Firebase gave one,
+        // otherwise get a fresh native Apple credential (quick Face ID confirm).
+        const fromErr = OAuthProvider.credentialFromError(e);
+        if (fromErr?.pendingToken) {
+          try {
+            const res = await signInWithCredential(auth, fromErr);
+            return { mode: "signin", user: res.user };
+          } catch { /* fall through to a fresh credential */ }
+        }
+        const fresh = await nativeAppleCredential();
+        const res = await signInWithCredential(auth, fresh.credential);
         return { mode: "signin", user: res.user };
       }
       throw e; // unexpected: caller must NOT destroy guest data
