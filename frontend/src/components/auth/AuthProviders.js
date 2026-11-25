@@ -80,6 +80,8 @@ export function friendlyAuthError(e, t) {
   const code = String(e?.code || "");
   if (code.includes("popup-closed") || code.includes("cancelled") || code.includes("user-cancelled") || e?.type === "gis_cancelled") return null;
   if (code === "auth/network-request-failed" || e?.message === "gis_unavailable" || e?.message === "Network Error") return t("account.errNetwork");
-  if (e?.isAxiosError) return t("auth.errSaving");
-  return t("auth.errSignIn");
+  // Short technical reference so failures reported from the field can be diagnosed.
+  const ref = e?.isAxiosError ? `HTTP ${e?.response?.status || "?"}` : (code || String(e?.message || "").slice(0, 60));
+  if (e?.isAxiosError) return `${t("auth.errSaving")} (${ref})`;
+  return ref ? `${t("auth.errSignIn")} (${ref})` : t("auth.errSignIn");
 }

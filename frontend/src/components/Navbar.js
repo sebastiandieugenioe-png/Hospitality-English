@@ -81,7 +81,7 @@ export function Navbar() {
         </Link>
         <div className="flex items-center gap-3 sm:gap-5 min-w-0">
           {onboardingCompleted && (
-            <div className="flex items-center gap-3 sm:gap-5 min-w-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="hidden md:flex items-center gap-3 sm:gap-5 min-w-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <Link
                 to="/home"
                 data-testid="navbar-home-link"
