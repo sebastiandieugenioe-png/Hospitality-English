@@ -8,7 +8,7 @@ export function FocusLayout({ onExit, exitLabel, current, total, progressLabel, 
   const known = Number.isFinite(current) && Number.isFinite(total) && total > 0;
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col" data-testid="focus-layout">
-      <header className="sticky top-0 z-40 bg-[#F7F5F0]/90 backdrop-blur-xl border-b border-[#DEE2DE]">
+      <header className="sticky top-0 z-40 bg-[#F7F5F0]/90 backdrop-blur-xl border-b border-[#DEE2DE] pt-[env(safe-area-inset-top)]">
         <div className="max-w-2xl mx-auto px-5 sm:px-8 h-16 flex items-center gap-4">
           <button type="button" data-testid="lesson-close-btn" onClick={onExit} aria-label={exitLabel}
             className={`grid place-items-center w-11 h-11 -ml-2 rounded-full text-[#6B736E] hover:text-[#222824] hover:bg-[#EEF3EF] transition-colors ${focusRing}`}>

@@ -13,7 +13,7 @@ export function SecondaryPage({ title, testid, back = "/more", children }) {
   const goBack = () => (window.history.state?.idx > 0 ? navigate(-1) : navigate(back));
   return (
     <div className="min-h-screen bg-[#F7F5F0]" data-testid={testid}>
-      <header className="sticky top-0 z-30 bg-[#F7F5F0]/90 backdrop-blur-xl border-b border-[#DEE2DE]">
+      <header className="sticky top-0 z-30 bg-[#F7F5F0]/90 backdrop-blur-xl border-b border-[#DEE2DE] pt-[env(safe-area-inset-top)]">
         <div className="max-w-2xl mx-auto px-5 sm:px-8 h-16 flex items-center gap-2">
           <button type="button" onClick={goBack} data-testid="secondary-back-btn" aria-label={t("settings.back")}
             className={`grid place-items-center w-11 h-11 -ml-3 rounded-full text-[#222824] hover:bg-[#EEF3EF] transition-colors ${focusRing}`}>

@@ -64,7 +64,7 @@ export function Navbar() {
   return (
     <header
       data-testid="app-navbar"
-      className="sticky top-0 z-40 backdrop-blur-xl bg-brand-sand/80 border-b border-black/5"
+      className="sticky top-0 z-40 backdrop-blur-xl bg-brand-sand/80 border-b border-black/5 pt-[env(safe-area-inset-top)]"
     >
       <nav className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
         <Link

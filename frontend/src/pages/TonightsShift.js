@@ -301,7 +301,7 @@ function Shell({ children, onClose, progress }) {
   const { t } = useApp();
   return (
     <div className="min-h-screen bg-brand-sand flex flex-col">
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-brand-sand/80 border-b border-black/5">
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-brand-sand/80 border-b border-black/5 pt-[env(safe-area-inset-top)]">
         <div className="max-w-2xl mx-auto px-5 sm:px-8 h-16 flex items-center gap-4">
           <button data-testid="shift-close-btn" onClick={onClose} className="text-brand-charcoal/50 hover:text-brand-espresso transition-colors" aria-label={t("lesson.closeAria")}>
             <X className="w-5 h-5" />
