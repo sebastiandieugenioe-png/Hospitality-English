@@ -11,6 +11,17 @@ import {
 
 const BillingContext = createContext(null);
 
+// Native StoreKit/RevenueCat calls can hang (e.g. products not yet approved); never
+// leave the UI waiting on billing: after this long we fall back to free access.
+const BILLING_TIMEOUT_MS = 10000;
+function withTimeout(promise, ms) {
+  let t;
+  return Promise.race([
+    promise,
+    new Promise((_, rej) => { t = setTimeout(() => rej(new Error("BILLING_TIMEOUT")), ms); }),
+  ]).finally(() => clearTimeout(t));
+}
+
 export function BillingProvider({ children }) {
   const { account, authReady } = useApp();
   const [status, setStatus] = useState("uninitialized"); // uninitialized|loading|ready|error
@@ -39,13 +50,15 @@ export function BillingProvider({ children }) {
     (async () => {
       setStatus((s) => (s === "ready" ? s : "loading"));
       try {
-        if (!configuredRef.current) {
-          await configureRevenueCat(desiredId); // init once (anonymous if no account)
-          configuredRef.current = true;
-        } else {
-          await switchRevenueCatIdentity(desiredId);
-        }
-        await loadState();
+        await withTimeout((async () => {
+          if (!configuredRef.current) {
+            await configureRevenueCat(desiredId); // init once (anonymous if no account)
+            configuredRef.current = true;
+          } else {
+            await switchRevenueCatIdentity(desiredId);
+          }
+          await loadState();
+        })(), BILLING_TIMEOUT_MS);
         if (!cancelled) { setStatus("ready"); setResolvedFor(desiredId); }
       } catch (e) {
         if (!cancelled) { setStatus("error"); setResolvedFor(desiredId); } // outage: keep free content accessible
